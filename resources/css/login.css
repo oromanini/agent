@@ -1,0 +1,27 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+.min-h-screen {
+    background-color: #FFBC0E;
+}
+
+.login-flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+
+.w50 {
+    width: 50%;
+}
+
+.login-side {
+    background-color: #2d3748;
+    background-size: cover;
+    background-image: url("/img/left-login.png") !important;
+    background-repeat:no-repeat;
+    min-width: 50%;
+    height: 100vh
+}

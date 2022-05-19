@@ -1,0 +1,98 @@
+.side-navigation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 70px;
+    background: $alluz-yellow;
+    box-shadow: 10px 0 0 $body-backgound;
+    border-right: 5px solid $alluz-white;
+    padding: 0 5px;
+    overflow-x: hidden;
+    transition: width 0.5s;
+    overflow-y: unset;
+}
+
+.side-navigation:hover {
+    width: 300px;
+}
+
+.side-navigation ul {
+    position: absolute;
+    top: 100px;
+    left: 0;
+    width: 100%;
+    padding-left: 5px;
+    padding-top: 60px;
+}
+
+.side-navigation ul li {
+    position: relative;
+    list-style: none;
+    width: 100%;
+}
+
+.side-navigation ul li.side-active {
+    background: $alluz-white;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+
+.side-navigation ul li a {
+    position: relative;
+    display: flex;
+    width: 100%;
+    text-decoration: none;
+    color: $alluz-white;
+}
+
+.side-navigation ul li a:hover {
+    font-weight: 900;
+}
+
+.side-navigation ul li a.side-active {
+    color: $alluz-yellow !important;
+}
+
+.side-navigation ul li a  .side-icon {
+    position: relative;
+    display: block;
+    min-width: 60px;
+    height: 60px;
+    line-height: 70px;
+    text-align: center;
+}
+
+.side-navigation ul li a .side-icon ion-icon {
+    position: relative;
+    font-size: 1.5em;
+    z-index: 1;
+}
+
+.side-navigation ul li.side-active a .side-icon ion-icon {
+    color: $alluz-yellow ;
+}
+
+.side-navigation ul li a .side-title  {
+    position: relative;
+    display: block;
+    padding-left: 10px;
+    height: 60px;
+    line-height: 60px;
+    white-space: nowrap;
+    color: #fff;
+}
+
+.side-navigation ul li.side-active a .side-title {
+    color: $alluz-yellow;
+}
+
+.side-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.side-logo-img {
+    margin-top: 20px;
+}

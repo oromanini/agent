@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - .docker/dbdata:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: Romanini.95!
+    networks:
+      - alluz-network
+
+  agent:
+    volumes:
+        - .:/var/www/html
+    build: .
+    ports:
+        - "8001:80"
+    networks:
+        - alluz-network
+
+  site-alluz:
+      volumes:
+          - ../site-alluz:/var/www/html
+      build: ../site-alluz
+      ports:
+          - "8000:80"
+      networks:
+          - alluz-network
+
+networks:
+  alluz-network:
+    driver: bridge

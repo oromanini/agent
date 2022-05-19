@@ -1,0 +1,28 @@
+/* HIDE RADIO */
+.radio-image {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* IMAGE STYLES */
+.radio-image + img {
+    cursor: pointer;
+}
+
+/* CHECKED STYLES */
+.radio-image:checked + img {
+    outline: 5px solid #f2a714;
+}
+
+.roof-img {
+    border: 1px solid #dfdfdf;
+    border-radius: 10px;
+    padding: 5px;
+}
+
+.roof-img:hover {
+    transition: width 0.2s;
+    border: 4px solid #f2a714;
+}
