@@ -23,7 +23,5 @@ $(function () {
         }
     })
 
-    $('#city').select2();
-    $('#state').select2();
 
 })

@@ -1,7 +1,7 @@
 <div class="page page-break" style="background-image: url({{public_path('/img/proposal/7.jpg')}})">
-    <div id="kitCost">R$ {{ floatToMoney($proposal->valueHistory->final_price * 0.2) }}</div>
-    <div id="serviceCost">R$ {{ floatToMoney($proposal->valueHistory->final_price * 0.8) }}</div>
-    <div id="finalValue">R$ {{ floatToMoney($proposal->valueHistory->final_price) }}</div>
+    <div id="serviceCost">R$ {{ floatToMoney($proposal->valueHistory->final_price * 0.2) }}</div>
+    <div id="kitCost">R$ {{ floatToMoney($proposal->valueHistory->final_price * 0.8) }}</div>
+    <div id="finalValue">R$ {{ floatToMoney($proposal->valueHistory->final_price) }} <span class="minifiedText">*à vista</span></div>
     <div id="withoutSolar">R$ {{ $withoutSolar }}</div>
     <div id="withSolar">R$ {{ $withSolar }}</div>
 </div>
@@ -49,4 +49,7 @@
         top: 2030px;
         left: 1040px;
     }
+
+
+
 </style>

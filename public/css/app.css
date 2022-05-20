@@ -10639,6 +10639,15 @@ a ion-icon {
   border: 4px solid #f2a714;
 }
 
+.proposalData {
+  color: #9ca3af;
+  font-size: 13pt;
+}
+
+.discount {
+  background-color: #eaeaea !important;
+}
+
 * {
   font-family: "Poppins", sans-serif;
 }

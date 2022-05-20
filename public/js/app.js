@@ -4988,6 +4988,8 @@ __webpack_require__(/*! ./message */ "./resources/js/message.js");
 
 __webpack_require__(/*! ./kitsSearch */ "./resources/js/kitsSearch.js");
 
+__webpack_require__(/*! ./tabs */ "./resources/js/tabs.js");
+
 
 window.Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"];
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].start();
@@ -5059,8 +5061,6 @@ $(function () {
       $('#aliasLabel').text('Apelido*');
     }
   });
-  $('#city').select2();
-  $('#state').select2();
 });
 
 /***/ }),
@@ -5106,6 +5106,32 @@ $(function () {
     contentColumn.addClass('is-11').css('transition', 'width 0.5s');
   });
 });
+
+/***/ }),
+
+/***/ "./resources/js/tabs.js":
+/*!******************************!*\
+  !*** ./resources/js/tabs.js ***!
+  \******************************/
+/***/ (() => {
+
+function openTab(event, tabName) {
+  var i, x, tablinks;
+  x = document.getElementsByClassName("content-tab");
+
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+
+  tablinks = document.getElementsByClassName("tab");
+
+  for (i = 0; i < x.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" is-active", "");
+  }
+
+  document.getElementById(tabName).style.display = "block";
+  event.currentTarget.className += " is-active";
+}
 
 /***/ }),
 

@@ -111,7 +111,7 @@
                         </td>
                         <td>R$ {{ floatToMoney($proposal->valueHistory->final_price) }}</td>
                         <td>
-                            <a class="button is-primary" href="{{ route('proposal.edit', [$proposal->id]) }}">
+                            <a class="button is-primary" href="{{ route('proposal.edit', [$proposal->id]) }}" >
                                 <ion-icon name="create-outline" class="table-icon"></ion-icon>
                             </a>
                             <a target="_blank" class="button is-info" href="{{ route('proposal.pdf', [$proposal->id]) }}" style="padding: 0px 6px 0px 15px">

@@ -5,6 +5,7 @@ require('./masks');
 require('./zipcodeSearch');
 require('./message');
 require('./kitsSearch');
+require('./tabs');
 
 import Alpine from 'alpinejs';
 

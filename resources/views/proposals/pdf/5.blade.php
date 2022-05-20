@@ -1,6 +1,6 @@
 <div class="page page-break" style="background-image: url({{public_path('/img/proposal/5.jpg')}})">
     <div id="panelImage">
-        <img src="{{ public_path($panelBrandImage) }}" alt="" width="450">
+        <img src="{{ public_path($panelBrandImage) }}" alt="" width="240">
     </div>
     <div id="panelQuantity">{{ $proposal->number_of_panels }} módulos</div>
     <div id="panelBrand">
@@ -24,7 +24,13 @@
         @endif
     </div>
     <div id="inverterImage">
-        <img src="{{ public_path($inverterImage) }}" alt="" width="450">
+        <img src="{{ public_path($inverterImage) }}" alt="" width="550">
+    </div>
+    <div id="inverterQuantity">
+        @if($proposal->is_manual)
+            1
+        @else
+        @endif
     </div>
     <div id="inverterBrand">
         @if($proposal->is_manual)
@@ -49,56 +55,58 @@
 <style>
     #panelImage {
         position: absolute;
-        top: 700px;
-        left: 40px;
+        top: 600px;
+        left: 65px;
     }
 
     #panelQuantity, #panelBrand, #panelModel, #panelWarranty {
-        color: #6b7280;
+        color: #fff;
         font-size: 16pt;
         position: absolute;
-        left: 1220px;
+        left: 950px;
     }
 
     #panelQuantity {
-        top: 660px;
+        top: 670px;
     }
 
     #panelBrand {
-        top: 770px;
+        top: 750px;
     }
 
     #panelModel {
-        top: 880px;
+        top: 840px;
     }
 
     #panelWarranty {
-        top: 980px;
+        top: 930px;
     }
 
     #inverterImage {
         position: absolute;
-        top: 1460px;
-        left: 1150px;
+        top: 1250px;
+        left: 50px;
     }
 
-    #inverterBrand, #inverterModel, #inverterWarranty {
-        color: #6b7280;
+    #inverterBrand, #inverterQuantity, #inverterModel, #inverterWarranty {
+        color: #fff;
         font-size: 16pt;
         position: absolute;
-        left: 520px;
+        left: 950px;
     }
-
+    #inverterQuantity {
+        top: 1400px;
+    }
     #inverterBrand {
-        top: 1530px;
+        top: 1490px;
     }
 
     #inverterModel {
-        top: 1640px;
+        top: 1580px;
     }
 
     #inverterWarranty {
-        top: 1760px;
+        top: 1670px;
     }
 
 </style>

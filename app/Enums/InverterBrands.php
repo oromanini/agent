@@ -14,4 +14,5 @@ final class InverterBrands extends Enum
     const Growatt =   1;
     const Chint =   2;
     const Deye = 3;
+    const Sofar = 4;
 }
