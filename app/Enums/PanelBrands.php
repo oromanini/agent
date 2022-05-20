@@ -14,4 +14,6 @@ final class PanelBrands extends Enum
     const Jinko =   1;
     const Sunket =   2;
     const Trina = 3;
+    const DAH = 4;
+
 }

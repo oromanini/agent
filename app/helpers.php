@@ -72,6 +72,9 @@ function setPanelBrandImage($id): string
         case 3:
             $img = '/img/panel_brands/trina.png';
             break;
+        case 4:
+            $img = '/img/panel_brands/dah.png';
+            break;
         default:
             throw new Exception('Painel não localizado.');
     }
@@ -93,6 +96,9 @@ function setInverterImage($id): string
         case 3:
             $img = '/img/inverters/deye.png';
             break;
+        case 4:
+            $img = '/img/inverters/sofar.png';
+            break;
         default:
             throw new Exception('Inversor não localizado.');
     }
@@ -110,10 +116,25 @@ function calculateWithoutSolar($proposal): string
 function calculateWithSolar($proposal): string
 {
     if ($proposal->tension_pattern == 'MONO-220') {
-        return floatToMoney(75);
+        return 75;
     } elseif ($proposal->tension_pattern == 'BI-220') {
-        return floatToMoney(95);
+        return 95;
     }
 
-    return floatToMoney(125);
+    return 125;
+}
+
+
+function formatFloat($float): float
+{
+    return round($float, 2);
+}
+
+function paybackToString(float $float): string
+{
+
+    $whole = intval($float);
+    $decimal = $float - $whole;
+
+    return $whole . ' anos e ' . $decimal * 10 . ' mes(es)';
 }

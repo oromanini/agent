@@ -5,6 +5,7 @@ use App\Http\Controllers\CityController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProposalController;
+use App\Http\Controllers\ValueHistoryController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -35,13 +36,22 @@ Route::middleware('auth')->group(function() {
             Route::get('/propostas', 'index')->name('index');
             Route::get('/propostas/nova', 'create')->name('create');
             Route::post('/propostas/nova', 'store')->name('store');
-            Route::get('/propostas/editar/{id}', 'edit')->name('edit');
+            Route::get('/propostas/visualizar/{id}', 'edit')->name('edit');
             Route::put('/propostas/editar/{id}', 'update')->name('update');
 
             Route::get('/propostas/manual/nova', 'manual')->name('manual.create');
             Route::post('/propostas/manual/nova', 'manualStore')->name('manual.store');
 
-            Route::get('propostas/{proposal_id}/pdf', [ProposalController::class, 'generatePdf'])->name('pdf');
+            Route::get('propostas/{proposal_id}/pdf', 'generatePdf')->name('pdf');
+            Route::get('propostas/{proposal_id}/aprovacao','approve')->name('approve');
+        });
+    });
+
+    Route::controller(ValueHistoryController::class)->group(function () {
+        Route::name('valueHistory.')->group(function () {
+
+            Route::post('propostas/{id}/comissao', 'applyCommission')->name('commission');
+            Route::post('propostas/{id}/desconto', 'applyDiscount')->name('discount');
         });
     });
 

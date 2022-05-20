@@ -11,6 +11,7 @@ use App\Models\Proposal;
 use App\Models\State;
 use App\Models\User;
 use App\Repositories\ProposalRepository;
+use App\Services\PaybackService;
 use App\Services\PreInspectionService;
 use App\Services\ProposalService;
 use App\Services\ProposalValueHistoryService;
@@ -28,11 +29,13 @@ class ProposalController extends Controller
     private $proposalValueHistoryService;
     private $preInspectionService;
     private $solarIncidenceService;
+    private $paybackService;
 
     public function __construct(ProposalService             $proposalService,
                                 ProposalRepository          $proposalRepository,
                                 ProposalValueHistoryService $proposalValueHistoryService,
                                 PreInspectionService        $preInspectionService,
+                                PaybackService              $paybackService,
                                 SolarIncidenceService       $solarIncidenceService)
     {
         $this->proposalService = $proposalService;
@@ -40,6 +43,7 @@ class ProposalController extends Controller
         $this->proposalValueHistoryService = $proposalValueHistoryService;
         $this->preInspectionService = $preInspectionService;
         $this->solarIncidenceService = $solarIncidenceService;
+        $this->paybackService = $paybackService;
     }
 
     public function index(Request $request)
@@ -57,7 +61,7 @@ class ProposalController extends Controller
             : Client::where('agent_id', auth()->user()->id)->get();
 
         $tensions = TensionPattern::asSelectArray();
-        $roofs = $this->setRoofs();
+        $roofs = setRoofs();
 
         return view('proposals.form', compact('clients', 'tensions', 'roofs'));
     }
@@ -72,6 +76,20 @@ class ProposalController extends Controller
         $inverters = InverterBrands::asSelectArray();
 
         return view('proposals.manual', compact($this->setManualParams()));
+    }
+
+    public function edit($id)
+    {
+        $proposal = Proposal::find($id);
+
+        return view('proposals.show', compact('proposal'));
+    }
+
+    public function approve($id)
+    {
+        $proposal = Proposal::find($id);
+
+        dd($proposal);
     }
 
     public function manualStore(Request $request): RedirectResponse
@@ -111,11 +129,13 @@ class ProposalController extends Controller
         $inverterImage = setInverterImage((int)$manualData['inverter_brand']);
         $panelBrandImage = setPanelBrandImage((int)$manualData['panel_brand']);
         $withoutSolar = calculateWithoutSolar($proposal);
-        $withSolar = calculateWithSolar($proposal);
+        $withSolar = floatToMoney(calculateWithSolar($proposal));
         $incidence = $this->solarIncidenceService->getSolarIncidence($city)->average;
+        $payback = $this->paybackService->setPaybackData($proposal);
+        $generationData = $this->paybackService->setGeterationData($proposal);
 
         $pdf = PDF::loadView('proposals.pdf', compact($this->setPdfParams()));
-        return $pdf->stream('Alluz_' . $proposal->id .'.pdf');
+        return $pdf->stream('Alluz_' . $proposal->id . '.pdf');
     }
 
     private function fillProposal(array $data, $incidence): Proposal
@@ -187,7 +207,9 @@ class ProposalController extends Controller
             'panelBrandImage',
             'withoutSolar',
             'withSolar',
-            'incidence'
+            'incidence',
+            'payback',
+            'generationData',
         ];
     }
 

@@ -11,14 +11,15 @@
 <style>
     #components {
         position: absolute;
-        top: 600px;
-        left: 300px;
+        top: 700px;
+        left: 330px;
         max-width: 1000px;
     }
 
     #components * {
         font-size: 8pt;
-        color: #6b7280;
+        color: #1a202c;
         line-height: 60px;
+        font-weight: 900;
     }
 </style>
