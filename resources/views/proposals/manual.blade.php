@@ -3,6 +3,9 @@
 
     <div class="container is-fluid overflow-auto">
         <div class="box overflow-auto">
+            <form action="{{ route('proposal.manual.store') }}" method="post">
+                @csrf
+
             <div class="columns mt-2 ml-1">
                 <h3 class="title"><img src="/img/logo/alluz-icon.png" width="30" alt=".."> Nova Proposta</h3>
             </div>
@@ -11,6 +14,7 @@
             </div>
             <div class="columns">
                 <div class="column is-3">
+                    @if(!$clients->isEmpty())
                     <div class="field">
                         <label for="client" class="label">Cliente*</label>
                         <div
@@ -25,13 +29,26 @@
                         </div>
                         @error('type')<span class="error-message">{{ $message }}</span>@enderror
                     </div>
+                    @else
+                        <label for="client" class="label">Cliente*</label>
+                        <a href="{{ route('client.create') }}" class="button is-primary">Cadastrar cliente</a>
+                    @endif
                 </div>
-                <div class="column is-1">
-                    <br>
-                    <a class="button is-info" href="{{ route('client.create') }}"
-                       style="padding: 2px 2px 2px 10px; margin-top: 5px">
-                        <ion-icon name="person-add-outline"></ion-icon>
-                    </a>
+                <div class="column is-3">
+                    <div class="field">
+                        <label for="client" class="label">Agente*</label>
+                        <div
+                            class="select is-multiline is-fullwidth is-rounded @error('agent') is-danger @enderror">
+                            <select id="agent" name="agent">
+                                @forelse($agents as $agent)
+                                    <option value="{{ $agent->id }}">{{$agent->name}}</option>
+                                @empty
+                                    <option value="">Não há agentes cadastrados</option>
+                                @endforelse
+                            </select>
+                        </div>
+                        @error('agent')<span class="error-message">{{ $message }}</span>@enderror
+                    </div>
                 </div>
                 <div class="column is-2">
                     <div class="field">
@@ -60,7 +77,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="column is-3">
+                <div class="column is-2">
                     <div class="field">
                         <label for="tension_pattern" class="label">Padrão de tensão
                             <ion-icon class="info-icon" name="information-circle-outline"></ion-icon>
@@ -81,7 +98,7 @@
             <div class="columns" style="margin-top: 50px">
                 <label for="roof_structure" class="label">Selecione o telhado</label>
             </div>
-            <div class="columns">
+            <div class="columns" style="margin-bottom: 50px">
                 @foreach($roofs as $roof)
                     <div class="column">
                         <label>
@@ -100,7 +117,7 @@
                         <label for="agent" class="label">Agente*</label>
                         <div
                             class="select is-multiline is-fullwidth is-rounded @error('user_id') is-danger @enderror">
-                            <select id="agent" name="user_id">
+                            <select id="agent" name="agent">
                                 @forelse($agents as $agent)
                                     <option value="{{ $agent->id }}">{{$agent->name}}</option>
                                 @empty
@@ -166,42 +183,109 @@
 
             </div>
             <div class="columns">
-
-                <div class="column is-3">
+                <div class="column is-2">
                     <div class="field">
-                        <label for="panel" class="label">Painel*</label>
+                        <label for="panel_brand" class="label">Marca do Painel*</label>
                         <div
-                            class="select is-multiline is-fullwidth is-rounded @error('panel') is-danger @enderror">
-                            <select id="panel" name="panel">
+                            class="select is-multiline is-fullwidth is-rounded @error('panel_brand') is-danger @enderror">
+                            <select id="panel_brand" name="panel_brand">
                                 @forelse($panels as $key => $value)
-                                    <option value="{{ $key }}">{{$value[0] . ' ' . $value[0] . ' W'}}</option>
+
+                                    <option value="{{ $key }}">{{$value}}</option>
                                 @empty
                                     <option value="">Não há painéis cadastrados</option>
                                 @endforelse
                             </select>
                         </div>
-                        @error('panel')<span class="error-message">{{ $message }}</span>@enderror
+                        @error('panel_brand')<span class="error-message">{{ $message }}</span>@enderror
                     </div>
                 </div>
-
-                <div class="column is-3">
+                <div class="column is-2">
                     <div class="field">
-                        <label for="inverter" class="label">Inversor*</label>
-                        <div
-                            class="select is-multiline is-fullwidth is-rounded @error('inverter') is-danger @enderror">
-                            <select id="inverter" name="inverter">
-                                @forelse($inverters as $key => $value)
-                                    <option value="{{ $key }}">{{$value}}</option>
-                                @empty
-                                    <option value="">Não há inversores cadastrados</option>
-                                @endforelse
-                            </select>
+                        <label for="panel_model" class="label">Modelo do painel</label>
+                        <div class="control">
+                            <input name="panel_model" id="panel_model"
+                                   class="input is-rounded @error('panel_model') is-danger @enderror" type="text"
+                                   placeholder="AKJH-28SIJ" required>
+                            @error('panel_model')<span class="error-message">{{ $message }}</span>@enderror
                         </div>
-                        @error('inverter')<span class="error-message">{{ $message }}</span>@enderror
                     </div>
                 </div>
-
+                <div class="column is-2">
+                    <div class="field">
+                        <label for="panel_power" class="label">Potência do painel</label>
+                        <div class="control">
+                            <input name="panel_power" id="panel_power"
+                                   class="input is-rounded @error('panel_power') is-danger @enderror" type="number"
+                                   placeholder="550" required>
+                            @error('panel_power')<span class="error-message">{{ $message }}</span>@enderror
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-2">
+                    <div class="field">
+                        <label for="panel_warranty" class="label">Garantia do painel</label>
+                        <div class="control">
+                            <input name="panel_warranty" id="panel_warranty"
+                                   class="input is-rounded @error('panel_warranty') is-danger @enderror" type="number"
+                                   placeholder="12" required>
+                            @error('panel_warranty')<span class="error-message">{{ $message }}</span>@enderror
+                        </div>
+                    </div>
+                </div>
             </div>
+
+                <div class="columns">
+                    <div class="column is-2">
+                        <div class="field">
+                            <label for="inverter_brand" class="label">Marca do Inversor*</label>
+                            <div
+                                class="select is-multiline is-fullwidth is-rounded @error('inverter_brand') is-danger @enderror">
+                                <select id="inverter_brand" name="inverter_brand">
+                                    @forelse($inverters as $key => $value)
+                                        <option value="{{ $key }}">{{$value}}</option>
+                                    @empty
+                                        <option value="">Não há inversores cadastrados</option>
+                                    @endforelse
+                                </select>
+                            </div>
+                            @error('inverter_brand')<span class="error-message">{{ $message }}</span>@enderror
+                        </div>
+                    </div>
+                    <div class="column is-2">
+                        <div class="field">
+                            <label for="inverter_model" class="label">Modelo do inversor</label>
+                            <div class="control">
+                                <input name="inverter_model" id="inverter_model"
+                                       class="input is-rounded @error('inverter_model') is-danger @enderror" type="text"
+                                       placeholder="MIC-3000" required>
+                                @error('inverter_model')<span class="error-message">{{ $message }}</span>@enderror
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-2">
+                        <div class="field">
+                            <label for="inverter_power" class="label">Potência do inversor</label>
+                            <div class="control">
+                                <input name="inverter_power" id="inverter_power"
+                                       class="input is-rounded @error('inverter_power') is-danger @enderror" type="number"
+                                       placeholder="3" required>
+                                @error('inverter_power')<span class="error-message">{{ $message }}</span>@enderror
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-2">
+                        <div class="field">
+                            <label for="inverter_warranty" class="label">Garantia do Inversor</label>
+                            <div class="control">
+                                <input name="inverter_warranty" id="inverter_warranty"
+                                       class="input is-rounded @error('inverter_warranty') is-danger @enderror" type="number"
+                                       placeholder="10" required>
+                                @error('inverter_warranty')<span class="error-message">{{ $message }}</span>@enderror
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
             <div class="columns">
                 <div class="column is-12">
@@ -211,12 +295,14 @@
                 </div>
             </div>
 
+
+
             <div class="column is-flex is-justify-content-center">
-                <button class="button is-medium is-primary">
+                <button class="button is-medium is-primary" type="submit">
                     <ion-icon name="save-outline"></ion-icon>&nbsp;Salvar
                 </button>
             </div>
-
+            </form>
         </div>
     </div>
 

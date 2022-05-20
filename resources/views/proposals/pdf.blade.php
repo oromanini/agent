@@ -1,0 +1,36 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+@include('proposals.pdf.1')
+<div class="page page-break" style="background-image: url({{public_path('/img/proposal/2.jpg')}})"></div>
+<div class="page page-break" style="background-image: url({{public_path('/img/proposal/3.jpg')}})"></div>
+<div class="page page-break" style="background-image: url({{public_path('/img/proposal/4.jpg')}})"></div>
+@include('proposals.pdf.5')
+@include('proposals.pdf.6')
+@include('proposals.pdf.7')
+@include('proposals.pdf.8')
+@include('proposals.pdf.9')
+@include('proposals.pdf.10')
+<div class="page" style="background-image: url({{public_path('/img/proposal/11.jpg')}})"></div>
+
+
+<style>
+    html {
+        margin: 0;
+    }
+
+    .page-break {
+        page-break-after: always;
+    }
+
+    .page {
+        background-size: cover;
+        background-repeat: no-repeat;
+        min-height: 100vh;
+    }
+
+
+    .minifiedText {
+        font-size: 8pt !important;
+    }
+
+</style>

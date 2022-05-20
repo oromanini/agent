@@ -23,12 +23,12 @@ class CreateProposalsTable extends Migration
             $table->integer('roof_structure');
             $table->integer('number_of_panels');
             $table->float('kw_price', 3, 2);
-            $table->dateTime('send_date');
+            $table->dateTime('send_date')->nullable();
             $table->json('components');
 
             $table->bigInteger('client_id')->unsigned();
             $table->bigInteger('agent_id')->unsigned();
-            $table->bigInteger('kit_uuid')->unsigned();
+            $table->uuid('kit_uuid');
             $table->bigInteger('pre_inspection_id')->unsigned();
             $table->bigInteger('value_history_id')->unsigned();
 

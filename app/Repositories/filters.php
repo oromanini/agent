@@ -37,4 +37,10 @@ function filterFinalDate($data, $query)
     }
 }
 
+function filterPermission($data, $query)
+{
+    if (!\auth()->user()->is_admin) {
+        $query->where('agent_id', \auth()->user()->id);
+    }
+}
 

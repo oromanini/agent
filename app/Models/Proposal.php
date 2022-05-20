@@ -21,14 +21,14 @@ class Proposal extends Model
         'send_date'
     ];
 
-    public function client(): HasOne
+    public function client(): BelongsTo
     {
-        return $this->hasOne(Proposal::class);
+        return $this->belongsTo(Client::class);
     }
 
-    public function agent(): HasOne
+    public function agent(): BelongsTo
     {
-        return $this->hasOne(User::class);
+        return $this->belongsTo(User::class);
     }
 
     public function preInspection(): HasOne
@@ -36,7 +36,7 @@ class Proposal extends Model
         return $this->hasOne(PreInspection::class);
     }
 
-    public function proposalValueHistory(): BelongsTo
+    public function valueHistory(): BelongsTo
     {
         return $this->belongsTo(ProposalValueHistory::class);
     }

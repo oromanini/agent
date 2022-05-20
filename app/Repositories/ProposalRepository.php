@@ -17,6 +17,7 @@ class ProposalRepository implements Filter
                 filterDocument($data, $query);
                 filterInitialDate($data, $query);
                 filterFinalDate($data, $query);
+                filterPermission($data, $query);
             })
             ->orderBy('id', 'desc')
             ->paginate(10);

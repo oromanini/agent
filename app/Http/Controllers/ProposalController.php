@@ -2,24 +2,44 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\InverterBrands;
+use App\Enums\PanelBrands;
 use App\Enums\RoofStructure;
 use App\Enums\TensionPattern;
 use App\Models\Client;
+use App\Models\Proposal;
 use App\Models\State;
 use App\Models\User;
 use App\Repositories\ProposalRepository;
+use App\Services\PreInspectionService;
 use App\Services\ProposalService;
+use App\Services\ProposalValueHistoryService;
+use App\Services\SolarIncidenceService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Response;
+use Ramsey\Uuid\Uuid;
 
 class ProposalController extends Controller
 {
     private $proposalService;
     private $proposalRepository;
+    private $proposalValueHistoryService;
+    private $preInspectionService;
+    private $solarIncidenceService;
 
-    public function __construct(ProposalService $proposalService, ProposalRepository $proposalRepository)
+    public function __construct(ProposalService             $proposalService,
+                                ProposalRepository          $proposalRepository,
+                                ProposalValueHistoryService $proposalValueHistoryService,
+                                PreInspectionService        $preInspectionService,
+                                SolarIncidenceService       $solarIncidenceService)
     {
         $this->proposalService = $proposalService;
         $this->proposalRepository = $proposalRepository;
+        $this->proposalValueHistoryService = $proposalValueHistoryService;
+        $this->preInspectionService = $preInspectionService;
+        $this->solarIncidenceService = $solarIncidenceService;
     }
 
     public function index(Request $request)
@@ -47,78 +67,105 @@ class ProposalController extends Controller
         $clients = Client::all();
         $agents = User::all();
         $tensions = TensionPattern::asSelectArray();
-        $roofs = $this->setRoofs();
-        $panels = $this->setPanels();
-        $inverters = $this->setInverters();
+        $roofs = setRoofs();
+        $panels = PanelBrands::asSelectArray();
+        $inverters = InverterBrands::asSelectArray();
 
         return view('proposals.manual', compact($this->setManualParams()));
     }
 
-    public function manualStore(Request $request)
+    public function manualStore(Request $request): RedirectResponse
     {
+        $message = null;
+        $city = Client::find($request->all()['client'])->addresses->first()->city;
+        $incidence = $this->solarIncidenceService->getSolarIncidence($city);
+        $proposal = $this->fillProposal($request->all(), $incidence);
+
+        try {
+
+            $proposal->pre_inspection_id = $this->proposalValueHistoryService->store($request->all());
+            $proposal->value_history_id = $this->preInspectionService->store();
+            $message = $this->proposalService->store($proposal);
+
+        } catch (\Exception $e) {
+//            throw new \Exception($e);
+            session()->flash('message', ['error' => $e]);
+            return redirect()->route('proposal.index');
+
+        }
+
+        session()->flash('message', $message);
+        return redirect()->route('proposal.index');
 
     }
 
-    private function setRoofs(): array
+    /**
+     * @throws \Exception
+     */
+    public function generatePdf($proposal_id): Response
     {
-        return [
-            [
-                'id' => RoofStructure::Colonial,
-                'image' => '/img/roofs/colonial.png',
-                'description' => 'Colonial'
-            ],
-            [
-                'id' => RoofStructure::Trapezoidal,
-                'image' => '/img/roofs/trapezoidal.png',
-                'description' => 'Trapezoidal'
-            ],
-            [
-                'id' => RoofStructure::Laje,
-                'image' => '/img/roofs/laje.png',
-                'description' => 'Laje'
-            ],
-            [
-                'id' => RoofStructure::ParafMadeira,
-                'image' => '/img/roofs/paraf-madeira.png',
-                'description' => 'Parafuso Madeira'
-            ],
-            [
-                'id' => RoofStructure::ParafMetal,
-                'image' => '/img/roofs/paraf-metal.png',
-                'description' => 'Parafuso Metal'
-            ],
-            [
-                'id' => RoofStructure::Solo,
-                'image' => '/img/roofs/solo.png',
-                'description' => 'Solo'
-            ],
-            [
-                'id' => RoofStructure::Ondulada,
-                'image' => '/img/roofs/ondulada.png',
-                'description' => 'Ondulada'
-            ],
-        ];
+        $proposal = Proposal::find($proposal_id);
+        $city = $proposal->client->addresses->first()->city;
+        $components = json_decode($proposal->components, true);
+        $manualData = $proposal->is_manual ? json_decode($proposal->manual_data, true) : null;
+        $inverterImage = setInverterImage((int)$manualData['inverter_brand']);
+        $panelBrandImage = setPanelBrandImage((int)$manualData['panel_brand']);
+        $withoutSolar = calculateWithoutSolar($proposal);
+        $withSolar = calculateWithSolar($proposal);
+        $incidence = $this->solarIncidenceService->getSolarIncidence($city)->average;
+
+        $pdf = PDF::loadView('proposals.pdf', compact($this->setPdfParams()));
+        return $pdf->stream('Alluz_' . $proposal->id .'.pdf');
     }
 
-    private function setPanels(): array
+    private function fillProposal(array $data, $incidence): Proposal
     {
-        return [
-            1 => ['Jinko', 460],
-            2 => ['Sunket', 550],
-            3 => ['Trina', 400],
-        ];
+        $proposal = new Proposal();
+        $proposal->is_manual = true;
+
+        $proposal->uuid = Uuid::uuid6();
+        $proposal->kit_uuid = Uuid::uuid6();
+
+        $proposal->type = 'normal';
+        $proposal->estimated_generation = $this->proposalService->calculateEstimatedGeneration($data, $incidence)['average'];
+        $proposal->average_consumption = (float)$data['average_consumption'];
+        $proposal->tension_pattern = $this->formatTension($data['tension_pattern']);
+        $proposal->roof_structure = (int)$data['tension_pattern'];
+        $proposal->number_of_panels = (int)$data['panel_quantity'];
+        $proposal->kw_price = stringMoneyToFloat($data['kw_price']);
+        $proposal->components = json_encode(explode(PHP_EOL, $data['components']));
+        $proposal->client_id = (int)$data['client'];
+        $proposal->agent_id = (int)$data['agent'];
+        $proposal->kwp = (float)$data['kwp'];
+        $proposal->manual_data = json_encode([
+            'panel_brand' => $data['panel_brand'],
+            'panel_model' => $data['panel_model'],
+            'panel_power' => $data['panel_power'],
+            'panel_warranty' => $data['panel_warranty'],
+            'inverter_brand' => $data['inverter_brand'],
+            'inverter_model' => $data['inverter_model'],
+            'inverter_power' => $data['inverter_power'],
+            'inverter_warranty' => $data['inverter_warranty'],
+        ]);
+
+        return $proposal;
     }
 
-    private function setInverters(): array
+    private function formatTension($tension): string
     {
-        return [
-            1 => 'Growatt',
-            2 => 'Chint',
-            3 => 'Microinversor Deye',
-        ];
+
+        if ($tension == 'Mono220') {
+            return 'MONO-220';
+        } elseif ($tension == 'Bi220') {
+            return 'BI-220';
+        } elseif ($tension == 'Tri220') {
+            return 'TRI-220';
+        } else {
+            return 'TRI-380';
+        }
     }
 
-    private function setManualParams()
+    private function setManualParams(): array
     {
         return [
             'clients',
@@ -126,8 +173,23 @@ class ProposalController extends Controller
             'tensions',
             'roofs',
             'panels',
-            'inverters'
+            'inverters',
         ];
-
     }
+
+    private function setPdfParams(): array
+    {
+        return [
+            'proposal',
+            'components',
+            'manualData',
+            'inverterImage',
+            'panelBrandImage',
+            'withoutSolar',
+            'withSolar',
+            'incidence'
+        ];
+    }
+
 }
+

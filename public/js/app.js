@@ -5032,6 +5032,16 @@ $(function () {
   });
   $('#phone_number').mask('(00) 0 0000-0000');
   $('#zipcode').mask('00000-000');
+  $('#kw_price').mask('0,00');
+  $('#kwp').mask('##0.00', {
+    reverse: true
+  });
+  $('#cost').mask('000.000.000.000.000,00', {
+    reverse: true
+  });
+  $('#final_value').mask('000.000.000.000.000,00', {
+    reverse: true
+  });
   $('#type').change(function () {
     if ($('#type').val() === 'company') {
       $('#document').mask('00.000.000/0000-00', {

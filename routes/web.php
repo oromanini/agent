@@ -40,6 +40,8 @@ Route::middleware('auth')->group(function() {
 
             Route::get('/propostas/manual/nova', 'manual')->name('manual.create');
             Route::post('/propostas/manual/nova', 'manualStore')->name('manual.store');
+
+            Route::get('propostas/{proposal_id}/pdf', [ProposalController::class, 'generatePdf'])->name('pdf');
         });
     });
 

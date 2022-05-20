@@ -72,7 +72,7 @@
                     <th>Nome</th>
                     <th>Tipo</th>
                     <th>Documento</th>
-                    <th>Apelido/fantasia</th>
+                    <th>Cidade/Estado</th>
                     <th>Email</th>
                     <th>Telefone</th>
                     <th>Agente</th>
@@ -87,7 +87,7 @@
                         <td>{{ $client->name }}</td>
                         <td>{{ $client == 'person' ? 'Pessoa física' : 'Pessoa jurídica' }}</td>
                         <td>{{$client->document}}</td>
-                        <td>{{$client->alias}}</td>
+                        <td>{{$client->addresses->first()->city->name_and_federal_unit}}</td>
                         <td>{{$client->email}}</td>
                         <td>{{$client->phone_number}}</td>
                         <td>{{$client->agent->name}}</td>
