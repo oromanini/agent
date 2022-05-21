@@ -135,7 +135,7 @@ class ProposalController extends Controller
         $generationData = $this->paybackService->setGeterationData($proposal);
 
         $pdf = PDF::loadView('proposals.pdf', compact($this->setPdfParams()));
-        return $pdf->stream('Alluz_' . $proposal->id . '.pdf');
+        return $pdf->stream('#' . $proposal->id . ' '. $proposal->client->name. '.pdf');
     }
 
     private function setManualParams(): array
