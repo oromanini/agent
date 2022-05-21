@@ -4,7 +4,7 @@
     <div class="container is-fluid">
         <div class="box">
             <div class="header">
-                <h2 class="title is-1">Bem-vindo, agente!</h2>
+                <h2 class="title is-1">Bem-vindo, {{auth()->user()->name}}!</h2>
                 <div class="title-bottom-line"></div>
             </div>
             <div class="body">
