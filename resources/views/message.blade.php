@@ -1,4 +1,6 @@
 @if(session()->get('message'))
+
+@dd(session()->get('message'))
     <article class="mymessage message @if(isset(session()->get('message')['0']) && session()->get('message')['0'] == 'success') is-success @else is-error @endif">
         <div class="message-header">
             <p>{{ isset(session()->get('message')['0']) && session()->get('message')['0'] == 'success' ? 'Sucesso :)' : 'Erro :('}}</p>
