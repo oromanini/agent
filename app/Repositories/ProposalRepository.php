@@ -9,7 +9,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 class ProposalRepository implements Filter
 {
     public function filter($data)
-//    : LengthAwarePaginator
+    : LengthAwarePaginator
     {
         return Proposal::query()
             ->where(function ($query) use($data) {
@@ -20,7 +20,7 @@ class ProposalRepository implements Filter
                 filterFinalDate($data, $query);
                 filterPermission($data, $query);
             })
-            ->orderBy('id', 'desc')->get();
-//            ->paginate(10);
+            ->orderBy('id', 'desc')
+            ->paginate(10);
     }
 }

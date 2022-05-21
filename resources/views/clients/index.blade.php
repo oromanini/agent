@@ -73,7 +73,6 @@
                     <th>Tipo</th>
                     <th>Documento</th>
                     <th>Cidade/Estado</th>
-                    <th>Email</th>
                     <th>Telefone</th>
                     <th>Agente</th>
                     <th>Ações</th>
@@ -88,7 +87,6 @@
                         <td>{{ $client == 'person' ? 'Pessoa física' : 'Pessoa jurídica' }}</td>
                         <td>{{$client->document}}</td>
                         <td>{{$client->addresses->first()->city->name_and_federal_unit}}</td>
-                        <td>{{$client->email}}</td>
                         <td>{{$client->phone_number}}</td>
                         <td>{{$client->agent->name}}</td>
                         <td>

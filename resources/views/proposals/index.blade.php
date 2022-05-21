@@ -129,6 +129,7 @@
                 @endforelse
                 </tbody>
             </table>
+            {{ $proposals->links() }}
         </div>
     </div>
 
