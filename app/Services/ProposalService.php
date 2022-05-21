@@ -39,7 +39,7 @@ class ProposalService implements BaseService
         $proposal->kit_uuid = Uuid::uuid6();
 
         $proposal->type = 'normal';
-        $proposal->estimated_generation = $this->proposalService->calculateEstimatedGeneration($data, $incidence)['average'];
+        $proposal->estimated_generation = $this->calculateEstimatedGeneration($data, $incidence)['average'];
         $proposal->average_consumption = (float)$data['average_consumption'];
         $proposal->tension_pattern = formatTension($data['tension_pattern']);
         $proposal->roof_structure = (int)$data['tension_pattern'];
