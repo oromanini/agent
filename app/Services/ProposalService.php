@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Models\Client;
+use App\Models\Proposal;
 use Illuminate\Support\Facades\DB;
+use Ramsey\Uuid\Uuid;
 
 class ProposalService implements BaseService
 {
@@ -28,9 +30,37 @@ class ProposalService implements BaseService
         // TODO: Implement delete() method.
     }
 
-    public function fillObject($data): object
+    public function fillObject(array $data, ?object $incidence = null): object
     {
-        // TODO: Implement fillObject() method.
+        $proposal = new Proposal();
+        $proposal->is_manual = true;
+
+        $proposal->uuid = Uuid::uuid6();
+        $proposal->kit_uuid = Uuid::uuid6();
+
+        $proposal->type = 'normal';
+        $proposal->estimated_generation = $this->proposalService->calculateEstimatedGeneration($data, $incidence)['average'];
+        $proposal->average_consumption = (float)$data['average_consumption'];
+        $proposal->tension_pattern = formatTension($data['tension_pattern']);
+        $proposal->roof_structure = (int)$data['tension_pattern'];
+        $proposal->number_of_panels = (int)$data['panel_quantity'];
+        $proposal->kw_price = stringMoneyToFloat($data['kw_price']);
+        $proposal->components = json_encode(explode(PHP_EOL, $data['components']));
+        $proposal->client_id = (int)$data['client'];
+        $proposal->agent_id = (int)$data['agent'];
+        $proposal->kwp = (float)$data['kwp'];
+        $proposal->manual_data = json_encode([
+            'panel_brand' => $data['panel_brand'],
+            'panel_model' => $data['panel_model'],
+            'panel_power' => $data['panel_power'],
+            'panel_warranty' => $data['panel_warranty'],
+            'inverter_brand' => $data['inverter_brand'],
+            'inverter_model' => $data['inverter_model'],
+            'inverter_power' => $data['inverter_power'],
+            'inverter_warranty' => $data['inverter_warranty'],
+        ]);
+
+        return $proposal;
     }
 
     public function calculateEstimatedGeneration($data, $incidence): array

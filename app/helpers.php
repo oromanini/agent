@@ -138,3 +138,17 @@ function paybackToString(float $float): string
 
     return $whole . ' anos e ' . $decimal * 10 . ' mes(es)';
 }
+
+function formatTension($tension): string
+{
+
+    if ($tension == 'Mono220') {
+        return 'MONO-220';
+    } elseif ($tension == 'Bi220') {
+        return 'BI-220';
+    } elseif ($tension == 'Tri220') {
+        return 'TRI-220';
+    } else {
+        return 'TRI-380';
+    }
+}

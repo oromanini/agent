@@ -97,7 +97,7 @@ class ProposalController extends Controller
         $message = null;
         $city = Client::find($request->all()['client'])->addresses->first()->city;
         $incidence = $this->solarIncidenceService->getSolarIncidence($city);
-        $proposal = $this->fillProposal($request->all(), $incidence);
+        $proposal =$this->proposalService->fillObject($request->all(), $incidence);
 
         try {
 
@@ -136,53 +136,6 @@ class ProposalController extends Controller
 
         $pdf = PDF::loadView('proposals.pdf', compact($this->setPdfParams()));
         return $pdf->stream('Alluz_' . $proposal->id . '.pdf');
-    }
-
-    private function fillProposal(array $data, $incidence): Proposal
-    {
-        $proposal = new Proposal();
-        $proposal->is_manual = true;
-
-        $proposal->uuid = Uuid::uuid6();
-        $proposal->kit_uuid = Uuid::uuid6();
-
-        $proposal->type = 'normal';
-        $proposal->estimated_generation = $this->proposalService->calculateEstimatedGeneration($data, $incidence)['average'];
-        $proposal->average_consumption = (float)$data['average_consumption'];
-        $proposal->tension_pattern = $this->formatTension($data['tension_pattern']);
-        $proposal->roof_structure = (int)$data['tension_pattern'];
-        $proposal->number_of_panels = (int)$data['panel_quantity'];
-        $proposal->kw_price = stringMoneyToFloat($data['kw_price']);
-        $proposal->components = json_encode(explode(PHP_EOL, $data['components']));
-        $proposal->client_id = (int)$data['client'];
-        $proposal->agent_id = (int)$data['agent'];
-        $proposal->kwp = (float)$data['kwp'];
-        $proposal->manual_data = json_encode([
-            'panel_brand' => $data['panel_brand'],
-            'panel_model' => $data['panel_model'],
-            'panel_power' => $data['panel_power'],
-            'panel_warranty' => $data['panel_warranty'],
-            'inverter_brand' => $data['inverter_brand'],
-            'inverter_model' => $data['inverter_model'],
-            'inverter_power' => $data['inverter_power'],
-            'inverter_warranty' => $data['inverter_warranty'],
-        ]);
-
-        return $proposal;
-    }
-
-    private function formatTension($tension): string
-    {
-
-        if ($tension == 'Mono220') {
-            return 'MONO-220';
-        } elseif ($tension == 'Bi220') {
-            return 'BI-220';
-        } elseif ($tension == 'Tri220') {
-            return 'TRI-220';
-        } else {
-            return 'TRI-380';
-        }
     }
 
     private function setManualParams(): array
