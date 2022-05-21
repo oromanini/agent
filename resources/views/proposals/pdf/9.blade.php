@@ -27,7 +27,7 @@
                     <td class="@if($value['balance']>1) is-green @else is-red @endif">0,7%</td>
                     <td class="@if($value['balance']>1) is-green @else is-red @endif">R$ {{floatToMoney($value['kw_value'])}}</td>
                     <td class="@if($value['balance']>1) is-green @else is-red @endif">3%</td>
-                    <td class="@if($value['balance']>1) is-green @else is-red @endif">{{ $proposal->average_consumption }} kWh/mês</td>
+                    <td class="@if($value['balance']>1) is-green @else is-red @endif">{{ ceil($proposal->average_consumption) }} kWh/mês</td>
                     <td class="@if($value['balance']>1) is-green @else is-red @endif">R$ {{ floatToMoney($value['economy']) }}</td>
                     <td id="balance" class="@if($value['balance']>1) is-green @else is-red @endif">R$ {{ floatToMoney($value['balance']) }}</td>
                 </tr>
