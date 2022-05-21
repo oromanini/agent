@@ -90,6 +90,7 @@
                     <th>Cliente</th>
                     <th>Agente</th>
                     <th>Enviado?</th>
+                    <th>Potência</th>
                     <th>Valor final(R$)</th>
                     <th>Ações</th>
                 </tr>
@@ -109,6 +110,7 @@
                             </span>
                             @endif
                         </td>
+                        <td>{{ $proposal->kwp }} kWp</td>
                         <td>R$ {{ floatToMoney($proposal->valueHistory->final_price) }}</td>
                         <td>
                             <a class="button is-primary" href="{{ route('proposal.edit', [$proposal->id]) }}" >
