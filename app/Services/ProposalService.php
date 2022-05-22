@@ -49,6 +49,15 @@ class ProposalService implements BaseService
         $proposal->client_id = (int)$data['client'];
         $proposal->agent_id = (int)$data['agent'];
         $proposal->kwp = (float)$data['kwp'];
+
+        $roofOrientation = [];
+
+        foreach ($data['orientation'] as $orientation => $value) {
+            $roofOrientation[] = $value;
+        }
+
+        $proposal->roof_orientation = json_encode($roofOrientation);
+
         $proposal->manual_data = json_encode([
             'panel_brand' => $data['panel_brand'],
             'panel_model' => $data['panel_model'],

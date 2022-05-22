@@ -31,13 +31,18 @@ class Proposal extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function preInspection(): HasOne
+    public function preInspection(): BelongsTo
     {
-        return $this->hasOne(PreInspection::class);
+        return $this->belongsTo(PreInspection::class);
     }
 
     public function valueHistory(): BelongsTo
     {
         return $this->belongsTo(ProposalValueHistory::class);
+    }
+
+    public function setRoofOrientationsAttribute()
+    {
+        return json_decode($this->roof_structure, true);
     }
 }

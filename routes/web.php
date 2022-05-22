@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PreInspectionController;
 use App\Http\Controllers\ProposalController;
 use App\Http\Controllers\ValueHistoryController;
 use Illuminate\Support\Facades\Auth;
@@ -31,6 +32,7 @@ Route::middleware('auth')->group(function() {
     });
 
     Route::controller(ProposalController::class)->group(function () {
+
         Route::name('proposal.')->group(function () {
 
             Route::get('/propostas', 'index')->name('index');
@@ -48,11 +50,15 @@ Route::middleware('auth')->group(function() {
     });
 
     Route::controller(ValueHistoryController::class)->group(function () {
-        Route::name('valueHistory.')->group(function () {
 
-            Route::post('propostas/{id}/comissao', 'applyCommission')->name('commission');
-            Route::post('propostas/{id}/desconto', 'applyDiscount')->name('discount');
+        Route::name('valueHistory.')->group(function () {
+            Route::post('propostas/{id}/comissao', 'applyCommissionOrDiscount')->name('updatePrice');
         });
+    });
+
+    Route::controller(PreInspectionController::class)->group(function () {
+
+        Route::put('propostas/{id}/previstoria', 'edit')->name('inspection.update');
     });
 
     Route::get('/citiesByState/{id}', [CityController::class, 'citiesByState']);

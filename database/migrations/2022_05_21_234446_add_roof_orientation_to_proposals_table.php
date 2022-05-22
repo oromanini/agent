@@ -14,7 +14,7 @@ class AddRoofOrientationToProposalsTable extends Migration
     public function up()
     {
         Schema::table('proposals', function (Blueprint $table) {
-            $table->enum('roof_orientation', ['north','south','east','west'])->default('north');
+            $table->json('roof_orientation')->default(null);
         });
     }
 

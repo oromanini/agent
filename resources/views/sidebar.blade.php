@@ -52,6 +52,7 @@
         </li>
 
         @if(auth()->user()->is_admin)
+            <hr style="margin-bottom: 2px !important;">
             <li class="side-list">
                 <a href="{{ route('proposal.manual.create') }}">
                 <span class="side-icon">
@@ -61,7 +62,7 @@
                 </a>
             </li>
         @endif
-
+        <hr style="margin-top: 2px !important;">
         <li class="side-list">
             <a href="{{ route('logout') }}">
                 <span class="side-icon">

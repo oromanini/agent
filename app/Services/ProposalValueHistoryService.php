@@ -25,4 +25,12 @@ class ProposalValueHistoryService
         return $valueHistory->id;
     }
 
+    public function update($valueHistory, $data): array
+    {
+        dd($data);
+
+
+        return ['success', 'Alteração de valor aplicada!'];
+    }
+
 }

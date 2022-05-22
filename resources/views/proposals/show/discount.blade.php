@@ -1,4 +1,4 @@
-<form action="{{ route('valueHistory.discount', [$proposal->id]) }}" method="post">
+<form action="{{ route('valueHistory.updatePrice', [$proposal->id]) }}" method="post">
     @csrf
     <div class="columns discount box">
         <div class="column is-2 " style="padding-right: 50px">

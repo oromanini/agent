@@ -97,7 +97,7 @@ class ProposalController extends Controller
         $message = null;
         $city = Client::find($request->all()['client'])->addresses->first()->city;
         $incidence = $this->solarIncidenceService->getSolarIncidence($city);
-        $proposal =$this->proposalService->fillObject($request->all(), $incidence);
+        $proposal = $this->proposalService->fillObject($request->all(), $incidence);
 
         try {
 
