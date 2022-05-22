@@ -5,7 +5,7 @@
             <div class="field">
                 <label class="label">Desconto (Máx. 2%)</label>
                 <div class="control">
-                    <input class="input" type="number" step="0.25" min="0" max="2"
+                    <input class="input" type="number" step="0.25" min="0" max="2" name="discount_percent"
                            value="{{$proposal->valueHistory->discount_percent}}">
                 </div>
             </div>
@@ -13,18 +13,18 @@
         <div class="column is-2">
             <label for=""> Valor do desconto</label>
             <div class="control"><p class="proposalData">
-                    R$ {{ floatToMoney($proposal->valueHistory->final_price * ($proposal->valueHistory->discount_percent / 100)) }}</p>
+                    R$ {{ floatToMoney($valueHistoryData['discountValue']) }}</p>
             </div>
         </div>
         <div class="column is-2">
             <label for="">Antes</label>
-            <div class="control"><p class="proposalData">R$ {{ formatFloat($proposal->valueHistory->final_price) }}</p>
+            <div class="control"><p class="proposalData">R$ {{ floatToMoney($proposal->valueHistory->initial_price) }}</p>
             </div>
         </div>
         <div class="column is-2">
             <label for="">Depois</label>
             <div class="control"><p class="proposalData">
-                    R$ {{ floatToMoney($proposal->valueHistory->final_price - ($proposal->valueHistory->final_price * ($proposal->valueHistory->discount_percent / 100))) }}</p>
+                    R$ {{ floatToMoney($valueHistoryData['calculateBase']) }}</p>
             </div>
         </div>
         <div class="column is-1">

@@ -27,10 +27,46 @@ class ProposalValueHistoryService
 
     public function update($valueHistory, $data): array
     {
-        dd($data);
+        $initialPrice = $valueHistory->initial_price;
+        $fullCommissionPercent = (float)env('COMMISSION_PERCENT') / 100;
 
+        if (isset($data['discount_percent'])){
+
+            $valueHistory->discount_percent = (float)$data['discount_percent'];
+
+            $discount = $valueHistory->initial_price * ((float)$data['discount_percent'] / 100);
+
+            $commissionPercent = $valueHistory->commission_percent / 100;
+
+            $calculationBasis = $initialPrice - $discount;
+
+            $fullCommissionValue = $calculationBasis * $fullCommissionPercent;
+
+            $commissionDiscount = $fullCommissionValue - ($calculationBasis * $commissionPercent);
+
+            $valueHistory->final_price = round($initialPrice - $discount - $commissionDiscount, 2);
+        }
+
+        if (isset($data['commission_percent'])){
+
+            $valueHistory->commission_percent = (float)$data['commission_percent'];
+            $commissionPercent = (float)$data['commission_percent'] / 100;
+            $discount = $valueHistory->initial_price * ($valueHistory->discount_percent / 100);
+
+            $calculationBasis = $initialPrice - $discount;
+            $fullCommissionValue = $calculationBasis * $fullCommissionPercent;
+            $newCommissionValue = $calculationBasis * $commissionPercent;
+            $commissionDiscount = $fullCommissionValue - $newCommissionValue;
+
+            $valueHistory->final_price = round($initialPrice - $discount - $commissionDiscount, 2);
+        }
+
+        DB::transaction(function () use ($valueHistory) {
+            $valueHistory->update();
+        });
 
         return ['success', 'Alteração de valor aplicada!'];
     }
+
 
 }

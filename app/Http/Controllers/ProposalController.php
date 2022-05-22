@@ -81,8 +81,9 @@ class ProposalController extends Controller
     public function edit($id)
     {
         $proposal = Proposal::find($id);
+        $valueHistoryData = $this->setValueHistoryData($proposal);
 
-        return view('proposals.show', compact('proposal'));
+        return view('proposals.show', compact('proposal', 'valueHistoryData'));
     }
 
     public function approve($id)
@@ -163,6 +164,28 @@ class ProposalController extends Controller
             'incidence',
             'payback',
             'generationData',
+        ];
+    }
+
+    private function setValueHistoryData($proposal)
+    {
+        $valueHistory = $proposal->valueHistory;
+
+        $discountPercent = $valueHistory->discount_percent / 100;
+        $discountValue = $valueHistory->initial_price * $discountPercent;
+        $calculateBase = $valueHistory->initial_price - $discountValue;
+
+        $initialCommission = $calculateBase * ((float)env('COMMISSION_PERCENT') / 100);
+        $commissionPercent = $valueHistory->commission_percent / 100;
+        $commissionValue = $calculateBase * $commissionPercent;
+        $commissionDiscountValue = $initialCommission - $commissionValue;
+
+        return [
+            'discountValue' => $discountValue,
+            'calculateBase' => $calculateBase,
+            'initialCommission' => $initialCommission,
+            'finalCommission' => $commissionValue,
+            'commissionDiscountValue' => $commissionDiscountValue
         ];
     }
 
