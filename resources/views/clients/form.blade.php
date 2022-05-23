@@ -41,7 +41,7 @@
                                 <div class="control">
                                     <input name="name" id="name"
                                            class="input is-rounded @error('name') is-danger @enderror" type="text"
-                                           placeholder="Digite o nome" required value="{{ isset($client) ? $client->name : '' }}">
+                                           placeholder="Digite o nome"  value="{{ isset($client) ? $client->name : '' }}">
                                     @error('name')<span class="error-message">{{ $message }}</span>@enderror
 
                                 </div>
@@ -53,7 +53,7 @@
                                 <div class="control">
                                     <input name="document" id="document"
                                            class="input is-rounded @error('document') is-danger @enderror" type="text"
-                                           placeholder="Digite o documento" required  value="{{ isset($client) ? $client->document : '' }}">
+                                           placeholder="Digite o documento"   value="{{ isset($client) ? $client->document : '' }}">
                                     @error('document')<span class="error-message">{{ $message }}</span>@enderror
 
                                 </div>
@@ -89,7 +89,7 @@
                                     <input name="phone_number" id="phone_number"
                                            class="input is-rounded @error('phone_number') is-danger @enderror"
                                            type="text"
-                                           placeholder="Digite o telefone/whatsapp" required  value="{{ isset($client) ? $client->phone  : '' }}">
+                                           placeholder="Digite o telefone/whatsapp"   value="{{ isset($client) ? $client->phone  : '' }}">
                                     @error('phone_number')<span class="error-message">{{ $message }}</span>@enderror
 
                                 </div>
@@ -112,7 +112,7 @@
                                 <div class="control">
                                     <input name="zipcode" id="zipcode"
                                            class="input is-rounded @error('zipcode') is-danger @enderror" type="text"
-                                           placeholder="Digite o CEP" required  value="{{ isset($client) ? $address->zipcode : '' }}">
+                                           placeholder="Digite o CEP"   value="{{ isset($client) ? $address->zipcode : '' }}">
                                     @error('zipcode')<span class="error-message">{{ $message }}</span>@enderror
 
                                 </div>
@@ -124,7 +124,7 @@
                                 <div class="control">
                                     <input name="street" id="street"
                                            class="input is-rounded @error('street') is-danger @enderror" type="text"
-                                           placeholder="Digite a rua" required value="{{ isset($client) ? $address->street : '' }}">
+                                           placeholder="Digite a rua"  value="{{ isset($client) ? $address->street : '' }}">
                                     @error('street')<span class="error-message">{{ $message }}</span>@enderror
 
                                 </div>
@@ -137,7 +137,7 @@
                                     <input name="address_number" id="address_number"
                                            class="input is-rounded @error('address_number') is-danger @enderror"
                                            type="text"  value="{{ isset($client) ? $address->number : '' }}"
-                                           placeholder="Digite o número" required>
+                                           placeholder="Digite o número" >
                                     @error('address_number')<span class="error-message">{{ $message }}</span>@enderror
 
                                 </div>
@@ -161,7 +161,7 @@
                                     <input name="neighborhood" id="neighborhood"
                                            class="input is-rounded @error('neighborhood') is-danger @enderror"
                                            type="text"  value="{{ isset($client) ? $address->neighborhood : '' }}"
-                                           placeholder="Digite o bairro" required>
+                                           placeholder="Digite o bairro" >
                                     @error('neighborhood')<span class="error-message">{{ $message }}</span>@enderror
 
                                 </div>
@@ -172,7 +172,7 @@
                                 <label for="state" class="label">Estado*</label>
                                 <div
                                     class="select is-multiline is-fullwidth is-rounded @error('state') is-danger @enderror">
-                                    <select id="state" name="state" required>
+                                    <select id="state" name="state" >
                                         @foreach($states as $state)
                                             <option @if(isset($client) && $address->city->state->id == $state->id) selected @endif value="{{ $state->id }}">{{ $state->name }}</option>
                                         @endforeach
@@ -187,11 +187,10 @@
                                 <label for="city" class="label">Cidade*</label>
                                 <div
                                     class="select is-multiline is-fullwidth is-rounded @error('city') is-danger @enderror">
-                                    <select id="city" name="city" required>
+                                    <select id="city" name="city" >
                                         <option selected>Selecione...</option>
                                     </select>
                                     @error('city')<span class="error-message">{{ $message }}</span>@enderror
-
                                 </div>
                             </div>
                         </div>
