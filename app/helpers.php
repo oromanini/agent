@@ -3,6 +3,8 @@
 use App\Enums\InverterBrands;
 use App\Enums\PanelBrands;
 use App\Enums\RoofStructure;
+use App\Models\City;
+use App\Models\User;
 
 function stringMoneyToFloat(string $money): float
 {
@@ -156,4 +158,19 @@ function formatTension($tension): string
 function jsonToArray($json)
 {
     return json_decode($json, true);
+}
+
+function getNameAndFederalUnit(int $cityId)
+{
+    return City::find($cityId)->name_and_federal_unit;
+}
+
+function getAscendantName(int $ascendantId): string
+{
+
+    if ($ascendantId != 0) {
+        return User::find($ascendantId)->name;
+    }
+
+    return 'Sem ascendente';
 }

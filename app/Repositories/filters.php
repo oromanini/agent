@@ -16,6 +16,20 @@ function filterDocument($data, $query)
     }
 }
 
+function filterCnpj($data, $query)
+{
+    if (!empty($data['cnpj_filter'])) {
+        return $query->where('cnpj', 'like', '%' . $data['cnpj_filter'] . '%');
+    }
+}
+
+function filterPhoneNumber($data, $query)
+{
+    if (!empty($data['phone_number_filter'])) {
+        return $query->where('phone_number', 'like', '%' . $data['phone_number_filter'] . '%');
+    }
+}
+
 function filterAgent($data, $query)
 {
     if (!empty($data['agent_filter']) && $data['agent_filter'] != 0) {
