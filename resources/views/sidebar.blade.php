@@ -61,6 +61,14 @@
                     <span class="side-title">Proposta Manual</span>
                 </a>
             </li>
+            <li class="side-list">
+                <a href="{{ route('user.index') }}">
+                <span class="side-icon">
+                    <ion-icon name="briefcase-outline"></ion-icon>
+                </span>
+                    <span class="side-title">Agentes</span>
+                </a>
+            </li>
         @endif
         <hr style="margin-top: 2px !important;">
         <li class="side-list">
