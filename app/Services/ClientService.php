@@ -17,7 +17,7 @@ class ClientService implements BaseService
      */
     public function store($data): array
     {
-        $client = $this->fillObject($data);
+        $client = $this->fillObject($data, null);
 
         try {
             DB::transaction(function () use ($client) {
@@ -48,7 +48,7 @@ class ClientService implements BaseService
     /**
      * @throws \Exception
      */
-    public function fillObject($data): object
+    public function fillObject($data, ?object $incidence = null): object
     {
         $client = new Client();
 

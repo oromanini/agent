@@ -6,18 +6,19 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PreInspectionController;
 use App\Http\Controllers\ProposalController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\ValueHistoryController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 
-Route::middleware('auth')->group(function() {
+Route::middleware('auth')->group(function () {
 
     Route::get('/', function () {
         return view('home');
     })->name('home');
 
-    Route::get('/logout', [AuthenticatedSessionController::class,'destroy'])->name('logout');
+    Route::get('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
     Route::controller(ClientController::class)->group(function () {
 
@@ -45,7 +46,7 @@ Route::middleware('auth')->group(function() {
             Route::post('/propostas/manual/nova', 'manualStore')->name('manual.store');
 
             Route::get('propostas/{proposal_id}/pdf', 'generatePdf')->name('pdf');
-            Route::get('propostas/{proposal_id}/aprovacao','approve')->name('approve');
+            Route::get('propostas/{proposal_id}/aprovacao', 'approve')->name('approve');
         });
     });
 
@@ -61,8 +62,21 @@ Route::middleware('auth')->group(function() {
         Route::put('propostas/{id}/previstoria', 'edit')->name('inspection.update');
     });
 
+    Route::controller(UserController::class)->group(function () {
+
+        Route::name('user.')->group(function () {
+
+            Route::get('usuarios/novo', 'create')->name('create');
+            Route::get('usuarios/', 'index')->name('index');
+            Route::post('usuarios/novo', 'store')->name('store');
+            Route::get('usuarios/{id}', 'edit')->name('edit');
+            Route::put('usuarios/{id}', 'edit')->name('update');
+            Route::post('usuarios/{id}/inativar', 'inactive')->name('inactive');
+        });
+    });
+
     Route::get('/citiesByState/{id}', [CityController::class, 'citiesByState']);
 
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
