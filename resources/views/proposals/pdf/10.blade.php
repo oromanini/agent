@@ -4,8 +4,8 @@
         <br>CNPJ: 34.782.317/0001-49
     </div>
     <div id="clientSignature" style="color: #765500">
-        João da Silva de Oliveira
-        <br>CPF: 092.390.315-44
+        {{ $proposal->client->name }}
+        <br>{{ $proposal->client->document }}
     </div>
 </div>
 
