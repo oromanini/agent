@@ -5,7 +5,7 @@
     </div>
     <div id="clientSignature" style="color: #765500">
         {{ $proposal->client->name }}
-        <br>{{ $proposal->client->document }}
+        <br>CPF/CNPJ: {{ $proposal->client->document }}
     </div>
 </div>
 
