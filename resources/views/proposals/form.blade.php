@@ -3,105 +3,392 @@
 @section('content')
     <div class="container is-fluid overflow-auto">
         <div class="box overflow-auto">
+
             <div class="columns mt-2 ml-1">
                 <h3 class="title"><img src="/img/logo/alluz-icon.png" width="30" alt=".."> Nova Proposta</h3>
             </div>
             <div class="columns">
                 <div class="title-bottom-line" style="margin-left: 50px"></div>
             </div>
-            <div class="columns">
-                <div class="column is-3">
-                    <div class="field">
-                        <label for="client" class="label">Cliente*</label>
-                        <div
-                            class="select is-multiline is-fullwidth is-rounded @error('Client') is-danger @enderror">
-                            <select id="client" name="client">
-                                @forelse($clients as $client)
-                                    <option value="{{ $client->id }}">{{$client->name}}</option>
-                                @empty
-                                    <option value="">Não há clientes cadastrados</option>
-                                @endforelse
-                            </select>
-                        </div>
-                        @error('type')<span class="error-message">{{ $message }}</span>@enderror
-                    </div>
-                </div>
-                <div class="column is-1">
-                    <br>
-                    <a class="button is-info" href="{{ route('client.create') }}"
-                       style="padding: 2px 2px 2px 10px; margin-top: 5px">
-                        <ion-icon name="person-add-outline"></ion-icon>
-                    </a>
-                </div>
-                <div class="column is-2">
-                    <div class="field">
-                        <label for="average_consumption" class="label">Média de consumo &nbsp;
-                            <ion-icon class="info-icon" name="information-circle-outline"></ion-icon>
-                        </label>
-                        <div class="control">
-                            <input name="average_consumption" id="average_consumption"
-                                   class="input is-rounded @error('average_consumption') is-danger @enderror"
-                                   type="number"
-                                   placeholder="Digite o consumo" required>
-                            @error('average_consumption')<span class="error-message">{{ $message }}</span>@enderror
+            <form action="{{ route('proposal.store') }}" method="post">
+                @csrf
+                <div class="columns">
+                    <div class="column is-3">
+                        <div class="field">
+                            <label for="client" class="label">Cliente*</label>
+                            <div
+                                class="select is-multiline is-fullwidth is-rounded @error('client') is-danger @enderror">
+                                <select id="client" name="client">
+                                    @forelse($clients as $client)
+                                        <option value="{{ $client->id }}">{{$client->name}}</option>
+                                    @empty
+                                        <option value="">Não há clientes cadastrados</option>
+                                    @endforelse
+                                </select>
+                            </div>
+                            @error('client')<span class="error-message">{{ $message }}</span>@enderror
                         </div>
                     </div>
-                </div>
-                <div class="column is-2">
-                    <div class="field">
-                        <label for="kw_price" class="label">Valor do kW &nbsp;
-                            <ion-icon class="info-icon" name="information-circle-outline"></ion-icon>
-                        </label>
-                        <div class="control">
-                            <input name="kw_price" id="kw_price"
-                                   class="input is-rounded @error('kw_price') is-danger @enderror" type="text"
-                                   placeholder="Digite o valor do kW" required>
-                            @error('kw_price')<span class="error-message">{{ $message }}</span>@enderror
+                    <div class="column is-1">
+                        <br>
+                        <a class="button is-info" href="{{ route('client.create') }}"
+                           style="padding: 2px 2px 2px 10px; margin-top: 5px">
+                            <ion-icon name="person-add-outline"></ion-icon>
+                        </a>
+                    </div>
+                    <div class="column is-2">
+                        <div class="field">
+                            <label for="average_consumption" class="label">Média de consumo &nbsp;
+                                <ion-icon class="info-icon" name="information-circle-outline"></ion-icon>
+                            </label>
+                            <div class="control">
+                                <input name="average_consumption" id="average_consumption"
+                                       class="input is-rounded @error('average_consumption') is-danger @enderror"
+                                       type="number"
+                                       placeholder="Digite o consumo">
+                                @error('average_consumption')<span class="error-message">{{ $message }}</span>@enderror
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-2">
+                        <div class="field">
+                            <label for="kw_price" class="label">Valor do kW &nbsp;
+                                <ion-icon class="info-icon" name="information-circle-outline"></ion-icon>
+                            </label>
+                            <div class="control">
+                                <input name="kw_price" id="kw_price"
+                                       class="input is-rounded @error('kw_price') is-danger @enderror" type="text"
+                                       placeholder="Digite o valor do kW">
+                                @error('kw_price')<span class="error-message">{{ $message }}</span>@enderror
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-3">
+                        <div class="field">
+                            <label for="tension_pattern" class="label">Padrão de tensão
+                                <ion-icon class="info-icon" name="information-circle-outline"></ion-icon>
+                            </label>
+                            <div
+                                class="select is-multiline is-fullwidth is-rounded @error('tension_pattern') is-danger @enderror">
+                                <select id="tension_pattern" name="tension_pattern">
+                                    @foreach($tensions as $key => $value)
+                                        <option value="{{ $key }}">{{ $value }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            @error('tension_pattern')<span class="error-message">{{ $message }}</span>@enderror
                         </div>
                     </div>
                 </div>
-                <div class="column is-3">
-                    <div class="field">
-                        <label for="tension_pattern" class="label">Padrão de tensão
-                            <ion-icon class="info-icon" name="information-circle-outline"></ion-icon>
-                        </label>
-                        <div
-                            class="select is-multiline is-fullwidth is-rounded @error('tension_pattern') is-danger @enderror">
-                            <select id="tension_pattern" name="tension_pattern">
-                                @foreach($tensions as $key => $value)
-                                    <option value="{{ $value }}">{{ $key }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        @error('tension_pattern')<span class="error-message">{{ $message }}</span>@enderror
-                    </div>
-                </div>
-            </div>
 
-            <div class="columns" style="margin-top: 50px">
-                <label for="roof_structure" class="label">Selecione o telhado</label>
-            </div>
-            <div class="columns">
-                @foreach($roofs as $roof)
-                    <div class="column">
-                        <label>
-                            <input type="radio" name="roof_structure" value="{{$roof['id']}}" class="radio-image">
-                            <img src="{{ $roof['image'] }}" width="200" class="roof-img">
-                        </label>
+                <div class="columns">
+                    <div class="column is-3">
+                        <div class="field">
+                            <label for="installation_address" class="label">Endereço de instalação
+                                <ion-icon class="info-icon" name="information-circle-outline"></ion-icon>
+                            </label>
+                            <div
+                                class="select is-multiline is-fullwidth is-rounded @error('installation_address') is-danger @enderror">
+                                <select id="installation_address" name="installation_address"></select>
+                            </div>
+                            @error('installation_address')<span class="error-message">{{ $message }}</span>@enderror
+                        </div>
                     </div>
-                @endforeach
-            </div>
-            <hr>
-            <div class="column is-flex is-justify-content-center">
-                <button class="button is-medium is-primary">
-                    <ion-icon name="sunny-outline"></ion-icon>&nbsp;Buscar Kits</button>
-            </div>
-            <hr>
+                    <div class="column is-3">
+                        <div class="field">
+                            <label for="installation_uc" class="label">U.C de instalação
+                                <ion-icon class="info-icon" name="information-circle-outline"></ion-icon>
+                            </label>
+                            <div
+                                class="select is-multiline is-fullwidth is-rounded @error('installation_uc') is-danger @enderror">
+                                <select id="installation_uc" name="installation_uc">
+                                    <option value="">Selecione...</option>
+                                </select>
+                            </div>
+                            @error('installation_uc')<span class="error-message">{{ $message }}</span>@enderror
+                        </div>
+                    </div>
+                </div>
+
+                <div class="columns" style="margin-top: 50px">
+                    <label for="roof_structure" class="label">Selecione o telhado</label>
+                </div>
+                <div class="columns">
+                    @foreach($roofs as $roof)
+                        <div class="column">
+                            <label>
+                                <input type="radio" name="roof_structure" value="{{$roof['id']}}"
+                                       class="radio-image roof-structure">
+                                <img src="{{ $roof['image'] }}" width="200" class="roof-img">
+                            </label>
+                        </div>
+                    @endforeach
+                </div>
+                <div class="columns is-flex is-justify-content-center" style="margin-top: 15px; margin-bottom: 70px">
+                    <div class="column is-6 is-flex is-justify-content-space-around is-align-items-center is-warning"
+                         style="border: 2px solid #f2a714; border-radius: 100px;">
+                        <label class="checkbox">
+                            <input name="orientation[norte]" type="checkbox" value="norte" checked>
+                            Norte
+                        </label>
+                        <label class="checkbox">
+                            <input name="orientation[leste]" value="leste" type="checkbox">
+                            Leste
+                        </label>
+                        <label class="checkbox">
+                            <input name="orientation[oeste]" value="oeste" type="checkbox">
+                            Oeste
+                        </label>
+                        <label class="checkbox">
+                            <input name="orientation[sul]" value="sul" type="checkbox">
+                            Sul
+                        </label>
+
+                    </div>
+                </div>
+                <hr>
+                <div class="column is-flex is-justify-content-center">
+                    <span class="button is-medium is-info is-rounded" id="kitSearchSubmit">
+                        <ion-icon name="sunny-outline"></ion-icon>&nbsp;Buscar Kits
+                    </span>
+                </div>
+                <hr>
+
+                {{--        KITS--}}
+                <div id="kits" class="columns is-flex is-justify-content-center is-flex-wrap-wrap"
+                     style="padding: 25px 10px"></div>
+                <hr>
+                <div id="generateProposalButton" class="columns is-flex is-justify-content-center"
+                     style="padding: 25px 0"></div>
+            </form>
         </div>
 
-{{--        KITS--}}
-
-        <div id="kits" class="columns"></div>
-
     </div>
+
+    {{--    KIT SEARCH--}}
+
+    <script>
+
+        $(function () {
+
+            let consumption = null;
+            let clientId = $('select[name=client] option').filter(':selected').val();
+
+
+            $('#average_consumption').on('change', function () {
+                consumption = $('#average_consumption').val();
+            })
+
+            setAddresses(clientId)
+            setUcs(clientId)
+            disableSubmitIfConsumptionIsNull()
+
+            $('#client').change(function () {
+                clientId = $('select[name=client] option').filter(':selected').val();
+                setAddresses(clientId)
+                setUcs(clientId)
+            });
+
+            $('#average_consumption').change(function () {
+                disableSubmitIfConsumptionIsNull()
+            });
+
+            function setAddresses(clientId) {
+
+                let url = '/addressesFromClientId/';
+
+                $.ajax({
+                    url: url + clientId,
+                    type: 'get',
+                    beforeSend: function () {
+                        console.log("ENVIANDO...");
+                    }
+                })
+                    .done(function (msg) {
+                        $('#installation_address').empty();
+
+                        $.each(msg, function (i, item) {
+                            $('#installation_address').append($('<option>', {
+                                value: item.id,
+                                text: item.street + ' ' + item.number
+                            }));
+                        });
+                    })
+                    .fail(function (jqXHR, textStatus, msg) {
+                        console.log(msg);
+                    });
+            }
+
+            function setUcs(clientId) {
+
+                let url = '/ucsFromClientId/';
+
+                $.ajax({
+                    url: url + clientId,
+                    type: 'get',
+                    beforeSend: function () {
+                        console.log("ENVIANDO...");
+                    }
+                })
+                    .done(function (msg) {
+                        $('#installation_uc').empty();
+
+                        $.each(msg, function (i, item) {
+                            $('#installation_uc').append($('<option>', {
+                                value: item.id,
+                                text: item.number
+                            }));
+                        });
+                    })
+                    .fail(function (jqXHR, textStatus, msg) {
+                        console.log(msg);
+                    });
+            }
+
+            function setIncidence() {
+
+                let addressId = $('select[name=installation_address] option').filter(':selected').val();
+                let url = '/incidenceFromAddressId/';
+                let incidence = 1;
+
+                $.ajax({
+                    url: url + addressId,
+                    type: 'get',
+                    async: false,
+                    beforeSend: function () {
+                        console.log("ENVIANDO...");
+                    }
+                })
+                    .done(function (msg) {
+                        incidence = msg;
+                    })
+                    .fail(function (jqXHR, textStatus, msg) {
+                        console.log(msg);
+                    });
+
+                return incidence;
+            }
+
+            function disableSubmitIfConsumptionIsNull() {
+
+                if (!$('#average_consumption').val() && !$('input:radio[name="roof_structure"]').is(':checked') && !$('#orientation input:checked').length > 0) {
+                    $('#kitSearchSubmit').attr("disabled", "disabled");
+                } else {
+                    $('#kitSearchSubmit').removeAttr('disabled');
+                }
+            }
+
+            function getPanelImage(brand) {
+
+                let panelImage = null;
+
+                if (brand == 'Jinko') {
+                    panelImage = '/img/panel_brands/jinko.png'
+                }
+
+                return panelImage
+            }
+
+            function getInverterImage(brand) {
+
+                let inverterImage = null;
+
+                if (brand == 'Growatt') {
+                    inverterImage = '/img/inverter_brands/growatt.png'
+                }
+
+                return inverterImage
+            }
+
+            $('#kitSearchSubmit').on('click', function () {
+
+                let consumption = $('#average_consumption').val();
+                let incidence = setIncidence()
+
+                let kwp = parseFloat(consumption) / 30 / (incidence - {{ (float)env('GENERATION_LOST') }});
+                let roof = $('.roof-structure').val()
+                let tension = $('select[name=tension_pattern] option').filter(':selected').val()
+
+
+                console.log(kwp, roof, tension)
+
+                $.ajax({
+                    url: "/kitSearch/" + kwp.toFixed(2) + '/' + roof + '/' + tension,
+                    type: 'get',
+                    beforeSend: function () {
+                        console.log("ENVIANDO...");
+                    }
+                })
+                    .done(function (msg) {
+                        console.log(msg);
+
+                        $('#kits').empty();
+                        $('#generateProposalButton').empty();
+
+                        $.each(msg, function (i, item) {
+
+                            let technicalDescription = item[0]['technical_description']
+                            let panelSpecs = technicalDescription['panel_specs'];
+                            let panelImage = getPanelImage(panelSpecs['panel_brand'])
+                            let inverterImage = getInverterImage(technicalDescription['inverter_brand'])
+
+                            $('#kits').append(
+                                '<div class="column is-3">' +
+                                '<label>' +
+                                '<input type="radio" name="kit_id" value="' + item[0]['code'] + '">' +
+                                '<div id="all" class="my-box-shadow">' +
+                                '<div class="is-flex is-justify-content-center">' +
+                                '<img src="' + inverterImage + '" alt="" width="150">' +
+                                '</div>' +
+                                '<div class="is-flex is-justify-content-center">' +
+                                '<img src="' + panelImage + '" alt="" width="200">' +
+                                '</div>' +
+                                '<div style="display:flex; justify-content: center; text-align: center; font-size: 18pt; color: #6b7280; font-weight: 900; margin: 20px 0px">' +
+                                item['sum'].kwp + ' kWp' +
+                                '</div>' +
+                                '<hr>' +
+                                '<div style="text-align: center">' +
+                                '<strong>Painel: </strong>' + panelSpecs['panel_brand'] + ' ' + panelSpecs['panel_power'] + 'W ' + panelSpecs['panel_type'] +
+                                '</div>' +
+                                '<div style="text-align: center">' +
+                                '<strong>Eficiência: </strong>' + panelSpecs['panel_efficiency'] + '%' +
+                                '</div>' +
+                                '<hr>' +
+                                '<div style="text-align: center">' +
+                                '<strong>Inversor: </strong>' + technicalDescription['inverter_brand'] + ' ' + technicalDescription['inverter_power'] + 'KW' +
+                                '</div>' +
+                                '<div style="text-align: center">' +
+                                '<strong>Modelo: </strong>' + technicalDescription['inverter_model'] +
+                                '</div>' +
+                                '<div style="text-align: center">' +
+                                '<strong>Tensão: </strong>' + technicalDescription['inverter_tension'] +
+                                '</div>' +
+                                '<hr>' +
+                                '<div style="color: #6BC6A7; font-size: 18pt; text-align: center; font-weight: bold">' +
+                                item[0].price.toLocaleString('pt-BR', {
+                                    style: 'currency',
+                                    currency: 'BRL',
+                                }) +
+                                '</div>' +
+                                '</div>' +
+                                '</label>' +
+                                '</div>'
+                            );
+                        });
+
+                        $('#generateProposalButton').append(
+                            '<div class="columns"><button type="submit" class="button is-primary is-large">Gerar Proposta</button></div>'
+                        );
+                    })
+                    .fail(function (jqXHR, textStatus, msg) {
+                        console.log(msg);
+                    });
+            });
+        });
+
+    </script>
+
 @endsection
+
+
+

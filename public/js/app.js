@@ -5044,6 +5044,12 @@ $(function () {
   $('#final_value').mask('000.000.000.000.000,00', {
     reverse: true
   });
+  $('#cpf').mask('000.000.000-00', {
+    reverse: true
+  });
+  $('#cnpj').mask('00.000.000/0000-00', {
+    reverse: true
+  });
   $('#type').change(function () {
     if ($('#type').val() === 'company') {
       $('#document').mask('00.000.000/0000-00', {
@@ -5104,6 +5110,9 @@ $(function () {
     contentColumn.removeClass('is-10');
     sidebarColumn.addClass('is-1').css('transition', 'width 0.5s');
     contentColumn.addClass('is-11').css('transition', 'width 0.5s');
+  });
+  $('.side-logo-img').on('click', function () {
+    window.open('/', '_self');
   });
 });
 

@@ -293,7 +293,7 @@
                             <div class="control">
                                 <input name="inverter_power" id="inverter_power"
                                        class="input is-rounded @error('inverter_power') is-danger @enderror"
-                                       type="number"
+                                       type="text"
                                        placeholder="3" required>
                                 @error('inverter_power')<span class="error-message">{{ $message }}</span>@enderror
                             </div>

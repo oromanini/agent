@@ -10472,6 +10472,10 @@ a.has-text-danger-dark:hover, a.has-text-danger-dark:focus {
   align-items: center;
 }
 
+.side-logo:hover {
+  cursor: pointer;
+}
+
 .side-logo-img {
   margin-top: 20px;
 }
@@ -10618,9 +10622,20 @@ a ion-icon {
   height: 0;
 }
 
+input[name=kit_id] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
 /* IMAGE STYLES */
 .radio-image + img {
   cursor: pointer;
+}
+
+input[name=kit_id]:checked + #all {
+  outline: 5px solid #f2a714;
 }
 
 /* CHECKED STYLES */
@@ -10646,6 +10661,19 @@ a ion-icon {
 
 .discount {
   background-color: #eaeaea !important;
+}
+
+.my-box-shadow {
+  box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1), 0 0px 0 1px rgba(10, 10, 10, 0.1);
+  margin: 0 10px;
+  cursor: pointer;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.my-box-shadow:hover {
+  transition: width 0.2s;
+  border: 4px solid #f2a714;
 }
 
 * {

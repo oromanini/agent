@@ -6,6 +6,7 @@ use App\Enums\InverterBrands;
 use App\Enums\PanelBrands;
 use App\Enums\RoofStructure;
 use App\Enums\TensionPattern;
+use App\Http\Requests\ProposalRequest;
 use App\Models\Client;
 use App\Models\Proposal;
 use App\Models\State;
@@ -56,14 +57,26 @@ class ProposalController extends Controller
 
     public function create()
     {
-        $clients = auth()->user()->is_admin
-            ? Client::all()
-            : Client::where('agent_id', auth()->user()->id)->get();
+        $clients = null;
 
-        $tensions = TensionPattern::asSelectArray();
+        if (auth()->user()->is_admin) {
+            $clients = Client::query()->orderBy('id', 'desc')->get();
+        } else {
+            $clients = Client::query()->where('agent_id', auth()->user()->id)->orderBy('id', 'desc')->get();
+        }
+
+        $tensions = $this->setTensions();
         $roofs = setRoofs();
 
         return view('proposals.form', compact('clients', 'tensions', 'roofs'));
+    }
+
+    public function store(ProposalRequest $request): RedirectResponse
+    {
+        $request->validated();
+        $proposal = $this->proposalService->store($request->all());
+
+        return redirect()->route('proposal.edit', [$proposal->id]);
     }
 
     public function manual()
@@ -186,6 +199,16 @@ class ProposalController extends Controller
             'initialCommission' => $initialCommission,
             'finalCommission' => $commissionValue,
             'commissionDiscountValue' => $commissionDiscountValue
+        ];
+    }
+
+    private function setTensions(): array
+    {
+        return [
+            'MONOFASICO-220V' => 'Monofásico 220V',
+            'BIFASICO-220V' => 'Bifásico 220V',
+            'TRIFASICO-220V' => 'Trifásico 220V',
+            'TRIFASICO-380V' => 'Trifásico 220V',
         ];
     }
 

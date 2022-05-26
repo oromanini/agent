@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\KitSearchController;
 use App\Http\Controllers\PreInspectionController;
 use App\Http\Controllers\ProposalController;
 use App\Http\Controllers\UserController;
@@ -76,6 +77,10 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::get('/citiesByState/{id}', [CityController::class, 'citiesByState']);
+    Route::get('/addressesFromClientId/{id}', [ClientController::class, 'addressesFromClientId']);
+    Route::get('/ucsFromClientId/{id}', [ClientController::class, 'ucsFromClientId']);
+    Route::get('/incidenceFromAddressId/{id}', [ClientController::class, 'incidenceFromAddress']);
+    Route::get('/kitSearch/{kwp}/{roof}/{tension}', [KitSearchController::class, 'kitsSearch']);
 
 });
 

@@ -7,27 +7,19 @@ use App\Models\Proposal;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\Uuid;
 
-class ProposalService implements BaseService
+class ProposalService
 {
 
-    public function store($data): array
+    public function store($data): Proposal
     {
-        $proposal = $data;
+        $proposal = new Proposal();
+        $proposal->uuid = Uuid::uuid6();
 
-        DB::transaction(function () use ($proposal){
+
+        DB::transaction(function () use ($proposal) {
             $proposal->save();
         });
-        return ['success', 'Proposta cadastrada com sucesso!'];
-    }
-
-    public function update($id, $data): array
-    {
-        // TODO: Implement update() method.
-    }
-
-    public function delete($id): array
-    {
-        // TODO: Implement delete() method.
+        return $proposal;
     }
 
     public function fillObject(array $data, ?object $incidence = null): object

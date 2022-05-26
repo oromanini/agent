@@ -30,6 +30,15 @@ services:
       networks:
           - alluz-network
 
+  warehouse:
+      volumes:
+          - ../warehouse:/var/www/html
+      build: ../site-alluz
+      ports:
+          - "8002:80"
+      networks:
+          - alluz-network
+
 networks:
   alluz-network:
     driver: bridge

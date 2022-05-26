@@ -31,4 +31,8 @@ $(function(){
 
     });
 
+    $('.side-logo-img').on('click', function() {
+        window.open ('/', '_self')
+    });
+
 });
