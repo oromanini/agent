@@ -3,8 +3,13 @@
 use App\Enums\InverterBrands;
 use App\Enums\PanelBrands;
 use App\Enums\RoofStructure;
+use App\Http\Controllers\KitSearchController;
 use App\Models\City;
 use App\Models\User;
+use App\Services\KitSearchService;
+use App\Services\pricingService;
+use App\Services\ProposalService;
+use Illuminate\Support\Facades\Http;
 
 function stringMoneyToFloat(string $money): float
 {
@@ -173,4 +178,31 @@ function getAscendantName(int $ascendantId): string
     }
 
     return 'Sem ascendente';
+}
+
+function kitByUuid($kit_uuid) {
+
+    $kitService = new KitSearchService();
+
+    return $kitService->getKitByUuid($kit_uuid);
+}
+
+function setFinalPrice($kit): float
+{
+    $pricingService = new pricingService();
+    return $pricingService->calculateFinalPrice($kit);
+}
+
+function formatTensionToEnum($tensionPattern): string
+{
+    if ($tensionPattern == 'MONOFASICO-220V') {
+        return 'MONO-220';
+    } elseif ($tensionPattern == 'BIFASICO-220V') {
+        return 'BI-220';
+    } elseif ($tensionPattern == 'TRIFASICO-220V') {
+        return 'TRI-220';
+    } else {
+        return 'TRI-380';
+    }
+
 }

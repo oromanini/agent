@@ -114,9 +114,8 @@ class ProposalController extends Controller
         $proposal = $this->proposalService->fillObject($request->all(), $incidence);
 
         try {
-
-            $proposal->pre_inspection_id = $this->proposalValueHistoryService->store($request->all());
-            $proposal->value_history_id = $this->preInspectionService->store();
+            $proposal->value_history_id = $this->proposalValueHistoryService->store($request->all(), true);
+            $proposal->pre_inspection_id = $this->preInspectionService->store();
             $message = $this->proposalService->store($proposal);
 
         } catch (\Exception $e) {

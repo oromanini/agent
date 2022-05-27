@@ -27,4 +27,12 @@ class KitSearchService
 
         return json_decode($response, true)['access_token'];
     }
+
+    public function getKitByUuid($uuid)
+    {
+        $url = env('KITS_URL') . 'getInventoryKitByCode/' . $uuid;
+        $response = Http::get($url)->body();
+
+        return json_decode($response, true)[0];
+    }
 }

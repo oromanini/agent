@@ -346,6 +346,9 @@
                                 '<div style="display:flex; justify-content: center; text-align: center; font-size: 18pt; color: #6b7280; font-weight: 900; margin: 20px 0px">' +
                                 item['sum'].kwp + ' kWp' +
                                 '</div>' +
+                                '<div style="font-size: 10pt; text-align: center">' +
+                                 'Geração aproximada de ' + 'X' + ' kWh/mês' +
+                                '</div>' +
                                 '<hr>' +
                                 '<div style="text-align: center">' +
                                 '<strong>Painel: </strong>' + panelSpecs['panel_brand'] + ' ' + panelSpecs['panel_power'] + 'W ' + panelSpecs['panel_type'] +

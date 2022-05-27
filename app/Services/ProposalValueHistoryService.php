@@ -7,13 +7,21 @@ use Illuminate\Support\Facades\DB;
 
 class ProposalValueHistoryService
 {
-    public function store($data): int
+    public function store($data, $isManual): int
     {
         $valueHistory = new ProposalValueHistory();
 
-        $valueHistory->kit_cost = stringMoneyToFloat($data['cost']);
-        $valueHistory->initial_price = stringMoneyToFloat($data['final_value']);
-        $valueHistory->final_price = stringMoneyToFloat($data['final_value']);
+        if ($isManual) {
+            $valueHistory->kit_cost = stringMoneyToFloat($data['cost']);
+            $valueHistory->initial_price = stringMoneyToFloat($data['final_value']);
+            $valueHistory->final_price = stringMoneyToFloat($data['final_value']);
+        } else {
+            $valueHistory->kit_cost = $data['kit']['cost_value'];
+            $finalPrice = setFinalPrice($data['kit']);
+            $valueHistory->initial_price = $finalPrice;
+            $valueHistory->final_price = $finalPrice;
+        }
+
         $valueHistory->commission_percent = env('COMMISSION_PERCENT');
         $valueHistory->discount_percent = 0;
         $valueHistory->user_id = auth()->user()->id;
@@ -30,7 +38,7 @@ class ProposalValueHistoryService
         $initialPrice = $valueHistory->initial_price;
         $fullCommissionPercent = (float)env('COMMISSION_PERCENT') / 100;
 
-        if (isset($data['discount_percent'])){
+        if (isset($data['discount_percent'])) {
 
             $valueHistory->discount_percent = (float)$data['discount_percent'];
 
@@ -47,7 +55,7 @@ class ProposalValueHistoryService
             $valueHistory->final_price = round($initialPrice - $discount - $commissionDiscount, 2);
         }
 
-        if (isset($data['commission_percent'])){
+        if (isset($data['commission_percent'])) {
 
             $valueHistory->commission_percent = (float)$data['commission_percent'];
             $commissionPercent = (float)$data['commission_percent'] / 100;

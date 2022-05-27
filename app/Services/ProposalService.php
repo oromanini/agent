@@ -2,19 +2,58 @@
 
 namespace App\Services;
 
+use App\Models\Address;
 use App\Models\Client;
+use App\Models\PreInspection;
 use App\Models\Proposal;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\Uuid;
 
 class ProposalService
 {
+    private $incidenceService;
+    private $valueHistoryService;
+
+    public function __construct(SolarIncidenceService $incidenceService, ProposalValueHistoryService $valueHistoryService)
+    {
+        $this->incidenceService = $incidenceService;
+        $this->valueHistoryService = $valueHistoryService;
+    }
 
     public function store($data): Proposal
     {
-        $proposal = new Proposal();
-        $proposal->uuid = Uuid::uuid6();
+        $client = Client::find($data['client']);
+        $address = Address::find($data['installation_address']);
+        $incidence = $this->incidenceService->getSolarIncidence($address->city);
+        $kit = kitByUuid($data['kit_id']);
+        $data['kit'] = $kit;
 
+        $proposal = new Proposal();
+        $preInspection = new PreInspection();
+
+        DB::transaction(function () use ($preInspection) {
+            $preInspection->save();
+        });
+
+        $proposal->uuid = Uuid::uuid6();
+        $proposal->type = 'normal';
+        $proposal->estimated_generation = $this->calculateEstimatedGeneration($data, $incidence)['average'];
+        $proposal->average_consumption = $data['average_consumption'];
+        $proposal->tension_pattern = formatTensionToEnum($data['tension_pattern']);
+        $proposal->roof_structure = $data['roof_structure'];
+        $proposal->kw_price = (float)str_replace(',', '.', $data['kw_price']);
+        $proposal->client_id = $data['client'];
+        $proposal->agent_id = auth()->user()->id;
+        $proposal->kit_uuid = $data['kit_id'];
+        $proposal->pre_inspection_id = $preInspection->id;
+        $proposal->is_manual = false;
+        $proposal->roof_orientations = json_encode($data['orientation']);
+        $proposal->kwp = $kit['kwp'];
+        $proposal->number_of_panels = $kit['panel_count'];
+        $proposal->components = json_encode($kit['components']);
+        $proposal->manual_data = json_encode([]);
+
+        $proposal->value_history_id = $this->valueHistoryService->store($data, false);
 
         DB::transaction(function () use ($proposal) {
             $proposal->save();
@@ -66,7 +105,13 @@ class ProposalService
 
     public function calculateEstimatedGeneration($data, $incidence): array
     {
-        $kwp = $data['kwp'];
+        if (isset($data['kwp'])) {
+            $kwp = $data['kwp'];
+        } else {
+            $kwp = $data['kit']['kwp'];
+        }
+
+
         $generationLost = env('GENERATION_LOST');
         $ordinaryAverage = (float)str_replace(',', '.', $incidence->average);
 
@@ -98,4 +143,6 @@ class ProposalService
         ];
 
     }
+
+
 }
