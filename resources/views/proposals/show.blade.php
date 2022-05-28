@@ -16,7 +16,8 @@
                 @include('proposals.show.cards')
                 @include('proposals.show.client_data')
                 <br><br>
-                @include('proposals.show.discount')
+                @include('proposals.show.staff')
+                <br>@include('proposals.show.discount')
                 <br><br>
                 @include('proposals.show.commission')
                 <br><br>

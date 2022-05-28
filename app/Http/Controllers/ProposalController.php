@@ -95,8 +95,9 @@ class ProposalController extends Controller
     {
         $proposal = Proposal::find($id);
         $valueHistoryData = $this->setValueHistoryData($proposal);
+        $kit = kitByUuid($proposal->kit_uuid);
 
-        return view('proposals.show', compact('proposal', 'valueHistoryData'));
+        return view('proposals.show', compact('proposal', 'valueHistoryData', 'kit'));
     }
 
     public function approve($id)

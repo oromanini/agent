@@ -343,6 +343,11 @@
                                 '<div class="is-flex is-justify-content-center">' +
                                 '<img src="' + panelImage + '" alt="" width="200">' +
                                 '</div>' +
+                                @if(auth()->user()->is_admin)
+                                '<div>' +
+                                item[0]['code'] +
+                                '</div>' +
+                                @endif
                                 '<div style="display:flex; justify-content: center; text-align: center; font-size: 18pt; color: #6b7280; font-weight: 900; margin: 20px 0px">' +
                                 item['sum'].kwp + ' kWp' +
                                 '</div>' +
