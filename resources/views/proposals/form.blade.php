@@ -345,7 +345,7 @@
                                 '</div>' +
                                 @if(auth()->user()->is_admin)
                                 '<div>' +
-                                item[0]['code'] + ' - ' + (item[1] ? item[1]['code'] : 'não tem') +
+                                item[0]['code'] + ' *ALLUZ* ' + (item[1] ? item[1]['code'] : 'não tem') +
                                 '</div>' +
                                 @endif
                                 '<div style="display:flex; justify-content: center; text-align: center; font-size: 18pt; color: #6b7280; font-weight: 900; margin: 20px 0px">' +
