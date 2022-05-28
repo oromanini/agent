@@ -334,6 +334,14 @@
                             let panelImage = getPanelImage(panelSpecs['panel_brand'])
                             let inverterImage = getInverterImage(technicalDescription['inverter_brand'])
 
+                            let inverterPower1 = technicalDescription['inverter_power'];
+                            let inverterPower2 = technicalDescription2 != null ? '+' + technicalDescription2['inverter_power'] + 'kW ' : '';
+                            let inverterPower3 = technicalDescription3 != null ? '+' + technicalDescription3['inverter_power'] + 'kW ' : '';
+
+                            let inverterModel1 = technicalDescription['inverter_model'] + 'KW ';
+                            let inverterModel2 = technicalDescription2 != null ? ' + ' + technicalDescription2['inverter_model'] : '';
+                            let inverterModel3 = technicalDescription3 != null ? ' + ' + technicalDescription3['inverter_model'] : '';
+
                             $('#kits').append(
                                 '<div class="column is-3">' +
                                 '<label>' +
@@ -363,13 +371,10 @@
                                 '</div>' +
                                 '<hr>' +
                                 '<div style="text-align: center">' +
-                                '<strong>Inversor: </strong>' + technicalDescription['inverter_brand'] + ' ' + technicalDescription['inverter_power'] + 'KW' +
-                                    technicalDescription2 != null ? technicalDescription2['inverter_power'] + 'KW' : '' +
-                                    technicalDescription3 != null ? technicalDescription3['inverter_power'] + 'KW' : '' +
+                                '<strong>Inversor: </strong>' + technicalDescription['inverter_brand'] + ' ' + inverterPower1 + inverterPower2 + inverterPower3 +
                                 '</div>' +
                                 '<div style="text-align: center">' +
-                                '<strong>Modelo: </strong>' + technicalDescription['inverter_model'] +
-                                    technicalDescription2 != null ? technicalDescription2['inverter_model'] : '' +
+                                '<strong>Modelo: </strong>' + inverterModel1 + ' ' + inverterModel2 + ' ' + inverterModel3 +
                                 '</div>' +
                                 '<div style="text-align: center">' +
                                 '<strong>Tensão: </strong>' + technicalDescription['inverter_tension'] +
