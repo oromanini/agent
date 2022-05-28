@@ -328,6 +328,8 @@
                         $.each(msg, function (i, item) {
 
                             let technicalDescription = item[0]['technical_description']
+                            let technicalDescription2 = item[1] ? item[1]['technical_description'] : null;
+                            let technicalDescription3 = item[2] ? item[2]['technical_description'] : null;
                             let panelSpecs = technicalDescription['panel_specs'];
                             let panelImage = getPanelImage(panelSpecs['panel_brand'])
                             let inverterImage = getInverterImage(technicalDescription['inverter_brand'])
@@ -343,11 +345,9 @@
                                 '<div class="is-flex is-justify-content-center">' +
                                 '<img src="' + panelImage + '" alt="" width="200">' +
                                 '</div>' +
-                                @if(auth()->user()->is_admin)
-                                '<div>' +
-                                item[0]['code'] + ' *ALLUZ* ' + (item[1] ? item[1]['code'] : 'não tem') +
+                                '<div style="font-size: 7pt">' +
+                                item[0]['code'] + '<br>' + (item[1] ? item[1]['code'] : 'não tem') +
                                 '</div>' +
-                                @endif
                                 '<div style="display:flex; justify-content: center; text-align: center; font-size: 18pt; color: #6b7280; font-weight: 900; margin: 20px 0px">' +
                                 item['sum'].kwp + ' kWp' +
                                 '</div>' +
@@ -364,16 +364,19 @@
                                 '<hr>' +
                                 '<div style="text-align: center">' +
                                 '<strong>Inversor: </strong>' + technicalDescription['inverter_brand'] + ' ' + technicalDescription['inverter_power'] + 'KW' +
+                                    technicalDescription2 != null ? technicalDescription2['inverter_power'] + 'KW' : '' +
+                                    technicalDescription3 != null ? technicalDescription3['inverter_power'] + 'KW' : '' +
                                 '</div>' +
                                 '<div style="text-align: center">' +
                                 '<strong>Modelo: </strong>' + technicalDescription['inverter_model'] +
+                                    technicalDescription2 != null ? technicalDescription2['inverter_model'] : '' +
                                 '</div>' +
                                 '<div style="text-align: center">' +
                                 '<strong>Tensão: </strong>' + technicalDescription['inverter_tension'] +
                                 '</div>' +
                                 '<hr>' +
                                 '<div style="color: #6BC6A7; font-size: 18pt; text-align: center; font-weight: bold">' +
-                                item[0].price.toLocaleString('pt-BR', {
+                                    (item[0].price + (item[1] ? item[1].price : 0) + (item[2] ? item[2].price : 0)).toLocaleString('pt-BR', {
                                     style: 'currency',
                                     currency: 'BRL',
                                 }) +
