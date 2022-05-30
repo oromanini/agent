@@ -353,11 +353,11 @@
                                 '<div class="is-flex is-justify-content-center">' +
                                 '<img src="' + panelImage + '" alt="" width="200">' +
                                 '</div>' +
-                                '<div style="font-size: 7pt">' +
-                                item[0]['code'] + '<br>' + (item[1] ? item[1]['code'] : 'não tem') +
+                                '<div style="font-size: 7pt; text-align: center; color: #a00000">' +
+                                item[0]['code'] + '<br>' + (item[1] ? item[1]['code'] : 'não tem') + '<br>' + (item[2] ? item[2]['code'] : 'não tem') +
                                 '</div>' +
                                 '<div style="display:flex; justify-content: center; text-align: center; font-size: 18pt; color: #6b7280; font-weight: 900; margin: 20px 0px">' +
-                                item['sum'].kwp + ' kWp' +
+                                item['sum'].kwp.toFixed(2) + ' kWp' +
                                 '</div>' +
                                 '<div style="font-size: 10pt; text-align: center">' +
                                  'Geração aproximada de ' + 'X' + ' kWh/mês' +
@@ -371,13 +371,13 @@
                                 '</div>' +
                                 '<hr>' +
                                 '<div style="text-align: center">' +
-                                '<strong>Inversor: </strong>' + technicalDescription['inverter_brand'] + ' ' + inverterPower1 + inverterPower2 + inverterPower3 +
-                                '</div>' +
-                                '<div style="text-align: center">' +
-                                '<strong>Modelo: </strong>' + inverterModel1 + ' ' + inverterModel2 + ' ' + inverterModel3 +
-                                '</div>' +
                                 '<div style="text-align: center">' +
                                 '<strong>Tensão: </strong>' + technicalDescription['inverter_tension'] +
+                                '</div>' +
+                                '<strong>Inversor: </strong>' + technicalDescription['inverter_brand'] + ' ' + inverterPower1 + inverterPower2 + inverterPower3 +
+                                '</div>' +
+                                '<div style="text-align: center"><br>' +
+                                inverterModel1 + ' ' + inverterModel2 + ' ' + inverterModel3 +
                                 '</div>' +
                                 '<hr>' +
                                 '<div style="color: #6BC6A7; font-size: 18pt; text-align: center; font-weight: bold">' +

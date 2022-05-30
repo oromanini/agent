@@ -21,7 +21,7 @@ services:
     networks:
         - alluz-network
 
-  site-alluz:
+  site:
       volumes:
           - ../site-alluz:/var/www/html
       build: ../site-alluz
@@ -33,9 +33,18 @@ services:
   warehouse:
       volumes:
           - ../warehouse:/var/www/html
-      build: ../site-alluz
+      build: ../warehouse
       ports:
           - "8002:80"
+      networks:
+          - alluz-network
+
+  simulator:
+      volumes:
+          - ../simulator:/var/www/html
+      build: ../simulator
+      ports:
+          - "8003:80"
       networks:
           - alluz-network
 
