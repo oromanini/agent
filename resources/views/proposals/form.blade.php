@@ -330,6 +330,7 @@
                             let technicalDescription = item[0]['technical_description']
                             let technicalDescription2 = item[1] ? item[1]['technical_description'] : null;
                             let technicalDescription3 = item[2] ? item[2]['technical_description'] : null;
+                            let technicalDescription4 = item[3] ? item[3]['technical_description'] : null;
                             let panelSpecs = technicalDescription['panel_specs'];
                             let panelImage = getPanelImage(panelSpecs['panel_brand'])
                             let inverterImage = getInverterImage(technicalDescription['inverter_brand'])
@@ -337,10 +338,12 @@
                             let inverterPower1 = technicalDescription['inverter_power'];
                             let inverterPower2 = technicalDescription2 != null ? '+' + technicalDescription2['inverter_power'] + 'kW ' : '';
                             let inverterPower3 = technicalDescription3 != null ? '+' + technicalDescription3['inverter_power'] + 'kW ' : '';
+                            let inverterPower4 = technicalDescription4 != null ? '+' + technicalDescription4['inverter_power'] + 'kW ' : '';
 
                             let inverterModel1 = technicalDescription['inverter_model'] + 'KW ';
                             let inverterModel2 = technicalDescription2 != null ? ' + ' + technicalDescription2['inverter_model'] : '';
                             let inverterModel3 = technicalDescription3 != null ? ' + ' + technicalDescription3['inverter_model'] : '';
+                            let inverterModel4 = technicalDescription4 != null ? ' + ' + technicalDescription4['inverter_model'] : '';
 
                             $('#kits').append(
                                 '<div class="column is-3">' +
@@ -354,7 +357,7 @@
                                 '<img src="' + panelImage + '" alt="" width="200">' +
                                 '</div>' +
                                 '<div style="font-size: 7pt; text-align: center; color: #a00000">' +
-                                item[0]['code'] + '<br>' + (item[1] ? item[1]['code'] : 'não tem') + '<br>' + (item[2] ? item[2]['code'] : 'não tem') +
+                                item[0]['code'] + '<br>' + (item[1] ? item[1]['code'] : 'não tem') + '<br>' + (item[2] ? item[2]['code'] : 'não tem') + '<br>' + (item[3] ? item[3]['code'] : 'não tem') +
                                 '</div>' +
                                 '<div style="display:flex; justify-content: center; text-align: center; font-size: 18pt; color: #6b7280; font-weight: 900; margin: 20px 0px">' +
                                 item['sum'].kwp.toFixed(2) + ' kWp' +
@@ -374,14 +377,14 @@
                                 '<div style="text-align: center">' +
                                 '<strong>Tensão: </strong>' + technicalDescription['inverter_tension'] +
                                 '</div>' +
-                                '<strong>Inversor: </strong>' + technicalDescription['inverter_brand'] + ' ' + inverterPower1 + inverterPower2 + inverterPower3 +
+                                '<strong>Inversor: </strong>' + technicalDescription['inverter_brand'] + ' ' + inverterPower1 + inverterPower2 + inverterPower3 + inverterPower4 +
                                 '</div>' +
                                 '<div style="text-align: center"><br>' +
-                                inverterModel1 + ' ' + inverterModel2 + ' ' + inverterModel3 +
+                                inverterModel1 + ' ' + inverterModel2 + ' ' + inverterModel3 + inverterModel4 +
                                 '</div>' +
                                 '<hr>' +
                                 '<div style="color: #6BC6A7; font-size: 18pt; text-align: center; font-weight: bold">' +
-                                    (item[0].price + (item[1] ? item[1].price : 0) + (item[2] ? item[2].price : 0)).toLocaleString('pt-BR', {
+                                    (item[0].price + (item[1] ? item[1].price : 0) + (item[2] ? item[2].price : 0) + (item[3] ? item[3].price : 0)).toLocaleString('pt-BR', {
                                     style: 'currency',
                                     currency: 'BRL',
                                 }) +
