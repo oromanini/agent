@@ -10741,6 +10741,10 @@ h6 {
   margin-bottom: -8px !important;
 }
 
+.mb50 {
+  margin-bottom: 50px;
+}
+
 .mt50 {
   margin-top: 50px !important;
   margin-left: 20px;
