@@ -84,3 +84,22 @@
 </div>
 
 
+<section class="top-nav">
+    <div>
+        <img src="/img/logo/mob-logo.png" width="150" alt="">
+    </div>
+    <input id="menu-toggle" type="checkbox" />
+    <label class='menu-button-container' for="menu-toggle">
+        <div class='menu-button'></div>
+    </label>
+    <ul class="menu">
+        <li><a style="color: #fff" href="/">Home</a></li>
+        <li><a style="color: #fff" href="{{ route('proposal.create') }}">Novo orçamento</a></li>
+        <li><a style="color: #fff" href="{{ route('proposal.index') }}">Meus Orçamentos</a></li>
+        <li><a style="color: #fff" href="{{ route('client.create') }}">Novo cliente</a></li>
+        <li><a style="color: #fff" href="{{ route('client.index') }}">Meus Clientes</a></li>
+        <li><a style="color: #fff" href="/logout">Sair</a></li>
+    </ul>
+</section>
+<br>
+

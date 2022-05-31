@@ -26,7 +26,7 @@
                 <div class="columns mt50">
                     <h3 class="title">Por onde você quer começar?</h3>
                 </div>
-                <div class="columns mt50 mb20">
+                <div class="columns mt50 mb20" id="home-buttons">
                     <div class="column is-flex is-justify-content-center">
                         <a href="{{ route('client.index') }}" class="p-yellow-button">
                             <ion-icon name="people-outline"></ion-icon>  Meus clientes

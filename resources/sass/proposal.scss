@@ -58,3 +58,24 @@ input[name="kit_id"]:checked + #all{
     transition: width 0.2s;
     border: 4px solid #f2a714;
 }
+
+
+@media (max-width: 866px) {
+
+    #proposal-filters, #client-filters {
+        display: block !important;
+    }
+
+    table {
+        display: block !important;
+        overflow: auto !important;
+    }
+
+    #generate-proposal {
+        justify-content: start !important;
+    }
+
+    .discount {
+        margin: 5px;
+    }
+}

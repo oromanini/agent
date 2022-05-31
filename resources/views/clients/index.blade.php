@@ -22,7 +22,7 @@
             </div>
             <form action="{{ route('client.index') }}" method="get">
                 @csrf
-                <div class="columns is-flex is-flex-direction-row mt-4 mb-4">
+                <div id="client-filters" class="columns is-flex is-flex-direction-row mt-4 mb-4">
                     <div class="column is-3">
                         <div class="field">
                             <label for="name-filter" class="label">Nome</label>

@@ -22,7 +22,7 @@
             </div>
             <form action="{{ route('proposal.index') }}" method="get">
                 @csrf
-                <div class="columns is-flex is-flex-direction-row mt-4 mb-4">
+                <div id="proposal-filters" class="columns is-flex is-flex-direction-row mt-4 mb-4">
                     <div class="column is-2">
                         <div class="field">
                             <label for="name-filter" class="label">Nome</label>
