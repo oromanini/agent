@@ -84,7 +84,7 @@
 </div>
 
 
-<section class="top-nav">
+<section class="top-nav mob-navigation">
     <div>
         <a href="/"><img src="/img/logo/mob-logo.png" width="150" alt=""></a>
     </div>
