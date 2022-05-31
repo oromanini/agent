@@ -86,7 +86,7 @@
 
 <section class="top-nav">
     <div>
-        <img src="/img/logo/mob-logo.png" width="150" alt="">
+        <a href="/"><img src="/img/logo/mob-logo.png" width="150" alt=""></a>
     </div>
     <input id="menu-toggle" type="checkbox" />
     <label class='menu-button-container' for="menu-toggle">
