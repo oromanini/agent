@@ -7,6 +7,7 @@ use App\Models\Client;
 use App\Models\PreInspection;
 use App\Models\Proposal;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Ramsey\Uuid\Uuid;
 
 class ProposalService
@@ -25,8 +26,10 @@ class ProposalService
         $client = Client::find($data['client']);
         $address = Address::find($data['installation_address']);
         $incidence = $this->incidenceService->getSolarIncidence($address->city);
-        $kit = kitByUuid($data['kit_id']);
-        $data['kit'] = $kit;
+
+        $uuids = $data['kit_id'];
+
+        $sumKits = json_decode(Http::get(env('KITS_URL') . 'getInventoryKitsByCodes/' . $uuids)->body(), true);
 
         $proposal = new Proposal();
         $preInspection = new PreInspection();
@@ -37,6 +40,15 @@ class ProposalService
 
         $proposal->uuid = Uuid::uuid6();
         $proposal->type = 'normal';
+
+        $proposal->kwp = (float)$sumKits['kwp'];
+        $proposal->number_of_panels = (float)$sumKits['panel_count'];
+        $proposal->components = json_encode($sumKits['components']);
+
+        $data['kwp'] = (float)$sumKits['kwp'];
+        $data['cost'] = (float)$sumKits['cost'];
+        $data['panel_count'] = (float)$sumKits['panel_count'];
+
         $proposal->estimated_generation = $this->calculateEstimatedGeneration($data, $incidence)['average'];
         $proposal->average_consumption = $data['average_consumption'];
         $proposal->tension_pattern = formatTensionToEnum($data['tension_pattern']);
@@ -44,13 +56,10 @@ class ProposalService
         $proposal->kw_price = (float)str_replace(',', '.', $data['kw_price']);
         $proposal->client_id = $data['client'];
         $proposal->agent_id = auth()->user()->id;
-        $proposal->kit_uuid = $data['kit_id'];
+        $proposal->kit_uuid = json_encode($uuids);
         $proposal->pre_inspection_id = $preInspection->id;
         $proposal->is_manual = false;
         $proposal->roof_orientations = json_encode($data['orientation']);
-        $proposal->kwp = $kit['kwp'];
-        $proposal->number_of_panels = $kit['panel_count'];
-        $proposal->components = json_encode($kit['components']);
         $proposal->manual_data = json_encode([]);
 
         $proposal->value_history_id = $this->valueHistoryService->store($data, false);

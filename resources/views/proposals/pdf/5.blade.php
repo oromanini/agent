@@ -7,6 +7,7 @@
         @if($proposal->is_manual)
         {{ \App\Enums\PanelBrands::fromValue((int)$manualData['panel_brand'])->description }}
         @else
+            {{ $firstKit['technical_description']['panel_specs']['panel_brand'] }}
         @endif
         {{--        <span class="minifiedText">New Energy Tec. Co.</span>--}}
     </div>
@@ -14,6 +15,7 @@
         @if($proposal->is_manual)
             {{ $manualData['panel_power'] }}W
         @else
+            {{ $firstKit['technical_description']['panel_specs']['panel_power'] }} W
         @endif
         <span class="minifiedText">Mono Half-Cell</span>
     </div>
@@ -21,6 +23,7 @@
         @if($proposal->is_manual)
             {{ $manualData['panel_warranty'] }} anos
         @else
+            12 anos
         @endif
     </div>
     <div id="inverterImage">
@@ -30,24 +33,34 @@
         @if($proposal->is_manual)
             1
         @else
+            1
+{{--            {{ $invertersCount }}--}}
         @endif
     </div>
     <div id="inverterBrand">
         @if($proposal->is_manual)
             {{ \App\Enums\InverterBrands::fromValue((int)$manualData['inverter_brand'])->description }}
         @else
+            {{ $firstKit['technical_description']['inverter_brand'] }}
         @endif
     </div>
     <div id="inverterModel">
         @if($proposal->is_manual)
             {{ $manualData['inverter_power'] }}KW <span class="minified-text">{{ $manualData['inverter_model'] }} </span>
         @else
+            {{ $firstKit['technical_description']['inverter_model'] }}
+{{--            {{ $inverterModels }}--}}
         @endif
     </div>
     <div id="inverterWarranty">
         @if($proposal->is_manual)
            {{ $manualData['inverter_warranty'] }} anos
         @else
+            @if($firstKit['technical_description']['inverter_brand'] == 'Growatt')
+                10 anos
+            @else
+                7 anos
+            @endif
         @endif
     </div>
 </div>

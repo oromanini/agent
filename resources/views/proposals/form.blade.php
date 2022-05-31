@@ -309,9 +309,6 @@
                 let roof = $('.roof-structure').val()
                 let tension = $('select[name=tension_pattern] option').filter(':selected').val()
 
-
-                console.log(kwp, roof, tension)
-
                 $.ajax({
                     url: "/kitSearch/" + kwp.toFixed(2) + '/' + roof + '/' + tension,
                     type: 'get',
@@ -320,7 +317,6 @@
                     }
                 })
                     .done(function (msg) {
-                        console.log(msg);
 
                         $('#kits').empty();
                         $('#generateProposalButton').empty();
@@ -348,7 +344,7 @@
                             $('#kits').append(
                                 '<div class="column is-3">' +
                                 '<label>' +
-                                '<input type="radio" name="kit_id" value="' + item[0]['code'] + '">' +
+                                '<input type="radio" name="kit_id" value="' + item[0]['code'] + ';' + (item[1] ? item[1]['code'] + ';' : 'null') + (item[2] ? item[2]['code'] + ';' : '') + (item[3] ? item[3]['code'] : '') +  '">' +
                                 '<div id="all" class="my-box-shadow">' +
                                 '<div class="is-flex is-justify-content-center">' +
                                 '<img src="' + inverterImage + '" alt="" width="150">' +
@@ -363,7 +359,7 @@
                                 item['sum'].kwp.toFixed(2) + ' kWp' +
                                 '</div>' +
                                 '<div style="font-size: 10pt; text-align: center">' +
-                                 'Geração aproximada de ' + 'X' + ' kWh/mês' +
+                                'Geração aproximada de ' + 'X' + ' kWh/mês' +
                                 '</div>' +
                                 '<hr>' +
                                 '<div style="text-align: center">' +
@@ -384,7 +380,7 @@
                                 '</div>' +
                                 '<hr>' +
                                 '<div style="color: #6BC6A7; font-size: 18pt; text-align: center; font-weight: bold">' +
-                                    (item[0].price + (item[1] ? item[1].price : 0) + (item[2] ? item[2].price : 0) + (item[3] ? item[3].price : 0)).toLocaleString('pt-BR', {
+                                (item[0].price + (item[1] ? item[1].price : 0) + (item[2] ? item[2].price : 0) + (item[3] ? item[3].price : 0)).toLocaleString('pt-BR', {
                                     style: 'currency',
                                     currency: 'BRL',
                                 }) +

@@ -95,9 +95,9 @@ class ProposalController extends Controller
     {
         $proposal = Proposal::find($id);
         $valueHistoryData = $this->setValueHistoryData($proposal);
-        $kit = kitByUuid($proposal->kit_uuid);
+        $kits = getKitCodesFromProposal($proposal);
 
-        return view('proposals.show', compact('proposal', 'valueHistoryData', 'kit'));
+        return view('proposals.show', compact('proposal', 'valueHistoryData', 'kits'));
     }
 
     public function approve($id)
@@ -139,9 +139,12 @@ class ProposalController extends Controller
         $proposal = Proposal::find($proposal_id);
         $city = $proposal->client->addresses->first()->city;
         $components = json_decode($proposal->components, true);
+
+        $firstKit = kitByUuid(getKitCodesFromProposal($proposal)[0]);
         $manualData = $proposal->is_manual ? json_decode($proposal->manual_data, true) : null;
-        $inverterImage = setInverterImage((int)$manualData['inverter_brand']);
-        $panelBrandImage = setPanelBrandImage((int)$manualData['panel_brand']);
+        $inverterImage = $proposal->isManual ? setInverterImage((int)$manualData['inverter_brand']) : setInverterImage($firstKit['technical_description']['inverter_brand']);
+        $panelBrandImage = $proposal->isManual ? setPanelBrandImage((int)$manualData['panel_brand']) : setPanelBrandImage($firstKit['technical_description']['panel_specs']['panel_brand']);
+
         $withoutSolar = calculateWithoutSolar($proposal);
         $withSolar = floatToMoney(calculateWithSolar($proposal));
         $incidence = $this->solarIncidenceService->getSolarIncidence($city)->average;
@@ -177,6 +180,7 @@ class ProposalController extends Controller
             'incidence',
             'payback',
             'generationData',
+            'firstKit'
         ];
     }
 

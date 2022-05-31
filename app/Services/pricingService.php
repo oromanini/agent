@@ -4,16 +4,16 @@ namespace App\Services;
 
 class pricingService
 {
-    public function calculateFinalPrice($kit): float
+    public function calculateFinalPrice($data): float
     {
-        $cost = $kit['cost_value'];
-        $kwp = $kit['kwp'];
-        $panelCount = $kit['panel_count'];
+        $cost = $data['cost'];
+        $kwp = $data['kwp'];
+        $panelCount = $data['panel_count'];
         $finalValue = $cost * 1.45;
 
         $finalValue = $this->adjustMargin($cost, $kwp, $panelCount, $finalValue);
 
-        if ($kit['roof_structure'] == 6) {
+        if ($data['roof_structure'] == 6) {
             return $finalValue * 1.3;
         }
 
@@ -29,12 +29,9 @@ class pricingService
         return $finalValue;
     }
 
-    private function calculateNetProfit($cost, $kwp, $panelCount, $finalValue): array
+    function calculateHomologation($kwp, $finalValue)
     {
-        $installation = $panelCount * 95;
         $homologation = 0;
-//        $delivery = $finalValue * 0.03;
-        $delivery = 0;
 
         if ($kwp <= 15) {
             $homologation = 350;
@@ -52,9 +49,18 @@ class pricingService
             $homologation = $finalValue * 0.025;
         }
 
+        return $homologation;
+    }
+
+    private function calculateNetProfit($cost, $kwp, $panelCount, $finalValue): array
+    {
+        $installation = $panelCount * env('INSTALLATION_PANEL_PRICE');
+        $delivery = $finalValue * env('DELIVERY_PERCENT');
+        $homologation = $this->calculateHomologation($kwp, $finalValue);
+
         $ca = $this->calculateCa($finalValue, $kwp);
-        $tax = $finalValue * 0.06;
-        $commission = $finalValue * 0.1;
+        $tax = $finalValue * env('TAX_PERCENT');
+        $commission = $finalValue * env('COMMISSION_PERCENT');
 
         $totalCost = $cost + $installation + $homologation + $ca + $tax + $commission + $delivery;
         $netProfit = $finalValue - $totalCost;

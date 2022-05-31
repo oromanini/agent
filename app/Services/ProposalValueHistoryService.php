@@ -16,8 +16,8 @@ class ProposalValueHistoryService
             $valueHistory->initial_price = stringMoneyToFloat($data['final_value']);
             $valueHistory->final_price = stringMoneyToFloat($data['final_value']);
         } else {
-            $valueHistory->kit_cost = $data['kit']['cost_value'];
-            $finalPrice = setFinalPrice($data['kit']);
+            $valueHistory->kit_cost = $data['cost'];
+            $finalPrice = setFinalPrice($data);
             $valueHistory->initial_price = $finalPrice;
             $valueHistory->final_price = $finalPrice;
         }

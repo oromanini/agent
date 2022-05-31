@@ -10,6 +10,7 @@ use App\Services\KitSearchService;
 use App\Services\pricingService;
 use App\Services\ProposalService;
 use Illuminate\Support\Facades\Http;
+use Ramsey\Uuid\Uuid;
 
 function stringMoneyToFloat(string $money): float
 {
@@ -65,49 +66,87 @@ function setRoofs(): array
 }
 
 
-function setPanelBrandImage($id): string
+function setPanelBrandImage($brand): string
 {
     $img = '';
+    $jinko = '/img/panel_brands/jinko.png';
+    $sunket = '/img/panel_brands/sunket.png';
+    $trina = '/img/panel_brands/trina.png';
+    $dah = '/img/panel_brands/dah.png';
 
-    switch ($id) {
-        case 1:
-            $img = '/img/panel_brands/jinko.png';
-            break;
-        case 2:
-            $img = '/img/panel_brands/sunket.png';
-            break;
-        case 3:
-            $img = '/img/panel_brands/trina.png';
-            break;
-        case 4:
-            $img = '/img/panel_brands/dah.png';
-            break;
-        default:
-            throw new Exception('Painel não localizado.');
+    if (is_string($brand)) {
+
+        if ($brand == 'Jinko') {
+            $img = $jinko;
+        } elseif ($brand == 'Trina') {
+            $img = $trina;
+        } elseif ($brand == 'Dah') {
+            $img = $dah;
+        } elseif ($brand == 'Sunket') {
+            $img = $sunket;
+        }
+
+    } else {
+
+        switch ($brand) {
+            case 1:
+                $img = $jinko;
+                break;
+            case 2:
+                $img = $sunket;
+                break;
+            case 3:
+                $img = $trina;
+                break;
+            case 4:
+                $img = $dah;
+                break;
+            default:
+                throw new Exception('Painel não localizado.');
+        }
     }
-
     return $img;
 }
 
-function setInverterImage($id): string
+function setInverterImage($brand): string
 {
     $img = '';
+    $growatt = '/img/inverters/growatt.png';
+    $chint = '/img/inverters/chint.png';
+    $deye = '/img/inverters/deye.png';
+    $sofar = '/img/inverters/sofar.png';
 
-    switch ($id) {
-        case 1:
-            $img = '/img/inverters/growatt.png';
-            break;
-        case 2:
-            $img = '/img/inverters/chint.png';
-            break;
-        case 3:
-            $img = '/img/inverters/deye.png';
-            break;
-        case 4:
-            $img = '/img/inverters/sofar.png';
-            break;
-        default:
-            throw new Exception('Inversor não localizado.');
+
+    if (is_string($brand)) {
+
+        if ($brand == 'Growatt') {
+            $img = $growatt;
+        } elseif ($brand == 'Chint') {
+            $img = $chint;
+        } elseif ($brand == 'Deye') {
+            $img = $deye;
+        } elseif ($brand == 'Sofar') {
+            $img = $sofar;
+        }
+
+    } else {
+
+        switch ($brand) {
+            case 1:
+                $img = $growatt;
+                break;
+            case 2:
+                $img = $chint;
+                break;
+            case 3:
+                $img = $deye;
+                break;
+            case 4:
+                $img = $sofar;
+                break;
+            default:
+                throw new Exception('Inversor não localizado.');
+        }
     }
 
     return $img;
@@ -180,17 +219,18 @@ function getAscendantName(int $ascendantId): string
     return 'Sem ascendente';
 }
 
-function kitByUuid($kit_uuid) {
+function kitByUuid($kit_uuid)
+{
 
     $kitService = new KitSearchService();
 
     return $kitService->getKitByUuid($kit_uuid);
 }
 
-function setFinalPrice($kit): float
+function setFinalPrice($data): float
 {
     $pricingService = new pricingService();
-    return $pricingService->calculateFinalPrice($kit);
+    return $pricingService->calculateFinalPrice($data);
 }
 
 function formatTensionToEnum($tensionPattern): string
@@ -204,5 +244,25 @@ function formatTensionToEnum($tensionPattern): string
     } else {
         return 'TRI-380';
     }
+
+}
+
+
+function getKitCodesFromProposal($proposal)
+{
+
+    $kits = explode(';', $proposal->kit_uuid);
+
+    foreach ($kits as $key => $kit) {
+
+        $kit = str_replace('"', '', $kit);
+        $kits[$key] = str_replace('"', '', $kit);
+
+        if (!Uuid::isValid($kit)) {
+            unset($kits[$key]);
+        }
+    }
+
+    return $kits;
 
 }

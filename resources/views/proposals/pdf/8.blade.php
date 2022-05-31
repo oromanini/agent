@@ -58,7 +58,7 @@
         {{$proposal->estimated_generation - $proposal->average_consumption}} kWh/mês
     </div>
     <div id="anualSurplus">
-        {{($proposal->estimated_generation * 12) - ($proposal->average_consumption * 12)}}kWh
+        {{ number_format(($proposal->estimated_generation * 12) - ($proposal->average_consumption * 12), 2) }}kWh
     </div>
 </div>
 
