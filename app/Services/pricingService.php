@@ -22,8 +22,9 @@ class pricingService
 
     private function adjustMargin($cost, $kwp, $panelCount, $finalValue): float
     {
+
         while ($this->calculateNetProfit($cost, $kwp, $panelCount, $finalValue)['netProfitPercent'] < 0.09) {
-            $finalValue += 170;
+            $finalValue += 250;
         }
 
         return $finalValue;
@@ -57,7 +58,6 @@ class pricingService
         $installation = $panelCount * env('INSTALLATION_PANEL_PRICE');
         $delivery = $finalValue * env('DELIVERY_PERCENT');
         $homologation = $this->calculateHomologation($kwp, $finalValue);
-
         $ca = $this->calculateCa($finalValue, $kwp);
         $tax = $finalValue * env('TAX_PERCENT');
         $commission = $finalValue * env('COMMISSION_PERCENT');

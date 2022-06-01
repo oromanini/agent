@@ -197,6 +197,8 @@ function formatTension($tension): string
     } else {
         return 'TRI-380';
     }
+
+    return $tension;
 }
 
 function jsonToArray($json)

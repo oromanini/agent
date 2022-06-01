@@ -16,10 +16,11 @@ class ProposalValueHistoryService
             $valueHistory->initial_price = stringMoneyToFloat($data['final_value']);
             $valueHistory->final_price = stringMoneyToFloat($data['final_value']);
         } else {
-            $valueHistory->kit_cost = $data['cost'];
+            $valueHistory->kit_cost = (float)$data['cost'];
             $finalPrice = setFinalPrice($data);
             $valueHistory->initial_price = $finalPrice;
             $valueHistory->final_price = $finalPrice;
+
         }
 
         $valueHistory->commission_percent = env('COMMISSION_PERCENT');

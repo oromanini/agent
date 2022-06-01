@@ -50,11 +50,11 @@ class ProposalService
         $data['panel_count'] = (float)$sumKits['panel_count'];
 
         $proposal->estimated_generation = $this->calculateEstimatedGeneration($data, $incidence)['average'];
-        $proposal->average_consumption = $data['average_consumption'];
-        $proposal->tension_pattern = formatTensionToEnum($data['tension_pattern']);
-        $proposal->roof_structure = $data['roof_structure'];
+        $proposal->average_consumption = (float)$data['average_consumption'];
+        $proposal->tension_pattern = formatTension($data['tension_pattern']);
+        $proposal->roof_structure = (int)$data['roof_structure'];
         $proposal->kw_price = (float)str_replace(',', '.', $data['kw_price']);
-        $proposal->client_id = $data['client'];
+        $proposal->client_id = (int)$data['client'];
         $proposal->agent_id = auth()->user()->id;
         $proposal->kit_uuid = json_encode($uuids);
         $proposal->pre_inspection_id = $preInspection->id;
