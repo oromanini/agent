@@ -50,7 +50,6 @@ class UserController extends Controller
      */
     public function store(AgentRequest $request): RedirectResponse
     {
-
         $request->validated();
         $data = $request->all();
 
@@ -104,16 +103,18 @@ class UserController extends Controller
 
     private function fillUser($user, array $data): User
     {
-        $user = !is_null($user) ?? new User();
+        $user = !is_null($user) ? $user  : new User();
 
-        $user->name = isset($data['name']) ?? $user->name;
-        $user->email = isset($data['email']) ?? $user->email;
-        $user->password = isset($data['password']) ? Hash::make($data['password']) : $user->password;
-        $user->phone_number = isset($data['phone_number']) ?? $user->phone_number;
-        $user->city = isset($data['phone_number']) ? (int)$data['phone_number'] : $user->phone_number;
-        $user->ascendant = isset($data['ascendant']) ? (int)$data['ascendant'] : $user->ascendant;
-        $user->cpf =isset($data['cpf']) ?? $user->cpf;
-        $user->cnpj = isset($data['cnpj']) ?? $user->cnpj;
+        $ascendant = $data['ascendant'] ? (int)$data['ascendant'] : 0;
+
+        $user->name = $data['name'] ?? $user->name;
+        $user->email = $data['email'] ?? $user->email;
+        $user->password = $data['password'] ? Hash::make($data['password']) : $user->password;
+        $user->phone_number = $data['phone_number'] ?? $user->phone_number;
+        $user->city = $data['city'] ?? $user->city;
+        $user->ascendant = $data['ascendant'] ?? $user->ascendant;
+        $user->cpf = $data['cpf'] ?? $user->cpf;
+        $user->cnpj = $data['cnpj'] ?? $user->cnpj;
 
         return $user;
     }

@@ -12,7 +12,7 @@
                 @if(isset($agent))
                     @method('PUT')
                 @else
-                    @method('GET')
+                    @method('POST')
                 @endif
                 @csrf
                 <div class="columns" style="margin-top: 50px">
