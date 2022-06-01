@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Repositories\ProposalRepository;
 use App\Services\PaybackService;
 use App\Services\PreInspectionService;
+use App\Services\pricingService;
 use App\Services\ProposalService;
 use App\Services\ProposalValueHistoryService;
 use App\Services\SolarIncidenceService;
@@ -31,13 +32,16 @@ class ProposalController extends Controller
     private $preInspectionService;
     private $solarIncidenceService;
     private $paybackService;
+    private $pricingService;
 
     public function __construct(ProposalService             $proposalService,
                                 ProposalRepository          $proposalRepository,
                                 ProposalValueHistoryService $proposalValueHistoryService,
                                 PreInspectionService        $preInspectionService,
                                 PaybackService              $paybackService,
-                                SolarIncidenceService       $solarIncidenceService)
+                                SolarIncidenceService       $solarIncidenceService,
+                                pricingService              $pricingService
+    )
     {
         $this->proposalService = $proposalService;
         $this->proposalRepository = $proposalRepository;
@@ -45,6 +49,7 @@ class ProposalController extends Controller
         $this->preInspectionService = $preInspectionService;
         $this->solarIncidenceService = $solarIncidenceService;
         $this->paybackService = $paybackService;
+        $this->pricingService = $pricingService;
     }
 
     public function index(Request $request)
@@ -152,7 +157,13 @@ class ProposalController extends Controller
         $generationData = $this->paybackService->setGeterationData($proposal);
 
         $pdf = PDF::loadView('proposals.pdf', compact($this->setPdfParams()));
-        return $pdf->stream('#' . $proposal->id . ' '. $proposal->client->name. '.pdf');
+        return $pdf->stream('#' . $proposal->id . ' ' . $proposal->client->name . '.pdf');
+    }
+
+    public function setFinalValue(Request $request): float
+    {
+        $data = $request->all();
+        return $this->pricingService->calculateFinalPrice($data);
     }
 
     private function setManualParams(): array

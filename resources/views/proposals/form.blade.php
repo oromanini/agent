@@ -341,6 +341,11 @@
                             let inverterModel3 = technicalDescription3 != null ? ' + ' + technicalDescription3['inverter_model'] : '';
                             let inverterModel4 = technicalDescription4 != null ? ' + ' + technicalDescription4['inverter_model'] : '';
 
+                            let costValue = item[0].price + (item[1] ? item[1].price : 0) + (item[2] ? item[2].price : 0) + (item[3] ? item[3].price : 0);
+                            let panelCount = item[0].panel_count + (item[1] ? item[1].panel_count : 0) + (item[2] ? item[2].panel_count : 0) + (item[3] ? item[3].panel_count : 0);
+
+                            let finalValue = calculateFinalValue(costValue, kwp, roof, panelCount);
+
                             $('#loader').removeClass('enable');
                             $('#loader').addClass('disable');
 
@@ -383,7 +388,7 @@
                                 '</div>' +
                                 '<hr>' +
                                 '<div style="color: #6BC6A7; font-size: 18pt; text-align: center; font-weight: bold">' +
-                                (item[0].price + (item[1] ? item[1].price : 0) + (item[2] ? item[2].price : 0) + (item[3] ? item[3].price : 0)).toLocaleString('pt-BR', {
+                                parseFloat(finalValue).toLocaleString('pt-BR', {
                                     style: 'currency',
                                     currency: 'BRL',
                                 }) +
@@ -405,6 +410,38 @@
                     });
             });
         });
+
+        function calculateFinalValue(costValue, kwp, roof, panelCount) {
+
+            let url = '/setFinalValue';
+            let result;
+
+            $.ajax({
+                url: url,
+                async: false,
+                data: {
+                    kwp: kwp,
+                    roof_structure: roof,
+                    cost: costValue,
+                    panel_count: panelCount,
+                    _token: '{{csrf_token()}}'
+                },
+                type: 'post',
+                beforeSend: function () {
+                    console.log("ENVIANDO...");
+                }
+            })
+                .done(function (msg, m) {
+                    console.log(msg)
+                    result = msg
+                })
+                .fail(function (jqXHR, textStatus, msg) {
+                    console.log(msg);
+                });
+
+
+            return result;
+        }
 
     </script>
 
