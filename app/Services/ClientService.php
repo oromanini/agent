@@ -58,8 +58,7 @@ class ClientService implements BaseService
         $client->email = $data['email'];
         $client->phone_number = $data['phone_number'];
 
-//        TODO: change
-        $client->agent_id = 1;
+        $client->agent_id = auth()->user()->id;
 
         return $client;
     }
