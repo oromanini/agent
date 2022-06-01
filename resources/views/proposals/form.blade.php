@@ -124,7 +124,7 @@
                         </div>
                     @endforeach
                 </div>
-                <div class="columns is-flex is-justify-content-center" style="margin-top: 15px; margin-bottom: 70px">
+                <div class="columns is-flex is-justify-content-center" style="margin-top: 15px; margin-bottom: 30px">
                     <div class="column is-6 is-flex is-justify-content-space-around is-align-items-center is-warning"
                          style="border: 2px solid #f2a714; border-radius: 100px;">
                         <label class="checkbox">
@@ -146,13 +146,13 @@
 
                     </div>
                 </div>
-                <hr>
+                <hr style="margin: 10px">
                 <div class="column is-flex is-justify-content-center">
                     <span class="button is-medium is-info is-rounded" id="kitSearchSubmit">
                         <ion-icon name="sunny-outline"></ion-icon>&nbsp;Buscar Kits
                     </span>
                 </div>
-                <hr>
+                <hr style="margin: 10px">
 
                 {{--        KITS--}}
                 <div id="kits" class="columns is-flex is-justify-content-center is-flex-wrap-wrap"
@@ -313,14 +313,14 @@
                     url: "/kitSearch/" + kwp.toFixed(2) + '/' + roof + '/' + tension,
                     type: 'get',
                     beforeSend: function () {
-                        console.log("ENVIANDO...");
-                    }
+                        $('#loader').removeClass('disable');
+                        $('#loader').addClass('enable');
+                    },
                 })
                     .done(function (msg) {
 
                         $('#kits').empty();
                         $('#generateProposalButton').empty();
-
                         $.each(msg, function (i, item) {
 
                             let technicalDescription = item[0]['technical_description']
@@ -341,10 +341,13 @@
                             let inverterModel3 = technicalDescription3 != null ? ' + ' + technicalDescription3['inverter_model'] : '';
                             let inverterModel4 = technicalDescription4 != null ? ' + ' + technicalDescription4['inverter_model'] : '';
 
+                            $('#loader').removeClass('enable');
+                            $('#loader').addClass('disable');
+
                             $('#kits').append(
                                 '<div class="column is-3">' +
                                 '<label>' +
-                                '<input type="radio" name="kit_id" value="' + item[0]['code'] + ';' + (item[1] ? item[1]['code'] + ';' : 'null') + (item[2] ? item[2]['code'] + ';' : '') + (item[3] ? item[3]['code'] : '') +  '">' +
+                                '<input type="radio" name="kit_id" value="' + item[0]['code'] + ';' + (item[1] ? item[1]['code'] + ';' : 'null') + (item[2] ? item[2]['code'] + ';' : '') + (item[3] ? item[3]['code'] : '') + '">' +
                                 '<div id="all" class="my-box-shadow">' +
                                 '<div class="is-flex is-justify-content-center">' +
                                 '<img src="' + inverterImage + '" alt="" width="150">' +
@@ -394,7 +397,9 @@
                         $('#generateProposalButton').append(
                             '<div class="columns"><button type="submit" class="button is-primary is-large">Gerar Proposta</button></div>'
                         );
+
                     })
+
                     .fail(function (jqXHR, textStatus, msg) {
                         console.log(msg);
                     });

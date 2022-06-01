@@ -10946,3 +10946,11 @@ body {
 h2, title {
   margin-bottom: 5px !important;
 }
+
+.disable {
+  display: none !important;
+}
+
+.enable {
+  display: flex;
+}

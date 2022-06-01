@@ -11,6 +11,7 @@
 </head>
 <body>
 <section class="section">
+    @include('loader')
     <div class="columns">
         <div class="sidebar-column column is-1">
             @include('sidebar')
