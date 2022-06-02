@@ -341,7 +341,7 @@
                             let inverterModel3 = technicalDescription3 != null ? ' + ' + technicalDescription3['inverter_model'] : '';
                             let inverterModel4 = technicalDescription4 != null ? ' + ' + technicalDescription4['inverter_model'] : '';
 
-                            let costValue = item[0].price + (item[1] ? item[1].price : 0) + (item[2] ? item[2].price : 0) + (item[3] ? item[3].price : 0);
+                            let costValue = parseInt(item[0].price) + parseInt(item[1] ? item[1].price : 0) + parseInt(item[2] ? item[2].price : 0) + parseInt(item[3] ? item[3].price : 0);
                             let panelCount = item[0].panel_count + (item[1] ? item[1].panel_count : 0) + (item[2] ? item[2].panel_count : 0) + (item[3] ? item[3].panel_count : 0);
 
                             console.log(panelCount)

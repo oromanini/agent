@@ -23,9 +23,6 @@ class pricingService
 
     private function adjustMargin($cost, $kwp, $panelCount, $finalValue): float
     {
-
-        dd($panelCount);
-
         while ($this->calculateNetProfit($cost, $kwp, $panelCount, $finalValue)['netProfitPercent'] < 0.09) {
             $finalValue += 250;
         }
