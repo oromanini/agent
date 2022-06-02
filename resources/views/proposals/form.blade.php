@@ -436,7 +436,6 @@
                 }
             })
                 .done(function (msg, m) {
-                    console.log(costValue,msg)
                     result = msg
                 })
                 .fail(function (jqXHR, textStatus, msg) {

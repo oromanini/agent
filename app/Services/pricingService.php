@@ -11,6 +11,8 @@ class pricingService
         $panelCount = $data['panel_count'];
         $finalValue = $cost * 1.45;
 
+        dd($cost, $kwp, $panelCount, $finalValue);
+
         $finalValue = $this->adjustMargin($cost, $kwp, $panelCount, $finalValue);
 
         if ($data['roof_structure'] == 6) {
