@@ -13,7 +13,6 @@ class pricingService
 
         $finalValue = $this->adjustMargin($cost, $kwp, $panelCount, $finalValue);
 
-        dd($finalValue);
 
         if ($data['roof_structure'] == 6) {
             return $finalValue * 1.3;
@@ -67,6 +66,8 @@ class pricingService
         $totalCost = $cost + $installation + $homologation + $ca + $tax + $commission + $delivery;
         $netProfit = $finalValue - $totalCost;
         $netProfitPercent = ($finalValue / $totalCost) - 1;
+
+        dd($installation, $homologation, $ca, $tax, $commission, $totalCost, $finalValue);
 
         return ['netProfit' => $netProfit, 'netProfitPercent' => $netProfitPercent, 'totalCost' => $totalCost];
     }
