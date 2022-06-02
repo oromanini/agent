@@ -113,7 +113,7 @@
                 <div class="columns" style="margin-top: 50px;">
                     <label for="roof_structure" class="label">Selecione o telhado</label>
                 </div>
-                <div class="columns" style="display: flex; flex-direction: column; align-items: center; justify-content: center">
+                <div class="columns" id="roof_div">
                     @foreach($roofs as $roof)
                         <div class="column">
                             <label>

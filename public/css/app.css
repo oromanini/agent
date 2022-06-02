@@ -10911,6 +10911,13 @@ input[name=kit_id]:checked + #all {
   padding: 20px;
 }
 
+#roof_div {
+  display: flex;
+  flex-direction: row;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
 .my-box-shadow:hover {
   transition: width 0.2s;
   border: 4px solid #f2a714;
@@ -10932,6 +10939,10 @@ input[name=kit_id]:checked + #all {
 
   .discount {
     margin: 5px;
+  }
+
+  #roof_div {
+    flex-direction: column;
   }
 }
 * {
