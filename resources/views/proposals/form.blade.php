@@ -110,10 +110,10 @@
                     </div>
                 </div>
 
-                <div class="columns" style="margin-top: 50px; display: flex; flex-direction: column; align-items: center">
+                <div class="columns" style="margin-top: 50px;">
                     <label for="roof_structure" class="label">Selecione o telhado</label>
                 </div>
-                <div class="columns">
+                <div class="columns" style="display: flex; flex-direction: column; align-items: center; justify-content: center">
                     @foreach($roofs as $roof)
                         <div class="column">
                             <label>
