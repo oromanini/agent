@@ -24,6 +24,8 @@ class pricingService
     private function adjustMargin($cost, $kwp, $panelCount, $finalValue): float
     {
 
+        dd($panelCount);
+
         while ($this->calculateNetProfit($cost, $kwp, $panelCount, $finalValue)['netProfitPercent'] < 0.09) {
             $finalValue += 250;
         }
@@ -66,8 +68,6 @@ class pricingService
         $totalCost = $cost + $installation + $homologation + $ca + $tax + $commission + $delivery;
         $netProfit = $finalValue - $totalCost;
         $netProfitPercent = ($finalValue / $totalCost) - 1;
-
-        dd($panelCount, env('INSTALLATION_PANEL_PRICE'));
 
         return ['netProfit' => $netProfit, 'netProfitPercent' => $netProfitPercent, 'totalCost' => $totalCost];
     }
