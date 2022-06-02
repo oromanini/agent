@@ -20,10 +20,9 @@ class ProposalValueHistoryService
             $finalPrice = setFinalPrice($data);
             $valueHistory->initial_price = $finalPrice;
             $valueHistory->final_price = $finalPrice;
-
         }
 
-        $valueHistory->commission_percent = env('COMMISSION_PERCENT');
+        $valueHistory->commission_percent = env('COMMISSION_PERCENT') * 100;
         $valueHistory->discount_percent = 0;
         $valueHistory->user_id = auth()->user()->id;
 
@@ -37,7 +36,7 @@ class ProposalValueHistoryService
     public function update($valueHistory, $data): array
     {
         $initialPrice = $valueHistory->initial_price;
-        $fullCommissionPercent = (float)env('COMMISSION_PERCENT') / 100;
+        $fullCommissionPercent = (float)env('COMMISSION_PERCENT');
 
         if (isset($data['discount_percent'])) {
 

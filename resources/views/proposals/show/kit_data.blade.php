@@ -1,7 +1,7 @@
 <div class="columns is-flex is-flex-wrap-wrap">
 
     @foreach($kits as $kit)
-        <div class="column is-12">
+        <div class="column is-12" style="padding: 0">
             <div class="accordion-tabs">
                 <div class="tab">
                     <input type="checkbox" id="chck{{ $loop->iteration }}" class="checkbox-accordion">

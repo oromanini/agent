@@ -69,7 +69,7 @@ class pricingService
         return ['netProfit' => $netProfit, 'netProfitPercent' => $netProfitPercent, 'totalCost' => $totalCost];
     }
 
-    private function calculateCa($finalValue, $kwp): float
+    public function calculateCa($finalValue, $kwp): float
     {
         if ($kwp <= 2) {
             return $finalValue * 0.04;
