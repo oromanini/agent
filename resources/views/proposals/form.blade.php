@@ -346,8 +346,12 @@
 
                             let finalValue = calculateFinalValue(costValue, kwp, roof, panelCount);
 
-                            $('#loader').removeClass('enable');
-                            $('#loader').addClass('disable');
+                            setTimeout(function(){
+                                $('#loader').removeClass('enable');
+                                $('#loader').addClass('disable');
+                            },2000)
+
+
 
                             $('#kits').append(
                                 '<div class="column is-3">' +
