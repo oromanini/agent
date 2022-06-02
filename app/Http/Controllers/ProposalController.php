@@ -126,7 +126,7 @@ class ProposalController extends Controller
 
         } catch (\Exception $e) {
 //            throw new \Exception($e);
-            session()->flash('message', ['error' => $e]);
+            session()->flash('message', ['error', $e]);
             return redirect()->route('proposal.index');
 
         }

@@ -18,6 +18,10 @@ class ValueHistoryController extends Controller
 
     public function applyCommissionOrDiscount($id, Request $request): RedirectResponse
     {
+        if ($request->all()['discount_percent'] && ($request->all()['discount_percent'] > 4 || $request->all()['discount_percent'] < 0)) {
+            session()->flash('message', ['error', 'O desconto não pode ser maior do que 4%']);
+        }
+
         $proposal = Proposal::find($id);
         $valueHistory = $proposal->valueHistory;
 

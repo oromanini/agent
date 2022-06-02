@@ -301,7 +301,7 @@
             }
 
             $('#kitSearchSubmit').on('click', function () {
-
+                $('#loader').show()
                 let consumption = $('#average_consumption').val();
                 let incidence = setIncidence()
 
@@ -320,8 +320,7 @@
                     .done(function (msg) {
 
                         setTimeout(function(){
-                            $('#loader').removeClass('enable');
-                            $('#loader').addClass('disable');
+                            $('#loader').hide()
                         },2000)
 
                         $('#kits').empty();

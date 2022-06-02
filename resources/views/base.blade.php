@@ -24,5 +24,15 @@
 </section>
 @include('footer')
 @include('whatsapp')
+
+<script>
+    $(window).on('load', function () {
+        setTimeout(function () {
+            $('#loader').hide();
+        }, 500 )
+
+    });
+</script>
+
 </body>
 </html>

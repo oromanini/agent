@@ -1,4 +1,4 @@
-<div id="loader" class="disable" >
+<div id="loader">
     <img src="/img/loader.gif" width="70" style="z-index: 10;background-color: #fff; border-radius: 100%">
     <span style="color: #fff; font-size: 16pt; margin-top: 20px">Carregando, aguarde ...</span>
 </div>
@@ -13,6 +13,7 @@
         position: fixed;
         top: 0;
         left: 0;
+        display: flex;
         justify-content: center;
         align-items: center;
         flex-direction: column;
