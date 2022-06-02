@@ -6,7 +6,7 @@ class pricingService
 {
     public function calculateFinalPrice($data): float
     {
-        $cost = $data['cost'];
+        $cost = (float)$data['cost'];
         $kwp = $data['kwp'];
         $panelCount = $data['panel_count'];
         $finalValue = $cost * 1.45;
