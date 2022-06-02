@@ -319,6 +319,11 @@
                 })
                     .done(function (msg) {
 
+                        setTimeout(function(){
+                            $('#loader').removeClass('enable');
+                            $('#loader').addClass('disable');
+                        },2000)
+
                         $('#kits').empty();
                         $('#generateProposalButton').empty();
                         $.each(msg, function (i, item) {
@@ -344,16 +349,7 @@
                             let costValue = item[0].price + (item[1] ? item[1].price : 0) + (item[2] ? item[2].price : 0) + (item[3] ? item[3].price : 0);
                             let panelCount = setPanelCount(item);
 
-                            console.log(panelCount)
-
                             let finalValue = calculateFinalValue(costValue, kwp, roof, panelCount);
-
-                            setTimeout(function(){
-                                $('#loader').removeClass('enable');
-                                $('#loader').addClass('disable');
-                            },2000)
-
-
 
                             $('#kits').append(
                                 '<div class="column is-3">' +
