@@ -110,7 +110,7 @@
                     </div>
                 </div>
 
-                <div class="columns" style="margin-top: 50px">
+                <div class="columns" style="margin-top: 50px; display: flex; flex-direction: column; align-items: center">
                     <label for="roof_structure" class="label">Selecione o telhado</label>
                 </div>
                 <div class="columns">
