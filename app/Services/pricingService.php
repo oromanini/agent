@@ -67,7 +67,7 @@ class pricingService
         $netProfit = $finalValue - $totalCost;
         $netProfitPercent = ($finalValue / $totalCost) - 1;
 
-        dd($installation, $homologation, $ca, $tax, $commission, $totalCost, $finalValue);
+        dd($installation, env('INSTALLATION_PANEL_PRICE'));
 
         return ['netProfit' => $netProfit, 'netProfitPercent' => $netProfitPercent, 'totalCost' => $totalCost];
     }
