@@ -40,9 +40,4 @@ class Proposal extends Model
     {
         return $this->belongsTo(ProposalValueHistory::class);
     }
-
-    public function setRoofOrientationsAttribute()
-    {
-        return json_decode($this->roof_structure, true);
-    }
 }

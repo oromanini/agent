@@ -100,7 +100,7 @@ class ProposalController extends Controller
     {
         $proposal = Proposal::find($id);
         $valueHistoryData = $this->setValueHistoryData($proposal);
-        $kits = getKitCodesFromProposal($proposal);
+        $kits = $proposal->is_manual ? json_decode($proposal->components, true) : getKitCodesFromProposal($proposal);
 
         return view('proposals.show', compact('proposal', 'valueHistoryData', 'kits'));
     }
@@ -115,20 +115,13 @@ class ProposalController extends Controller
     public function manualStore(Request $request): RedirectResponse
     {
         $message = null;
-        $city = Client::find($request->all()['client'])->addresses->first()->city;
-        $incidence = $this->solarIncidenceService->getSolarIncidence($city);
-        $proposal = $this->proposalService->fillObject($request->all(), $incidence);
+        $data = $request->all();
 
         try {
-            $proposal->value_history_id = $this->proposalValueHistoryService->store($request->all(), true);
-            $proposal->pre_inspection_id = $this->preInspectionService->store();
-            $message = $this->proposalService->store($proposal);
+            $message = $this->proposalService->store($data, true);
 
         } catch (\Exception $e) {
-//            throw new \Exception($e);
-            session()->flash('message', ['error', $e]);
-            return redirect()->route('proposal.index');
-
+            throw new \Exception($e);
         }
 
         session()->flash('message', $message);
@@ -142,13 +135,14 @@ class ProposalController extends Controller
     public function generatePdf($proposal_id): Response
     {
         $proposal = Proposal::find($proposal_id);
+        $pdfParams = $this->setPdfParams($proposal);
         $city = $proposal->client->addresses->first()->city;
         $components = json_decode($proposal->components, true);
+        $firstKit = $proposal->is_manual ? null : kitByUuid(getKitCodesFromProposal($proposal)[0]);
 
-        $firstKit = kitByUuid(getKitCodesFromProposal($proposal)[0]);
         $manualData = $proposal->is_manual ? json_decode($proposal->manual_data, true) : null;
-        $inverterImage = $proposal->isManual ? setInverterImage((int)$manualData['inverter_brand']) : setInverterImage($firstKit['technical_description']['inverter_brand']);
-        $panelBrandImage = $proposal->isManual ? setPanelBrandImage((int)$manualData['panel_brand']) : setPanelBrandImage($firstKit['technical_description']['panel_specs']['panel_brand']);
+        $inverterImage = $proposal->is_manual ? setInverterImage((int)$manualData['inverter_brand']) : setInverterImage($firstKit['technical_description']['inverter_brand']);
+        $panelBrandImage = $proposal->is_manual ? setPanelBrandImage((int)$manualData['panel_brand']) : setPanelBrandImage($firstKit['technical_description']['panel_specs']['panel_brand']);
 
         $withoutSolar = calculateWithoutSolar($proposal);
         $withSolar = floatToMoney(calculateWithSolar($proposal));
@@ -156,7 +150,7 @@ class ProposalController extends Controller
         $payback = $this->paybackService->setPaybackData($proposal);
         $generationData = $this->paybackService->setGeterationData($proposal);
 
-        $pdf = PDF::loadView('proposals.pdf', compact($this->setPdfParams()));
+        $pdf = PDF::loadView('proposals.pdf', compact($pdfParams));
         return $pdf->stream('#' . $proposal->id . ' ' . $proposal->client->name . '.pdf');
     }
 
@@ -178,7 +172,7 @@ class ProposalController extends Controller
         ];
     }
 
-    private function setPdfParams(): array
+    private function setPdfParams($proposal): array
     {
         return [
             'proposal',
@@ -197,6 +191,7 @@ class ProposalController extends Controller
 
     private function setValueHistoryData($proposal): array
     {
+
         $valueHistory = $proposal->valueHistory;
 
         $discountPercent = $valueHistory->discount_percent / 100;
@@ -245,7 +240,7 @@ class ProposalController extends Controller
         $commission = ($proposal->valueHistory->commission_percent / 100) * $proposal->valueHistory->final_price;
         $servicesCost = $installation + $homologation + $ca + $tax + $commission;
         $netProfitValue = $proposal->valueHistory->final_price - ($proposal->valueHistory->kit_cost + $servicesCost);
-        $netProfitPercent = $netProfitValue/$proposal->valueHistory->final_price;
+        $netProfitPercent = $netProfitValue / $proposal->valueHistory->final_price;
 
         return [
             'installation' => $installation,
@@ -256,7 +251,7 @@ class ProposalController extends Controller
             'net_profit_value' => $netProfitValue,
             'net_profit_percent' => $netProfitPercent,
             'services_cost' => $servicesCost
-         ];
+        ];
     }
 
 }

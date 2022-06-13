@@ -7,20 +7,14 @@ use Illuminate\Support\Facades\DB;
 
 class ProposalValueHistoryService
 {
-    public function store($data, $isManual): int
+    public function store($data, bool $isManual): int
     {
         $valueHistory = new ProposalValueHistory();
 
-        if ($isManual) {
-            $valueHistory->kit_cost = stringMoneyToFloat($data['cost']);
-            $valueHistory->initial_price = stringMoneyToFloat($data['final_value']);
-            $valueHistory->final_price = stringMoneyToFloat($data['final_value']);
-        } else {
-            $valueHistory->kit_cost = (float)$data['cost'];
-            $finalPrice = setFinalPrice($data);
-            $valueHistory->initial_price = $finalPrice;
-            $valueHistory->final_price = $finalPrice;
-        }
+        $valueHistory->kit_cost = $isManual ? stringMoneyToFloat($data['cost']) : $data['sumKits']['cost'];
+        $finalPrice = $isManual ? stringMoneyToFloat($data['final_value']) : setFinalPrice($data);
+        $valueHistory->initial_price = $finalPrice;
+        $valueHistory->final_price = $finalPrice;
 
         $valueHistory->commission_percent = env('COMMISSION_PERCENT') * 100;
         $valueHistory->discount_percent = 0;
@@ -75,6 +69,5 @@ class ProposalValueHistoryService
 
         return ['success', 'Alteração de valor aplicada!'];
     }
-
 
 }

@@ -12,7 +12,7 @@ use App\Services\ProposalService;
 use Illuminate\Support\Facades\Http;
 use Ramsey\Uuid\Uuid;
 
-function stringMoneyToFloat(string $money): float
+function stringMoneyToFloat($money): float
 {
     $float = str_replace('.', '', $money);
 
