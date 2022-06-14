@@ -102,7 +102,7 @@
                             <div
                                 class="select is-multiline is-fullwidth is-rounded @error('installation_uc') is-danger @enderror">
                                 <select id="installation_uc" name="installation_uc">
-                                    <option value="">Selecione...</option>
+                                    <option value="">Não há UC's cadastradas</option>
                                 </select>
                             </div>
                             @error('installation_uc')<span class="error-message">{{ $message }}</span>@enderror
@@ -231,7 +231,9 @@
                     }
                 })
                     .done(function (msg) {
-                        $('#installation_uc').empty();
+                        if (msg != '') {
+                            $('#installation_uc').empty();
+                        }
 
                         $.each(msg, function (i, item) {
                             $('#installation_uc').append($('<option>', {
@@ -308,6 +310,7 @@
                 let kwp = parseFloat(consumption) / 30 / (incidence - {{ (float)env('GENERATION_LOST') }});
                 let roof = $('.roof-structure').val()
                 let tension = $('select[name=tension_pattern] option').filter(':selected').val()
+                let addressId = $('select[name=installation_address] option').filter(':selected').val()
 
                 $.ajax({
                     url: "/kitSearch/" + kwp.toFixed(2) + '/' + roof + '/' + tension,
@@ -319,9 +322,9 @@
                 })
                     .done(function (msg) {
 
-                        setTimeout(function(){
+                        setTimeout(function () {
                             $('#loader').hide()
-                        },2000)
+                        }, 2000)
 
                         $('#kits').empty();
                         $('#generateProposalButton').empty();
@@ -348,7 +351,8 @@
                             let costValue = item[0].price + (item[1] ? item[1].price : 0) + (item[2] ? item[2].price : 0) + (item[3] ? item[3].price : 0);
                             let panelCount = setPanelCount(item);
 
-                            let finalValue = calculateFinalValue(costValue, kwp, roof, panelCount);
+                            let finalValue = calculateFinalValue(costValue, item['sum'].kwp.toFixed(2), roof, panelCount);
+                            let averageProduction = calculateAverageProduction(addressId, item['sum'].kwp.toFixed(2));
 
                             $('#kits').append(
                                 '<div class="column is-3">' +
@@ -361,18 +365,15 @@
                                 '<div class="is-flex is-justify-content-center">' +
                                 '<img src="' + panelImage + '" alt="" width="200">' +
                                 '</div>' +
-                                '<div style="font-size: 7pt; text-align: center; color: #a00000">' +
-                                item[0]['code'] + '<br>' + (item[1] ? item[1]['code'] : 'não tem') + '<br>' + (item[2] ? item[2]['code'] : 'não tem') + '<br>' + (item[3] ? item[3]['code'] : 'não tem') +
-                                '</div>' +
                                 '<div style="display:flex; justify-content: center; text-align: center; font-size: 18pt; color: #6b7280; font-weight: 900; margin: 20px 0px">' +
                                 item['sum'].kwp.toFixed(2) + ' kWp' +
                                 '</div>' +
                                 '<div style="font-size: 10pt; text-align: center">' +
-                                'Geração aproximada de ' + 'X' + ' kWh/mês' +
+                                'Geração aproximada de ' + averageProduction + ' kWh/mês' +
                                 '</div>' +
                                 '<hr>' +
                                 '<div style="text-align: center">' +
-                                '<strong>Painel: </strong>' + panelSpecs['panel_brand'] + ' ' + panelSpecs['panel_power'] + 'W ' + panelSpecs['panel_type'] +
+                                '<strong>Painel: </strong>' + panelCount + ' ' + panelSpecs['panel_brand'] + ' ' + panelSpecs['panel_power'] + 'W ' + panelSpecs['panel_type'] +
                                 '</div>' +
                                 '<div style="text-align: center">' +
                                 '<strong>Eficiência: </strong>' + panelSpecs['panel_efficiency'] + '%' +
@@ -425,6 +426,36 @@
                     roof_structure: roof,
                     cost: costValue,
                     panel_count: panelCount,
+                    _token: '{{csrf_token()}}'
+                },
+                type: 'post',
+                beforeSend: function () {
+                    console.log("ENVIANDO...");
+                }
+            })
+                .done(function (msg, m) {
+                    result = msg
+                })
+                .fail(function (jqXHR, textStatus, msg) {
+                    console.log(msg);
+                });
+
+
+            return result;
+        }
+
+
+        function calculateAverageProduction(addressId, kwp) {
+
+            let url = '/setAverageProduction';
+            let result;
+
+            $.ajax({
+                url: url,
+                async: false,
+                data: {
+                    kwp: kwp,
+                    addressId: addressId,
                     _token: '{{csrf_token()}}'
                 },
                 type: 'post',

@@ -82,6 +82,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/incidenceFromAddressId/{id}', [ClientController::class, 'incidenceFromAddress']);
     Route::get('/kitSearch/{kwp}/{roof}/{tension}', [KitSearchController::class, 'kitsSearch']);
     Route::post('/setFinalValue', [ProposalController::class, 'setFinalValue']);
+    Route::post('/setAverageProduction', [ProposalController::class, 'setAverageProduction']);
 
 });
 

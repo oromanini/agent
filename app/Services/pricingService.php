@@ -6,10 +6,11 @@ class pricingService
 {
     public function calculateFinalPrice($data): float
     {
-        $cost = (float)$data['sumKits']['cost'];
-        $kwp = $data['sumKits']['kwp'];
-        $panelCount = $data['sumKits']['panel_count'];
+        $cost = isset($data['sumKits']) ? (float)$data['sumKits']['cost'] : (float)$data['cost'];
+        $kwp = isset($data['sumKits']) ? $data['sumKits']['kwp'] : (float)$data['kwp'];
+        $panelCount = isset($data['sumKits']) ? $data['sumKits']['panel_count'] : (int)$data['panel_count'];
         $finalValue = $cost * 1.45;
+
 
         $finalValue = $this->adjustMargin($cost, $kwp, $panelCount, $finalValue);
 

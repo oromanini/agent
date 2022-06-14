@@ -190,7 +190,7 @@
                                     <select id="city" name="city" >
                                         <option selected>Selecione...</option>
                                     </select>
-                                    @error('city')<span class="error-message">{{ $message }}</span>@enderror
+{{--                                    @error('city')<span class="error-message">{{ $message }}</span>@enderror--}}
                                 </div>
                             </div>
                         </div>
@@ -204,6 +204,7 @@
                         </h6>
                     </div>
                     <div class="columns">
+{{--                        @dd($consumerUnit)--}}
                         <div class="column is-3">
                             <div class="field">
                                 <label for="uc_number" class="label">Unidade consumidora (N.º)</label>

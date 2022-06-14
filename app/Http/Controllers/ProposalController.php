@@ -7,6 +7,7 @@ use App\Enums\PanelBrands;
 use App\Enums\RoofStructure;
 use App\Enums\TensionPattern;
 use App\Http\Requests\ProposalRequest;
+use App\Models\Address;
 use App\Models\Client;
 use App\Models\Proposal;
 use App\Models\State;
@@ -158,6 +159,16 @@ class ProposalController extends Controller
     {
         $data = $request->all();
         return $this->pricingService->calculateFinalPrice($data);
+    }
+
+    public function setAverageProduction(Request $request)
+    {
+        $data = $request->all();
+        $city = Address::find((int)$data['addressId'])->city;
+        $incidence = (float)str_replace(',', '.', $this->solarIncidenceService->getSolarIncidence($city)->average);
+
+
+        return ceil((float)$data['kwp'] * 30 * $incidence);
     }
 
     private function setManualParams(): array
