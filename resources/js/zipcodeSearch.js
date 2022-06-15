@@ -1,5 +1,7 @@
 $(function (){
 
+    setCities()
+
     function clean_form_zipcode() {
         $("#street").val("");
         $("#neighborhood").val("");
@@ -55,12 +57,18 @@ $(function (){
         }
     });
 
-
     // CITIES LOAD
     $('#state').change(function () {
+        setCities()
+    });
 
+    $('#state2').change(function () {
+        setCities2()
+    });
+
+    function setCities() {
         let id = $('#state').find(":selected").val();
-
+        let cityId = parseInt($('#city_id').val());
 
         $.ajax({
             url: "/citiesByState/" + id,
@@ -70,15 +78,14 @@ $(function (){
             }
         })
             .done(function (msg) {
-                console.log(msg);
 
                 $('#city').empty();
 
                 $.each(msg, function (i, item) {
                     $('#city').append($('<option>', {
                         value: item.id,
-                        text: item.name
-                    }));
+                        text: item.name,
+                    }).prop('selected', item.id === cityId));
                 });
 
 
@@ -86,8 +93,35 @@ $(function (){
             .fail(function (jqXHR, textStatus, msg) {
                 console.log(msg);
             });
-    });
+    }
+
+    function setCities2() {
+        let id = $('#state2').find(":selected").val();
+        let cityId = parseInt($('#city_id2').val());
+
+        $.ajax({
+            url: "/citiesByState/" + id,
+            type: 'get',
+            beforeSend: function () {
+                console.log("ENVIANDO...");
+            }
+        })
+            .done(function (msg) {
+
+                $('#city2').empty();
+
+                $.each(msg, function (i, item) {
+                    $('#city2').append($('<option>', {
+                        value: item.id,
+                        text: item.name,
+                    }).prop('selected', item.id === cityId));
+                });
 
 
+            })
+            .fail(function (jqXHR, textStatus, msg) {
+                console.log(msg);
+            });
+    }
 
 })

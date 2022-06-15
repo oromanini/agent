@@ -4990,6 +4990,8 @@ __webpack_require__(/*! ./kitsSearch */ "./resources/js/kitsSearch.js");
 
 __webpack_require__(/*! ./tabs */ "./resources/js/tabs.js");
 
+__webpack_require__(/*! ./modal */ "./resources/js/modal.js");
+
 
 window.Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"];
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].start();
@@ -5085,6 +5087,56 @@ $(function () {
 
 /***/ }),
 
+/***/ "./resources/js/modal.js":
+/*!*******************************!*\
+  !*** ./resources/js/modal.js ***!
+  \*******************************/
+/***/ (() => {
+
+document.addEventListener('DOMContentLoaded', function () {
+  // Functions to open and close a modal
+  function openModal($el) {
+    $el.classList.add('is-active');
+  }
+
+  function closeModal($el) {
+    $el.classList.remove('is-active');
+  }
+
+  function closeAllModals() {
+    (document.querySelectorAll('.modal') || []).forEach(function ($modal) {
+      closeModal($modal);
+    });
+  } // Add a click event on buttons to open a specific modal
+
+
+  (document.querySelectorAll('.address-modal-trigger') || []).forEach(function ($trigger) {
+    var modal = $trigger.dataset.target;
+    var $target = document.getElementById(modal);
+    $trigger.addEventListener('click', function () {
+      openModal($target);
+    });
+  }); // Add a click event on various child elements to close the parent modal
+
+  (document.querySelectorAll('.modal-background, .modal-close, .modal-card-head .delete, .modal-card-foot .button') || []).forEach(function ($close) {
+    var $target = $close.closest('.modal');
+    $close.addEventListener('click', function () {
+      closeModal($target);
+    });
+  }); // Add a keyboard event to close all modals
+
+  document.addEventListener('keydown', function (event) {
+    var e = event || window.event;
+
+    if (e.keyCode === 27) {
+      // Escape key
+      closeAllModals();
+    }
+  });
+});
+
+/***/ }),
+
 /***/ "./resources/js/sidebar.js":
 /*!*********************************!*\
   !*** ./resources/js/sidebar.js ***!
@@ -5165,6 +5217,8 @@ $(function () {
 /***/ (() => {
 
 $(function () {
+  setCities();
+
   function clean_form_zipcode() {
     $("#street").val("");
     $("#neighborhood").val("");
@@ -5214,7 +5268,15 @@ $(function () {
   }); // CITIES LOAD
 
   $('#state').change(function () {
+    setCities();
+  });
+  $('#state2').change(function () {
+    setCities2();
+  });
+
+  function setCities() {
     var id = $('#state').find(":selected").val();
+    var cityId = parseInt($('#city_id').val());
     $.ajax({
       url: "/citiesByState/" + id,
       type: 'get',
@@ -5222,18 +5284,39 @@ $(function () {
         console.log("ENVIANDO...");
       }
     }).done(function (msg) {
-      console.log(msg);
       $('#city').empty();
       $.each(msg, function (i, item) {
         $('#city').append($('<option>', {
           value: item.id,
           text: item.name
-        }));
+        }).prop('selected', item.id === cityId));
       });
     }).fail(function (jqXHR, textStatus, msg) {
       console.log(msg);
     });
-  });
+  }
+
+  function setCities2() {
+    var id = $('#state2').find(":selected").val();
+    var cityId = parseInt($('#city_id2').val());
+    $.ajax({
+      url: "/citiesByState/" + id,
+      type: 'get',
+      beforeSend: function beforeSend() {
+        console.log("ENVIANDO...");
+      }
+    }).done(function (msg) {
+      $('#city2').empty();
+      $.each(msg, function (i, item) {
+        $('#city2').append($('<option>', {
+          value: item.id,
+          text: item.name
+        }).prop('selected', item.id === cityId));
+      });
+    }).fail(function (jqXHR, textStatus, msg) {
+      console.log(msg);
+    });
+  }
 });
 
 /***/ }),

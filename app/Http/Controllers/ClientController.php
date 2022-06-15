@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ClientRequest;
 use App\Models\Address;
 use App\Models\Client;
+use App\Models\ConsumerUnit;
 use App\Models\State;
 use App\Models\User;
 use App\Repositories\ClientRepository;
@@ -13,6 +14,7 @@ use App\Services\SolarIncidenceService;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use function Sodium\add;
 
 class ClientController extends Controller
 {
@@ -56,12 +58,25 @@ class ClientController extends Controller
         return redirect()->route('client.index');
     }
 
+    public function update($id, ClientRequest $request): RedirectResponse
+    {
+        $request->validated();
+
+        $message = $this->clientService->update($id, $request->all());
+
+        session()->flash('message', $message);
+
+        return redirect()->route('client.index');
+    }
+
     public function edit($id)
     {
         $client = Client::find($id);
         $states = State::all();
         $address = $client->addresses->first();
-        $consumerUnit = $address->consumerUnit;
+        $addresses = $client->addresses;
+        $consumerUnit = $address->consumerUnit ?? null;
+        $cityId = $address->city->id;
 
         return view('clients.form', compact($this->setEditParams()));
     }
@@ -73,7 +88,10 @@ class ClientController extends Controller
 
     public function ucsFromClientId($id)
     {
-        return Client::find($id)->consumerUnit;
+        $addresses = Address::query()->select('consumer_unit_id')->where('client_id', $id)->whereNotNull('consumer_unit_id')->get()->toArray();
+        $consumerUnits = ConsumerUnit::query()->whereIn('id', $addresses)->get();
+
+        return $consumerUnits;
     }
 
     public function incidenceFromAddress($id)
@@ -90,7 +108,9 @@ class ClientController extends Controller
             'client',
             'states',
             'address',
-            'consumerUnit'
+            'consumerUnit',
+            'cityId',
+            'addresses'
         ];
     }
 }

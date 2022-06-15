@@ -233,14 +233,15 @@
                     .done(function (msg) {
                         if (msg != '') {
                             $('#installation_uc').empty();
-                        }
 
-                        $.each(msg, function (i, item) {
-                            $('#installation_uc').append($('<option>', {
-                                value: item.id,
-                                text: item.number
-                            }));
-                        });
+
+                            $.each(msg, function (i, item) {
+                                $('#installation_uc').append($('<option>', {
+                                    value: item.id,
+                                    text: 'U.C' + item.number
+                                }));
+                            });
+                        }
                     })
                     .fail(function (jqXHR, textStatus, msg) {
                         console.log(msg);

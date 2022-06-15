@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AddressController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\ClientController;
@@ -61,6 +62,13 @@ Route::middleware('auth')->group(function () {
     Route::controller(PreInspectionController::class)->group(function () {
 
         Route::put('propostas/{id}/previstoria', 'edit')->name('inspection.update');
+    });
+
+    Route::controller(AddressController::class)->group(function () {
+
+        Route::name('address.')->group(function () {
+            Route::post('/address/store/{clientId}', 'store')->name('store');
+        });
     });
 
     Route::controller(UserController::class)->group(function () {

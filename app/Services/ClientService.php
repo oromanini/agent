@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Address;
 use App\Models\Client;
 use App\Models\ConsumerUnit;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use Ramsey\Uuid\Uuid;
@@ -26,7 +27,12 @@ class ClientService implements BaseService
             });
 
             $address = $this->storeAddress($data, $client->id);
-            $consumerUnit = $this->storeconsumerUnit($data, $address->id);
+            $consumerUnit = $this->storeConsumerUnit($data, $address->id);
+            $address->consumer_unit_id = $consumerUnit->id;
+
+            DB::transaction(function () use ($address) {
+                $address->update();
+            });
 
         } catch (\Exception $e) {
             return ['error','Erro ao cadastrar cliente: ' . $e];
@@ -37,7 +43,33 @@ class ClientService implements BaseService
 
     public function update($id, $data): array
     {
-       return [];
+        $client = Client::find($id);
+        $address = Address::query()->where('client_id', $client->id)->first();
+
+        $client->name = $data['name'];
+        $client->type = $data['type'];
+        $client->document = $data['document'];
+        $client->email = $data['email'];
+        $client->phone_number = $data['phone_number'];
+
+        $address->street = $data['street'];
+        $address->number = $data['address_number'];
+        $address->complement = $data['complement'];
+        $address->zipcode = $data['zipcode'];
+        $address->neighborhood = $data['neighborhood'];
+        $address->city_id = $data['city'];
+
+        try {
+            DB::transaction(function () use ($client, $address) {
+                $client->update();
+                $address->update();
+            });
+
+        } catch (\Exception $e) {
+            throw new \Exception('Erro ao atualizar cliente: '.$e);
+        }
+
+        return ['success','Cliente atualizado com sucesso!'];
     }
 
     public function delete($id): array
@@ -89,16 +121,15 @@ class ClientService implements BaseService
         return $address;
     }
 
-    private function storeconsumerUnit($data, $address_id): ?ConsumerUnit
+    private function storeConsumerUnit($data, $address_id): ?ConsumerUnit
     {
         $consumerUnit = new ConsumerUnit();
 
-        if (isset($data['uc_number']) && isset($data['uc_type']) && isset($data['eletricity_bill'])) {
+        if (isset($data['uc_number']) && isset($data['uc_type']) && isset($data['electricity_bill'])) {
 
             $consumerUnit->number = $data['uc_number'];
             $consumerUnit->type = $data['uc_type'];
-            $consumerUnit->electricity_bill = $data['eletricity_bill']->storeAs('consumer_units', 'uc_address_' . $address_id . '.pdf');
-            $consumerUnit->address_id = $address_id;
+            $consumerUnit->eletricity_bill = $data['electricity_bill']->store('public/consumer_units/'. $address_id);
 
             DB::transaction(function () use ($consumerUnit) {
                 $consumerUnit->save();

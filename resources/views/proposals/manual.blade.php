@@ -34,22 +34,6 @@
                             <a href="{{ route('client.create') }}" class="button is-primary">Cadastrar cliente</a>
                         @endif
                     </div>
-                    <div class="column is-3">
-                        <div class="field">
-                            <label for="client" class="label">Agente*</label>
-                            <div
-                                class="select is-multiline is-fullwidth is-rounded @error('agent') is-danger @enderror">
-                                <select id="agent" name="agent">
-                                    @forelse($agents as $agent)
-                                        <option value="{{ $agent->id }}">{{$agent->name}}</option>
-                                    @empty
-                                        <option value="">Não há agentes cadastrados</option>
-                                    @endforelse
-                                </select>
-                            </div>
-                            @error('agent')<span class="error-message">{{ $message }}</span>@enderror
-                        </div>
-                    </div>
                     <div class="column is-2">
                         <div class="field">
                             <label for="average_consumption" class="label">Média de consumo &nbsp;

@@ -81,23 +81,25 @@
                 </thead>
                 <tbody>
                 @forelse($clients as $client)
-                    <tr class="lh-40">
-                        <th>{{$client->id}}</th>
-                        <td>{{ $client->name }}</td>
-                        <td>{{ $client == 'person' ? 'Pessoa física' : 'Pessoa jurídica' }}</td>
-                        <td>{{$client->document}}</td>
-                        <td>{{$client->addresses->first()->city->name_and_federal_unit}}</td>
-                        <td>{{$client->phone_number}}</td>
-                        <td>{{$client->agent->name}}</td>
-                        <td>
-                            <a class="button is-primary" href="{{ route('client.edit', [$client->id]) }}">
-                                <ion-icon name="create-outline" class="table-icon"></ion-icon>
-                            </a>
-                            <a class="button is-danger">
-                                <ion-icon name="trash-outline" class="table-icon"></ion-icon>
-                            </a>
-                        </td>
-                    </tr>
+                    @if(count($client->addresses) != 0)
+                        <tr class="lh-40">
+                            <th>{{$client->id}}</th>
+                            <td>{{ $client->name }}</td>
+                            <td>{{ $client == 'person' ? 'Pessoa física' : 'Pessoa jurídica' }}</td>
+                            <td>{{$client->document}}</td>
+                            <td>{{$client->addresses->first()->city->name_and_federal_unit}}</td>
+                            <td>{{$client->phone_number}}</td>
+                            <td>{{$client->agent->name}}</td>
+                            <td>
+                                <a class="button is-primary" href="{{ route('client.edit', [$client->id]) }}">
+                                    <ion-icon name="create-outline" class="table-icon"></ion-icon>
+                                </a>
+                                <a class="button is-danger">
+                                    <ion-icon name="trash-outline" class="table-icon"></ion-icon>
+                                </a>
+                            </td>
+                        </tr>
+                    @endif
                 @empty
                     <tr>
                         <td>Não há clientes cadastrados</td>
