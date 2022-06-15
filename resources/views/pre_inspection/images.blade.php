@@ -5,7 +5,7 @@
             <div class="card">
                 <div class="card-image">
                     <figure class="image is-4by3">
-                        <img class="cardimage" onerror="this.src='/img/no-image.png';" src="/storage/{{$roof}}" alt="Placeholder image">
+                        <img class="cardimage" onerror="this.src='/img/no-image.png';" src="/storage/{{ str_replace('public/', '', $roof) }}" alt="Placeholder image">
                     </figure>
                 </div>
                 <div class="card-content">
@@ -14,7 +14,7 @@
                     </div>
                 </div>
                 <footer class="card-footer">
-                    <a href="/storage/{{$roof}}" target="_blank" class="card-footer-item">Abrir</a>
+                    <a href="/storage/{{str_replace('public/', '', $roof)}}" target="_blank" class="card-footer-item">Abrir</a>
                     <a href="#" class="card-footer-item">Excluir</a>
                 </footer>
             </div>
@@ -45,7 +45,7 @@
             <div class="card">
                 <div class="card-image">
                     <figure class="image is-4by3">
-                        <img class="cardimage" onerror="this.src='/img/no-image.png';" src="{{ $image['url'] }}" alt="Placeholder image">
+                        <img class="cardimage" onerror="this.src='/img/no-image.png';" src="{{ str_replace('public/', '', $image['url']) }}" alt="Placeholder image">
                     </figure>
                 </div>
                 <div class="card-content">
@@ -54,7 +54,7 @@
                     </div>
                 </div>
                 <footer class="card-footer">
-                    <a href="{{ $image['url'] }}" target="_blank" class="card-footer-item">Abrir</a>
+                    <a href="{{ str_replace('public/', '', $image['url']) }}" target="_blank" class="card-footer-item">Abrir</a>
                     <a href="#" class="card-footer-item">Excluir</a>
                 </footer>
             </div>
