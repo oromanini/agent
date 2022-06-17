@@ -360,6 +360,10 @@
                             let costValue = item[0].price + (item[1] ? item[1].price : 0) + (item[2] ? item[2].price : 0) + (item[3] ? item[3].price : 0);
                             let panelCount = setPanelCount(item);
 
+                            let isPromotional = technicalDescription['inverter_brand'] === 'Sofar' && (item['sum'].kwp == 2.2 || item['sum'].kwp == 4.4 || item['sum'].kwp == 6.6 || item['sum'].kwp == 7.7);
+                            let isPromotionalText = isPromotional ? 'Promoção' : 'À vista';
+                            let isPromotionalColor = isPromotional ? 'is-success' : 'is-success is-light';
+
                             let finalValue = calculateFinalValue(costValue, item['sum'].kwp.toFixed(2), roof, panelCount);
                             let averageProduction = calculateAverageProduction(addressId, item['sum'].kwp.toFixed(2));
 
@@ -368,6 +372,9 @@
                                 '<label>' +
                                 '<input type="radio" name="kit_id" value="' + item[0]['code'] + ';' + (item[1] ? item[1]['code'] + ';' : 'null') + (item[2] ? item[2]['code'] + ';' : '') + (item[3] ? item[3]['code'] : '') + '">' +
                                 '<div id="all" class="my-box-shadow">' +
+                                '<span class="tag ' + isPromotionalColor + '">' +
+                                isPromotionalText +
+                                '</span>' +
                                 '<div class="is-flex is-justify-content-center">' +
                                 '<img src="' + inverterImage + '" alt="" width="150">' +
                                 '</div>' +
