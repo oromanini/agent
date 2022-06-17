@@ -80,7 +80,7 @@ function setPanelBrandImage($brand): string
             $img = $jinko;
         } elseif ($brand == 'Trina') {
             $img = $trina;
-        } elseif ($brand == 'Dah') {
+        } elseif ($brand == 'DAH Solar') {
             $img = $dah;
         } elseif ($brand == 'Sunket') {
             $img = $sunket;
@@ -116,7 +116,6 @@ function setInverterImage($brand): string
     $deye = '/img/inverters/deye.png';
     $sofar = '/img/inverters/sofar.png';
 
-
     if (is_string($brand)) {
 
         if ($brand == 'Growatt') {
@@ -148,7 +147,6 @@ function setInverterImage($brand): string
                 throw new Exception('Inversor não localizado.');
         }
     }
-
     return $img;
 }
 
