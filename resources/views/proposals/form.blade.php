@@ -288,6 +288,10 @@
                 if (brand == 'Jinko') {
                     panelImage = '/img/panel_brands/jinko.png'
                 }
+                console.log(brand)
+                if (brand == 'DAH Solar') {
+                    panelImage = '/img/panel_brands/dah.png'
+                }
 
                 return panelImage
             }
@@ -298,6 +302,9 @@
 
                 if (brand == 'Growatt') {
                     inverterImage = '/img/inverter_brands/growatt.png'
+                }
+                if (brand == 'Sofar') {
+                    inverterImage = '/img/inverter_brands/sofar.png'
                 }
 
                 return inverterImage

@@ -18,7 +18,6 @@
                     <a href="#" class="card-footer-item">Excluir</a>
                 </footer>
             </div>
-
         </div>
     @endforeach
 @endif
