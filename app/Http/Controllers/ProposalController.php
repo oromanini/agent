@@ -240,7 +240,7 @@ class ProposalController extends Controller
             'MONOFASICO-220V' => 'Monofásico 220V',
             'BIFASICO-220V' => 'Bifásico 220V',
             'TRIFASICO-220V' => 'Trifásico 220V',
-            'TRIFASICO-380V' => 'Trifásico 220V',
+            'TRIFASICO-380V' => 'Trifásico 380V',
         ];
     }
 
