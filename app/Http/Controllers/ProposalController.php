@@ -229,8 +229,7 @@ class ProposalController extends Controller
             'commissionDiscountValue' => $commissionDiscountValue,
             'cost' => floatToMoney($proposal->valueHistory->kit_cost),
             'gross_profit' => $grossProfit,
-            'totalCost' => $totalCost
-
+            'totalCost' => $totalCost,
         ];
     }
 

@@ -23,11 +23,11 @@
             @foreach($payback['data'] as $key => $value)
                 <tr>
                     <td style="color:#6b7280;">{{ $key }}</td>
-                    <td class="@if($value['balance']>1) is-green @else is-red @endif">{{ceil($value['generation'])}} kwh/mês</td>
+                    <td class="@if($value['balance']>1) is-green @else is-red @endif">{{ceil($value['generation'])}} <span style="font-size: 6pt">kwh/mês</span></td>
                     <td class="@if($value['balance']>1) is-green @else is-red @endif">0,7%</td>
                     <td class="@if($value['balance']>1) is-green @else is-red @endif">R$ {{floatToMoney($value['kw_value'])}}</td>
                     <td class="@if($value['balance']>1) is-green @else is-red @endif">3%</td>
-                    <td class="@if($value['balance']>1) is-green @else is-red @endif">{{ ceil($proposal->average_consumption) }} kWh/mês</td>
+                    <td class="@if($value['balance']>1) is-green @else is-red @endif">{{ ceil($proposal->average_consumption) }} <span style="font-size: 6pt">kWh/mês</span></td>
                     <td class="@if($value['balance']>1) is-green @else is-red @endif">R$ {{ floatToMoney($value['economy']) }}</td>
                     <td id="balance" class="@if($value['balance']>1) is-green @else is-red @endif">R$ {{ floatToMoney($value['balance']) }}</td>
                 </tr>
