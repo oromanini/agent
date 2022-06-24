@@ -1,7 +1,7 @@
 @if(auth()->user()->is_admin)
     <div class="columns box discount is-flex-wrap-wrap">
         <div class="column is-12">
-            <button class="button is-rounded is-static" id="button-show-hide" type="button">
+            <button class="button is-rounded " id="button-show-hide" type="button">
                 <ion-icon name="eye-outline"></ion-icon>&nbsp; Diretoria
             </button>
         </div>
