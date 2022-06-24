@@ -2,7 +2,7 @@
     <form action="{{ route('valueHistory.updatePrice', [$proposal->id]) }}" method="post">
         @csrf
         <div class="columns discount box">
-            <div class="column is-1 " style="padding-right: 50px">
+            <div class="column is-2 " style="padding-right: 50px">
                 <div class="field">
                     <label class="label">Desconto <span style="font-size: 8pt">(Máx. 4%)</span></label>
                     <div class="control">
