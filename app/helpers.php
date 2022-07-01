@@ -73,6 +73,7 @@ function setPanelBrandImage($brand): string
     $sunket = '/img/panel_brands/sunket.png';
     $trina = '/img/panel_brands/trina.png';
     $dah = '/img/panel_brands/dah.png';
+    $astronergy = '/img/panel_brands/astronergy.png';
 
     if (is_string($brand)) {
 
@@ -84,6 +85,8 @@ function setPanelBrandImage($brand): string
             $img = $dah;
         } elseif ($brand == 'Sunket') {
             $img = $sunket;
+        } elseif ($brand == 'Astronergy') {
+            $img = $astronergy;
         }
 
     } else {
@@ -100,6 +103,9 @@ function setPanelBrandImage($brand): string
                 break;
             case 4:
                 $img = $dah;
+                break;
+            case 5:
+                $img = $astronergy;
                 break;
             default:
                 throw new Exception('Painel não localizado.');
