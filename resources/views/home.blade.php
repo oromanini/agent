@@ -14,7 +14,7 @@
                 <div class="columns mt50 mb50" id="home-buttons">
                     <div class="column is-flex is-justify-content-center">
                         <a href="https://www.youtube.com/playlist?list=PL-v9iwlHmGNKo6aKbDvzoQaycqSQlYV57" class="p-red-button">
-                            <ion-icon name="logo-youtube"></ion-icon>  Treinamento para agentes
+                            <ion-icon name="logo-youtube"></ion-icon>  Treinamento
                         </a>
                     </div>
                     <div class="column is-flex is-justify-content-center">
