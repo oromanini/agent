@@ -10413,7 +10413,7 @@ a.has-text-danger-dark:hover, a.has-text-danger-dark:focus {
   left: 0;
   height: 100%;
   width: 70px;
-  background: #ffbc2b;
+  background: #ff2b2b;
   box-shadow: 10px 0 0 #f4f4f4;
   border-right: 5px solid #fff;
   padding: 0 5px;
@@ -10460,7 +10460,7 @@ a.has-text-danger-dark:hover, a.has-text-danger-dark:focus {
 }
 
 .side-navigation ul li a.side-active {
-  color: #ffbc2b !important;
+  color: #ff2b2b !important;
 }
 
 .side-navigation ul li a .side-icon {
@@ -10479,7 +10479,7 @@ a.has-text-danger-dark:hover, a.has-text-danger-dark:focus {
 }
 
 .side-navigation ul li.side-active a .side-icon ion-icon {
-  color: #ffbc2b;
+  color: #ff2b2b;
 }
 
 .side-navigation ul li a .side-title {
@@ -10493,7 +10493,7 @@ a.has-text-danger-dark:hover, a.has-text-danger-dark:focus {
 }
 
 .side-navigation ul li.side-active a .side-title {
-  color: #ffbc2b;
+  color: #ff2b2b;
 }
 
 .side-logo {
@@ -10765,7 +10765,20 @@ h6 {
 }
 
 .p-yellow-button {
-  background-color: #ffbc2b;
+  background-color: #ff2b2b;
+  text-decoration: none;
+  width: 300px;
+  border-radius: 10px;
+  color: #fff;
+  padding: 10px 25px;
+  font-size: 18pt;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.p-yellow-button {
+  background-color: #ff2b2b;
   text-decoration: none;
   width: 300px;
   border-radius: 10px;
