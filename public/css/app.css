@@ -10800,6 +10800,12 @@ a ion-icon {
   transition: width 0.3s;
 }
 
+.p-red-button:hover {
+  color: #fff;
+  transform: scale(1.1);
+  transition: width 0.3s;
+}
+
 .checkbox-accordion {
   position: absolute;
   opacity: 0;
