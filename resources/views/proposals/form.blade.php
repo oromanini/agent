@@ -316,7 +316,7 @@
                 let incidence = setIncidence()
 
                 let kwp = parseFloat(consumption) / 30 / (incidence - {{ (float)env('GENERATION_LOST') }});
-                let roof = $('.roof-structure').val()
+                let roof = $("input[name=roof_structure]:checked").val();
                 let tension = $('select[name=tension_pattern] option').filter(':selected').val()
                 let addressId = $('select[name=installation_address] option').filter(':selected').val()
 
