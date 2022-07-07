@@ -28,14 +28,14 @@ class ClientService implements BaseService
 
             $address = $this->storeAddress($data, $client->id);
             $consumerUnit = $this->storeConsumerUnit($data, $address->id);
-            $address->consumer_unit_id = $consumerUnit->id;
+            $address->consumer_unit_id = $consumerUnit ? $consumerUnit->id : null;
 
             DB::transaction(function () use ($address) {
                 $address->update();
             });
 
         } catch (\Exception $e) {
-            return ['error','Erro ao cadastrar cliente: ' . $e];
+            throw new \Exception($e);
         }
 
         return ['success','Cliente cadastrado com sucesso!'];
