@@ -24,7 +24,7 @@
                         <label class="tab-label" for="chck{{ $loop->iteration }}">Kit {{ $loop->iteration }}</label>
                         <div class="tab-content content">
                             <ul style="display: block !important;">
-                                <li>{{ $kit }}</li>
+{{--                                <li>{{ $kit }}</li>--}}
                                 @foreach(kitByUuid($kit)['components'] as $component)
                                     <li>{{ $component }}</li>
                                 @endforeach

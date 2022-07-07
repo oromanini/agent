@@ -1,7 +1,7 @@
 <div class="columns" style="margin-top: 60px;">
     <div class="column is-3">
         <label for=""><ion-icon name="person-outline"></ion-icon> Cliente</label>
-        <p class="proposalData">{{ $proposal->client->name }}</p>
+        <p class="proposalData"><a href="{{ route('client.edit', [$proposal->client->id]) }}">{{ $proposal->client->name }}</a></p>
     </div>
     <div class="column is-3">
         <label for=""><ion-icon name="accessibility-outline"></ion-icon> Agente</label>
