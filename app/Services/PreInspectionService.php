@@ -61,6 +61,7 @@ class PreInspectionService
         }
 
         if (isset($data['inspection']['circuit_breaker'])) {
+
             $store['circuit_breaker'] = json_decode($preInspection->circuit_breaker, true);
             $store['circuit_breaker'][] = $data['inspection']['circuit_breaker']->store('public/inspections/' . $preInspection->id);
             $preInspection->circuit_breaker = json_encode($store['circuit_breaker']);

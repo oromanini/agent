@@ -1,3 +1,4 @@
+@if(is_null($proposal->send_date))
 <form action="{{ route('valueHistory.updatePrice', [$proposal->id]) }}" method="post">
     @csrf
     <div class="columns discount box">
@@ -51,3 +52,4 @@
         </div>
     </div>
 </form>
+@endif

@@ -86,7 +86,7 @@
         <div class="column is-3">
             <div id="pattern_circuit_break" class="file is-centered is-boxed is-success has-name">
                 <label class="file-label">
-                    <input class="file-input" type="file" name="inspection[pattern_circuit_breaker]">
+                    <input class="file-input" type="file" name="inspection[circuit_breaker]">
                     <span class="file-cta">
                   <span class="file-icon">
                       <ion-icon name="toggle-outline"></ion-icon>                  </span>
