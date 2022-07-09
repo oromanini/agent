@@ -15,7 +15,7 @@ use App\Models\User;
 use App\Repositories\ProposalRepository;
 use App\Services\PaybackService;
 use App\Services\PreInspectionService;
-use App\Services\pricingService;
+use App\Services\PricingService;
 use App\Services\ProposalService;
 use App\Services\ProposalValueHistoryService;
 use App\Services\SolarIncidenceService;
@@ -41,7 +41,7 @@ class ProposalController extends Controller
                                 PreInspectionService        $preInspectionService,
                                 PaybackService              $paybackService,
                                 SolarIncidenceService       $solarIncidenceService,
-                                pricingService              $pricingService
+                                PricingService              $pricingService
     )
     {
         $this->proposalService = $proposalService;
@@ -50,7 +50,7 @@ class ProposalController extends Controller
         $this->preInspectionService = $preInspectionService;
         $this->solarIncidenceService = $solarIncidenceService;
         $this->paybackService = $paybackService;
-        $this->pricingService = $pricingService;
+        $this->PricingService = $pricingService;
     }
 
     public function index(Request $request)
@@ -168,7 +168,7 @@ class ProposalController extends Controller
     public function setFinalValue(Request $request): float
     {
         $data = $request->all();
-        return $this->pricingService->calculateFinalPrice($data);
+        return $this->PricingService->calculateFinalPrice($data);
     }
 
     public function setAverageProduction(Request $request)
@@ -254,8 +254,8 @@ class ProposalController extends Controller
     private function setTotalCost($proposal): array
     {
         $installation = $proposal->number_of_panels * env('INSTALLATION_PANEL_PRICE');
-        $homologation = $this->pricingService->calculateHomologation($proposal->kwp, $proposal->valueHistory->final_price);
-        $ca = $this->pricingService->calculateCa($proposal->valueHistory->final_price, $proposal->kwp);
+        $homologation = $this->PricingService->calculateHomologation($proposal->kwp, $proposal->valueHistory->final_price);
+        $ca = $this->PricingService->calculateCa($proposal->valueHistory->final_price, $proposal->kwp);
         $tax = $proposal->valueHistory->final_price * env('TAX_PERCENT');
         $commission = ($proposal->valueHistory->commission_percent / 100) * $proposal->valueHistory->final_price;
         $servicesCost = $installation + $homologation + $ca + $tax + $commission;

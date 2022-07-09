@@ -7,7 +7,7 @@ use App\Http\Controllers\KitSearchController;
 use App\Models\City;
 use App\Models\User;
 use App\Services\KitSearchService;
-use App\Services\pricingService;
+use App\Services\PricingService;
 use App\Services\ProposalService;
 use Illuminate\Support\Facades\Http;
 use Ramsey\Uuid\Uuid;
@@ -235,7 +235,7 @@ function kitByUuid($kit_uuid)
 
 function setFinalPrice($data): float
 {
-    $pricingService = new pricingService();
+    $pricingService = new PricingService();
     return $pricingService->calculateFinalPrice($data);
 }
 
