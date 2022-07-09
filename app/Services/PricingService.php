@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-class pricingService
+class PricingService
 {
     public function calculateFinalPrice($data): float
     {
@@ -35,7 +35,7 @@ class pricingService
 
     private function adjustMargin($cost, $kwp, $panelCount, $finalValue): float
     {
-        while ($this->calculateNetProfit($cost, $kwp, $panelCount, $finalValue)['netProfitPercent'] < 0.09) {
+        while ($this->calculateNetProfit($cost, $kwp, $panelCount, $finalValue)['netProfitPercent'] < 0.11) {
             $finalValue += 250;
         }
 
@@ -83,12 +83,10 @@ class pricingService
 
     public function calculateCa($finalValue, $kwp): float
     {
-        if ($kwp <= 2) {
+        if ($kwp <= 4) {
             return $finalValue * 0.04;
-        } elseif ($kwp > 2 && $kwp <= 5) {
+        } elseif ($kwp <= 10) {
             return $finalValue * 0.035;
-        } elseif ($kwp > 5 && $kwp <= 20) {
-            return $finalValue * 0.032;
         } else {
             return $finalValue * 0.03;
         }
