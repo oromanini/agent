@@ -1,5 +1,5 @@
 <div class="columns">
-    <div class="column is-3">
+    <div class="column">
         <div class="tile">
             <article class="tile is-child notification is-warning">
                 <h5 class="title is-5">
@@ -10,7 +10,7 @@
             </article>
         </div>
     </div>
-    <div class="column is-3">
+    <div class="column">
         <div class="tile">
             <article class="tile is-child notification is-warning">
                 <h5 class="title is-5">
@@ -21,7 +21,7 @@
             </article>
         </div>
     </div>
-    <div class="column is-3">
+    <div class="column">
         <div class="tile">
             <article class="tile is-child notification is-warning">
                 <h5 class="title is-5">
@@ -32,7 +32,7 @@
             </article>
         </div>
     </div>
-    <div class="column is-3">
+    <div class="column">
         <div class="tile">
             <article class="tile is-child notification is-warning">
                 <h5 class="title is-5">
@@ -40,6 +40,17 @@
                     Quantidade de painéis
                 </h5>
                 <p class="title">{{ $proposal->number_of_panels }}</p>
+            </article>
+        </div>
+    </div>
+    <div class="column">
+        <div class="tile">
+            <article class="tile is-child notification is-warning">
+                <h5 class="title is-5">
+                    <ion-icon name="sunny-outline"></ion-icon>
+                    Potência
+                </h5>
+                <p class="title">{{ $proposal->kwp }} <span style="font-size: 12pt">kWP</span></p>
             </article>
         </div>
     </div>
