@@ -5,7 +5,7 @@
     </div>
     <div class="column is-3">
         <label for=""><ion-icon name="accessibility-outline"></ion-icon> Agente</label>
-        <p class="proposalData">{{ $proposal->agent->name }}</p>
+        <p class="proposalData">{{ $proposal->agent->name }} <a style="color: #50C55E" href="https://api.whatsapp.com/send?phone=55{{ filter_var($proposal->agent->phone_number, FILTER_SANITIZE_NUMBER_INT) }}"><ion-icon name="logo-whatsapp"></ion-icon></a></p>
     </div>
     <div class="column is-3">
         <label for=""><ion-icon name="call-outline"></ion-icon> Telefone cliente</label>

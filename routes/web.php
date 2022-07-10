@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AddressController;
+use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\ClientController;
@@ -75,12 +76,24 @@ Route::middleware('auth')->group(function () {
 
         Route::name('user.')->group(function () {
 
-            Route::get('usuarios/novo', 'create')->name('create');
             Route::get('usuarios/', 'index')->name('index');
+            Route::get('usuarios/novo', 'create')->name('create');
             Route::post('usuarios/novo', 'store')->name('store');
             Route::get('usuarios/{id}', 'edit')->name('edit');
             Route::put('usuarios/{id}', 'edit')->name('update');
             Route::post('usuarios/{id}/inativar', 'inactive')->name('inactive');
+        });
+    });
+
+    Route::controller(ApprovalController::class)->group(function () {
+
+        Route::name('approval.')->group(function () {
+
+            Route::get('aprovacoes', 'index')->name('index');
+            Route::get('aprovacoes/{id}', 'show')->name('show');
+            Route::put('aprovacoes/{id}/vistoria', 'updateInspection')->name('update.inspection');
+            Route::put('aprovacoes/{id}/financiamento', 'updateFinancing')->name('update.financing');
+            Route::put('aprovacoes/{id}/contrato', 'updateContract')->name('update.contract');
         });
     });
 

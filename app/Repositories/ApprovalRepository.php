@@ -5,8 +5,9 @@ namespace App\Repositories;
 use App\Models\Client;
 use App\Models\Proposal;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
 
-class ProposalRepository implements Filter
+class ApprovalRepository implements Filter
 {
     public function filter($data)
     : LengthAwarePaginator
@@ -20,7 +21,8 @@ class ProposalRepository implements Filter
                 filterFinalDate($data, $query);
                 filterPermission($data, $query);
             })
+            ->whereNotNull('send_date')
             ->orderBy('proposals.id', 'desc')
-            ->paginate(10);
+            ->paginate(20);
     }
 }

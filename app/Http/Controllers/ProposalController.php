@@ -4,17 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Enums\InverterBrands;
 use App\Enums\PanelBrands;
-use App\Enums\RoofStructure;
 use App\Enums\TensionPattern;
 use App\Http\Requests\ProposalRequest;
 use App\Models\Address;
 use App\Models\Client;
 use App\Models\Proposal;
-use App\Models\State;
 use App\Models\User;
 use App\Repositories\ProposalRepository;
 use App\Services\PaybackService;
-use App\Services\PreInspectionService;
 use App\Services\PricingService;
 use App\Services\ProposalService;
 use App\Services\ProposalValueHistoryService;
@@ -23,34 +20,27 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Response;
-use Ramsey\Uuid\Uuid;
 
 class ProposalController extends Controller
 {
     private $proposalService;
     private $proposalRepository;
     private $proposalValueHistoryService;
-    private $preInspectionService;
     private $solarIncidenceService;
     private $paybackService;
-    private $pricingService;
 
     public function __construct(ProposalService             $proposalService,
                                 ProposalRepository          $proposalRepository,
                                 ProposalValueHistoryService $proposalValueHistoryService,
-                                PreInspectionService        $preInspectionService,
                                 PaybackService              $paybackService,
                                 SolarIncidenceService       $solarIncidenceService,
-                                PricingService              $pricingService
     )
     {
         $this->proposalService = $proposalService;
         $this->proposalRepository = $proposalRepository;
         $this->proposalValueHistoryService = $proposalValueHistoryService;
-        $this->preInspectionService = $preInspectionService;
         $this->solarIncidenceService = $solarIncidenceService;
         $this->paybackService = $paybackService;
-        $this->PricingService = $pricingService;
     }
 
     public function index(Request $request)
@@ -100,7 +90,7 @@ class ProposalController extends Controller
     public function edit($id)
     {
         $proposal = Proposal::find($id);
-        $valueHistoryData = $this->setValueHistoryData($proposal);
+        $valueHistoryData = $this->proposalValueHistoryService->setValueHistoryData($proposal);
         $kits = $proposal->is_manual ? json_decode($proposal->components, true) : getKitCodesFromProposal($proposal);
         $isPromotional = ($proposal->number_of_panels == 4 || $proposal->number_of_panels == 8 || $proposal->number_of_panels == 12 || $proposal->number_of_panels == 14) && ($proposal->kwp == 2.2 || $proposal->kwp == 4.4 || $proposal->kwp == 6.6 || $proposal->kwp == 7.7);
 
@@ -210,37 +200,6 @@ class ProposalController extends Controller
         ];
     }
 
-    private function setValueHistoryData($proposal): array
-    {
-
-        $valueHistory = $proposal->valueHistory;
-
-        $discountPercent = $valueHistory->discount_percent / 100;
-        $discountValue = $valueHistory->initial_price * $discountPercent;
-        $calculateBase = $valueHistory->initial_price - $discountValue;
-
-        $initialCommission = $calculateBase * ((float)env('COMMISSION_PERCENT'));
-        $commissionPercent = $valueHistory->commission_percent;
-        $commissionValue = $calculateBase * ($commissionPercent / 100);
-        $commissionDiscountValue = $initialCommission - $commissionValue;
-
-        $grossProfit = ($valueHistory->final_price / $proposal->valueHistory->kit_cost) - 1;
-
-        $totalCost = $this->setTotalCost($proposal);
-
-
-        return [
-            'discountValue' => $discountValue,
-            'calculateBase' => $calculateBase,
-            'initialCommission' => $initialCommission,
-            'finalCommission' => $commissionValue,
-            'commissionDiscountValue' => $commissionDiscountValue,
-            'cost' => floatToMoney($proposal->valueHistory->kit_cost),
-            'gross_profit' => $grossProfit,
-            'totalCost' => $totalCost,
-        ];
-    }
-
     private function setTensions(): array
     {
         return [
@@ -251,28 +210,7 @@ class ProposalController extends Controller
         ];
     }
 
-    private function setTotalCost($proposal): array
-    {
-        $installation = $proposal->number_of_panels * env('INSTALLATION_PANEL_PRICE');
-        $homologation = $this->PricingService->calculateHomologation($proposal->kwp, $proposal->valueHistory->final_price);
-        $ca = $this->PricingService->calculateCa($proposal->valueHistory->final_price, $proposal->kwp);
-        $tax = $proposal->valueHistory->final_price * env('TAX_PERCENT');
-        $commission = ($proposal->valueHistory->commission_percent / 100) * $proposal->valueHistory->final_price;
-        $servicesCost = $installation + $homologation + $ca + $tax + $commission;
-        $netProfitValue = $proposal->valueHistory->final_price - ($proposal->valueHistory->kit_cost + $servicesCost);
-        $netProfitPercent = $netProfitValue / $proposal->valueHistory->final_price;
 
-        return [
-            'installation' => $installation,
-            'homologation' => $homologation,
-            'ca' => $ca,
-            'tax' => $tax,
-            'commission' => $commission,
-            'net_profit_value' => $netProfitValue,
-            'net_profit_percent' => $netProfitPercent,
-            'services_cost' => $servicesCost
-        ];
-    }
 
 }
 

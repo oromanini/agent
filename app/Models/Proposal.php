@@ -40,4 +40,19 @@ class Proposal extends Model
     {
         return $this->belongsTo(ProposalValueHistory::class);
     }
+
+    public function inspection(): BelongsTo
+    {
+        return $this->belongsTo(Inspection::class);
+    }
+
+    public function financing(): BelongsTo
+    {
+        return $this->belongsTo(Financing::class);
+    }
+
+    public function contract(): BelongsTo
+    {
+        return $this->belongsTo(Contract::class);
+    }
 }

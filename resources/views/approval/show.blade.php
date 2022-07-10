@@ -9,32 +9,31 @@
                             style="color: #6b7280; font-size: 12pt">
                             <ion-icon name="flash-outline"></ion-icon>
                             Projeto</a></li>
-                    <li class=" mytab" onclick="openTab(event,'previstoria')"><a
-                            style="color: #6b7280; font-size: 12pt">
+                    <li class=" mytab" onclick="openTab(event,'vistoria')"><a style="color: #6b7280; font-size: 12pt">
                             <ion-icon name="camera-outline"></ion-icon>
-                            Pré-vistoria</a></li>
+                            Vistoria</a></li>
+                    <li class=" mytab" onclick="openTab(event,'financiamento')"><a
+                            style="color: #6b7280; font-size: 12pt">
+                            <ion-icon name="card-outline"></ion-icon>
+                            Financiamento</a></li>
+                    <li class=" mytab" onclick="openTab(event,'contrato')"><a style="color: #6b7280; font-size: 12pt">
+                            <ion-icon name="document-text-outline"></ion-icon>
+                            Contrato</a></li>
                 </ul>
             </div>
         </nav>
         <div class="box overflow-auto">
             <div id="projeto" class="content-tab">
-                @include('proposals.show.head')
-                @include('proposals.show.cards')
-                @include('proposals.show.client_data')
-
-                @if(!is_null($proposal->send_data))
-                    @include('proposals.statuses')
-                @endif
-                <br><br>
-                @include('proposals.show.kit_data')
-                <br>
-                @include('proposals.show.staff')
-                <br>@include('proposals.show.discount')
-                <br><br>
-                @include('proposals.show.commission')
+                @include('approval.tabs.proposal')
             </div>
-            <div id="previstoria" class="content-tab" style="display:none">
-                @include('pre_inspection.index')
+            <div id="vistoria" class="content-tab" style="display:none">
+                @include('approval.tabs.technical')
+            </div>
+            <div id="financiamento" class="content-tab" style="display:none">
+                @include('approval.tabs.financing')
+            </div>
+            <div id="contrato" class="content-tab" style="display:none">
+                @include('approval.tabs.contract')
             </div>
         </div>
     </div>
@@ -55,6 +54,3 @@
         }
     </script>
 @endsection
-
-
-
