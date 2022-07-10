@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Proposal;
 use Illuminate\Support\Facades\Auth;
 
 function filterName($data, $query)
@@ -12,7 +13,13 @@ function filterName($data, $query)
 function filterDocument($data, $query)
 {
     if (!empty($data['document_filter'])) {
-        return $query->where('document', 'like', '%' . $data['document_filter'] . '%');
+        $model = $query->getModel();
+
+        if ($model instanceof Proposal) {
+            return $query->where('clients.document', 'like', '%' . $data['document_filter'] . '%');
+        } else {
+            return $query->where('document', 'like', '%' . $data['document_filter'] . '%');
+        }
     }
 }
 
