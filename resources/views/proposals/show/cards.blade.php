@@ -37,7 +37,7 @@
             <article class="tile is-child notification is-warning">
                 <h5 class="title is-5">
                     <ion-icon name="sunny-outline"></ion-icon>
-                    Quantidade de painéis
+                    Qtd. de painéis
                 </h5>
                 <p class="title">{{ $proposal->number_of_panels }}</p>
             </article>

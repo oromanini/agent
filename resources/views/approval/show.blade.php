@@ -14,10 +14,10 @@
                             Vistoria</a></li>
                     <li class=" mytab" onclick="openTab(event,'financiamento')"><a
                             style="color: #6b7280; font-size: 12pt">
-                            <ion-icon name="camera-outline"></ion-icon>
+                            <ion-icon name="card-outline"></ion-icon>
                             Financiamento</a></li>
                     <li class=" mytab" onclick="openTab(event,'contrato')"><a style="color: #6b7280; font-size: 12pt">
-                            <ion-icon name="camera-outline"></ion-icon>
+                            <ion-icon name="document-text-outline"></ion-icon>
                             Contrato</a></li>
                 </ul>
             </div>

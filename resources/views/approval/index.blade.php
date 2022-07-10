@@ -4,7 +4,7 @@
     <div class="container is-fluid overflow-auto">
         <div class="box overflow-auto">
             <div class="columns mt-2 ml-1">
-                <h3 class="title"><img src="/img/logo/alluz-icon.png" width="30" alt=".."> Clientes</h3>
+                <h3 class="title"><img src="/img/logo/alluz-icon.png" width="30" alt=".."> Projetos para aprovação</h3>
             </div>
             <div class="columns">
                 <div class="column">

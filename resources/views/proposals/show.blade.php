@@ -5,8 +5,14 @@
         <nav class="tabs is-boxed is-fullwidth is-large" style="margin-bottom: 0">
             <div class="container">
                 <ul>
-                    <li class=" mytab is-active" onclick="openTab(event,'projeto')"><a style="color: #6b7280; font-size: 12pt"><ion-icon name="flash-outline"></ion-icon> Projeto</a></li>
-                    <li class=" mytab" onclick="openTab(event,'previstoria')"><a style="color: #6b7280; font-size: 12pt"><ion-icon name="camera-outline"></ion-icon> Pré-vistoria</a></li>
+                    <li class=" mytab is-active" onclick="openTab(event,'projeto')"><a
+                            style="color: #6b7280; font-size: 12pt">
+                            <ion-icon name="flash-outline"></ion-icon>
+                            Projeto</a></li>
+                    <li class=" mytab" onclick="openTab(event,'previstoria')"><a
+                            style="color: #6b7280; font-size: 12pt">
+                            <ion-icon name="camera-outline"></ion-icon>
+                            Pré-vistoria</a></li>
                 </ul>
             </div>
         </nav>
@@ -15,6 +21,10 @@
                 @include('proposals.show.head')
                 @include('proposals.show.cards')
                 @include('proposals.show.client_data')
+
+                @if(!is_null($proposal->send_data))
+                    @include('proposals.statuses')
+                @endif
                 <br><br>
                 @include('proposals.show.kit_data')
                 <br>
