@@ -9,16 +9,21 @@ use Illuminate\Support\Facades\Auth;
 
 class ApprovalRepository implements Filter
 {
-    public function filter($data): LengthAwarePaginator
+    public function filter($data)
+    : LengthAwarePaginator
     {
         return Proposal::query()
+            ->join('clients', 'client_id', 'clients.id')
             ->where(function ($query) use($data) {
                 filterName($data, $query);
                 filterAgent($data, $query);
                 filterDocument($data, $query);
+                filterInitialDate($data, $query);
+                filterFinalDate($data, $query);
+                filterPermission($data, $query);
             })
             ->whereNotNull('send_date')
-            ->orderBy('id', 'desc')
+            ->orderBy('proposals.id', 'desc')
             ->paginate(20);
     }
 }
