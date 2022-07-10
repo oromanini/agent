@@ -5,7 +5,8 @@
             <div class="card">
                 <div class="card-image">
                     <figure class="image is-4by3">
-                        <img class="cardimage" onerror="this.src='/img/no-image.png';" src="/storage/{{ str_replace('public/', '', $roof) }}" alt="Placeholder image">
+                        <img class="cardimage" onerror="this.src='/img/no-image.png';"
+                             src="/storage/{{ str_replace('public/', '', $roof) }}" alt="Placeholder image">
                     </figure>
                 </div>
                 <div class="card-content">
@@ -20,6 +21,10 @@
             </div>
         </div>
     @endforeach
+@else
+    <div>
+        <h1 class="title is-1 ml-2">O agente de negócios não anexou as imagens</h1>
+    </div>
 @endif
 
 @php
@@ -37,14 +42,15 @@
 
 @endphp
 
-@foreach($images as $image)
+@forelse($images as $image)
 
     @if(!empty(jsonToArray($image['file'])))
         <div class="column is-3" style="padding: 50px">
             <div class="card">
                 <div class="card-image">
                     <figure class="image is-4by3">
-                        <img class="cardimage" onerror="this.src='/img/no-image.png';" src="{{ str_replace('public/', '', $image['url']) }}" alt="Placeholder image">
+                        <img class="cardimage" onerror="this.src='/img/no-image.png';"
+                             src="{{ str_replace('public/', '', $image['url']) }}" alt="Placeholder image">
                     </figure>
                 </div>
                 <div class="card-content">
@@ -61,5 +67,7 @@
         </div>
     @endif
 
-@endforeach
+@empty
+    <h1>O agente de negócios não anexou as imagens</h1>
+@endforelse
 
