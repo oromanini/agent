@@ -13,7 +13,6 @@ class ApprovalRepository implements Filter
     : LengthAwarePaginator
     {
         return Proposal::query()
-            ->join('clients', 'client_id', 'clients.id')
             ->where(function ($query) use($data) {
                 filterName($data, $query);
                 filterAgent($data, $query);

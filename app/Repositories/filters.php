@@ -16,7 +16,8 @@ function filterDocument($data, $query)
         $model = $query->getModel();
 
         if ($model instanceof Proposal) {
-            return $query->where('clients.document', 'like', '%' . $data['document_filter'] . '%');
+            return $query->join('clients', 'client_id', 'clients.id')
+                ->where('clients.document', 'like', '%' . $data['document_filter'] . '%');
         } else {
             return $query->where('document', 'like', '%' . $data['document_filter'] . '%');
         }
