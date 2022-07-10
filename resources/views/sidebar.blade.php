@@ -54,6 +54,15 @@
         @if(auth()->user()->is_admin)
             <hr style="margin-bottom: 2px !important;">
             <li class="side-list">
+                <a href="{{ route('approval.index') }}">
+                <span class="side-icon">
+                    <ion-icon name="thumbs-up-outline"></ion-icon>
+                </span>
+                    <span class="side-title">Aprovações</span>
+                </a>
+            </li>
+
+            <li class="side-list">
                 <a href="{{ route('proposal.manual.create') }}">
                 <span class="side-icon">
                     <ion-icon name="star-outline"></ion-icon>
@@ -61,6 +70,7 @@
                     <span class="side-title">Proposta Manual</span>
                 </a>
             </li>
+
             <li class="side-list">
                 <a href="{{ route('user.index') }}">
                 <span class="side-icon">
