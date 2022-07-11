@@ -4,6 +4,7 @@ use App\Enums\InverterBrands;
 use App\Enums\PanelBrands;
 use App\Enums\RoofStructure;
 use App\Http\Controllers\KitSearchController;
+use App\Models\Address;
 use App\Models\City;
 use App\Models\User;
 use App\Services\KitSearchService;
@@ -271,4 +272,9 @@ function getKitCodesFromProposal($proposal)
 
     return $kits;
 
+}
+
+function setStringFromAddress(Address $address): string
+{
+    return $address->street . ', ' . $address->number . ', ' . $address->neighborhood . ', ' . $address->city->name_and_federal_unit . ', ' . $address->zipcode;
 }
