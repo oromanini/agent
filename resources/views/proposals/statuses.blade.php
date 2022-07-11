@@ -1,34 +1,34 @@
 <div class="columns">
     <div class="column">
         <div class="tile">
-            <article class="tile is-child notification is-warning">
-                <h5 class="title is-5">
-                    <ion-icon name="construct-outline"></ion-icon><ion-icon name="calculator-outline"></ion-icon>
+            <article class="tile is-child notification @if(isset($proposal->inspection) && ($proposal->inspection->status == 'Aprovado' || $proposal->inspection->status == 'Aprovado com adequação')) is-success @else is-warning @endif">
+                <h5>
+                    <ion-icon name="construct-outline"></ion-icon>
                     Vistoria
                 </h5>
-                <p class="title"> {{ $proposal->inspection->status }}</p>
+                <p class="title"> {{ !is_null($proposal->inspection) ? $proposal->inspection->status : 'Aguardando'}}</p>
             </article>
         </div>
     </div>
     <div class="column">
         <div class="tile">
             <article class="tile is-child notification is-warning">
-                <h5 class="title is-5">
-                    <ion-icon name="cash-outline"></ion-icon><ion-icon name="wallet-outline"></ion-icon>
+                <h5>
+                    <ion-icon name="wallet-outline"></ion-icon>
                     Financiamento
                 </h5>
-                <p class="title"> {{ $proposal->financial->status }}</p>
+                <p class="title"> {{ !is_null($proposal->financing) ? $proposal->financing->status : 'Aguardando'}}</p>
             </article>
         </div>
     </div>
     <div class="column">
         <div class="tile">
-            <article class="tile is-child notification is-warning">
-                <h5 class="title is-5">
-                    <ion-icon name="document-text-outline"></ion-icon><ion-icon name="pencil-outline"></ion-icon>
+            <article class="tile is-child notification @if(isset($proposal->contract) && $proposal->contract->status == 'Finalizado') is-success @else is-warning @endif">
+                <h5>
+                    <ion-icon name="document-text-outline"></ion-icon>
                     Contrato
                 </h5>
-                <p class="title"> {{ $proposal->contract->status }}</p>
+                <p class="title"> {{ !is_null($proposal->contract) ? $proposal->contract->status : 'Aguardando'}}</p>
             </article>
         </div>
     </div>

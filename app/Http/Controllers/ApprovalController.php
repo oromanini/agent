@@ -52,6 +52,7 @@ class ApprovalController extends Controller
         $isPromotional = $this->isPromotional($proposal);
         $contractStatuses = $this->setContractStatuses();
         $inspectionStatuses = $this->setInspectionStatuses();
+        $financingStatuses = $this->setFinancingStatuses();
 
         $inspection = $proposal->inspection;
         $financing = $proposal->financing;
@@ -110,6 +111,19 @@ class ApprovalController extends Controller
         ];
     }
 
+    private function setFinancingStatuses(): array
+    {
+        return [
+            'Aguardando',
+            'Em análise',
+            'Reprovado',
+            'Aprovado',
+            'À Vista',
+            'Cartão',
+            '60/40'
+        ];
+    }
+
     private function setKits($proposal)
     {
         return $proposal->is_manual ? json_decode($proposal->components, true) : getKitCodesFromProposal($proposal);
@@ -138,6 +152,7 @@ class ApprovalController extends Controller
             'isPromotional',
             'contractStatuses',
             'inspectionStatuses',
+            'financingStatuses',
             'inspection',
             'financing',
             'contract',

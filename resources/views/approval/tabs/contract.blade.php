@@ -53,7 +53,7 @@
                         class="select is-multiline is-fullwidth is-rounded  @error('status') is-danger @enderror">
                         <select id="status" name="status">
                             @foreach($contractStatuses as $status)
-                                <option value="{{ $status }}" {{ $status == $contract->status ? 'selected' : '' }}>{{ $status }}</option>
+                                <option value="{{ $status }}" {{ isset($contract) && $status == $contract->status ? 'selected' : '' }}>{{ $status }}</option>
                             @endforeach
                         </select>
                         @error('status')<span class="error-message">{{ $message }}</span>@enderror
