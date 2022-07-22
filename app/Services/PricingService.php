@@ -11,19 +11,6 @@ class PricingService
         $panelCount = isset($data['sumKits']) ? $data['sumKits']['panel_count'] : (int)$data['panel_count'];
         $finalValue = $cost * 1.45;
 
-        if ($kwp == 2.2 && $panelCount == 4) {
-            return 12990;
-        }
-        if ($kwp == 4.4 && $panelCount == 8) {
-            return 19990;
-        }
-        if ($kwp == 6.6 && $panelCount == 12) {
-            return 28590;
-        }
-        if ($kwp == 7.7 && $panelCount == 14) {
-            return 32490;
-        }
-
         $finalValue = $this->adjustMargin($cost, $kwp, $panelCount, $finalValue);
 
         if ($data['roof_structure'] == 6) {
@@ -35,7 +22,7 @@ class PricingService
 
     private function adjustMargin($cost, $kwp, $panelCount, $finalValue): float
     {
-        while ($this->calculateNetProfit($cost, $kwp, $panelCount, $finalValue)['netProfitPercent'] < 0.11) {
+        while ($this->calculateNetProfit($cost, $kwp, $panelCount, $finalValue)['netProfitPercent'] < 0.14) {
             $finalValue += 250;
         }
 

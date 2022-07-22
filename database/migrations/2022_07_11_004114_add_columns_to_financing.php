@@ -13,7 +13,7 @@ class AddColumnsToFinancing extends Migration
      */
     public function up()
     {
-        Schema::table('financing', function (Blueprint $table) {
+        Schema::table('financings', function (Blueprint $table) {
             $table->string('address')->nullable();
             $table->string('email')->nullable();
             $table->string('phone_number')->nullable();
@@ -27,7 +27,7 @@ class AddColumnsToFinancing extends Migration
      */
     public function down()
     {
-        Schema::table('financing', function (Blueprint $table) {
+        Schema::table('financings', function (Blueprint $table) {
             //
         });
     }

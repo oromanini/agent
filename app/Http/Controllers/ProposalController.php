@@ -28,12 +28,14 @@ class ProposalController extends Controller
     private $proposalValueHistoryService;
     private $solarIncidenceService;
     private $paybackService;
+    private $pricingService;
 
     public function __construct(ProposalService             $proposalService,
                                 ProposalRepository          $proposalRepository,
                                 ProposalValueHistoryService $proposalValueHistoryService,
                                 PaybackService              $paybackService,
                                 SolarIncidenceService       $solarIncidenceService,
+                                PricingService              $pricingService
     )
     {
         $this->proposalService = $proposalService;
@@ -41,6 +43,7 @@ class ProposalController extends Controller
         $this->proposalValueHistoryService = $proposalValueHistoryService;
         $this->solarIncidenceService = $solarIncidenceService;
         $this->paybackService = $paybackService;
+        $this->pricingService = $pricingService;
     }
 
     public function index(Request $request)
@@ -158,7 +161,7 @@ class ProposalController extends Controller
     public function setFinalValue(Request $request): float
     {
         $data = $request->all();
-        return $this->PricingService->calculateFinalPrice($data);
+        return $this->pricingService->calculateFinalPrice($data);
     }
 
     public function setAverageProduction(Request $request)
@@ -209,7 +212,6 @@ class ProposalController extends Controller
             'TRIFASICO-380V' => 'Trifásico 380V',
         ];
     }
-
 
 
 }
