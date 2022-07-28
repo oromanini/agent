@@ -13,7 +13,7 @@
             <form action="{{ route('proposal.store') }}" method="post">
                 @csrf
                 <div class="columns">
-                    <div class="column is-3">k
+                    <div class="column is-3">
                         <div class="field">
                             <label for="client" class="label">Cliente*</label>
                             <div
@@ -288,9 +288,11 @@
                 if (brand == 'Jinko') {
                     panelImage = '/img/panel_brands/jinko.png'
                 }
-                console.log(brand)
                 if (brand == 'DAH Solar') {
                     panelImage = '/img/panel_brands/dah.png'
+                }
+                if (brand == 'Ja') {
+                    panelImage = '/img/panel_brands/ja.png'
                 }
 
                 return panelImage
