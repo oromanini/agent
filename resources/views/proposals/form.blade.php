@@ -13,7 +13,7 @@
             <form action="{{ route('proposal.store') }}" method="post">
                 @csrf
                 <div class="columns">
-                    <div class="column is-3">
+                    <div class="column is-3">k
                         <div class="field">
                             <label for="client" class="label">Cliente*</label>
                             <div
