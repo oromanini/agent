@@ -13,7 +13,7 @@
             <form action="{{ route('proposal.store') }}" method="post">
                 @csrf
                 <div class="columns">
-                    <div class="column is-3">
+                    <div class="column is-3">k
                         <div class="field">
                             <label for="client" class="label">Cliente*</label>
                             <div
@@ -360,7 +360,8 @@
                             let costValue = item[0].price + (item[1] ? item[1].price : 0) + (item[2] ? item[2].price : 0) + (item[3] ? item[3].price : 0);
                             let panelCount = setPanelCount(item);
 
-                            let isPromotional = technicalDescription['inverter_brand'] === 'Sofar' && (item['sum'].kwp == 2.2 || item['sum'].kwp == 4.4 || item['sum'].kwp == 6.6 || item['sum'].kwp == 7.7);
+                            let isPromotional = false;
+                            // let isPromotional = technicalDescription['inverter_brand'] === 'Sofar' && (item['sum'].kwp == 2.2 || item['sum'].kwp == 4.4 || item['sum'].kwp == 6.6 || item['sum'].kwp == 7.7);
                             let isPromotionalText = isPromotional ? 'Promoção' : 'À vista';
                             let isPromotionalColor = isPromotional ? 'is-success' : 'is-success is-light';
 

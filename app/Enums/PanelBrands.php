@@ -4,11 +4,6 @@ namespace App\Enums;
 
 use BenSampo\Enum\Enum;
 
-/**
- * @method static static OptionOne()
- * @method static static OptionTwo()
- * @method static static OptionThree()
- */
 final class PanelBrands extends Enum
 {
     const Jinko =   1;
@@ -16,5 +11,6 @@ final class PanelBrands extends Enum
     const Trina = 3;
     const DAH = 4;
     const Astronergy = 5;
+    const Ja = 6;
 
 }
