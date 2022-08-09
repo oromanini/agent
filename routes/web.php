@@ -44,6 +44,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/propostas/nova', 'store')->name('store');
             Route::get('/propostas/visualizar/{id}', 'edit')->name('edit');
             Route::put('/propostas/editar/{id}', 'update')->name('update');
+            Route::get('/propostas/inativar/{id}', 'delete')->name('delete');
 
             Route::get('/propostas/manual/nova', 'manual')->name('manual.create');
             Route::post('/propostas/manual/nova', 'manualStore')->name('manual.store');
