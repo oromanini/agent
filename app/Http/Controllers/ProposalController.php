@@ -90,6 +90,14 @@ class ProposalController extends Controller
         return view('proposals.manual', compact($this->setManualParams()));
     }
 
+    public function delete($id)
+    {
+        $proposal = Proposal::find($id);
+        $proposal->delete();
+
+        return redirect()->back();
+    }
+
     public function edit($id)
     {
         $proposal = Proposal::find($id);
