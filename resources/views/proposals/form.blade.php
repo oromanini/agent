@@ -297,6 +297,9 @@
                 if (brand == 'Phono') {
                     panelImage = '/img/panel_brands/phono.png'
                 }
+                if (brand == 'Longi') {
+                    panelImage = '/img/panel_brands/longi.png'
+                }
 
                 return panelImage
             }

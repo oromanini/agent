@@ -77,6 +77,7 @@ function setPanelBrandImage($brand): string
     $astronergy = '/img/panel_brands/astronergy.png';
     $ja = '/img/panel_brands/ja.png';
     $phono = '/img/panel_brands/phono.png';
+    $longi = '/img/panel_brands/longi.png';
 
     if (is_string($brand)) {
 
@@ -94,6 +95,8 @@ function setPanelBrandImage($brand): string
             $img = $ja;
         } elseif ($brand == 'Phono') {
             $img = $phono;
+        } elseif ($brand == 'Longi') {
+            $img = $longi;
         }
 
     } else {
@@ -116,6 +119,12 @@ function setPanelBrandImage($brand): string
                 break;
             case 6:
                 $img = $ja;
+                break;
+            case 7:
+                $img = $phono;
+                break;
+            case 8:
+                $img = $longi;
                 break;
             default:
                 throw new Exception('Painel não localizado.');
