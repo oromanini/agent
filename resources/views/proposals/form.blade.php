@@ -294,6 +294,9 @@
                 if (brand == 'Ja') {
                     panelImage = '/img/panel_brands/ja.png'
                 }
+                if (brand == 'Phono') {
+                    panelImage = '/img/panel_brands/phono.png'
+                }
 
                 return panelImage
             }
@@ -307,6 +310,9 @@
                 }
                 if (brand == 'Sofar') {
                     inverterImage = '/img/inverter_brands/sofar.png'
+                }
+                if (brand == 'Solis') {
+                    inverterImage = '/img/inverter_brands/solis.png'
                 }
 
                 return inverterImage

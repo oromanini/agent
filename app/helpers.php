@@ -76,6 +76,7 @@ function setPanelBrandImage($brand): string
     $dah = '/img/panel_brands/dah.png';
     $astronergy = '/img/panel_brands/astronergy.png';
     $ja = '/img/panel_brands/ja.png';
+    $phono = '/img/panel_brands/phono.png';
 
     if (is_string($brand)) {
 
@@ -91,6 +92,8 @@ function setPanelBrandImage($brand): string
             $img = $astronergy;
         } elseif ($brand == 'Ja') {
             $img = $ja;
+        } elseif ($brand == 'Phono') {
+            $img = $phono;
         }
 
     } else {
@@ -128,6 +131,7 @@ function setInverterImage($brand): string
     $chint = '/img/inverters/chint.png';
     $deye = '/img/inverters/deye.png';
     $sofar = '/img/inverters/sofar.png';
+    $solis = '/img/inverters/solis.png';
 
     if (is_string($brand)) {
 
@@ -138,6 +142,8 @@ function setInverterImage($brand): string
         } elseif ($brand == 'Deye') {
             $img = $deye;
         } elseif ($brand == 'Sofar') {
+            $img = $sofar;
+        } elseif ($brand == 'Solis') {
             $img = $sofar;
         }
 
@@ -155,6 +161,9 @@ function setInverterImage($brand): string
                 break;
             case 4:
                 $img = $sofar;
+                break;
+            case 5:
+                $img = $solis;
                 break;
             default:
                 throw new Exception('Inversor não localizado.');
@@ -178,7 +187,7 @@ function calculateWithSolar($proposal): string
         return 95;
     }
 
-    return 125;
+    return 120;
 }
 
 

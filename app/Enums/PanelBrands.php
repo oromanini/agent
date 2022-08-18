@@ -12,5 +12,6 @@ final class PanelBrands extends Enum
     const DAH = 4;
     const Astronergy = 5;
     const Ja = 6;
+    const Phono = 7;
 
 }
