@@ -14,6 +14,7 @@ use App\Services\SolarIncidenceService;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use function Sodium\add;
 
 class ClientController extends Controller
@@ -32,6 +33,11 @@ class ClientController extends Controller
     public function index(Request $request)
     {
         $clients = $this->clientRepository->filter($request->all());
+
+        if (!Auth::user()->is_admin) {
+            $clients = $clients->where('agent_id', Auth::user()->id);
+        }
+
         $agents = User::all();
 
         return view('clients.index', compact('clients', 'agents'));
