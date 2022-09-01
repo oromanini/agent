@@ -376,7 +376,7 @@
                             let isPromotionalText = isPromotional ? 'Promoção' : 'À vista';
                             let isPromotionalColor = isPromotional ? 'is-success' : 'is-success is-light';
 
-                            let finalValue = calculateFinalValue(costValue, item['sum'].kwp.toFixed(2), roof, panelCount);
+                            let finalValue = calculateFinalValue(costValue, item['sum'].kwp.toFixed(2), roof, panelCount, addressId);
                             let averageProduction = calculateAverageProduction(addressId, item['sum'].kwp.toFixed(2));
 
                             $('#kits').append(
@@ -443,7 +443,7 @@
             });
         });
 
-        function calculateFinalValue(costValue, kwp, roof, panelCount) {
+        function calculateFinalValue(costValue, kwp, roof, panelCount, addressId) {
 
             let url = '/setFinalValue';
             let result;
@@ -456,6 +456,7 @@
                     roof_structure: roof,
                     cost: costValue,
                     panel_count: panelCount,
+                    address_id: addressId,
                     _token: '{{csrf_token()}}'
                 },
                 type: 'post',
