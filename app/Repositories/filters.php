@@ -9,7 +9,7 @@ function filterName($data, $query)
         $model = $query->getModel();
 
         if ($model instanceof Proposal) {
-            return $query->where('clients.name', 'like', '%' . $data['name_filter'] . '%');
+            return $query->whereRelation('client', 'name', 'like', '%' . $data['name_filter'] . '%');
         } else {
             return $query->where('name', 'like', '%' . $data['name_filter'] . '%');
         }
@@ -22,8 +22,7 @@ function filterDocument($data, $query)
         $model = $query->getModel();
 
         if ($model instanceof Proposal) {
-            return $query->join('clients', 'client_id', 'clients.id')
-                ->where('clients.document', 'like', '%' . $data['document_filter'] . '%');
+            return $query->whereRelation('client', 'document', 'like', '%' . $data['document_filter'] . '%');
         } else {
             return $query->where('document', 'like', '%' . $data['document_filter'] . '%');
         }

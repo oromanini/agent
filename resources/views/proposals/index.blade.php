@@ -77,7 +77,7 @@
                         <button type="submit" class="button is-warning">Filtrar&nbsp;&nbsp;<ion-icon
                                 name="search-outline"></ion-icon>
                         </button>
-                        <a href="{{ route('client.index') }}" class="button is-danger">Limpar</a>
+                        <a href="{{ route('proposal.index') }}" class="button is-danger">Limpar</a>
                     </div>
                 </div>
             </form>

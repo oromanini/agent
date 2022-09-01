@@ -10,7 +10,7 @@ class ProposalRepository implements Filter
 {
     public function filter($data)
     {
-        return Proposal::query()->join('clients', 'client_id', 'clients.id')
+        return Proposal::query()
             ->where(function ($query) use($data) {
                 filterName($data, $query);
                 filterAgent($data, $query);
