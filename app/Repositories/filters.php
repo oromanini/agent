@@ -6,7 +6,13 @@ use Illuminate\Support\Facades\Auth;
 function filterName($data, $query)
 {
     if (!empty($data['name_filter'])) {
-        return $query->where('name', 'like', '%' . $data['name_filter'] . '%');
+        $model = $query->getModel();
+
+        if ($model instanceof Proposal) {
+            return $query->where('clients.name', 'like', '%' . $data['name_filter'] . '%');
+        } else {
+            return $query->where('name', 'like', '%' . $data['name_filter'] . '%');
+        }
     }
 }
 

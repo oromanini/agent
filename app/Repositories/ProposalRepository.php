@@ -9,9 +9,8 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 class ProposalRepository implements Filter
 {
     public function filter($data)
-    : LengthAwarePaginator
     {
-        return Proposal::query()
+        return Proposal::query()->join('clients', 'client_id', 'clients.id')
             ->where(function ($query) use($data) {
                 filterName($data, $query);
                 filterAgent($data, $query);
