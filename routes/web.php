@@ -5,6 +5,7 @@ use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\FinancingController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KitSearchController;
 use App\Http\Controllers\PreInspectionController;
@@ -98,6 +99,13 @@ Route::middleware('auth')->group(function () {
         });
     });
 
+    Route::controller(FinancingController::class)->group(function (){
+        Route::name('simulator.')->group(function () {
+            Route::get('financing-simulator', 'show')->name('index');
+            Route::get('financing-simulator/mfs', 'getMfs')->name('mfs');
+        });
+    });
+
     Route::get('/citiesByState/{id}', [CityController::class, 'citiesByState']);
     Route::get('/addressesFromClientId/{id}', [ClientController::class, 'addressesFromClientId']);
     Route::get('/ucsFromClientId/{id}', [ClientController::class, 'ucsFromClientId']);
@@ -105,6 +113,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/kitSearch/{kwp}/{roof}/{tension}', [KitSearchController::class, 'kitsSearch']);
     Route::post('/setFinalValue', [ProposalController::class, 'setFinalValue']);
     Route::post('/setAverageProduction', [ProposalController::class, 'setAverageProduction']);
+
+
 
 });
 

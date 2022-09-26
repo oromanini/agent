@@ -43,6 +43,15 @@
         </li>
 
         <li class="side-list">
+            <a href="{{ route('simulator.index') }}">
+                <span class="side-icon">
+                    <ion-icon name="wallet-outline"></ion-icon>
+                </span>
+                <span class="side-title">Simular financiamento</span>
+            </a>
+        </li>
+
+        <li class="side-list">
             <a href="#">
                 <span class="side-icon">
                     <ion-icon name="link-outline"></ion-icon>
