@@ -18,20 +18,26 @@
                         </a>
                     </div>
                     <div class="column is-flex is-justify-content-center">
-                        <a href="{{ route('client.index') }}" class="p-yellow-button">
-                            <ion-icon name="people-outline"></ion-icon>  Meus clientes
-                        </a>
-                    </div>
-                    <div class="column is-flex is-justify-content-center">
-                        <a class="p-yellow-button" href="{{ route('proposal.index') }}">
-                            <ion-icon name="documents-outline"></ion-icon>  Minhas propostas
-                        </a>
-                    </div>
-                    <div class="column is-flex is-justify-content-center">
                         <a class="p-yellow-button" href="{{ route('proposal.create') }}">
                             <ion-icon name="document-outline"></ion-icon>  Nova proposta
                         </a>
                     </div>
+                    <div class="column is-flex is-justify-content-center">
+                        <a href="{{ route('simulator.index') }}" class="p-yellow-button">
+                            <ion-icon name="cash-outline"></ion-icon>  Simulador
+                        </a>
+                    </div>
+                    <div class="column is-flex is-justify-content-center">
+                        <a href="{{ route('client.index') }}" class="p-yellow-button">
+                            <ion-icon name="people-outline"></ion-icon> clientes
+                        </a>
+                    </div>
+                    <div class="column is-flex is-justify-content-center">
+                        <a class="p-yellow-button" href="{{ route('proposal.index') }}">
+                            <ion-icon name="documents-outline"></ion-icon> Propostas
+                        </a>
+                    </div>
+
                 </div>
 
                 <div class="columns mt50">

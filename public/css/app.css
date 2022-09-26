@@ -10767,11 +10767,11 @@ h6 {
 .p-yellow-button {
   background-color: #ffbc2b;
   text-decoration: none;
-  width: 300px;
+  width: 240px;
   border-radius: 10px;
   color: #fff;
-  padding: 10px 25px;
-  font-size: 18pt;
+  padding: 10px 15px;
+  font-size: 16pt;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -10780,11 +10780,11 @@ h6 {
 .p-red-button {
   background-color: #ff2b2b;
   text-decoration: none;
-  width: 300px;
+  width: 240px;
   border-radius: 10px;
   color: #fff;
-  padding: 10px 25px;
-  font-size: 18pt;
+  padding: 5px 5px;
+  font-size: 16pt;
   display: flex;
   justify-content: center;
   align-items: center;
