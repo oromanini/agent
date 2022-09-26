@@ -60,7 +60,7 @@
             </a>
         </li>
 
-        @if(auth()->user()->is_admin)
+        @if(!is_null(auth()->user()) && auth()->user()->is_admin)
             <hr style="margin-bottom: 2px !important;">
             <li class="side-list">
                 <a href="{{ route('approval.index') }}">
