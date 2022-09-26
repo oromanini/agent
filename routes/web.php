@@ -15,6 +15,12 @@ use App\Http\Controllers\ValueHistoryController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+Route::controller(FinancingController::class)->group(function (){
+    Route::name('simulator.')->group(function () {
+        Route::get('financing-simulator', 'show')->name('index');
+        Route::get('financing-simulator/mfs', 'getMfs')->name('mfs');
+    });
+});
 
 Route::middleware('auth')->group(function () {
 
@@ -99,12 +105,7 @@ Route::middleware('auth')->group(function () {
         });
     });
 
-    Route::controller(FinancingController::class)->group(function (){
-        Route::name('simulator.')->group(function () {
-            Route::get('financing-simulator', 'show')->name('index');
-            Route::get('financing-simulator/mfs', 'getMfs')->name('mfs');
-        });
-    });
+
 
     Route::get('/citiesByState/{id}', [CityController::class, 'citiesByState']);
     Route::get('/addressesFromClientId/{id}', [ClientController::class, 'addressesFromClientId']);
@@ -113,7 +114,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/kitSearch/{kwp}/{roof}/{tension}', [KitSearchController::class, 'kitsSearch']);
     Route::post('/setFinalValue', [ProposalController::class, 'setFinalValue']);
     Route::post('/setAverageProduction', [ProposalController::class, 'setAverageProduction']);
-
 
 
 });
