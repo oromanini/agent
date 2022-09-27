@@ -103,7 +103,7 @@ class ProposalController extends Controller
         $proposal = Proposal::find($id);
         $valueHistoryData = $this->proposalValueHistoryService->setValueHistoryData($proposal);
         $kits = $proposal->is_manual ? json_decode($proposal->components, true) : getKitCodesFromProposal($proposal);
-        $isPromotional = ($proposal->number_of_panels == 4 || $proposal->number_of_panels == 8 || $proposal->number_of_panels == 12 || $proposal->number_of_panels == 14) && ($proposal->kwp == 2.2 || $proposal->kwp == 4.4 || $proposal->kwp == 6.6 || $proposal->kwp == 7.7);
+        $isPromotional = false;
 
 
         return view('proposals.show', compact('proposal', 'valueHistoryData', 'kits', 'isPromotional'));
