@@ -191,12 +191,12 @@ function calculateWithoutSolar($proposal): string
 function calculateWithSolar($proposal): string
 {
     if ($proposal->tension_pattern == 'MONO-220') {
-        return 75;
+        return 50;
     } elseif ($proposal->tension_pattern == 'BI-220') {
-        return 95;
+        return 75;
     }
 
-    return 120;
+    return 100;
 }
 
 
@@ -216,18 +216,16 @@ function paybackToString(float $float): string
 
 function formatTension($tension): string
 {
-
-    if ($tension == 'Mono220') {
+    if ($tension == 'Mono220' || $tension == 'MONOFASICO-220V') {
         return 'MONO-220';
-    } elseif ($tension == 'Bi220') {
+    } elseif ($tension == 'Bi220' || $tension == 'BIFASICO-220V') {
         return 'BI-220';
-    } elseif ($tension == 'Tri220') {
+    } elseif ($tension == 'Tri220' || $tension == 'TRIFASICO-220V') {
         return 'TRI-220';
-    } else {
-        return 'TRI-380';
     }
 
-    return $tension;
+    return 'TRI-380';
+
 }
 
 function jsonToArray($json)
