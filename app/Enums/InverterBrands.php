@@ -4,11 +4,6 @@ namespace App\Enums;
 
 use BenSampo\Enum\Enum;
 
-/**
- * @method static static OptionOne()
- * @method static static OptionTwo()
- * @method static static OptionThree()
- */
 final class InverterBrands extends Enum
 {
     const Growatt =   1;
@@ -16,4 +11,5 @@ final class InverterBrands extends Enum
     const Deye = 3;
     const Sofar = 4;
     const Solis = 5;
+    const Bel = 6;
 }
