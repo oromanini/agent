@@ -78,6 +78,7 @@ function setPanelBrandImage($brand): string
     $ja = '/img/panel_brands/ja.png';
     $phono = '/img/panel_brands/phono.png';
     $longi = '/img/panel_brands/longi.png';
+    $bel = '/img/panel_brands/bel.png';
 
     if (is_string($brand)) {
 
@@ -97,6 +98,8 @@ function setPanelBrandImage($brand): string
             $img = $phono;
         } elseif ($brand == 'Longi') {
             $img = $longi;
+        } elseif ($brand == 'Bel') {
+            $img = $bel;
         }
 
     } else {
@@ -126,6 +129,9 @@ function setPanelBrandImage($brand): string
             case 8:
                 $img = $longi;
                 break;
+            case 9:
+                $img = $bel;
+                break;
             default:
                 throw new Exception('Painel não localizado.');
         }
@@ -141,6 +147,7 @@ function setInverterImage($brand): string
     $deye = '/img/inverters/deye.png';
     $sofar = '/img/inverters/sofar.png';
     $solis = '/img/inverters/solis.png';
+    $bel = '/img/inverters/bel.png';
 
     if (is_string($brand)) {
 
@@ -153,7 +160,9 @@ function setInverterImage($brand): string
         } elseif ($brand == 'Sofar') {
             $img = $sofar;
         } elseif ($brand == 'Solis') {
-            $img = $sofar;
+            $img = $solis;
+        } elseif ($brand == 'Bel') {
+            $img = $bel;
         }
 
     } else {
@@ -173,6 +182,9 @@ function setInverterImage($brand): string
                 break;
             case 5:
                 $img = $solis;
+                break;
+            case 6:
+                $img = $bel;
                 break;
             default:
                 throw new Exception('Inversor não localizado.');

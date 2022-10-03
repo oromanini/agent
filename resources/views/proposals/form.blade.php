@@ -317,6 +317,9 @@
                 if (brand == 'Solis') {
                     inverterImage = '/img/inverter_brands/solis.png'
                 }
+                if (brand == 'Bel') {
+                    inverterImage = '/img/inverter_brands/bel.png'
+                }
 
                 return inverterImage
             }
