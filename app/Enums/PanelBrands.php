@@ -15,7 +15,4 @@ final class PanelBrands extends Enum
     const Phono = 7;
     const Longi = 8;
     const Bel = 9;
-
-
-
 }

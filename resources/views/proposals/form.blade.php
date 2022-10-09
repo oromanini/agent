@@ -285,6 +285,8 @@
 
                 let panelImage = null;
 
+                console.log(brand)
+
                 if (brand == 'Jinko') {
                     panelImage = '/img/panel_brands/jinko.png'
                 }
@@ -299,6 +301,9 @@
                 }
                 if (brand == 'Longi') {
                     panelImage = '/img/panel_brands/longi.png'
+                }
+                if (brand == 'Astronergy Chint') {
+                    panelImage = '/img/panel_brands/astronergy.png'
                 }
 
                 return panelImage
