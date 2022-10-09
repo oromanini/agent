@@ -409,7 +409,7 @@
                                 '</div>' +
                                 '<hr>' +
                                 '<div style="text-align: center">' +
-                                '<strong>Painel: </strong>' + panelCount + ' ' + panelSpecs['panel_brand'] + ' ' + panelSpecs['panel_power'] + 'W ' + panelSpecs['panel_type'] +
+                                '<strong>Painel: </strong>' + panelCount + ' ' + panelSpecs['panel_brand'] + ' ' + panelSpecs['panel_power'] + 'W ' +
                                 '</div>' +
                                 '<div style="text-align: center">' +
                                 '<strong>Eficiência: </strong>' + panelSpecs['panel_efficiency'] + '%' +
