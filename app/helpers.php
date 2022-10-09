@@ -90,7 +90,7 @@ function setPanelBrandImage($brand): string
             $img = $dah;
         } elseif ($brand == 'Sunket') {
             $img = $sunket;
-        } elseif ($brand == 'Astronergy') {
+        } elseif ($brand == 'Astronergy' || $brand == 'Astronergy Chint') {
             $img = $astronergy;
         } elseif ($brand == 'Ja') {
             $img = $ja;
