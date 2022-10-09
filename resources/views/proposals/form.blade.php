@@ -363,7 +363,7 @@
                             let technicalDescription4 = item[3] ? item[3]['technical_description'] : null;
                             let panelSpecs = technicalDescription['panel_specs'];
                             let panelImage = getPanelImage(panelSpecs['panel_brand'])
-                            let banks = technicalDescription['inverter_brand'] === 'Growatt' ? '/img/banks/aldo.png' : '/img/banks/grandsol.png';
+                            let banks = '/img/banks/banks.png';
                             let inverterImage = getInverterImage(technicalDescription['inverter_brand'])
 
                             let inverterPower1 = technicalDescription['inverter_power'];
