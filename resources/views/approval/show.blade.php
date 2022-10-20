@@ -1,7 +1,7 @@
 @extends('base')
 
 @section('content')
-    @if(auth()->user() != 20)
+    @if(auth()->user()->id != 20)
         <div class="container is-fluid overflow-auto">
             <nav class="tabs is-boxed is-fullwidth is-large" style="margin-bottom: 0">
                 <div class="container">
