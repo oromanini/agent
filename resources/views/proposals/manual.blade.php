@@ -295,6 +295,18 @@
                             </div>
                         </div>
                     </div>
+                    <div class="column is-2">
+                        <div class="field">
+                            <label for="inverter_quantity" class="label">Qtd. de Inversores</label>
+                            <div class="control">
+                                <input name="inverter_quantity" id="inverter_quantity"
+                                       class="input is-rounded @error('inverter_quantity') is-danger @enderror"
+                                       type="number"
+                                       placeholder="1" value="1" required>
+                                @error('inverter_quantity')<span class="error-message">{{ $message }}</span>@enderror
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="columns">

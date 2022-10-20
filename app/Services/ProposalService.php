@@ -66,6 +66,7 @@ class ProposalService
                 'inverter_model' => $data['inverter_model'],
                 'inverter_power' => $data['inverter_power'],
                 'inverter_warranty' => $data['inverter_warranty'],
+                'inverter_quantity' => $data['inverter_quantity']
             ]);
 
         } else {

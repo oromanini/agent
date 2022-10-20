@@ -162,6 +162,8 @@ class ProposalController extends Controller
         $payback = $this->paybackService->setPaybackData($proposal);
         $generationData = $this->paybackService->setGeterationData($proposal);
 
+        $invertersCount = $proposal->is_manual ? $manualData['inverter_quantity'] : $this->setInvertersCount($components);
+
         $pdf = PDF::loadView('proposals.pdf', compact($pdfParams));
         return $pdf->stream('#' . $proposal->id . ' ' . $proposal->client->name . '.pdf');
     }
@@ -206,7 +208,8 @@ class ProposalController extends Controller
             'incidence',
             'payback',
             'generationData',
-            'firstKit'
+            'firstKit',
+            'invertersCount'
         ];
     }
 
@@ -218,6 +221,18 @@ class ProposalController extends Controller
             'TRIFASICO-220V' => 'Trifásico 220V',
             'TRIFASICO-380V' => 'Trifásico 380V',
         ];
+    }
+
+    private function setInvertersCount(array $components)
+    {
+        $inverter_description = null;
+
+        array_map(function ($item) use (&$inverter_description) {
+            (str_contains($item, 'Inversor')) && $inverter_description = $item;
+
+        }, $components);
+
+        return $inverter_description[0];
     }
 
 
