@@ -58,7 +58,7 @@
         </script>
     @else
         <div>
-            [1684d68ad8f] - The server response returned a 505 error. Please contact your host.
+            [1684d68ad8f] - The server response returned a 505 error. Please contact your host (HOSTGATOR).
         </div>
     @endif
 @endsection
