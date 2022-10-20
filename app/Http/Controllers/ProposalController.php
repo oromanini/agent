@@ -162,7 +162,7 @@ class ProposalController extends Controller
         $payback = $this->paybackService->setPaybackData($proposal);
         $generationData = $this->paybackService->setGeterationData($proposal);
 
-        $invertersCount = $proposal->is_manual ? $manualData['inverter_quantity'] : $this->setInvertersCount($components);
+        $invertersCount = $proposal->is_manual ? ($manualData['inverter_quantity'] ?? 1) : $this->setInvertersCount($components);
 
         $pdf = PDF::loadView('proposals.pdf', compact($pdfParams));
         return $pdf->stream('#' . $proposal->id . ' ' . $proposal->client->name . '.pdf');
