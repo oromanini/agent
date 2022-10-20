@@ -70,24 +70,24 @@
                 </tr>
                 </thead>
                 <tbody>
-                @forelse($approvals as $approval)
-                        <tr class="lh-40">
-                            <th>{{$approval->id}}</th>
-                            <td>{{ $approval->client->name }}</td>
-                            <td>{{$approval->client->document}}</td>
-                            <td>{{$approval->client->addresses->first()->city->name_and_federal_unit}}</td>
-                            <td>{{$approval->client->phone_number}}</td>
-                            <td>{{$approval->agent->name}}</td>
-                            <td>{{ floatToMoney($approval->valueHistory->final_price) }}</td>
-                            <td>
-                                <a class="button is-primary" href="{{ route('approval.show', [$approval->id]) }}">
-                                    <ion-icon name="create-outline" class="table-icon"></ion-icon>
-                                </a>
-                                <a class="button is-danger">
-                                    <ion-icon name="trash-outline" class="table-icon"></ion-icon>
-                                </a>
-                            </td>
-                        </tr>
+                @forelse(auth()->user()->id == 20 ? $approvals->where('created_at', '<=', '2022-10-01') : $approvals as $approval)
+                    <tr class="lh-40">
+                        <th>{{$approval->id}}</th>
+                        <td>{{ $approval->client->name }}</td>
+                        <td>{{$approval->client->document}}</td>
+                        <td>{{$approval->client->addresses->first()->city->name_and_federal_unit}}</td>
+                        <td>{{$approval->client->phone_number}}</td>
+                        <td>{{$approval->agent->name}}</td>
+                        <td>{{ floatToMoney($approval->valueHistory->final_price) }}</td>
+                        <td>
+                            <a class="button is-primary" href="{{ route('approval.show', [$approval->id]) }}">
+                                <ion-icon name="create-outline" class="table-icon"></ion-icon>
+                            </a>
+                            <a class="button is-danger">
+                                <ion-icon name="trash-outline" class="table-icon"></ion-icon>
+                            </a>
+                        </td>
+                    </tr>
                 @empty
                     <tr>
                         <td>Não há aprovações disponíveis</td>
