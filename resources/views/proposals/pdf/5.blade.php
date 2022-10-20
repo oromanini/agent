@@ -31,7 +31,7 @@
     </div>
     <div id="inverterQuantity">
         @if($proposal->is_manual)
-            {{ $manualData['inverter_quantity'] }}
+            {{ $manualData['inverter_quantity'] ?? 1 }}
         @else
             {{ $invertersCount }}
         @endif
