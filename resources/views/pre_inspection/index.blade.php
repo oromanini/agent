@@ -161,7 +161,7 @@
             <label class="label" for="observations">Há alguma observação? Algo que você acha importante
                 destacar?</label>
             <textarea id="observations" name="observations" class="textarea"
-                      placeholder="Sombreamento? Dificuldade de acesso? Estrutura comprometida? Digite suas observações aqui"></textarea>
+                      placeholder="Sombreamento? Dificuldade de acesso? Estrutura comprometida? Digite suas observações aqui">{{ $proposal->preInspection->observations ?? '' }}</textarea>
         </div>
     </div>
 

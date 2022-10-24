@@ -25,7 +25,15 @@
 
     <div class="columns" style="margin: 20px 10px;">
         <div class="column is-12">
-            <label class="label" for="observations">Observações e/ou medidas necessárias</label>
+            <label class="label" for="observations">Observações do agente</label>
+            <p>{{ $inspection->proposal->preInspection->observations }}</p>
+        </div>
+    </div>
+
+
+    <div class="columns" style="margin: 20px 10px;">
+        <div class="column is-12">
+            <label class="label" for="observations">Observações da vistoria e/ou medidas necessárias</label>
             <textarea id="note" name="note" class="textarea"
                       placeholder="Adequação necessária, observações, etc...">{{ isset($inspection) ? $inspection->note : ''  }}</textarea>
         </div>
