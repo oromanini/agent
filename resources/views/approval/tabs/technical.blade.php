@@ -26,7 +26,7 @@
     <div class="columns" style="margin: 20px 10px;">
         <div class="column is-12">
             <label class="label" for="observations">Observações do agente</label>
-            <p>{{ $inspection->proposal->preInspection->observations }}</p>
+            <p>{{ $proposal->preInspection->observations }}</p>
         </div>
     </div>
 
