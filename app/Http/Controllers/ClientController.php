@@ -12,6 +12,10 @@ use App\Repositories\ClientRepository;
 use App\Services\ClientService;
 use App\Services\SolarIncidenceService;
 use Exception;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,9 +23,9 @@ use function Sodium\add;
 
 class ClientController extends Controller
 {
-    protected $clientService;
-    protected $clientRepository;
-    protected $solarIncidenceService;
+    protected ClientService $clientService;
+    protected ClientRepository $clientRepository;
+    protected SolarIncidenceService $solarIncidenceService;
 
     public function __construct(ClientService $clientService, ClientRepository $clientRepository, SolarIncidenceService $incidenceService)
     {
@@ -30,7 +34,7 @@ class ClientController extends Controller
         $this->solarIncidenceService = $incidenceService;
     }
 
-    public function index(Request $request)
+    public function index(Request $request): Factory|View|Application
     {
         $clients = $this->clientRepository->filter($request->all());
 
@@ -43,7 +47,7 @@ class ClientController extends Controller
         return view('clients.index', compact('clients', 'agents'));
     }
 
-    public function create()
+    public function create(): Factory|View|Application
     {
         $states = State::all();
 
@@ -75,7 +79,7 @@ class ClientController extends Controller
         return redirect()->route('client.index');
     }
 
-    public function edit($id)
+    public function edit($id): Factory|View|Application
     {
         $client = Client::find($id);
         $states = State::all();
@@ -92,7 +96,7 @@ class ClientController extends Controller
         return Client::find($id)->addresses;
     }
 
-    public function ucsFromClientId($id)
+    public function ucsFromClientId($id): Collection|array
     {
         $addresses = Address::query()->select('consumer_unit_id')->where('client_id', $id)->whereNotNull('consumer_unit_id')->get()->toArray();
         $consumerUnits = ConsumerUnit::query()->whereIn('id', $addresses)->get();
@@ -100,7 +104,7 @@ class ClientController extends Controller
         return $consumerUnits;
     }
 
-    public function incidenceFromAddress($id)
+    public function incidenceFromAddress($id): float
     {
         $city = Address::find($id)->city;
         $average =  str_replace(',', '.', $this->solarIncidenceService->getSolarIncidence($city)->average);

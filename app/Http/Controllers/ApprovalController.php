@@ -14,11 +14,11 @@ use Illuminate\Http\Request;
 
 class ApprovalController extends Controller
 {
-    private $approvalRepository;
-    private $valueHistoryService;
-    private $inspectionService;
-    private $financingService;
-    private $contractService;
+    private ApprovalRepository $approvalRepository;
+    private ProposalValueHistoryService $valueHistoryService;
+    private InspectionService $inspectionService;
+    private FinancingService $financingService;
+    private ContractService $contractService;
 
     public function __construct(
         ApprovalRepository $approvalRepository,

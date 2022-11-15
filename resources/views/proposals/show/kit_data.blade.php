@@ -3,8 +3,8 @@
         <div class="column is-12" style="padding: 0">
             <div class="accordion-tabs">
                 <div class="tab">
-                    <input type="checkbox" id="chck" class="checkbox-accordion">
-                    <label class="tab-label" for="chck">Componentes do Kit Gerador</label>
+                    <input type="checkbox" id="chck2" class="checkbox-accordion">
+                    <label class="tab-label" for="chck2">Componentes do Kit Gerador</label>
                     <div class="tab-content content">
                         <ul style="display: block !important;">
                             @foreach($kits as $component)
@@ -20,8 +20,8 @@
             <div class="column is-12" style="padding: 0">
                 <div class="accordion-tabs">
                     <div class="tab">
-                        <input type="checkbox" id="chck{{ $loop->iteration }}" class="checkbox-accordion">
-                        <label class="tab-label" for="chck{{ $loop->iteration }}">Kit {{ $loop->iteration }}</label>
+                        <input type="checkbox" id="chck2{{ $loop->iteration }}" class="checkbox-accordion">
+                        <label class="tab-label" for="chck2{{ $loop->iteration }}">Kit {{ $loop->iteration }}</label>
                         <div class="tab-content content">
                             <ul style="display: block !important;">
 {{--                                <li>{{ $kit }}</li>--}}

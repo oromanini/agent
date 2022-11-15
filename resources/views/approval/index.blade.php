@@ -65,7 +65,7 @@
                     <th>Cidade/Estado</th>
                     <th>Telefone</th>
                     <th>Agente</th>
-                    <th>Preço</th>
+                    <th>Total</th>
                     <th>Ações</th>
                 </tr>
                 </thead>
@@ -78,7 +78,7 @@
                         <td>{{$approval->client->addresses->first()->city->name_and_federal_unit}}</td>
                         <td>{{$approval->client->phone_number}}</td>
                         <td>{{$approval->agent->name}}</td>
-                        <td>{{ floatToMoney($approval->valueHistory->final_price) }}</td>
+                        <td>R$ {{ floatToMoney($approval->valueHistory->final_price) }}</td>
                         <td>
                             <a class="button is-primary" href="{{ route('approval.show', [$approval->id]) }}">
                                 <ion-icon name="create-outline" class="table-icon"></ion-icon>
