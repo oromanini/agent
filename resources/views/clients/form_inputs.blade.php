@@ -86,6 +86,25 @@
                 </div>
             </div>
         </div>
+        <div class="column is-6">
+            <label for="owner_document" class="label">CNH/RG do cliente</label>
+            <div class="file has-name" id="owner_document">
+                <label class="file-label">
+                    <input class="file-input" type="file" name="owner_document">
+                    <span class="file-cta">
+                                  <span class="file-icon">
+                                    <ion-icon name="folder-outline"></ion-icon>
+                                  </span>
+                                  <span class="file-label">
+                                    Escolher arquivo…
+                                  </span>
+                                </span>
+                    <span class="file-name">
+                                    Nenhum arquivo selecionado
+                                </span>
+                </label>
+            </div>
+        </div>
     </div>
 </div>
 {{--            end client box--}}
@@ -237,7 +256,7 @@
             </div>
             <div class="column is-6">
                 <label for="electricity_bill" class="label">Conta de luz</label>
-                <div class="file has-name">
+                <div class="file has-name" id="electricity_bill">
                     <label class="file-label">
                         <input class="file-input" type="file" name="electricity_bill">
                         <span class="file-cta">

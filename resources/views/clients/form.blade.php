@@ -41,7 +41,28 @@
 
     </div>
 
+    <script>
 
+        $(function () {
+            const owner_document = document.querySelector('#owner_document input[type=file]');
+            const electricity_bill = document.querySelector('#electricity_bill input[type=file]');
+
+            owner_document.onchange = () => {
+                if (owner_document.files.length > 0) {
+                    const fileName = document.querySelector('#owner_document .file-name');
+                    fileName.textContent = owner_document.files[0].name;
+                }
+            }
+
+            electricity_bill.onchange = () => {
+                if (electricity_bill.files.length > 0) {
+                    const fileName = document.querySelector('#electricity_bill .file-name');
+                    fileName.textContent = electricity_bill.files[0].name;
+                }
+            }
+        })
+
+    </script>
 
 @endsection
 

@@ -105,8 +105,22 @@ class ProposalController extends Controller
         $kits = $proposal->is_manual ? json_decode($proposal->components, true) : getKitCodesFromProposal($proposal);
         $isPromotional = false;
 
+        $fields = [
+            ['id' => 'croqui', 'name' => 'inspection[croqui]', 'label' => 'Croqui'],
+            ['id' => 'roof', 'name' => 'inspection[roof][]', 'label' => 'Telhado'],
+            ['id' => 'roof_structure', 'name' => 'inspection[roof_structure]', 'label' => 'Estrutura do Telhado'],
+            ['id' => 'pattern', 'name' => 'inspection[pattern]', 'label' => 'Padrão (tampa FECHADA) '],
+            ['id' => 'open_pattern', 'name' => 'inspection[open_pattern]', 'label' => 'Padrão (tampa ABERTA)'],
+            ['id' => 'pattern_circuit_break', 'name' => 'inspection[circuit_breaker]', 'label' => 'Disjuntor do padrão'],
+            ['id' => 'meter', 'name' => 'inspection[meter]', 'label' => 'Medidor'],
+            ['id' => 'switchboard', 'name' => 'inspection[switchboard]', 'label' => 'Quadro de distrib.'],
+            ['id' => 'inverter_local', 'name' => 'inspection[inverter_local]', 'label' => 'Local do inversor'],
+            ['id' => 'post', 'name' => 'inspection[post]', 'label' => 'Poste'],
+            ['id' => 'compass', 'name' => 'inspection[compass]', 'label' => '/Print Bússola'],
+            ['id' => 'property_fax', 'name' => 'inspection[property_fax]', 'label' => 'Faxada do imóvel'],
+        ];
 
-        return view('proposals.show', compact('proposal', 'valueHistoryData', 'kits', 'isPromotional'));
+        return view('proposals.show', compact('proposal', 'valueHistoryData', 'kits', 'isPromotional', 'fields'));
     }
 
     public function approve($id): RedirectResponse

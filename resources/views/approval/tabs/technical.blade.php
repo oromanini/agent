@@ -26,10 +26,23 @@
     <div class="columns" style="margin: 20px 10px;">
         <div class="column is-12">
             <label class="label" for="observations">Observações do agente</label>
-            <p>{{ $proposal->preInspection->observations }}</p>
+            <p>{{ $proposal->preInspection->observations ?? 'Sem observações' }}</p>
         </div>
     </div>
 
+    <div class="columns" style="margin: 20px 10px;">
+        <div class="column is-4">
+            <label class="label" for="observations">Tensão</label>
+            <p>{{ $proposal->tension_pattern }}</p>
+        </div>
+    </div>
+
+    <div class="columns" style="margin: 20px 10px;">
+        <div class="column is-4">
+            <label class="label" for="observations">Tensão</label>
+            <p>{{ $proposal->tension_pattern }}</p>
+        </div>
+    </div>
 
     <div class="columns" style="margin: 20px 10px;">
         <div class="column is-12">

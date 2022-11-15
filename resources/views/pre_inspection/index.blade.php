@@ -23,7 +23,8 @@
     </div>
     <div class="column is-4" style="padding: 40px">
         <h5 class="subtitle is-5 has-text-justified" style="line-height: 1.8em">
-            Se você precisar de ajuda com a pré-vistoria, assista ao nosso vídeo de ajuda <a href="#"> CLICANDO AQUI</a>. Ou entre em contato com a nossa
+            Se você precisar de ajuda com a pré-vistoria, assista ao nosso vídeo de ajuda <a href="#"> CLICANDO AQUI</a>.
+            Ou entre em contato com a nossa
             equipe pelo botão do whatsapp no canto inferior direito
         </h5>
     </div>
@@ -32,128 +33,40 @@
 <form action="{{ route('inspection.update', [$proposal->id]) }}" method="post" enctype="multipart/form-data">
     @method('put')
     @csrf
-    <div class="columns is-fullwidth">
-        <div class="column is-3">
-            <div id="croqui" class="file is-centered is-boxed is-success has-name">
-                <label class="file-label">
-                    <input class="file-input" type="file" name="inspection[croqui]">
-                    <span class="file-cta">
-                    <span class="file-icon">
-                        <ion-icon name="document-outline"></ion-icon>
-                    </span>
-                    <span class="file-label">Croqui</span>
+    <div class="columns is-fullwidth is-flex-wrap-wrap ml-3">
+        @foreach($fields as $field)
+            <div class="column is-3">
+                <div id="{{ $field['id'] }}" class="file is-fullwidth is-centered is-boxed is-success has-name">
+                    <label class="file-label" style="text-align: center">
+                        <input class="file-input" {{ $field['id'] == 'roof' ? 'multiple' : '' }} type="file" name="{{ $field['name'] }}">
+                        <span class="file-cta">
+                    <ion-icon name="image-outline"></ion-icon>
+                    <span class="file-label text-center">Foto {{ $field['label'] }}</span>
                 </span>
-                    <span class="file-name">
+                        <span class="file-name">
                     Arquivo não selecionado
                 </span>
-                </label>
+                    </label>
+                </div>
             </div>
-        </div>
-        <div class="column is-3">
-            <div id="roof" class="file is-centered is-boxed is-success has-name">
-                <label class="file-label">
-                    <input class="file-input" type="file" name="inspection[roof][]" multiple>
-                    <span class="file-cta">
-                    <span class="file-icon">
-                      <ion-icon name="home-outline"></ion-icon>
-                  </span>
-                  <span class="file-label">Telhado</span>
-                </span>
-                    <span class="file-name">
-                    Arquivo não selecionado
-                </span>
-                </label>
-            </div>
-        </div>
-
-        <div class="column is-3">
-            <div id="pattern" class="file is-centered is-boxed is-success has-name">
-                <label class="file-label">
-                    <input class="file-input" type="file" name="inspection[pattern]">
-                    <span class="file-cta">
-                    <span class="file-icon">
-                      <ion-icon name="time-outline"></ion-icon>
-                    </span>
-                    <span class="file-label">Padrão</span>
-                </span>
-                    <span class="file-name">
-                    Arquivo não selecionado
-                </span>
-                </label>
-            </div>
-        </div>
-
-        <div class="column is-3">
-            <div id="pattern_circuit_break" class="file is-centered is-boxed is-success has-name">
-                <label class="file-label">
-                    <input class="file-input" type="file" name="inspection[circuit_breaker]">
-                    <span class="file-cta">
-                  <span class="file-icon">
-                      <ion-icon name="toggle-outline"></ion-icon>                  </span>
-                    <span class="file-label">Disjuntor do padrão</span>
-                </span>
-                    <span class="file-name">
-                    Arquivo não selecionado
-                </span>
-                </label>
-            </div>
-        </div>
-
+        @endforeach
     </div>
 
-    <div class="columns is-fullwidth">
-
+    <div class="columns is-12" style="margin: 20px 10px;">
         <div class="column is-3">
-            <div id="switchboard" class="file is-centered is-boxed is-success has-name">
-                <label class="file-label">
-                    <input class="file-input" type="file" name="inspection[switchboard]">
-                    <span class="file-cta">
-                  <span class="file-icon">
-                      <ion-icon name="options-outline"></ion-icon>
-                  </span>
-                    <span class="file-label">Quadro de distrib.</span>
-                </span>
-                    <span class="file-name">
-                    Arquivo não selecionado
-                </span>
-                </label>
+            <div class="field">
+                <label for="circuit_breaker_amperage" class="label">Disjuntor (A)?</label>
+                <div
+                    class="select is-multiline is-fullwidth is-rounded  @error('circuit_break') is-danger @enderror">
+                    <select id="circuit_breaker_amperage" name="circuit_breaker_amperage">
+                        @for($i = 10; $i <= 150; $i = $i + 5)
+                            <option {{ $proposal->preInspection->circuit_breaker_amperage == $i ? 'selected' : ''}} value="{{ $i }}">{{ $i }}A</option>
+                        @endfor
+                    </select>
+                    @error('circuit_breaker_amperage')<span class="error-message">{{ $message }}</span>@enderror
+                </div>
             </div>
         </div>
-
-        <div class="column is-3">
-            <div id="post" class="file is-centered is-boxed is-success has-name">
-                <label class="file-label">
-                    <input class="file-input" type="file" name="inspection[post]">
-                    <span class="file-cta">
-                  <span class="file-icon">
-                      <ion-icon name="bulb-outline"></ion-icon>
-                  </span>
-                    <span class="file-label">Poste</span>
-                </span>
-                    <span class="file-name">
-                    Arquivo não selecionado
-                </span>
-                </label>
-            </div>
-        </div>
-
-        <div class="column is-3">
-            <div id="compass" class="file is-centered is-boxed is-success has-name">
-                <label class="file-label">
-                    <input class="file-input" type="file" name="inspection[compass]">
-                    <span class="file-cta">
-                    <span class="file-icon">
-                      <ion-icon name="compass-outline"></ion-icon>
-                    </span>
-                    <span class="file-label">Print Bússola</span>
-                </span>
-                    <span class="file-name">
-                    Arquivo não selecionado
-                </span>
-                </label>
-            </div>
-        </div>
-
     </div>
 
     <div class="columns" style="margin: 50px 10px;">
