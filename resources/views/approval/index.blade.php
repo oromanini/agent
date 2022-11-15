@@ -6,11 +6,7 @@
             <div class="columns mt-2 ml-1">
                 <h3 class="title"><img src="/img/logo/alluz-icon.png" width="30" alt=".."> Projetos para aprovação</h3>
             </div>
-            <div class="columns">
-                <div class="column">
-                    <h4>Filtrar</h4>
-                </div>
-            </div>
+
             <form action="{{ route('approval.index') }}" method="get">
                 @csrf
                 <div id="client-filters" class="columns is-flex is-flex-direction-row mt-4 mb-4">
@@ -95,6 +91,7 @@
                 @endforelse
                 </tbody>
             </table>
+            {{ $approvals->appends(request()->all())->links() }}
         </div>
     </div>
 

@@ -15,12 +15,8 @@
                     </a>
                 </div>
             </div>
-            <div class="columns">
-                <div class="column">
-                    <h4>Filtrar</h4>
-                </div>
-            </div>
-            <form action="{{ route('client.index') }}" method="get">
+            <br>
+            <form action="{{ route('user.index') }}" method="get">
                 @csrf
                 <div class="columns is-flex is-flex-direction-row mt-4 mb-4">
                     <div class="column is-3">
@@ -104,6 +100,7 @@
                 @endforelse
                 </tbody>
             </table>
+            {{ $agents->appends(request()->all())->links() }}
         </div>
     </div>
 

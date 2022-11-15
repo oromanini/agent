@@ -107,6 +107,7 @@
                 @endforelse
                 </tbody>
             </table>
+            {{ $clients->appends(request()->all())->links() }}
         </div>
     </div>
 

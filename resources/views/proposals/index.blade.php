@@ -15,11 +15,7 @@
                     </a>
                 </div>
             </div>
-            <div class="columns">
-                <div class="column">
-                    <h4>Filtrar</h4>
-                </div>
-            </div>
+
             <form action="{{ route('proposal.index') }}" method="get">
                 @csrf
                 <div id="proposal-filters" class="columns is-flex is-flex-direction-row mt-4 mb-4">
@@ -131,7 +127,7 @@
                 @endforelse
                 </tbody>
             </table>
-            {{ $proposals->links() }}
+            {{ $proposals->appends(request()->all())->links() }}
         </div>
     </div>
 
