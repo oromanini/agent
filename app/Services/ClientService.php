@@ -38,7 +38,7 @@ class ClientService implements BaseService
             throw new \Exception($e);
         }
 
-        return ['success','Cliente cadastrado com sucesso!'];
+        return ['success', 'Cliente cadastrado com sucesso!'];
     }
 
     public function update($id, $data): array
@@ -51,7 +51,9 @@ class ClientService implements BaseService
         $client->document = $data['document'];
         $client->email = $data['email'];
         $client->phone_number = $data['phone_number'];
-        $client->document_owner = $data['document_owner'];
+        $client->document_owner = isset($data['owner_document'])
+            ? $data['owner_document']->store('public/owner_document/' . $client->id)
+            : $client->owner_document;
 
         $address->street = $data['street'];
         $address->number = $data['address_number'];
@@ -67,10 +69,10 @@ class ClientService implements BaseService
             });
 
         } catch (\Exception $e) {
-            throw new \Exception('Erro ao atualizar cliente: '.$e);
+            throw new \Exception('Erro ao atualizar cliente: ' . $e);
         }
 
-        return ['success','Cliente atualizado com sucesso!'];
+        return ['success', 'Cliente atualizado com sucesso!'];
     }
 
     public function delete($id): array
@@ -92,7 +94,7 @@ class ClientService implements BaseService
         $client->phone_number = $data['phone_number'];
 
         $client->owner_document = isset($data['owner_document'])
-            ? $data['owner_document']->store('public/owner_document/'. $client->id)
+            ? $data['owner_document']->store('public/owner_document/' . $client->id)
             : $client->owner_document;
 
         $client->agent_id = auth()->user()->id;
@@ -134,7 +136,7 @@ class ClientService implements BaseService
 
             $consumerUnit->number = $data['uc_number'];
             $consumerUnit->type = $data['uc_type'];
-            $consumerUnit->eletricity_bill = $data['electricity_bill']->store('public/consumer_units/'. $address_id);
+            $consumerUnit->eletricity_bill = $data['electricity_bill']->store('public/consumer_units/' . $address_id);
 
             DB::transaction(function () use ($consumerUnit) {
                 $consumerUnit->save();
