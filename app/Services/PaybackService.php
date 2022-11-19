@@ -65,74 +65,74 @@ class PaybackService
         return $payback;
     }
 
-    public function setGeterationData(Proposal $proposal): array
+    public function setGenerationData(Proposal $proposal): array
     {
         $consumption = $proposal->average_consumption;
         $city = $proposal->client->addresses->first()->city;
         $incidence = $this->solarIncidenceService->getSolarIncidence($city);
         $kwp = $proposal->kwp;
 
-        $generationData =  [
+        $generationData = [
             'months' => [
                 'janeiro' => [
                     'consumo' => $consumption,
-                    'geracao' => ceil($kwp * 30 * (((float)$incidence->jan / 1000) - env('GENERATION_LOST'))),
-                    'excedente' => ceil($kwp * 30 * (((float)$incidence->jan / 1000) - env('GENERATION_LOST'))) - $consumption,
+                    'geracao' => $this->setGeneration(month: 'jan', kwp: $kwp, incidence: $incidence),
+                    'excedente' => $this->setGeneration(month: 'jan', kwp: $kwp, incidence: $incidence) - $consumption,
                 ],
                 'fevereiro' => [
                     'consumo' => $consumption,
-                    'geracao' => ceil($kwp * 30 * (((float)$incidence->feb / 1000) - env('GENERATION_LOST'))),
-                    'excedente' => ceil($kwp * 30 * (((float)$incidence->feb / 1000) - env('GENERATION_LOST'))) - $consumption,
+                    'geracao' => $this->setGeneration(month: 'feb', kwp: $kwp, incidence: $incidence),
+                    'excedente' => $this->setGeneration(month: 'feb', kwp: $kwp, incidence: $incidence) - $consumption,
                 ],
                 'março' => [
                     'consumo' => $consumption,
-                    'geracao' => ceil($kwp * 30 * (((float)$incidence->mar / 1000) - env('GENERATION_LOST'))),
-                    'excedente' => ceil($kwp * 30 * (((float)$incidence->mar / 1000) - env('GENERATION_LOST'))) - $consumption,
+                    'geracao' => $this->setGeneration(month: 'mar', kwp: $kwp, incidence: $incidence),
+                    'excedente' => $this->setGeneration(month: 'mar', kwp: $kwp, incidence: $incidence) - $consumption,
                 ],
                 'abril' => [
                     'consumo' => $consumption,
-                    'geracao' => ceil($kwp * 30 * (((float)$incidence->apr / 1000) - env('GENERATION_LOST'))),
-                    'excedente' => ceil($kwp * 30 * (((float)$incidence->apr / 1000) - env('GENERATION_LOST'))) - $consumption,
+                    'geracao' => $this->setGeneration(month: 'apr', kwp: $kwp, incidence: $incidence),
+                    'excedente' => $this->setGeneration(month: 'apr', kwp: $kwp, incidence: $incidence) - $consumption,
                 ],
                 'maio' => [
                     'consumo' => $consumption,
-                    'geracao' => ceil($kwp * 30 * (((float)$incidence->may / 1000) - env('GENERATION_LOST'))),
-                    'excedente' => ceil($kwp * 30 * (((float)$incidence->may / 1000) - env('GENERATION_LOST'))) - $consumption,
+                    'geracao' => $this->setGeneration(month: 'may', kwp: $kwp, incidence: $incidence),
+                    'excedente' => $this->setGeneration(month: 'may', kwp: $kwp, incidence: $incidence),
                 ],
                 'junho' => [
                     'consumo' => $consumption,
-                    'geracao' => ceil($kwp * 30 * (((float)$incidence->jun / 1000) - env('GENERATION_LOST'))),
-                    'excedente' => ceil($kwp * 30 * (((float)$incidence->jun / 1000) - env('GENERATION_LOST'))) - $consumption,
+                    'geracao' => $this->setGeneration(month: 'jun', kwp: $kwp, incidence: $incidence),
+                    'excedente' => $this->setGeneration(month: 'jun', kwp: $kwp, incidence: $incidence) - $consumption,
                 ],
                 'julho' => [
                     'consumo' => $consumption,
-                    'geracao' => ceil($kwp * 30 * (((float)$incidence->jul / 1000) - env('GENERATION_LOST'))),
-                    'excedente' => ceil($kwp * 30 * (((float)$incidence->jul / 1000) - env('GENERATION_LOST'))) - $consumption,
+                    'geracao' => $this->setGeneration(month: 'jul', kwp: $kwp, incidence: $incidence),
+                    'excedente' => $this->setGeneration(month: 'jul', kwp: $kwp, incidence: $incidence) - $consumption,
                 ],
                 'agosto' => [
                     'consumo' => $consumption,
-                    'geracao' => ceil($kwp * 30 * (((float)$incidence->aug / 1000) - env('GENERATION_LOST'))),
-                    'excedente' => ceil($kwp * 30 * (((float)$incidence->aug / 1000) - env('GENERATION_LOST'))) - $consumption,
+                    'geracao' => $this->setGeneration(month: 'aug', kwp: $kwp, incidence: $incidence),
+                    'excedente' => $this->setGeneration(month: 'aug', kwp: $kwp, incidence: $incidence) - $consumption,
                 ],
                 'setembro' => [
                     'consumo' => $consumption,
-                    'geracao' => ceil($kwp * 30 * (((float)$incidence->sep / 1000) - env('GENERATION_LOST'))),
-                    'excedente' => ceil($kwp * 30 * (((float)$incidence->sep / 1000) - env('GENERATION_LOST'))) - $consumption,
+                    'geracao' => $this->setGeneration(month: 'sep', kwp: $kwp, incidence: $incidence),
+                    'excedente' => $this->setGeneration(month: 'sep', kwp: $kwp, incidence: $incidence) - $consumption,
                 ],
                 'outubro' => [
                     'consumo' => $consumption,
-                    'geracao' => ceil($kwp * 30 * (((float)$incidence->oct / 1000) - env('GENERATION_LOST'))),
-                    'excedente' => ceil($kwp * 30 * (((float)$incidence->oct / 1000) - env('GENERATION_LOST'))) - $consumption,
+                    'geracao' => $this->setGeneration(month: 'oct', kwp: $kwp, incidence: $incidence),
+                    'excedente' => $this->setGeneration(month: 'oct', kwp: $kwp, incidence: $incidence) - $consumption,
                 ],
                 'novembro' => [
                     'consumo' => $consumption,
-                    'geracao' => ceil($kwp * 30 * (((float)$incidence->nov / 1000) - env('GENERATION_LOST'))),
-                    'excedente' => ceil($kwp * 30 * (((float)$incidence->nov / 1000) - env('GENERATION_LOST'))) - $consumption,
+                    'geracao' => $this->setGeneration(month: 'nov', kwp: $kwp, incidence: $incidence),
+                    'excedente' => $this->setGeneration(month: 'nov', kwp: $kwp, incidence: $incidence) - $consumption,
                 ],
                 'dezembro' => [
                     'consumo' => $consumption,
-                    'geracao' => ceil($kwp * 30 * (((float)$incidence->dec / 1000) - env('GENERATION_LOST'))),
-                    'excedente' => ceil($kwp * 30 * (((float)$incidence->dec / 1000) - env('GENERATION_LOST'))) - $consumption,
+                    'geracao' => $this->setGeneration(month: 'dec', kwp: $kwp, incidence: $incidence),
+                    'excedente' => $this->setGeneration(month: 'dec', kwp: $kwp, incidence: $incidence) - $consumption,
                 ],
             ]
         ];
@@ -141,7 +141,7 @@ class PaybackService
         $generationSum = 0;
         $excedentSum = 0;
 
-        foreach ($generationData['months'] as $key => $val) {
+        foreach ($generationData['months'] as $val) {
             $consumptionSum += $val['consumo'];
             $generationSum += $val['geracao'];
             $excedentSum += $val['excedente'];
@@ -154,6 +154,16 @@ class PaybackService
         ];
 
         return $generationData;
+    }
+
+    private function setGeneration(string $month, float $kwp, object $incidence): float
+    {
+        return ceil(
+            ($kwp
+                * 30
+                * ((float)$incidence->{$month} / 1000)
+            ) * (1 - (float) env('GENERATION_LOST'))
+        );
     }
 
 }

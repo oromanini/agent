@@ -285,8 +285,6 @@
 
                 let panelImage = null;
 
-                console.log(brand)
-
                 if (brand == 'Jinko') {
                     panelImage = '/img/panel_brands/jinko.png'
                 }
@@ -329,12 +327,21 @@
                 return inverterImage
             }
 
+            function setKwp(consumption, incidence) {
+                return (
+                    parseFloat(consumption)
+                    / 30
+                    / incidence
+                ) * (
+                    1 + {{ (float)env('GENERATION_LOST') }});
+            }
+
             $('#kitSearchSubmit').on('click', function () {
                 $('#loader').show()
                 let consumption = $('#average_consumption').val();
                 let incidence = setIncidence()
 
-                let kwp = parseFloat(consumption) / 30 / (incidence - {{ (float)env('GENERATION_LOST') }});
+                let kwp = setKwp(consumption, incidence);
                 let roof = $("input[name=roof_structure]:checked").val();
                 let tension = $('select[name=tension_pattern] option').filter(':selected').val()
                 let addressId = $('select[name=installation_address] option').filter(':selected').val()

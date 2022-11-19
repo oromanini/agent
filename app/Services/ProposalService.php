@@ -13,16 +13,19 @@ use Ramsey\Uuid\Uuid;
 
 class ProposalService
 {
-    private $incidenceService;
-    private $valueHistoryService;
+    private SolarIncidenceService $incidenceService;
+    private ProposalValueHistoryService $valueHistoryService;
 
-    public function __construct(SolarIncidenceService $incidenceService, ProposalValueHistoryService $valueHistoryService)
+    public function __construct(
+        SolarIncidenceService       $incidenceService,
+        ProposalValueHistoryService $valueHistoryService
+    )
     {
         $this->incidenceService = $incidenceService;
         $this->valueHistoryService = $valueHistoryService;
     }
 
-    public function store($data, bool $isManual = false): Proposal
+    public function store($data, bool $isManual = false): object
     {
         $proposal = null;
 
@@ -98,7 +101,7 @@ class ProposalService
 
         $roofOrientation = [];
 
-        foreach ($data['orientation'] as $orientation => $value) {
+        foreach ($data['orientation'] as $value) {
             $roofOrientation[] = $value;
         }
 
@@ -114,18 +117,18 @@ class ProposalService
         $ordinaryAverage = (float)str_replace(',', '.', $incidence->average);
 
         $months = [
-            'jan' => $kwp * 30 * (((float)$incidence->jan / 1000) - $generationLost),
-            'feb' => $kwp * 30 * (((float)$incidence->feb / 1000) - $generationLost),
-            'mar' => $kwp * 30 * (((float)$incidence->mar / 1000) - $generationLost),
-            'apr' => $kwp * 30 * (((float)$incidence->apr / 1000) - $generationLost),
-            'may' => $kwp * 30 * (((float)$incidence->may / 1000) - $generationLost),
-            'jun' => $kwp * 30 * (((float)$incidence->jun / 1000) - $generationLost),
-            'jul' => $kwp * 30 * (((float)$incidence->jul / 1000) - $generationLost),
-            'aug' => $kwp * 30 * (((float)$incidence->aug / 1000) - $generationLost),
-            'sep' => $kwp * 30 * (((float)$incidence->sep / 1000) - $generationLost),
-            'oct' => $kwp * 30 * (((float)$incidence->oct / 1000) - $generationLost),
-            'nov' => $kwp * 30 * (((float)$incidence->nov / 1000) - $generationLost),
-            'dec' => $kwp * 30 * (((float)$incidence->dec / 1000) - $generationLost),
+            'jan' => $this->setGeneration(month: 'jan', kwp: $kwp, incidence: $incidence, generationLost: $generationLost),
+            'feb' => $this->setGeneration(month: 'feb', kwp: $kwp, incidence: $incidence, generationLost: $generationLost),
+            'mar' => $this->setGeneration(month: 'mar', kwp: $kwp, incidence: $incidence, generationLost: $generationLost),
+            'apr' => $this->setGeneration(month: 'apr', kwp: $kwp, incidence: $incidence, generationLost: $generationLost),
+            'may' => $this->setGeneration(month: 'may', kwp: $kwp, incidence: $incidence, generationLost: $generationLost),
+            'jun' => $this->setGeneration(month: 'jun', kwp: $kwp, incidence: $incidence, generationLost: $generationLost),
+            'jul' => $this->setGeneration(month: 'jul', kwp: $kwp, incidence: $incidence, generationLost: $generationLost),
+            'aug' => $this->setGeneration(month: 'aug', kwp: $kwp, incidence: $incidence, generationLost: $generationLost),
+            'sep' => $this->setGeneration(month: 'sep', kwp: $kwp, incidence: $incidence, generationLost: $generationLost),
+            'oct' => $this->setGeneration(month: 'oct', kwp: $kwp, incidence: $incidence, generationLost: $generationLost),
+            'nov' => $this->setGeneration(month: 'nov', kwp: $kwp, incidence: $incidence, generationLost: $generationLost),
+            'dec' => $this->setGeneration(month: 'dec', kwp: $kwp, incidence: $incidence, generationLost: $generationLost),
         ];
 
         $sum = 0;
@@ -137,10 +140,17 @@ class ProposalService
         return [
             'months' => $months,
             'average' => $sum / 12,
-            'ordinaryAverage' => $kwp * 30 * ($ordinaryAverage - $generationLost)
+            'ordinaryAverage' => ($kwp * 30 * $ordinaryAverage) * (1 - $generationLost)
         ];
-
     }
 
+    private function setGeneration(string $month, float $kwp, object $incidence, float $generationLost): float
+    {
+        return
+            ($kwp
+                * 30
+                * ((float)$incidence->{$month} / 1000))
+            * (1 - $generationLost);
 
+    }
 }

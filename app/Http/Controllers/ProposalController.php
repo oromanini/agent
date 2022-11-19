@@ -174,7 +174,7 @@ class ProposalController extends Controller
         $withSolar = floatToMoney(calculateWithSolar($proposal));
         $incidence = $this->solarIncidenceService->getSolarIncidence($city)->average;
         $payback = $this->paybackService->setPaybackData($proposal);
-        $generationData = $this->paybackService->setGeterationData($proposal);
+        $generationData = $this->paybackService->setGenerationData($proposal);
 
         $invertersCount = $proposal->is_manual ? ($manualData['inverter_quantity'] ?? 1) : $this->setInvertersCount($components);
 
@@ -188,13 +188,18 @@ class ProposalController extends Controller
         return $this->pricingService->calculateFinalPrice($data);
     }
 
-    public function setAverageProduction(Request $request)
+    public function setAverageProduction(Request $request): float
     {
         $data = $request->all();
         $city = Address::find((int)$data['addressId'])->city;
         $incidence = (float)str_replace(',', '.', $this->solarIncidenceService->getSolarIncidence($city)->average);
 
-        return ceil((float)$data['kwp'] * 30 * ($incidence - (float)env('GENERATION_LOST')));
+        return ceil(
+            ((float)$data['kwp']
+                * 30
+                * $incidence)
+            * (1 - (float)env('GENERATION_LOST'))
+        );
     }
 
     private function setManualParams(): array
