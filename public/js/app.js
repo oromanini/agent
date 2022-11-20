@@ -5217,11 +5217,22 @@ $(function () {
 /***/ (() => {
 
 $(function () {
-  setCities();
+  setCities(null);
 
   function clean_form_zipcode() {
     $("#street").val("");
     $("#neighborhood").val("");
+  }
+
+  function carregarEstadoECidade(data) {
+    $.ajax({
+      url: "/getCityAndStateByNameAndUf/" + data.localidade + '/' + data.uf,
+      type: 'get',
+      success: function success(response) {
+        $('#state option[value="' + response.state_id + '"]').prop("selected", "selected");
+        setCities(response.id);
+      }
+    });
   } //Quando o campo cep perde o foco.
 
 
@@ -5245,8 +5256,7 @@ $(function () {
             //Atualiza os campos com os valores da consulta.
             $("#street").val(dados.logradouro);
             $("#neighborhood").val(dados.bairro);
-            $("#city").val(dados.localidade);
-            $("#state").val(dados.uf);
+            carregarEstadoECidade(dados);
           } //end if.
           else {
             //CEP pesquisado não foi encontrado.
@@ -5268,13 +5278,13 @@ $(function () {
   }); // CITIES LOAD
 
   $('#state').change(function () {
-    setCities();
+    setCities(null);
   });
   $('#state2').change(function () {
     setCities2();
   });
 
-  function setCities() {
+  function setCities(city_id) {
     var id = $('#state').find(":selected").val();
     var cityId = parseInt($('#city_id').val());
     $.ajax({
@@ -5289,7 +5299,7 @@ $(function () {
         $('#city').append($('<option>', {
           value: item.id,
           text: item.name
-        }).prop('selected', item.id === cityId));
+        }).prop('selected', city_id !== null && item.id == city_id));
       });
     }).fail(function (jqXHR, textStatus, msg) {
       console.log(msg);

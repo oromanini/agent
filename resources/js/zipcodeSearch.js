@@ -1,14 +1,27 @@
-$(function (){
+$(function () {
 
-    setCities()
+    setCities(null)
 
     function clean_form_zipcode() {
         $("#street").val("");
         $("#neighborhood").val("");
     }
 
+    function carregarEstadoECidade(data) {
+
+        $.ajax({
+            url: "/getCityAndStateByNameAndUf/" + data.localidade + '/' + data.uf,
+            type: 'get',
+            success: function (response) {
+                $('#state option[value="' + response.state_id + '"]').prop("selected", "selected");
+                setCities(response.id);
+            }
+        });
+    }
+
+
     //Quando o campo cep perde o foco.
-    $("#zipcode").blur(function() {
+    $("#zipcode").blur(function () {
 
         //Nova variável "cep" somente com dígitos.
         var zipcode = $(this).val().replace(/\D/g, '');
@@ -20,7 +33,7 @@ $(function (){
             var validacep = /^[0-9]{8}$/;
 
             //Valida o formato do CEP.
-            if(validacep.test(zipcode)) {
+            if (validacep.test(zipcode)) {
 
                 //Preenche os campos com "..." enquanto consulta webservice.
                 $("#street").val("...");
@@ -29,14 +42,14 @@ $(function (){
                 $("#state").val("...");
 
                 //Consulta o webservice viacep.com.br/
-                $.getJSON("https://viacep.com.br/ws/"+ zipcode +"/json/?callback=?", function(dados) {
+                $.getJSON("https://viacep.com.br/ws/" + zipcode + "/json/?callback=?", function (dados) {
 
                     if (!("erro" in dados)) {
                         //Atualiza os campos com os valores da consulta.
                         $("#street").val(dados.logradouro);
                         $("#neighborhood").val(dados.bairro);
-                        $("#city").val(dados.localidade);
-                        $("#state").val(dados.uf);
+                        carregarEstadoECidade(dados)
+
                     } //end if.
                     else {
                         //CEP pesquisado não foi encontrado.
@@ -59,40 +72,43 @@ $(function (){
 
     // CITIES LOAD
     $('#state').change(function () {
-        setCities()
+        setCities(null)
     });
 
     $('#state2').change(function () {
         setCities2()
     });
 
-    function setCities() {
-        let id = $('#state').find(":selected").val();
-        let cityId = parseInt($('#city_id').val());
+    function setCities(city_id) {
 
-        $.ajax({
-            url: "/citiesByState/" + id,
-            type: 'get',
-            beforeSend: function () {
-                console.log("ENVIANDO...");
-            }
-        })
-            .done(function (msg) {
+            let id = $('#state').find(":selected").val();
+            let cityId = parseInt($('#city_id').val());
 
-                $('#city').empty();
+            $.ajax({
+                url: "/citiesByState/" + id,
+                type: 'get',
+                beforeSend: function () {
+                    console.log("ENVIANDO...");
+                }
+            })
+                .done(function (msg) {
 
-                $.each(msg, function (i, item) {
-                    $('#city').append($('<option>', {
-                        value: item.id,
-                        text: item.name,
-                    }).prop('selected', item.id === cityId));
+                    $('#city').empty();
+
+                    $.each(msg, function (i, item) {
+                        $('#city').append($('<option>', {
+                            value: item.id,
+                            text: item.name,
+                        }).prop('selected', city_id !== null && item.id == city_id)
+                        );
+                    });
+
+
+                })
+                .fail(function (jqXHR, textStatus, msg) {
+                    console.log(msg);
                 });
 
-
-            })
-            .fail(function (jqXHR, textStatus, msg) {
-                console.log(msg);
-            });
     }
 
     function setCities2() {

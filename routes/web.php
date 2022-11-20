@@ -105,9 +105,8 @@ Route::middleware('auth')->group(function () {
         });
     });
 
-
-
     Route::get('/citiesByState/{id}', [CityController::class, 'citiesByState']);
+    Route::get('/getCityAndStateByNameAndUf/{name}/{uf}', [CityController::class, 'citiesByNameAndUf']);
     Route::get('/addressesFromClientId/{id}', [ClientController::class, 'addressesFromClientId']);
     Route::get('/ucsFromClientId/{id}', [ClientController::class, 'ucsFromClientId']);
     Route::get('/incidenceFromAddressId/{id}', [ClientController::class, 'incidenceFromAddress']);
