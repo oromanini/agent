@@ -11,7 +11,7 @@
 
     #clientName {
         color: #fff;
-        font-size: 34pt;
+        font-size: 40pt !important;
         position: absolute;
         top: 2000px;
         left: 50px;
