@@ -62,6 +62,9 @@
             @endif
         @endif
     </div>
+    <div id="invertersOverload">
+        {{ $overload }}
+    </div>
 </div>
 
 <style>
@@ -71,7 +74,7 @@
         left: 65px;
     }
 
-    #panelQuantity, #panelBrand, #panelModel, #panelWarranty {
+    #panelQuantity, #panelBrand, #panelModel, #panelWarranty, #invertersOverload {
         color: #fff;
         font-size: 16pt;
         position: absolute;
@@ -106,6 +109,7 @@
         position: absolute;
         left: 950px;
     }
+
     #inverterQuantity {
         top: 1400px;
     }
@@ -119,6 +123,10 @@
 
     #inverterWarranty {
         top: 1670px;
+    }
+
+    #invertersOverload {
+        top: 1760px;
     }
 
 </style>

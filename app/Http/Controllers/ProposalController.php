@@ -16,6 +16,7 @@ use App\Services\PricingService;
 use App\Services\ProposalService;
 use App\Services\ProposalValueHistoryService;
 use App\Services\SolarIncidenceService;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -23,21 +24,21 @@ use Illuminate\Http\Response;
 
 class ProposalController extends Controller
 {
-    private $proposalService;
-    private $proposalRepository;
-    private $proposalValueHistoryService;
-    private $solarIncidenceService;
-    private $paybackService;
-    private $pricingService;
+    private ProposalService $proposalService;
+    private ProposalRepository $proposalRepository;
+    private ProposalValueHistoryService $proposalValueHistoryService;
+    private SolarIncidenceService $solarIncidenceService;
+    private PaybackService $paybackService;
+    private PricingService $pricingService;
 
-    public function __construct(ProposalService             $proposalService,
-                                ProposalRepository          $proposalRepository,
-                                ProposalValueHistoryService $proposalValueHistoryService,
-                                PaybackService              $paybackService,
-                                SolarIncidenceService       $solarIncidenceService,
-                                PricingService              $pricingService
-    )
-    {
+    public function __construct(
+        ProposalService             $proposalService,
+        ProposalRepository          $proposalRepository,
+        ProposalValueHistoryService $proposalValueHistoryService,
+        PaybackService              $paybackService,
+        SolarIncidenceService       $solarIncidenceService,
+        PricingService              $pricingService
+    ) {
         $this->proposalService = $proposalService;
         $this->proposalRepository = $proposalRepository;
         $this->proposalValueHistoryService = $proposalValueHistoryService;
@@ -46,7 +47,7 @@ class ProposalController extends Controller
         $this->pricingService = $pricingService;
     }
 
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $proposals = $this->proposalRepository->filter($request->all());
         $agents = User::all();
@@ -54,14 +55,20 @@ class ProposalController extends Controller
         return view('proposals.index', compact('proposals', 'agents'));
     }
 
-    public function create()
+    public function create(): View
     {
         $clients = null;
 
         if (auth()->user()->is_admin) {
-            $clients = Client::query()->orderBy('id', 'desc')->get();
+            $clients = Client::query()
+                ->orderBy('id', 'desc')
+                ->get();
+
         } else {
-            $clients = Client::query()->where('agent_id', auth()->user()->id)->orderBy('id', 'desc')->get();
+            $clients = Client::query()
+                ->where('agent_id', auth()->user()->id)
+                ->orderBy('id', 'desc')
+                ->get();
         }
 
         $tensions = $this->setTensions();
@@ -78,7 +85,7 @@ class ProposalController extends Controller
         return redirect()->route('proposal.edit', [$proposal->id]);
     }
 
-    public function manual()
+    public function manual(): View
     {
         $clients = Client::all();
         $agents = User::all();
@@ -90,7 +97,7 @@ class ProposalController extends Controller
         return view('proposals.manual', compact($this->setManualParams()));
     }
 
-    public function delete($id)
+    public function delete($id): RedirectResponse
     {
         $proposal = Proposal::find($id);
         $proposal->delete();
@@ -98,12 +105,15 @@ class ProposalController extends Controller
         return redirect()->back();
     }
 
-    public function edit($id)
+    public function edit($id): View
     {
         $proposal = Proposal::find($id);
         $valueHistoryData = $this->proposalValueHistoryService->setValueHistoryData($proposal);
-        $kits = $proposal->is_manual ? json_decode($proposal->components, true) : getKitCodesFromProposal($proposal);
         $isPromotional = false;
+
+        $kits = $proposal->is_manual
+            ? json_decode($proposal->components, true)
+            : getKitCodesFromProposal($proposal);
 
         $fields = [
             ['id' => 'croqui', 'name' => 'inspection[croqui]', 'label' => 'Croqui'],
@@ -120,7 +130,13 @@ class ProposalController extends Controller
             ['id' => 'property_fax', 'name' => 'inspection[property_fax]', 'label' => 'Faxada do imóvel'],
         ];
 
-        return view('proposals.show', compact('proposal', 'valueHistoryData', 'kits', 'isPromotional', 'fields'));
+        return view('proposals.show', compact(
+            'proposal',
+            'valueHistoryData',
+            'kits',
+            'isPromotional',
+            'fields')
+        );
     }
 
     public function approve($id): RedirectResponse
@@ -131,6 +147,7 @@ class ProposalController extends Controller
             $proposal->send_date = now();
             $proposal->save();
             session()->flash('message', ['success', 'Enviado para aprovação!']);
+
         } else {
             session()->flash('message', ['error', 'Proposta já formalizada! Em caso de dúvidas, fale com a equipe da Alluz']);
         }
@@ -151,48 +168,71 @@ class ProposalController extends Controller
         }
 
         session()->flash('message', $message);
-        return redirect()->route('proposal.index');
 
+        return redirect()->route('proposal.index');
     }
 
-    /**
-     * @throws \Exception
-     */
     public function generatePdf($proposal_id): Response
     {
         $proposal = Proposal::find($proposal_id);
-        $pdfParams = $this->setPdfParams($proposal);
+        $pdfParams = $this->setPdfParams(proposal: $proposal);
         $city = $proposal->client->addresses->first()->city;
         $components = json_decode($proposal->components, true);
-        $firstKit = $proposal->is_manual ? null : kitByUuid(getKitCodesFromProposal($proposal)[0]);
 
-        $manualData = $proposal->is_manual ? json_decode($proposal->manual_data, true) : null;
-        $inverterImage = $proposal->is_manual ? setInverterImage((int)$manualData['inverter_brand']) : setInverterImage($firstKit['technical_description']['inverter_brand']);
-        $panelBrandImage = $proposal->is_manual ? setPanelBrandImage((int)$manualData['panel_brand']) : setPanelBrandImage($firstKit['technical_description']['panel_specs']['panel_brand']);
+        $firstKit = $proposal->is_manual
+            ? null
+            : kitByUuid(getKitCodesFromProposal($proposal)[0]);
 
-        $withoutSolar = calculateWithoutSolar($proposal);
-        $withSolar = floatToMoney(calculateWithSolar($proposal));
-        $incidence = $this->solarIncidenceService->getSolarIncidence($city)->average;
-        $payback = $this->paybackService->setPaybackData($proposal);
-        $generationData = $this->paybackService->setGenerationData($proposal);
+        $manualData = $proposal->is_manual
+            ? json_decode($proposal->manual_data, true)
+            : null;
 
-        $invertersCount = $proposal->is_manual ? ($manualData['inverter_quantity'] ?? 1) : $this->setInvertersCount($components);
+        $inverterImage = $proposal->is_manual
+            ? setInverterImage((int)$manualData['inverter_brand'])
+            : setInverterImage($firstKit['technical_description']['inverter_brand']);
+
+        $panelBrandImage = $proposal->is_manual
+            ? setPanelBrandImage((int)$manualData['panel_brand'])
+            : setPanelBrandImage($firstKit['technical_description']['panel_specs']['panel_brand']);
+
+        $withoutSolar = calculateWithoutSolar(proposal: $proposal);
+        $withSolar = floatToMoney(calculateWithSolar(proposal: $proposal));
+
+        $incidence = $this->solarIncidenceService->getSolarIncidence(city: $city)->average;
+        $payback = $this->paybackService->setPaybackData(proposal: $proposal);
+        $generationData = $this->paybackService->setGenerationData(proposal: $proposal);
+
+        $overload = 'Até '
+            . $this->getKitOverload(codes: getKitCodesFromProposal($proposal))
+            . ' módulos';
+
+        $invertersCount = $proposal->is_manual
+            ? ($manualData['inverter_quantity'] ?? 1)
+            : $this->setInvertersCount($components);
 
         $pdf = PDF::loadView('proposals.pdf', compact($pdfParams));
-        return $pdf->stream('#' . $proposal->id . ' ' . $proposal->client->name . '.pdf');
+
+        return $pdf
+            ->stream('#' . $proposal->id . ' ' . $proposal->client->name . '.pdf');
     }
 
     public function setFinalValue(Request $request): float
     {
         $data = $request->all();
-        return $this->pricingService->calculateFinalPrice($data);
+        return $this->pricingService
+            ->calculateFinalPrice($data);
     }
 
     public function setAverageProduction(Request $request): float
     {
         $data = $request->all();
         $city = Address::find((int)$data['addressId'])->city;
-        $incidence = (float)str_replace(',', '.', $this->solarIncidenceService->getSolarIncidence($city)->average);
+
+        $incidence = (float)str_replace(
+            ',',
+            '.',
+            $this->solarIncidenceService->getSolarIncidence($city)->average
+        );
 
         return ceil(
             ((float)$data['kwp']
@@ -211,6 +251,7 @@ class ProposalController extends Controller
             'roofs',
             'panels',
             'inverters',
+            'overload'
         ];
     }
 
@@ -228,7 +269,8 @@ class ProposalController extends Controller
             'payback',
             'generationData',
             'firstKit',
-            'invertersCount'
+            'invertersCount',
+            'overload'
         ];
     }
 
@@ -254,6 +296,18 @@ class ProposalController extends Controller
         return $inverter_description[0];
     }
 
+    private function getKitOverload(array $codes): int
+    {
+        return array_map(function ($code) {
+            $kit = kitByUuid($code);
+
+            return floor(
+                $kit['technical_description']['inverter_overload']
+                / ($kit['technical_description']['panel_specs']['panel_power'] / 1000)
+            );
+
+        }, $codes)[0];
+    }
 
 }
 

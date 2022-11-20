@@ -10,9 +10,7 @@
 @include('proposals.pdf.8')
 @include('proposals.pdf.9')
 @include('proposals.pdf.10')
-<div class="page" style="background-image: url({{public_path('/img/proposal/11.jpg')}})"></div>
-
-
+@include('proposals.pdf.11')
 <style>
     html {
         margin: 0;
@@ -28,9 +26,7 @@
         min-height: 100vh;
     }
 
-
     .minifiedText {
         font-size: 8pt !important;
     }
-
 </style>

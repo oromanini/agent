@@ -19,8 +19,7 @@ class ProposalService
     public function __construct(
         SolarIncidenceService       $incidenceService,
         ProposalValueHistoryService $valueHistoryService
-    )
-    {
+    ) {
         $this->incidenceService = $incidenceService;
         $this->valueHistoryService = $valueHistoryService;
     }
