@@ -29,7 +29,7 @@
 
         <div class="column">
             <label class="label" for="circuit_breaker">Disjuntor (A)</label>
-            <p>{{ $proposal->preInspection->circuit_breaker ?? 'Não informado' }}</p>
+            <p>{{ $proposal->preInspection->circuit_breaker_amperage ?? 'Não informado' }}</p>
         </div>
 
         <div class="column">
