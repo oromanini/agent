@@ -22,7 +22,7 @@ class ApprovalRepository implements Filter
                 filterPermission($data, $query);
             })
             ->whereNotNull('send_date')
-            ->orderBy('proposals.id', 'desc')
+            ->orderBy('proposals.send_date', 'desc')
             ->paginate(20);
     }
 }
