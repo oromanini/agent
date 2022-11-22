@@ -387,9 +387,12 @@
                             let panelCount = setPanelCount(item);
 
                             let isPromotional = false;
-                            // let isPromotional = technicalDescription['inverter_brand'] === 'Sofar' && (item['sum'].kwp == 2.2 || item['sum'].kwp == 4.4 || item['sum'].kwp == 6.6 || item['sum'].kwp == 7.7);
                             let isPromotionalText = isPromotional ? 'Promoção' : 'À vista';
                             let isPromotionalColor = isPromotional ? 'is-success' : 'is-success is-light';
+
+                            let isPromo = panelSpecs.panel_brand === 'Astronergy Chint'
+                                ? '<span class="tag is-success is-flex">5% DE DESCONTO ATÉ 31/12/2022</span>'
+                                : '<br>'
 
                             let finalValue = calculateFinalValue(costValue, item['sum'].kwp.toFixed(2), roof, panelCount, addressId);
                             let averageProduction = calculateAverageProduction(addressId, item['sum'].kwp.toFixed(2));
@@ -432,6 +435,7 @@
                                 inverterModel1 + ' ' + inverterModel2 + ' ' + inverterModel3 + inverterModel4 +
                                 '</div>' +
                                 '<hr>' +
+                                 isPromo +
                                 '<div style="color: #6BC6A7; font-size: 18pt; text-align: center; font-weight: bold">' +
                                 parseFloat(finalValue).toLocaleString('pt-BR', {
                                     style: 'currency',
