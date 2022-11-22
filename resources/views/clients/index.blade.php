@@ -107,7 +107,7 @@
                 @endforelse
                 </tbody>
             </table>
-            {{ $clients->appends(request()->all())->links() }}
+            @if(count($clients) > 0) {{ $clients->appends(request()->all())->links() }} @endif
         </div>
     </div>
 

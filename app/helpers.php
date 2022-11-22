@@ -20,6 +20,15 @@ function stringMoneyToFloat($money): float
     return (float)str_replace(',', '.', $float);
 }
 
+function stringInverterPowerToFloat($inverterPower): float
+{
+    return (float) str_replace(
+        ',',
+        '.',
+        $inverterPower
+    );
+}
+
 function floatToMoney(float $money): string
 {
     return number_format($money, 2, ',', '.');

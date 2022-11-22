@@ -203,7 +203,7 @@ class ProposalController extends Controller
         $generationData = $this->paybackService->setGenerationData(proposal: $proposal);
 
         $overload = $proposal->is_manual
-            ?  floor(((float)$manualData['inverter_power']) * 1.35 / ((int)$manualData['panel_power'] / 1000))
+            ?  floor((stringInverterPowerToFloat($manualData['inverter_power'])) * 1.35 / ((int)$manualData['panel_power'] / 1000))
             : 'Até ' . $this->getKitOverload(codes: getKitCodesFromProposal($proposal)) . ' módulos';
 
         $invertersCount = $proposal->is_manual
