@@ -38,7 +38,8 @@ class ProposalController extends Controller
         PaybackService              $paybackService,
         SolarIncidenceService       $solarIncidenceService,
         PricingService              $pricingService
-    ) {
+    )
+    {
         $this->proposalService = $proposalService;
         $this->proposalRepository = $proposalRepository;
         $this->proposalValueHistoryService = $proposalValueHistoryService;
@@ -131,11 +132,11 @@ class ProposalController extends Controller
         ];
 
         return view('proposals.show', compact(
-            'proposal',
-            'valueHistoryData',
-            'kits',
-            'isPromotional',
-            'fields')
+                'proposal',
+                'valueHistoryData',
+                'kits',
+                'isPromotional',
+                'fields')
         );
     }
 
@@ -202,8 +203,13 @@ class ProposalController extends Controller
         $payback = $this->paybackService->setPaybackData(proposal: $proposal);
         $generationData = $this->paybackService->setGenerationData(proposal: $proposal);
 
+        $floatOverload =
+            (stringInverterPowerToFloat($manualData['inverter_power']) * 1.35)
+            /
+            ((int)$manualData['panel_power'] / 1000);
+
         $overload = $proposal->is_manual
-            ?  floor((stringInverterPowerToFloat($manualData['inverter_power'])) * 1.35 / ((int)$manualData['panel_power'] / 1000))
+            ? 'Até ' . floor($floatOverload) . ' módulos'
             : 'Até ' . $this->getKitOverload(codes: getKitCodesFromProposal($proposal)) . ' módulos';
 
         $invertersCount = $proposal->is_manual
