@@ -1,5 +1,5 @@
 <div class="page page-break" style="background-image: url({{public_path('/img/proposal/1.jpg')}})">
-    <div id="clientName" @if(count_chars($proposal->client->name) > 20) style="font-size: 26pt" @endif >
+    <div @if(count_chars($proposal->client->name) > 20) id="clientName" @else id="clientName2" @endif >
         {{$proposal->client->name}}
     </div>
     <div id="clientAddress">
@@ -12,6 +12,16 @@
     #clientName {
         color: #fff;
         font-size: 40pt !important;
+        position: absolute;
+        top: 2000px;
+        left: 50px;
+        text-transform: uppercase;
+        font-weight: 900;
+    }
+
+    #clientName {
+        color: #fff;
+        font-size: 26pt !important;
         position: absolute;
         top: 2000px;
         left: 50px;
