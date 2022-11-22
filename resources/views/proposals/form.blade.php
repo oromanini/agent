@@ -391,7 +391,7 @@
                             let isPromotionalColor = isPromotional ? 'is-success' : 'is-success is-light';
 
                             let isPromo = panelSpecs.panel_brand === 'Astronergy Chint'
-                                ? '<span class="tag is-success is-flex">5% DE DESCONTO ATÉ 31/12/2022</span>'
+                                ? '<span class="tag is-success is-flex">5% DE DESCONTO JÁ APLICADO</span>'
                                 : '<br>'
 
                             let finalValue = calculateFinalValue(costValue, item['sum'].kwp.toFixed(2), roof, panelCount, addressId);
