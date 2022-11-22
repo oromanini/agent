@@ -206,8 +206,6 @@ class ProposalController extends Controller
             ?  floor(((float)$manualData['inverter_power']) * 1.35 / ((int)$manualData['panel_power'] / 1000))
             : 'Até ' . $this->getKitOverload(codes: getKitCodesFromProposal($proposal)) . ' módulos';
 
-
-
         $invertersCount = $proposal->is_manual
             ? ($manualData['inverter_quantity'] ?? 1)
             : $this->setInvertersCount($components);
@@ -253,7 +251,6 @@ class ProposalController extends Controller
             'roofs',
             'panels',
             'inverters',
-            'overload'
         ];
     }
 
