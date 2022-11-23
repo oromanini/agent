@@ -46,7 +46,7 @@
 
         <div class="column">
             <label class="label" for="owner_document">N° U.C de instalação</label>
-            @if(!is_null($proposal->client->addresses->first()->consumerUnit->eletricity_bill))
+            @if(!is_null($proposal->client->addresses->first()->consumerUnit))
                 <p> {{$proposal->client->addresses->first()->consumerUnit->number}} </p>
             @else
                 <p>U.C não cadastrada!</p>
