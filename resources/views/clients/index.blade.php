@@ -108,7 +108,6 @@
                 </tbody>
             </table>
             @if(isset($clients) && count($clients) > 0)
-                {{ dd($clients) }}
                 {{ $clients->appends(request()->all())->links() }}
             @endif
         </div>
