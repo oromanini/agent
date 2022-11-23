@@ -15,6 +15,7 @@ class ClientRepository implements Filter
                 filterName($data, $query);
                 filterAgent($data, $query);
                 filterDocument($data, $query);
+                filterUser($data, $query);
             })
             ->orderBy('id', 'desc')
             ->paginate(10);

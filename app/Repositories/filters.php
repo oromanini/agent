@@ -29,6 +29,12 @@ function filterDocument($data, $query)
     }
 }
 
+function filterUser($data, $query) {
+    if (!Auth::user()->is_admin) {
+        return $query->where('agent_id', Auth::user()->id);
+    }
+}
+
 function filterCnpj($data, $query)
 {
     if (!empty($data['cnpj_filter'])) {

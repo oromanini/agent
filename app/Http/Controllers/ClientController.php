@@ -38,10 +38,6 @@ class ClientController extends Controller
     {
         $clients = $this->clientRepository->filter($request->all());
 
-        if (!Auth::user()->is_admin) {
-            $clients = $clients->where('agent_id', Auth::user()->id);
-        }
-
         $agents = User::all();
 
         return view('clients.index', compact('clients', 'agents'));
