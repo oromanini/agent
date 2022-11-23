@@ -55,7 +55,7 @@
 
         <div class="column">
             <label class="label" for="owner_document">U.C de instalação</label>
-            @if(!is_null($proposal->client->addresses->first()->consumerUnit->eletricity_bill))
+            @if(!is_null($proposal->client->addresses->first()->consumerUnit))
                 <a href="/storage/{{ str_replace('public/', '', $proposal->client->addresses->first()->consumerUnit->eletricity_bill) }}"
                    class="button is-primary" target="_blank">
                     <ion-icon name="eye-outline"></ion-icon>
