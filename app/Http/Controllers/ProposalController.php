@@ -173,7 +173,7 @@ class ProposalController extends Controller
         return redirect()->route('proposal.index');
     }
 
-    public function generatePdf($proposal_id): Response
+    public function generatePdf(int $proposal_id, ?bool $isSample = false): Response
     {
         $proposal = Proposal::find($proposal_id);
         $pdfParams = $this->setPdfParams(proposal: $proposal);
@@ -215,7 +215,9 @@ class ProposalController extends Controller
             ? ($manualData['inverter_quantity'] ?? 1)
             : $this->setInvertersCount($components);
 
-        $pdf = PDF::loadView('proposals.pdf', compact($pdfParams));
+        $pdf = $isSample
+            ? PDF::loadView('proposals.small_pdf', compact($pdfParams))
+            : PDF::loadView('proposals.pdf', compact($pdfParams));
 
         return $pdf
             ->stream('#' . $proposal->id . ' ' . $proposal->client->name . '.pdf');

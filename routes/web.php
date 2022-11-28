@@ -57,6 +57,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/propostas/manual/nova', 'manualStore')->name('manual.store');
 
             Route::get('propostas/{proposal_id}/pdf', 'generatePdf')->name('pdf');
+            Route::get('propostas/{proposal_id}/{true}/pdf', 'generatePdf')->name('small-pdf');
             Route::get('propostas/{proposal_id}/aprovacao', 'approve')->name('approve');
         });
     });
