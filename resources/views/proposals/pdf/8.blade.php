@@ -42,7 +42,7 @@
                 <tr class="th"><td>GERAÇÃO</td></tr>
                 <tr><td class="sumCol">{{$generationData['sum']['generationSum']}} kWh</td></tr>
                 <tr class="th"><td>SOBRA</td></tr>
-                <tr><td class="sumCol">{{$generationData['sum']['excedentSum']}} kWh</td></tr>
+                <tr><td class="sumCol">{{$generationData['sum']['consumptionSum'] - $generationData['sum']['generationSum']}} kWh</td></tr>
         </table>
     </div>
 
