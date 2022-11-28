@@ -1,4 +1,7 @@
-@if(!$isPromotional)
+@if(
+    (!$isPromotional && !$proposal->is_manual)
+    || ($proposal->is_manual && auth()->user()->is_admin)
+    )
     <form action="{{ route('valueHistory.updatePrice', [$proposal->id]) }}" method="post">
         @csrf
         <div class="columns discount box">
