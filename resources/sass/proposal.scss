@@ -78,15 +78,20 @@ input[name="kit_id"]:checked + #all{
         overflow: auto !important;
     }
 
-    #generate-proposal {
-        justify-content: start !important;
-    }
-
     .discount {
         margin: 5px;
     }
 
     #roof_div {
         flex-direction: column;
+    }
+
+    #action-buttons > a {
+        width: 75%;
+        margin-top: 3px;
+    }
+
+    #action-buttons {
+        display: block !important;
     }
 }

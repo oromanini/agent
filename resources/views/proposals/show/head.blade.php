@@ -4,18 +4,16 @@
                 class="tag @if(!is_null($proposal->send_date)) is-success @else is-danger @endif">{{ !is_null($proposal->send_date) ? 'Formalizada' : 'Não formalizada' }}</div>
         </h3>
     </div>
-    <div id="generate-proposal" class="column is-1 is-flex is-justify-content-center">
-        <a target="_blank" href="{{ route('proposal.pdf', [$proposal->id]) }}" class="button is-primary">Gerar PDF</a>
+    <div id="action-buttons" class="column is-5 is-flex is-justify-content-space-around">
+        <a target="_blank" href="{{ route('proposal.pdf', [$proposal->id]) }}" class="button is-primary">Proposta em
+            PDF</a>
+        <a target="_blank" href="{{ route('proposal.small-pdf', [$proposal->id, true]) }}"
+           class="button is-success">Gerar Resumo</a>
+        @if(is_null($proposal->send_date))
+                <a href="{{ route('proposal.approve', [$proposal->id]) }}" class="button is-info">
+                    Enviar para aprovação</a>
+        @endif
     </div>
-    <div id="generate-small-proposal" class="column is-2 is-flex is-justify-content-center">
-        <a target="_blank" href="{{ route('proposal.small-pdf', [$proposal->id, true]) }}" class="button is-success">Gerar Resumo</a>
-    </div>
-    @if(is_null($proposal->send_date))
-        <div class="column is-2 is-flex">
-            <a href="{{ route('proposal.approve', [$proposal->id]) }}" class="button is-info">
-                Enviar para aprovação</a>
-        </div>
-    @endif
 
 </div>
 <div class="columns">
