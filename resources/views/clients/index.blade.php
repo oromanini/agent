@@ -85,7 +85,7 @@
                         <tr class="lh-40">
                             <th>{{$client->id}}</th>
                             <td>{{ $client->name }}</td>
-                            <td>{{ $client == 'person' ? 'Pessoa física' : 'Pessoa jurídica' }}</td>
+                            <td>{{ $client->type == 'person' ? 'Pessoa física' : 'Pessoa jurídica' }}</td>
                             <td>{{$client->document}}</td>
                             <td>{{$client->addresses->first()->city->name_and_federal_unit}}</td>
                             <td>{{$client->phone_number}}</td>
