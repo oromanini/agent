@@ -20,7 +20,8 @@
                     <th>Rua</th>
                     <th>Número</th>
                     <th>Cidade/Estado</th>
-                    <th>U.C</th>
+                    <th>Número U.C</th>
+                    <th>Anexo da conta</th>
                     <th>Ações</th>
                 </tr>
                 </thead>
@@ -31,6 +32,7 @@
                         <td>{{ $address->street }}</td>
                         <td>{{ $address->number }}</td>
                         <td>{{ $address->city->name_and_federal_unit }}</td>
+                            <td>{{ !is_null($address->consumer_unit_id) ? $address->consumerUnit->number : 'Não informado' }}</td>
                         <td>
                             @if(!is_null($address->consumer_unit_id))
                                 <a href="/storage/{{ str_replace('public/', '', $address->consumerUnit->eletricity_bill) }}"

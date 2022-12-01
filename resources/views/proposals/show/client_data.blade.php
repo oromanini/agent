@@ -25,4 +25,12 @@
         <label for=""><ion-icon name="flash-outline"></ion-icon> Documento</label>
         <p class="proposalData">{{ $proposal->client->document }}</p>
     </div>
+    <div class="column is-3">
+        <label for=""><ion-icon name="flash-outline"></ion-icon> CEP</label>
+        <p class="proposalData">{{ $proposal->client->addresses->first()->zipcode }}</p>
+    </div>
+    <div class="column is-3">
+        <label for=""><ion-icon name="sunny-outline"></ion-icon> Incidência Solar</label>
+        <p class="proposalData">{{ $proposal->client->addresses->first()->city->incidence() }}</p>
+    </div>
 </div>

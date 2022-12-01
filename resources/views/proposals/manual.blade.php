@@ -36,9 +36,7 @@
                     </div>
                     <div class="column is-2">
                         <div class="field">
-                            <label for="average_consumption" class="label">Média de consumo &nbsp;
-                                <ion-icon class="info-icon" name="information-circle-outline"></ion-icon>
-                            </label>
+                            <label for="average_consumption" class="label">Média de consumo &nbsp;</label>
                             <div class="control">
                                 <input name="average_consumption" id="average_consumption"
                                        class="input is-rounded @error('average_consumption') is-danger @enderror"
@@ -50,9 +48,7 @@
                     </div>
                     <div class="column is-2">
                         <div class="field">
-                            <label for="kw_price" class="label">Valor do kW &nbsp;
-                                <ion-icon class="info-icon" name="information-circle-outline"></ion-icon>
-                            </label>
+                            <label for="kw_price" class="label">Valor do kW &nbsp;</label>
                             <div class="control">
                                 <input name="kw_price" id="kw_price"
                                        class="input is-rounded @error('kw_price') is-danger @enderror" type="text"
@@ -63,9 +59,7 @@
                     </div>
                     <div class="column is-2">
                         <div class="field">
-                            <label for="tension_pattern" class="label">Padrão de tensão
-                                <ion-icon class="info-icon" name="information-circle-outline"></ion-icon>
-                            </label>
+                            <label for="tension_pattern" class="label">Padrão de tensão</label>
                             <div
                                 class="select is-multiline is-fullwidth is-rounded @error('tension_pattern') is-danger @enderror">
                                 <select id="tension_pattern" name="tension_pattern">
@@ -75,6 +69,12 @@
                                 </select>
                             </div>
                             @error('tension_pattern')<span class="error-message">{{ $message }}</span>@enderror
+                        </div>
+                    </div>
+                    <div class="column is-2">
+                        <div class="field">
+                            <label for="incidence" class="label">Incidência solar</label>
+                            <p style="font-size: 20pt; color: orangered">{{ $client->addresses->first()->city->incidence() }}</p>
                         </div>
                     </div>
                 </div>
@@ -136,9 +136,7 @@
                     </div>
                     <div class="column is-2">
                         <div class="field">
-                            <label for="kwp" class="label">Potência(kWp) &nbsp;
-                                <ion-icon class="info-icon" name="information-circle-outline"></ion-icon>
-                            </label>
+                            <label for="kwp" class="label">Potência(kWp) &nbsp;</label>
                             <div class="control">
                                 <input name="kwp" id="kwp"
                                        class="input is-rounded @error('kwp') is-danger @enderror" type="text"
@@ -149,9 +147,7 @@
                     </div>
                     <div class="column is-2">
                         <div class="field">
-                            <label for="cost" class="label">Custo &nbsp;
-                                <ion-icon class="info-icon" name="information-circle-outline"></ion-icon>
-                            </label>
+                            <label for="cost" class="label">Custo &nbsp;</label>
                             <div class="control">
                                 <input name="cost" id="cost"
                                        class="input is-rounded @error('cost') is-danger @enderror" type="text"
@@ -162,9 +158,7 @@
                     </div>
                     <div class="column is-2">
                         <div class="field">
-                            <label for="final_value" class="label">Valor final &nbsp;
-                                <ion-icon class="info-icon" name="information-circle-outline"></ion-icon>
-                            </label>
+                            <label for="final_value" class="label">Valor final &nbsp;</label>
                             <div class="control">
                                 <input name="final_value" id="final_value"
                                        class="input is-rounded @error('final_value') is-danger @enderror" type="text"
@@ -175,9 +169,7 @@
                     </div>
                     <div class="column is-2">
                         <div class="field">
-                            <label for="panel_quantity" class="label">Total de painéis &nbsp;
-                                <ion-icon class="info-icon" name="information-circle-outline"></ion-icon>
-                            </label>
+                            <label for="panel_quantity" class="label">Total de painéis &nbsp;</label>
                             <div class="control">
                                 <input name="panel_quantity" id="panel_quantity"
                                        class="input is-rounded @error('panel_quantity') is-danger @enderror"
