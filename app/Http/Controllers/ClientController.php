@@ -87,6 +87,14 @@ class ClientController extends Controller
         return view('clients.form', compact($this->setEditParams()));
     }
 
+    public function delete(int $client_id): RedirectResponse
+    {
+        $client = Client::find($client_id);
+        $client->delete();
+
+        return redirect()->back();
+    }
+
     public function addressesFromClientId($id)
     {
         return Client::find($id)->addresses;

@@ -94,7 +94,7 @@
                                 <a class="button is-primary" href="{{ route('client.edit', [$client->id]) }}">
                                     <ion-icon name="create-outline" class="table-icon"></ion-icon>
                                 </a>
-                                <a class="button is-danger">
+                                <a class="button is-danger" onclick="return confirm('deseja realmente excluir o cliente?')" href="{{ route('client.delete', [$client->id]) }}">
                                     <ion-icon name="trash-outline" class="table-icon"></ion-icon>
                                 </a>
                             </td>

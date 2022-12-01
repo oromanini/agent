@@ -93,6 +93,7 @@
                 </thead>
                 <tbody>
                 @forelse($proposals as $proposal)
+                    @if(!is_null($proposal->client))
                     <tr class="lh-40">
                         <th>{{$proposal->id}}</th>
                         <td>{{ $proposal->client->name }}</td>
@@ -115,11 +116,12 @@
                             <a target="_blank" class="button is-info" href="{{ route('proposal.pdf', [$proposal->id]) }}" style="padding: 0px 6px 0px 15px">
                                 <ion-icon name="document-outline"></ion-icon>
                             </a>
-                            <a class="button is-danger" onclick="return confirm('Deseja realmente apagar a proposta?')" href="{{ route('proposal.delete', [$proposal->id]) }}">
+                            <a class="button is-danger" onclick="return confirm('Deseja realmente excluir a proposta?')" href="{{ route('proposal.delete', [$proposal->id]) }}">
                                 <ion-icon name="trash-outline" class="table-icon"></ion-icon>
                             </a>
                         </td>
                     </tr>
+                    @endif
                 @empty
                     <tr>
                         <td>Não há propostas cadastradas</td>

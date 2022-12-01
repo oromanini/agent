@@ -39,6 +39,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/clientes/novo', 'store')->name('store');
             Route::get('/clientes/editar/{id}', 'edit')->name('edit');
             Route::put('/clientes/editar/{id}', 'update')->name('update');
+            Route::get('/clientes/inativar/{client_id}', 'delete')->name('delete');
         });
     });
 

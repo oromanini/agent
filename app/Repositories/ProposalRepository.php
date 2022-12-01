@@ -10,7 +10,7 @@ class ProposalRepository implements Filter
 {
     public function filter($data)
     {
-        return Proposal::query()
+        return Proposal::query()->where('deleted_at', '=', null)
             ->where(function ($query) use($data) {
                 filterName($data, $query);
                 filterAgent($data, $query);
@@ -20,6 +20,7 @@ class ProposalRepository implements Filter
                 filterPermission($data, $query);
             })
             ->orderBy('proposals.id', 'desc')
+
             ->paginate(10);
     }
 }
