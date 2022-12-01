@@ -81,33 +81,36 @@ $(function () {
 
     function setCities(city_id) {
 
-            let id = $('#state').find(":selected").val();
-            let cityId = parseInt($('#city_id').val());
+        let id = $('#state').find(":selected").val();
+        let cityId = parseInt($('#city_id').val());
 
-            $.ajax({
-                url: "/citiesByState/" + id,
-                type: 'get',
-                beforeSend: function () {
-                    console.log("ENVIANDO...");
-                }
-            })
-                .done(function (msg) {
+        console.log(cityId)
 
-                    $('#city').empty();
+        $.ajax({
+            url: "/citiesByState/" + id,
+            type: 'get',
+            beforeSend: function () {
+                console.log("ENVIANDO...");
+            }
+        })
+            .done(function (msg) {
 
-                    $.each(msg, function (i, item) {
-                        $('#city').append($('<option>', {
+                $('#city').empty();
+
+                $.each(msg, function (i, item) {
+                    $('#city').append($('<option>', {
                             value: item.id,
                             text: item.name,
-                        }).prop('selected', city_id !== null && item.id == city_id)
-                        );
-                    });
-
-
-                })
-                .fail(function (jqXHR, textStatus, msg) {
-                    console.log(msg);
+                        })
+                    );
+                    $('#city option[value="' + cityId + '"]').prop("selected", "selected");
                 });
+
+
+            })
+            .fail(function (jqXHR, textStatus, msg) {
+                console.log(msg);
+            });
 
     }
 
@@ -130,7 +133,7 @@ $(function () {
                     $('#city2').append($('<option>', {
                         value: item.id,
                         text: item.name,
-                    }).prop('selected', item.id === cityId));
+                    }).prop('selected', city_id !== null && item.id === city_id));
                 });
 
 
