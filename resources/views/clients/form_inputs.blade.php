@@ -38,7 +38,7 @@
             <div class="field">
                 <label id="documentLabel" for="document" class="label">{{ isset($client) ? $client->type == 'person' ? 'CPF*' : 'CNPJ*' : 'CPF' }}</label>
                 <div class="control">
-                    <input name="document" id="{{ isset($client) ? $client->type == 'person' ? 'cpf' : 'cnpj' : '' }}"
+                    <input name="document" id="{{ isset($client) && $client->type == 'company' ? 'cnpj' : 'cpf' }}"
                            class="input is-rounded @error('document') is-danger @enderror" type="text"
                            placeholder="Digite o documento"
                            value="{{ isset($client) ? $client->document : '' }}">
