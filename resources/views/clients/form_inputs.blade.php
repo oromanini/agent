@@ -36,9 +36,9 @@
         </div>
         <div class="column is-3">
             <div class="field">
-                <label id="documentLabel" for="document" class="label">{{ $client->type == 'person' ? 'CPF*' : 'CNPJ*' }}</label>
+                <label id="documentLabel" for="document" class="label">{{ isset($client) ? $client->type == 'person' ? 'CPF*' : 'CNPJ*' : 'CPF' }}</label>
                 <div class="control">
-                    <input name="document" id="{{ $client->type == 'person' ? 'cpf' : 'cnpj' }}"
+                    <input name="document" id="{{ isset($client) ? $client->type == 'person' ? 'cpf' : 'cnpj' : '' }}"
                            class="input is-rounded @error('document') is-danger @enderror" type="text"
                            placeholder="Digite o documento"
                            value="{{ isset($client) ? $client->document : '' }}">
@@ -49,7 +49,7 @@
         </div>
         <div class="column is-3">
             <div class="field">
-                <label id="aliasLabel" for="alias" class="label">{{ $client->type == 'person' ? 'Apelido' : 'Nome Fantasia*' }}</label>
+                <label id="aliasLabel" for="alias" class="label">{{ isset($client) ? $client->type == 'person' ? 'Apelido' : 'Nome Fantasia*' : 'Apelido' }}</label>
                 <div class="control">
                     <input name="alias" id="alias" class="input is-rounded" type="text"
                            placeholder="Digite o apelido/nome fantasia"
@@ -88,7 +88,7 @@
         </div>
 
         <div class="column is-3">
-            <label for="owner_document" class="label">CNH/RG do {{ $client->type == 'person' ? 'cliente' : 'proprietário' }}</label>
+            <label for="owner_document" class="label">CNH/RG do {{ isset($client) ? $client->type == 'person' ? 'cliente' : 'proprietário' : '' }}</label>
             <div class="file has-name" id="owner_document">
                 <label class="file-label">
                     <input class="file-input" type="file" name="owner_document">
