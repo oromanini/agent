@@ -39,7 +39,11 @@
                     <div class="column is-2">
                         <div class="field">
                             <label for="average_consumption" class="label">Média de consumo &nbsp;
-                                <ion-icon class="info-icon" name="information-circle-outline"></ion-icon>
+                                <span data-tooltip="Para calcular a média de consumo, some o consumo dos 12 meses presentes
+                                na conta de luz do seu cliente. Após somar, divida o valor total pela quantidade de meses. CUIDADO, algumas
+                                contas têm 13 meses. Nesses casos, divida por 13.">
+                                    <ion-icon class="info-icon" name="information-circle-outline"></ion-icon>
+                                </span>
                             </label>
                             <div class="control">
                                 <input name="average_consumption" id="average_consumption"
@@ -53,7 +57,11 @@
                     <div class="column is-2">
                         <div class="field">
                             <label for="kw_price" class="label">Valor do kW &nbsp;
+                                <span data-tooltip="Para calcular o valor do kWh do seu cliente, divida o valor total da conta
+                                pelo consumo do cliente daquele mês. Por exemplo, se o cliente gastou R$ 300 naquele mês, e consumiu
+                                350 kWh, o valor do kWh será de R$ 0,85">
                                 <ion-icon class="info-icon" name="information-circle-outline"></ion-icon>
+                                </span>
                             </label>
                             <div class="control">
                                 <input name="kw_price" id="kw_price"
@@ -66,7 +74,9 @@
                     <div class="column is-3">
                         <div class="field">
                             <label for="tension_pattern" class="label">Padrão de tensão
-                                <ion-icon class="info-icon" name="information-circle-outline"></ion-icon>
+                                <span data-tooltip="Você pode encontrar a FASE e a TENSÃO do seu cliente na conta de luz">
+                                    <ion-icon class="info-icon" name="information-circle-outline"></ion-icon>
+                                </span>
                             </label>
                             <div
                                 class="select is-multiline is-fullwidth is-rounded @error('tension_pattern') is-danger @enderror">
@@ -85,7 +95,9 @@
                     <div class="column is-3">
                         <div class="field">
                             <label for="installation_address" class="label">Endereço de instalação
-                                <ion-icon class="info-icon" name="information-circle-outline"></ion-icon>
+                                <span id="installation_address_text">
+                                    <ion-icon class="info-icon" name="information-circle-outline"></ion-icon>
+                                </span>
                             </label>
                             <div
                                 class="select is-multiline is-fullwidth is-rounded @error('installation_address') is-danger @enderror">
@@ -96,9 +108,7 @@
                     </div>
                     <div class="column is-3">
                         <div class="field">
-                            <label for="installation_uc" class="label">U.C de instalação
-                                <ion-icon class="info-icon" name="information-circle-outline"></ion-icon>
-                            </label>
+                            <label for="installation_uc" class="label">U.C de instalação</label>
                             <div
                                 class="select is-multiline is-fullwidth is-rounded @error('installation_uc') is-danger @enderror">
                                 <select id="installation_uc" name="installation_uc">
@@ -213,6 +223,8 @@
                                 text: item.street + ' ' + item.number
                             }));
                         });
+
+                        $('#installation_address_text').attr('data-tooltip', 'Incidência: ' + setIncidence())
                     })
                     .fail(function (jqXHR, textStatus, msg) {
                         console.log(msg);
@@ -435,7 +447,7 @@
                                 inverterModel1 + ' ' + inverterModel2 + ' ' + inverterModel3 + inverterModel4 +
                                 '</div>' +
                                 '<hr>' +
-                                 isPromo +
+                                isPromo +
                                 '<div style="color: #6BC6A7; font-size: 18pt; text-align: center; font-weight: bold">' +
                                 parseFloat(finalValue).toLocaleString('pt-BR', {
                                     style: 'currency',

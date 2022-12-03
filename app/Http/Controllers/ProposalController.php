@@ -236,16 +236,14 @@ class ProposalController extends Controller
         $city = Address::find((int)$data['addressId'])->city;
 
         $incidence = (float)str_replace(
-            ',',
-            '.',
-            $this->solarIncidenceService->getSolarIncidence($city)->average
+            search: ',',
+            replace: '.',
+            subject: $this->solarIncidenceService->getSolarIncidence($city)->average
         );
 
         return ceil(
-            ((float)$data['kwp']
-                * 30
-                * $incidence)
-            * (1 - (float)env('GENERATION_LOST'))
+            ((float) $data['kwp']) / ((1 + (float)env('GENERATION_LOST')))
+            * 30 * $incidence
         );
     }
 

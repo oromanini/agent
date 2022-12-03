@@ -139,17 +139,20 @@ class ProposalService
         return [
             'months' => $months,
             'average' => $sum / 12,
-            'ordinaryAverage' => ($kwp * 30 * $ordinaryAverage) * (1 - $generationLost)
+            'ordinaryAverage' => ($kwp / (1 + $generationLost)) * 30 * $ordinaryAverage
         ];
     }
 
-    private function setGeneration(string $month, float $kwp, object $incidence, float $generationLost): float
-    {
-        return
-            ($kwp
-                * 30
-                * ((float)$incidence->{$month} / 1000))
-            * (1 - $generationLost);
+    private function setGeneration(
+        string $month,
+        float $kwp,
+        object $incidence,
+        float $generationLost
+    ): float {
 
+        return
+            ($kwp / (1 + $generationLost))
+            * 30
+            * ((float)$incidence->{$month} / 1000);
     }
 }
