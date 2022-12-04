@@ -84,8 +84,6 @@ $(function () {
         let id = $('#state').find(":selected").val();
         let cityId = parseInt($('#city_id').val());
 
-        console.log(cityId)
-
         $.ajax({
             url: "/citiesByState/" + id,
             type: 'get',

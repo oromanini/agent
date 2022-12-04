@@ -61,7 +61,7 @@ class ClientController extends Controller
 
         session()->flash('message', $message);
 
-        return redirect()->route('client.index');
+        return redirect()->route('proposal.create');
     }
 
     public function update($id, ClientRequest $request): RedirectResponse

@@ -5168,6 +5168,14 @@ $(function () {
   $('.side-logo-img').on('click', function () {
     window.open('/', '_self');
   });
+  var url = window.location.href;
+  var selected = $("a[href$=\"".concat(url, "\"]:first"));
+
+  if (selected[0] === undefined) {
+    $('#side-home').addClass('side-active');
+  }
+
+  selected.parent('li').addClass('side-active');
 });
 
 /***/ }),
@@ -5289,7 +5297,6 @@ $(function () {
   function setCities(city_id) {
     var id = $('#state').find(":selected").val();
     var cityId = parseInt($('#city_id').val());
-    console.log(cityId);
     $.ajax({
       url: "/citiesByState/" + id,
       type: 'get',

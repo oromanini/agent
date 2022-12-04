@@ -6,7 +6,7 @@
 
     <ul>
 
-        <li class="side-list side-active">
+        <li class="side-list" id="side-home">
             <a href="{{ route('home') }}">
                 <span class="side-icon">
                     <ion-icon name="home-outline"></ion-icon>

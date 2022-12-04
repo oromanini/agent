@@ -35,4 +35,14 @@ $(function(){
         window.open ('/', '_self')
     });
 
+
+    let url = window.location.href;
+
+    let selected = $(`a[href$="${url}"]:first`)
+
+    if (selected[0] === undefined) {
+        $('#side-home').addClass('side-active')
+    }
+
+    selected.parent('li').addClass('side-active')
 });
