@@ -6,7 +6,7 @@
             <div class="field">
                 <label class="label">Comissão</label>
                 <div class="control">
-                    <input class="input" type="number" step="0,5" min="3" max="10" name="commission_percent"
+                    <input class="input" type="number" step="0.1" min="3" max="10" name="commission_percent"
                            value="{{ $proposal->valueHistory->commission_percent }}">
                 </div>
             </div>
