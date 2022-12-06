@@ -159,10 +159,7 @@ class PaybackService
     private function setGeneration(string $month, float $kwp, object $incidence): float
     {
         return ceil(
-            ($kwp
-                * 30
-                * ((float)$incidence->{$month} / 1000)
-            ) * (1 - (float) env('GENERATION_LOST'))
+            ($kwp * 30 * ((float)$incidence->{$month} / 1000)) / (1 + (float) env('GENERATION_LOST'))
         );
     }
 
