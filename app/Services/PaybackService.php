@@ -97,7 +97,7 @@ class PaybackService
                 'maio' => [
                     'consumo' => $consumption,
                     'geracao' => $this->setGeneration(month: 'may', kwp: $kwp, incidence: $incidence),
-                    'excedente' => $this->setGeneration(month: 'may', kwp: $kwp, incidence: $incidence),
+                    'excedente' => $this->setGeneration(month: 'may', kwp: $kwp, incidence: $incidence) - $consumption,
                 ],
                 'junho' => [
                     'consumo' => $consumption,
