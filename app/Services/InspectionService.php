@@ -16,8 +16,8 @@ class InspectionService
 
             $inspection = new Inspection();
 
-            $inspection->status = isset($data['status']) ?? $inspection->status;
-            $inspection->note = isset($data['note']) ?? $inspection->note;
+            $inspection->status = isset($data['status']) ? $data['status'] : $inspection->status;
+            $inspection->note = isset($data['note']) ? $data['note'] : $inspection->note;
 
             DB::transaction(function () use ($inspection, $proposal) {
                $inspection->save();
