@@ -74,7 +74,8 @@
                     <div class="column is-2">
                         <div class="field">
                             <label for="incidence" class="label">Incidência solar</label>
-                            <p style="font-size: 20pt; color: orangered">{{ $client->addresses->first()->city->incidence() }}</p>
+                            <p id="incidence-field" style="font-size: 20pt; color: orangered"></p>
+                            <button id="incidence_loader" style="border: none" class="button is-loading">Loading</button>
                         </div>
                     </div>
                 </div>
@@ -318,5 +319,42 @@
             </form>
         </div>
     </div>
+
+    <script>
+        $(function () {
+
+            let url = '/incidenceByClientId/';
+
+            setIncidence(url);
+
+            $('#client').on('change', function () {
+                setIncidence(url);
+            })
+
+
+            function setIncidence(url) {
+
+                $.ajax({
+
+                    url : url + $('#client').find(":selected").val(),
+                    type : 'GET',
+                    dataType:'json',
+                    beforeSend: function () {
+                        $('#incidence-field').hide()
+                        $('#incidence_loader').show()
+                    },
+                    success : function(data) {
+                        $('#incidence_loader').hide()
+                        $('#incidence-field').show()
+                        $('#incidence-field').html(data)
+                    },
+                    error : function(request,error)
+                    {
+                        alert("Request: "+JSON.stringify(request));
+                    }
+                });
+            }
+        })
+    </script>
 
 @endsection
