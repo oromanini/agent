@@ -74,7 +74,8 @@
                     <div class="column is-3">
                         <div class="field">
                             <label for="tension_pattern" class="label">Padrão de tensão
-                                <span data-tooltip="Você pode encontrar a FASE e a TENSÃO do seu cliente na conta de luz">
+                                <span
+                                    data-tooltip="Você pode encontrar a FASE e a TENSÃO do seu cliente na conta de luz">
                                     <ion-icon class="info-icon" name="information-circle-outline"></ion-icon>
                                 </span>
                             </label>
@@ -118,6 +119,23 @@
                             @error('installation_uc')<span class="error-message">{{ $message }}</span>@enderror
                         </div>
                     </div>
+
+                    @if(auth()->user()->isAdmin)
+                        <div class="column is-3">
+                            <div class="field">
+                                <label for="agent" class="label">Agente</label>
+                                <div
+                                    class="select is-multiline is-fullwidth is-rounded">
+                                    <select id="agent" name="agent">
+                                        <option value="{{ auth()->user()->id }}">{{ auth()->user()->name }}</option>
+                                        @foreach($agents as $agent)
+                                            <option value="{{ $agent->id }}">{{ $agent->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                 </div>
 
                 <div class="columns" style="margin-top: 50px;">

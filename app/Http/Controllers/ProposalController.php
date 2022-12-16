@@ -74,8 +74,9 @@ class ProposalController extends Controller
 
         $tensions = $this->setTensions();
         $roofs = setRoofs();
+        $agents = User::query()->orderBy('name')->get();
 
-        return view('proposals.form', compact('clients', 'tensions', 'roofs'));
+        return view('proposals.form', compact('clients', 'tensions', 'roofs', 'agents'));
     }
 
     public function store(ProposalRequest $request): RedirectResponse

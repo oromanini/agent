@@ -73,7 +73,7 @@ class ProposalService
 
         } else {
             $proposal->is_manual = false;
-            $proposal->agent_id = auth()->user()->id;
+            $proposal->agent_id = $data['agent'] ?? auth()->user()->id;
 
             $uuids = $data['kit_id'];
             $sumKits = json_decode(Http::get(env('KITS_URL') . 'getInventoryKitsByCodes/' . $uuids)->body(), true);

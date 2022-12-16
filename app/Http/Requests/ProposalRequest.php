@@ -32,6 +32,7 @@ class ProposalRequest extends FormRequest
             'roof_structure' => 'required',
             'orientation' => 'required',
             'kit_id' => 'required',
+            'agent' => ''
         ];
     }
 
