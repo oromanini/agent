@@ -82,7 +82,6 @@ $(function () {
     function setCities(city_id) {
 
         let id = $('#state').find(":selected").val();
-        let cityId = parseInt($('#city_id').val());
 
         $.ajax({
             url: "/citiesByState/" + id,
@@ -101,7 +100,7 @@ $(function () {
                             text: item.name,
                         })
                     );
-                    $('#city option[value="' + cityId + '"]').prop("selected", "selected");
+                    $('#city option[value="' + city_id + '"]').prop("selected", "selected");
                 });
 
 
