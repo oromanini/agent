@@ -113,6 +113,10 @@ class ProposalController extends Controller
         $valueHistoryData = $this->proposalValueHistoryService->setValueHistoryData($proposal);
         $isPromotional = false;
 
+        if ($proposal->kwp == 3.82 || $proposal->kwp == 4.91 || $proposal->kwp == 6 || $proposal->kwp == 7.08) {
+            $isPromotional = true;
+        }
+
         $kits = $proposal->is_manual
             ? json_decode($proposal->components, true)
             : getKitCodesFromProposal($proposal);

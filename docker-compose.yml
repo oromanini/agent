@@ -47,6 +47,15 @@ services:
           - "8003:80"
       networks:
           - alluz-network
+          
+  landing-page:
+      volumes:
+          - ../landing-page:/var/www/html
+      build: ../landing-page
+      ports:
+          - "8004:80"
+      networks:
+          - alluz-network
 
 networks:
   alluz-network:

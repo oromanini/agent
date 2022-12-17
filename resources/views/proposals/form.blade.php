@@ -520,6 +520,18 @@
                     console.log(msg);
                 });
 
+            if (kwp == 3.82) {
+                return 16990;
+            }
+            if (kwp == 4.91) {
+                return 20990
+            }
+            if (kwp == 6) {
+                return 24690
+            }
+            if (kwp == 7.08) {
+                return 28500
+            }
 
             return result;
         }
