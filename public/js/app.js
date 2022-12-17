@@ -5296,7 +5296,6 @@ $(function () {
 
   function setCities(city_id) {
     var id = $('#state').find(":selected").val();
-    var cityId = parseInt($('#city_id').val());
     $.ajax({
       url: "/citiesByState/" + id,
       type: 'get',
@@ -5310,16 +5309,15 @@ $(function () {
           value: item.id,
           text: item.name
         }));
-        $('#city option[value="' + cityId + '"]').prop("selected", "selected");
+        $('#city option[value="' + city_id + '"]').prop("selected", "selected");
       });
     }).fail(function (jqXHR, textStatus, msg) {
       console.log(msg);
     });
   }
 
-  function setCities2() {
+  function setCities2(city_id) {
     var id = $('#state2').find(":selected").val();
-    var cityId = parseInt($('#city_id2').val());
     $.ajax({
       url: "/citiesByState/" + id,
       type: 'get',
