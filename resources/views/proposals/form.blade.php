@@ -14,20 +14,15 @@
                 @csrf
                 <div class="columns">
                     <div class="column is-3">
-                        <div class="field">
-                            <label for="client" class="label">Cliente*</label>
-                            <div
-                                class="select is-multiline is-fullwidth is-rounded @error('client') is-danger @enderror">
-                                <select id="client" name="client">
-                                    @forelse($clients as $client)
-                                        <option value="{{ $client->id }}">{{$client->name}}</option>
-                                    @empty
-                                        <option value="">Não há clientes cadastrados</option>
-                                    @endforelse
-                                </select>
-                            </div>
-                            @error('client')<span class="error-message">{{ $message }}</span>@enderror
-                        </div>
+
+                        <label for="client" class="label">Cliente</label>
+                        <select id="client" name="client">
+                            @foreach($clients as $client)
+                                <option value="{{$client->id}}">{{ $client->name }}</option>
+                            @endforeach
+                        </select>
+
+
                     </div>
                     <div class="column is-1">
                         <br>
@@ -47,7 +42,7 @@
                             </label>
                             <div class="control">
                                 <input name="average_consumption" id="average_consumption"
-                                       class="input is-rounded @error('average_consumption') is-danger @enderror"
+                                       class="input  @error('average_consumption') is-danger @enderror"
                                        type="number"
                                        placeholder="Digite o consumo">
                                 @error('average_consumption')<span class="error-message">{{ $message }}</span>@enderror
@@ -65,7 +60,7 @@
                             </label>
                             <div class="control">
                                 <input name="kw_price" id="kw_price"
-                                       class="input is-rounded @error('kw_price') is-danger @enderror" type="text"
+                                       class="input  @error('kw_price') is-danger @enderror" type="text"
                                        placeholder="Digite o valor do kW">
                                 @error('kw_price')<span class="error-message">{{ $message }}</span>@enderror
                             </div>
@@ -80,7 +75,7 @@
                                 </span>
                             </label>
                             <div
-                                class="select is-multiline is-fullwidth is-rounded @error('tension_pattern') is-danger @enderror">
+                                class="select is-multiline is-fullwidth  @error('tension_pattern') is-danger @enderror">
                                 <select id="tension_pattern" name="tension_pattern">
                                     @foreach($tensions as $key => $value)
                                         <option value="{{ $key }}">{{ $value }}</option>
@@ -100,8 +95,7 @@
                                     <ion-icon class="info-icon" name="information-circle-outline"></ion-icon>
                                 </span>
                             </label>
-                            <div
-                                class="select is-multiline is-fullwidth is-rounded @error('installation_address') is-danger @enderror">
+                            <div class="select is-multiline is-fullwidth  @error('installation_address') is-danger @enderror">
                                 <select id="installation_address" name="installation_address"></select>
                             </div>
                             @error('installation_address')<span class="error-message">{{ $message }}</span>@enderror
@@ -111,7 +105,7 @@
                         <div class="field">
                             <label for="installation_uc" class="label">U.C de instalação</label>
                             <div
-                                class="select is-multiline is-fullwidth is-rounded @error('installation_uc') is-danger @enderror">
+                                class="select is-multiline is-fullwidth  @error('installation_uc') is-danger @enderror">
                                 <select id="installation_uc" name="installation_uc">
                                     <option value="">Não há UC's cadastradas</option>
                                 </select>
@@ -125,7 +119,7 @@
                             <div class="field">
                                 <label for="agent" class="label">Agente</label>
                                 <div
-                                    class="select is-multiline is-fullwidth is-rounded">
+                                    class="select is-multiline is-fullwidth ">
                                     <select id="agent" name="agent">
                                         <option value="{{ auth()->user()->id }}">{{ auth()->user()->name }}</option>
                                         @foreach($agents as $agent)
@@ -176,7 +170,7 @@
                 </div>
                 <hr style="margin: 10px">
                 <div class="column is-flex is-justify-content-center">
-                    <span class="button is-medium is-info is-rounded" id="kitSearchSubmit">
+                    <span class="button is-medium is-info " id="kitSearchSubmit">
                         <ion-icon name="sunny-outline"></ion-icon>&nbsp;Buscar Kits
                     </span>
                 </div>
@@ -198,6 +192,10 @@
     <script>
 
         $(function () {
+
+            $("#client").selectize({});
+            $("#agent").selectize({});
+
 
             let consumption = null;
             let clientId = $('select[name=client] option').filter(':selected').val();

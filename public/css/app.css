@@ -12404,6 +12404,11 @@ input:checked ~ .tab-content {
   padding: 1em;
 }
 
+select, .selectize-input, .control {
+  height: 35px !important;
+  line-height: normal !important;
+}
+
 /* HIDE RADIO */
 .radio-image {
   position: absolute;
