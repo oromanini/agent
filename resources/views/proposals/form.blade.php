@@ -351,6 +351,9 @@
                 if (brand == 'Bel') {
                     inverterImage = '/img/inverter_brands/bel.png'
                 }
+                if (brand == 'Sungrow') {
+                    inverterImage = '/img/inverter_brands/sungrow.png'
+                }
 
                 return inverterImage
             }

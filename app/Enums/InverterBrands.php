@@ -12,4 +12,5 @@ final class InverterBrands extends Enum
     const Sofar = 4;
     const Solis = 5;
     const Bel = 6;
+    const Sungrow = 7;
 }

@@ -157,6 +157,7 @@ function setInverterImage($brand): string
     $sofar = '/img/inverters/sofar.png';
     $solis = '/img/inverters/solis.png';
     $bel = '/img/inverters/bel.png';
+    $sungrow = '/img/inverters/sungrow.png';
 
     if (is_string($brand)) {
 
@@ -172,6 +173,8 @@ function setInverterImage($brand): string
             $img = $solis;
         } elseif ($brand == 'Bel') {
             $img = $bel;
+        } elseif ($brand == 'Sungrow') {
+            $img = $sungrow;
         }
 
     } else {
@@ -194,6 +197,9 @@ function setInverterImage($brand): string
                 break;
             case 6:
                 $img = $bel;
+                break;
+            case 7:
+                $img = $sungrow;
                 break;
             default:
                 throw new Exception('Inversor não localizado.');
