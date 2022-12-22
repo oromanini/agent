@@ -144,6 +144,9 @@ function setPanelBrandImage($brand): string
             case 9:
                 $img = $bel;
                 break;
+            case 10:
+                $img = $sunova;
+                break;
             default:
                 throw new Exception('Painel não localizado.');
         }
