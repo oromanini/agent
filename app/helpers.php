@@ -88,6 +88,7 @@ function setPanelBrandImage($brand): string
     $phono = '/img/panel_brands/phono.png';
     $longi = '/img/panel_brands/longi.png';
     $bel = '/img/panel_brands/bel.png';
+    $sunova = '/img/panel_brands/sunova.png';
 
     if (is_string($brand)) {
 
@@ -109,6 +110,8 @@ function setPanelBrandImage($brand): string
             $img = $longi;
         } elseif ($brand == 'Bel') {
             $img = $bel;
+        } elseif ($brand == 'Sunova') {
+            $img = $sunova;
         }
 
     } else {

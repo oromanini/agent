@@ -331,6 +331,9 @@
                 if (brand == 'Astronergy Chint') {
                     panelImage = '/img/panel_brands/astronergy.png'
                 }
+                if (brand == 'Sunova') {
+                    panelImage = '/img/panel_brands/sunova.png'
+                }
 
                 return panelImage
             }
