@@ -424,9 +424,10 @@
                             let isPromotionalText = isPromotional ? 'Promoção' : 'À vista';
                             let isPromotionalColor = isPromotional ? 'is-success' : 'is-success is-light';
 
-                            let isPromo = panelSpecs.panel_brand === 'Astronergy Chint'
-                                ? '<span class="tag is-success is-flex">5% DE DESCONTO JÁ APLICADO</span>'
-                                : '<br>'
+                            let isPromo = '';
+                                // panelSpecs.panel_brand === 'Astronergy Chint'
+                                // ? '<span class="tag is-success is-flex">5% DE DESCONTO JÁ APLICADO</span>'
+                                // : '<br>'
 
                             let finalValue = calculateFinalValue(costValue, item['sum'].kwp.toFixed(2), roof, panelCount, addressId);
                             let averageProduction = calculateAverageProduction(addressId, item['sum'].kwp.toFixed(2));
@@ -524,18 +525,18 @@
                     console.log(msg);
                 });
 
-            if (kwp == 3.82) {
-                return 16990;
-            }
-            if (kwp == 4.91) {
-                return 20990
-            }
-            if (kwp == 6) {
-                return 24690
-            }
-            if (kwp == 7.08) {
-                return 28500
-            }
+            // if (kwp == 3.82) {
+            //     return 16990;
+            // }
+            // if (kwp == 4.91) {
+            //     return 20990
+            // }
+            // if (kwp == 6) {
+            //     return 24690
+            // }
+            // if (kwp == 7.08) {
+            //     return 28500
+            // }
 
             return result;
         }

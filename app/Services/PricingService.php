@@ -23,18 +23,18 @@ class PricingService
             return $finalValue * 1.3;
         }
 
-        if ($kwp == 3.82) {
-            return 16990;
-        }
-        if ($kwp == 4.91) {
-            return 20990;
-        }
-        if ($kwp == 6) {
-            return 24690;
-        }
-        if ($kwp == 7.08) {
-            return 28500;
-        }
+//        if ($kwp == 3.82) {
+//            return 16990;
+//        }
+//        if ($kwp == 4.91) {
+//            return 20990;
+//        }
+//        if ($kwp == 6) {
+//            return 24690;
+//        }
+//        if ($kwp == 7.08) {
+//            return 28500;
+//        }
 
         return $finalValue;
     }
@@ -53,17 +53,17 @@ class PricingService
         $homologation = 0;
 
         if ($kwp <= 15) {
-            $homologation = 350;
+            $homologation = 600;
         } elseif ($kwp <= 30) {
-            $homologation = 700;
+            $homologation = 900;
         } elseif ($kwp <= 45) {
-            $homologation = 1000;
+            $homologation = 1200;
         } elseif ($kwp <= 60) {
-            $homologation = 1300;
+            $homologation = 1500;
         } elseif ($kwp <= 75) {
-            $homologation = 1600;
+            $homologation = 2000;
         } elseif ($kwp <= 90) {
-            $homologation = 1900;
+            $homologation = 2500;
         } else {
             $homologation = $finalValue * 0.025;
         }
