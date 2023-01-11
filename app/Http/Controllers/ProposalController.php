@@ -220,6 +220,8 @@ class ProposalController extends Controller
             ? ($manualData['inverter_quantity'] ?? 1)
             : $this->setInvertersCount($components);
 
+        $inverterModels = $this->setInverterModels($components);
+
         $pdf = $isSample
             ? PDF::loadView('proposals.small_pdf', compact($pdfParams))
             : PDF::loadView('proposals.pdf', compact($pdfParams));
@@ -279,7 +281,8 @@ class ProposalController extends Controller
             'generationData',
             'firstKit',
             'invertersCount',
-            'overload'
+            'overload',
+            'inverterModels'
         ];
     }
 
@@ -293,16 +296,15 @@ class ProposalController extends Controller
         ];
     }
 
-    private function setInvertersCount(array $components)
+    private function setInvertersCount(array $components): string
     {
-        $inverter_description = null;
+        $inverter_count = 0;
 
-        array_map(function ($item) use (&$inverter_description) {
-            (str_contains($item, 'Inversor')) && $inverter_description = $item;
-
+        array_map(function ($item) use (&$inverter_count) {
+            (str_contains($item, 'Inversor')) && $inverter_count++;
         }, $components);
 
-        return $inverter_description[0];
+        return $inverter_count;
     }
 
     private function getKitOverload(array $codes): int
@@ -316,6 +318,25 @@ class ProposalController extends Controller
             );
 
         }, $codes)[0];
+    }
+
+    private function setInverterModels(array $components): string
+    {
+        $inverter_models = [];
+
+        array_map(function ($item) use (&$inverter_models) {
+            (str_contains($item, 'Inversor')) && $inverter_models[] = $item;
+        }, $components);
+
+        $string = '';
+
+        foreach ($inverter_models as $key => $inverter_model) {
+            $string .= $key == 0
+                ? explode(' ', $inverter_model)[3]
+                : ' + ' . explode(' ', $inverter_model)[3];
+        }
+
+        return $string;
     }
 
 }

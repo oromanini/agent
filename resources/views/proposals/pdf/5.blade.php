@@ -47,8 +47,7 @@
         @if($proposal->is_manual)
             {{ $manualData['inverter_power'] }}KW <span class="minified-text">{{ $manualData['inverter_model'] }} </span>
         @else
-            {{ $firstKit['technical_description']['inverter_model'] }}
-{{--            {{ $inverterModels }}--}}
+            {{ $inverterModels }}
         @endif
     </div>
     <div id="inverterWarranty">
