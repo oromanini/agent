@@ -19,7 +19,7 @@
         font-weight: 900;
     }
 
-    #clientName {
+    #clientName2 {
         color: #fff;
         font-size: 26pt !important;
         position: absolute;

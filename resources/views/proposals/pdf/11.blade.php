@@ -15,7 +15,7 @@
     }
 
     #agent_name {
-        top: 1680px;
+        top: 1660px;
         left: 220px;
     }
 

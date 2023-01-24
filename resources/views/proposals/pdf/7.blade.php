@@ -1,10 +1,10 @@
-<div class="page page-break" style="background-image: url({{public_path('/img/proposal/7.jpg')}})">
+<div class="page page-break" style="background-image: url({{public_path('/img/proposal/4.jpg')}})">
     <div id="serviceCost">R$ {{ floatToMoney($proposal->valueHistory->final_price * 0.2) }}</div>
     <div id="kitCost">R$ {{ floatToMoney($proposal->valueHistory->final_price * 0.8) }}</div>
     <div id="finalValue">R$ {{ floatToMoney($proposal->valueHistory->final_price) }} <span class="minifiedText">*à vista</span></div>
     <div id="validate">Válido até {{ $proposal->created_at->addDays(7)->format('d/m/Y') }}</div>
-    <div id="withoutSolar">R$ {{ $withoutSolar }}</div>
-    <div id="withSolar">R$ {{ $withSolar }}</div>
+{{--    <div id="withoutSolar">R$ {{ $withoutSolar }}</div>--}}
+{{--    <div id="withSolar">R$ {{ $withSolar }}</div>--}}
 </div>
 
 <style>
@@ -29,8 +29,11 @@
         font-size: 40pt;
         font-weight: 900;
         position: absolute;
-        top: 900px;
-        left: 220px;
+        top: 820px;
+        left: 100px;
+        background-color: #fff;
+        padding: 30px 50px 70px 30px;
+        border-radius: 30px;
     }
 
     #validate {
@@ -38,8 +41,8 @@
         font-size: 10pt;
         font-weight: 900;
         position: absolute;
-        top: 1040px;
-        left: 220px;
+        top: 1000px;
+        left: 140px;
     }
 
     #withoutSolar {
