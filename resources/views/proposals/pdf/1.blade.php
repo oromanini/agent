@@ -11,7 +11,7 @@
 
     #clientName {
         color: #fff;
-        font-size: 40pt !important;
+        font-size: 20pt !important;
         position: absolute;
         top: 2000px;
         left: 50px;
@@ -21,7 +21,7 @@
 
     #clientName2 {
         color: #fff;
-        font-size: 26pt !important;
+        font-size: 40pt !important;
         position: absolute;
         top: 2000px;
         left: 50px;
