@@ -34,3 +34,21 @@
         <p class="proposalData">{{ $proposal->client->addresses->first()->city->incidence() }}</p>
     </div>
 </div>
+<div class="columns">
+    <div class="column is-3">
+        <label for=""><ion-icon name="business-outline"></ion-icon> Tensão do cliente</label>
+        <p class="proposalData">{{ $proposal->tension_pattern }}</p>
+    </div>
+    <div class="column is-3">
+        <label for=""><ion-icon name="business-outline"></ion-icon> Valor do kWh</label>
+        <p class="proposalData">{{ $proposal->kw_price }}</p>
+    </div>
+    <div class="column is-3">
+        <label for=""><ion-icon name="business-outline"></ion-icon> Data de criação</label>
+        <p class="proposalData">{{ $proposal->created_at->format('d/m/Y') }}</p>
+    </div>
+    <div class="column is-3">
+        <label for=""><ion-icon name="business-outline"></ion-icon> Validade</label>
+        <p class="proposalData">{{ $proposal->created_at->addDays(7)->format('d/m/Y') }}</p>
+    </div>
+</div>
