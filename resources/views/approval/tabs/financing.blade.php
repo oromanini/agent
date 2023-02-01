@@ -30,7 +30,7 @@
                     <input name="full_name" id="name"
                            class="input is-rounded @error('name') is-danger @enderror" type="text"
                            placeholder="Digite o nome"
-                           value="{{ isset($client) && is_null($financing) ? $client->name : $financing->full_name }}">
+                           value="{{ is_null($financing) ? $client->name : $financing->full_name }}">
                     @error('name')<span class="error-message">{{ $message }}</span>@enderror
 
                 </div>
