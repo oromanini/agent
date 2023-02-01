@@ -32,7 +32,8 @@ class FinancingService
     private function checkFiles($proposal, array $data): void
     {
         if (isset($data['proof_of_income'])) {
-            $proposal->financing = $data['proof_of_income']
+            $proposal->financing->proof_of_income =
+                $data['proof_of_income']
                 ->store('public/proof_of_income/financing_' . $proposal->financing->id);
 
             $proposal->financing->update();

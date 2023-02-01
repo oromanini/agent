@@ -100,10 +100,16 @@
         </div>
         <div class="column is-3">
             <label for="proof_of_income" class="label">Comprovante de renda</label>
-            <div class="file has-name">
-                <label class="file-label">
-                    <input class="file-input" type="file" name="proof_of_income" id="proof_of_income">
-                    <span class="file-cta">
+            @if(isset($proposal->financing->proof_of_income))
+                <a href="/storage/{{ str_replace('public/', '', $proposal->financing->proof_of_income) }}"
+                   class="button is-danger" target="_blank">
+                    <ion-icon name="eye-outline"></ion-icon>
+                    Visualizar comprovante</a>
+            @else
+                <div class="file has-name">
+                    <label class="file-label">
+                        <input class="file-input" type="file" name="proof_of_income" id="proof_of_income">
+                        <span class="file-cta">
                                   <span class="file-icon">
                                     <ion-icon name="folder-outline"></ion-icon>
                                   </span>
@@ -111,11 +117,12 @@
                                     Escolher arquivo…
                                   </span>
                                 </span>
-                    <span class="file-name">
+                        <span class="file-name">
                                     Nenhum arquivo selecionado
                                 </span>
-                </label>
-            </div>
+                    </label>
+                </div>
+            @endif
         </div>
     </div>
     <div class="columns">
@@ -234,16 +241,20 @@
                         <option {{ isset($financing) && $financing->installments == 96 ? 'selected' : '' }} value="96">
                             96x
                         </option>
-                        <option {{ isset($financing) && $financing->installments == 108 ? 'selected' : '' }} value="108">
+                        <option
+                            {{ isset($financing) && $financing->installments == 108 ? 'selected' : '' }} value="108">
                             108x
                         </option>
-                        <option {{ isset($financing) && $financing->installments == 120 ? 'selected' : '' }} value="120">
+                        <option
+                            {{ isset($financing) && $financing->installments == 120 ? 'selected' : '' }} value="120">
                             120x
                         </option>
-                        <option {{ isset($financing) && $financing->installments == 132 ? 'selected' : '' }} value="132">
+                        <option
+                            {{ isset($financing) && $financing->installments == 132 ? 'selected' : '' }} value="132">
                             132x
                         </option>
-                        <option {{ isset($financing) && $financing->installments == 144 ? 'selected' : '' }} value="144">
+                        <option
+                            {{ isset($financing) && $financing->installments == 144 ? 'selected' : '' }} value="144">
                             144x
                         </option>
                     </select>
@@ -257,7 +268,10 @@
                 <div class="select is-multiline is-fullwidth is-rounded @error('payment_grace') is-danger @enderror">
                     <select id="payment_grace" name="payment_grace">
                         @for($i = 1; $i <= 12; $i++)
-                            <option {{ isset($financing) && $financing->payment_grace == $i ? 'selected' : '' }} value="{{$i}}">{{$i}} mês/meses</option>
+                            <option
+                                {{ isset($financing) && $financing->payment_grace == $i ? 'selected' : '' }} value="{{$i}}">{{$i}}
+                                mês/meses
+                            </option>
                         @endfor
                     </select>
                 </div>
@@ -293,8 +307,8 @@
             <button type="submit" class="button is-primary is-large">
                 <ion-icon name="save-outline"></ion-icon> &nbsp;Salvar
             </button>
-{{--            <a href="#" class="button is-danger is-large">--}}
-{{--                <ion-icon name="save-outline"></ion-icon> &nbsp;Gerar resumo</a>--}}
+            {{--            <a href="#" class="button is-danger is-large">--}}
+            {{--                <ion-icon name="save-outline"></ion-icon> &nbsp;Gerar resumo</a>--}}
         </div>
     </div>
 </form>
