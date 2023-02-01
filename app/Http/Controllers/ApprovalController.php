@@ -47,6 +47,7 @@ class ApprovalController extends Controller
     public function show($id)
     {
         $proposal = Proposal::find($id);
+        $client = $proposal->client;
         $valueHistoryData = $this->valueHistoryService->setValueHistoryData($proposal);
         $kits = $this->setKits($proposal);
         $isPromotional = $this->isPromotional($proposal);
@@ -156,6 +157,7 @@ class ApprovalController extends Controller
             'inspection',
             'financing',
             'contract',
+            'client'
         ];
     }
 }
