@@ -54,9 +54,9 @@ class ApprovalController extends Controller
         $inspectionStatuses = $this->setInspectionStatuses();
         $financingStatuses = $this->setFinancingStatuses();
 
-        $inspection = $proposal->inspection;
-        $financing = $proposal->financing;
-        $contract = $proposal->contract;
+        $inspection = $proposal->inspection ?: null;
+        $financing = $proposal->financing ?: null;
+        $contract = $proposal->contract ?: null;
 
         return view('approval.show', compact($this->setApprovalParams()));
     }

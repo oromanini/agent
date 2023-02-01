@@ -1,4 +1,4 @@
-@include('proposals.show.head')
+    @include('proposals.show.head')
 @include('proposals.show.cards')
 @include('proposals.show.client_data')
 <br>
