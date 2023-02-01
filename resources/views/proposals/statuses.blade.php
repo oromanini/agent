@@ -12,7 +12,11 @@
     </div>
     <div class="column">
         <div class="tile">
-            <article class="tile is-child notification is-warning">
+            <article class="tile is-child notification
+                     @if(isset($proposal->financing) && ($proposal->financing->status == 'Aprovado')) is-success
+                     @elseif(isset($proposal->financing) && ($proposal->financing->status == 'Reprovado')) is-danger
+                     @else is-warning
+                     @endif">
                 <h5>
                     <ion-icon name="wallet-outline"></ion-icon>
                     Financiamento

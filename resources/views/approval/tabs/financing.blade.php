@@ -2,7 +2,7 @@
     <h3 class="title"><img src="/img/logo/alluz-icon.png" width="30" alt="..">Financiamento</h3>
 </div>
 <br>
-<form action="{{ route('approval.update.financing', [$proposal->id]) }}" method="post">
+<form action="{{ route('approval.update.financing', [$proposal->id]) }}" method="post" enctype="multipart/form-data">
     @method('PUT')
     @csrf
 
@@ -30,7 +30,7 @@
                     <input name="full_name" id="name"
                            class="input is-rounded @error('name') is-danger @enderror" type="text"
                            placeholder="Digite o nome"
-                           value="{{ isset($client) ? $client->name : '' }}">
+                           value="{{ isset($client) && is_null($financing) ? $client->name : $financing->full_name }}">
                     @error('name')<span class="error-message">{{ $message }}</span>@enderror
 
                 </div>
@@ -78,7 +78,7 @@
         </div>
     </div>
     <div class="columns">
-        <div class="column">
+        <div class="column is-6">
             <div class="field">
                 <label id="addressLabel" for="address" class="label">Endereço completo*</label>
                 <div class="control">
@@ -90,31 +90,26 @@
                 </div>
             </div>
         </div>
-        <div class="column">
-            <label for="document_file" class="label">CPF/RG/CNG em PDF</label>
-            <div class="file has-name">
-                <label class="file-label">
-                    <input class="file-input" type="file" name="document_file" id="document_file">
-                    <span class="file-cta">
-                                  <span class="file-icon">
-                                    <ion-icon name="folder-outline"></ion-icon>
-                                  </span>
-                                  <span class="file-label">
-                                    Escolher arquivo…
-                                  </span>
-                                </span>
-                    <span class="file-name">
-                                    Nenhum arquivo selecionado
-                                </span>
-                </label>
-            </div>
+        <div class="column is-3">
+            <label for="" class="label">&nbsp;Documento do cliente</label>
+            <a href="/storage/{{ str_replace('public/', '', $proposal->client->owner_document) }}"
+               {{ !isset($proposal->client->owner_document) ? 'disabled' : '' }}
+               class="button is-danger" target="_blank">
+                <ion-icon name="eye-outline"></ion-icon>
+                Visualizar Documento</a>
         </div>
-        <div class="column">
+        <div class="column is-3">
             <label for="proof_of_income" class="label">Comprovante de renda</label>
-            <div class="file has-name">
-                <label class="file-label">
-                    <input class="file-input" type="file" name="proof_of_income" id="proof_of_income">
-                    <span class="file-cta">
+            @if(isset($proposal->financing->proof_of_income))
+                <a href="/storage/{{ str_replace('public/', '', $proposal->financing->proof_of_income) }}"
+                   class="button is-danger" target="_blank">
+                    <ion-icon name="eye-outline"></ion-icon>
+                    Visualizar comprovante</a>
+            @else
+                <div class="file has-name">
+                    <label class="file-label">
+                        <input class="file-input" type="file" name="proof_of_income" id="proof_of_income">
+                        <span class="file-cta">
                                   <span class="file-icon">
                                     <ion-icon name="folder-outline"></ion-icon>
                                   </span>
@@ -122,11 +117,12 @@
                                     Escolher arquivo…
                                   </span>
                                 </span>
-                    <span class="file-name">
+                        <span class="file-name">
                                     Nenhum arquivo selecionado
                                 </span>
-                </label>
-            </div>
+                    </label>
+                </div>
+            @endif
         </div>
     </div>
     <div class="columns">
@@ -147,9 +143,15 @@
                 <label for="type" class="label">Tipo de imóvel</label>
                 <div
                     class="select is-multiline is-fullwidth is-rounded @error('type') is-danger @enderror">
-                    <select id="type" name="type">
-                        <option value="proprio" {{ isset($financing) && $financing->property_situation == 'proprio' ? 'selected' : '' }}>Próprio</option>
-                        <option value="alugado" {{ isset($financing) && $financing->property_situation == 'alugado' ? 'selected' : '' }}>Alugado</option>
+                    <select id="property_situation" name="property_situation">
+                        <option
+                            value="own" {{ isset($financing) && $financing->property_situation == 'own' ? 'selected' : '' }}>
+                            Próprio
+                        </option>
+                        <option
+                            value="rented" {{ isset($financing) && $financing->property_situation == 'rented' ? 'selected' : '' }}>
+                            Alugado
+                        </option>
                     </select>
                 </div>
                 @error('type')<span class="error-message">{{ $message }}</span>@enderror
@@ -162,7 +164,7 @@
                     <input name="income" id="income"
                            class="input is-rounded @error('income') is-danger @enderror" type="text"
                            placeholder="Digite a renda mensal"
-                           value="{{ isset($financing) ? $financing->income : '0' }}">
+                           value="{{ isset($financing) ? $financing->income : '' }}">
                     @error('income')<span class="error-message">{{ $message }}</span>@enderror
 
                 </div>
@@ -175,7 +177,7 @@
                     <input name="patrimony" id="patrimony"
                            class="input is-rounded @error('patrimony') is-danger @enderror" type="text"
                            placeholder="Digite o patrimonio"
-                           value="{{ isset($financing) ? $financing->patrimony : '0' }}">
+                           value="{{ isset($financing) ? $financing->patrimony : '' }}">
                     @error('patrimony')<span class="error-message">{{ $message }}</span>@enderror
 
                 </div>
@@ -188,7 +190,7 @@
                     <input name="profession" id="profession"
                            class="input is-rounded @error('profession') is-danger @enderror" type="text"
                            placeholder="Digite a profissão"
-                           value="{{ isset($financing) ? $financing->profession : '0' }}">
+                           value="{{ isset($financing) ? $financing->profession : '' }}">
                     @error('profession')<span class="error-message">{{ $message }}</span>@enderror
 
                 </div>
@@ -203,7 +205,7 @@
                     <input name="bank" id="bank"
                            class="input is-rounded @error('bank') is-danger @enderror" type="text"
                            placeholder="Digite o banco"
-                           value="{{ isset($financing) ? $financing->bank : '0' }}">
+                           value="{{ isset($financing) ? $financing->bank : '' }}">
                     @error('bank')<span class="error-message">{{ $message }}</span>@enderror
 
                 </div>
@@ -211,26 +213,69 @@
         </div>
         <div class="column">
             <div class="field">
-                <label for="installment" class="label">Parcelas</label>
-                <div class="control">
-                    <input name="installment" id="installment"
-                           class="input is-rounded @error('installment') is-danger @enderror" type="text"
-                           placeholder="Digite a quantia de parcelas"
-                           value="{{ isset($financing) ? $financing->installment : '0' }}">
-                    @error('profession')<span class="error-message">{{ $message }}</span>@enderror
+                <label for="installments" class="label">Parcelas*</label>
+                <div
+                    class="select is-multiline is-fullwidth is-rounded @error('installments') is-danger @enderror">
+                    <select id="installments" name="installments">
+                        <option {{ isset($financing) && $financing->installments == 12 ? 'selected' : '' }} value="12">
+                            12x
+                        </option>
+                        <option {{ isset($financing) && $financing->installments == 24 ? 'selected' : '' }} value="24">
+                            24x
+                        </option>
+                        <option {{ isset($financing) && $financing->installments == 36 ? 'selected' : '' }} value="36">
+                            36x
+                        </option>
+                        <option {{ isset($financing) && $financing->installments == 48 ? 'selected' : '' }} value="48">
+                            48x
+                        </option>
+                        <option {{ isset($financing) && $financing->installments == 60 ? 'selected' : '' }} value="60">
+                            60x
+                        </option>
+                        <option {{ isset($financing) && $financing->installments == 72 ? 'selected' : '' }} value="72">
+                            72x
+                        </option>
+                        <option {{ isset($financing) && $financing->installments == 84 ? 'selected' : '' }} value="84">
+                            84x
+                        </option>
+                        <option {{ isset($financing) && $financing->installments == 96 ? 'selected' : '' }} value="96">
+                            96x
+                        </option>
+                        <option
+                            {{ isset($financing) && $financing->installments == 108 ? 'selected' : '' }} value="108">
+                            108x
+                        </option>
+                        <option
+                            {{ isset($financing) && $financing->installments == 120 ? 'selected' : '' }} value="120">
+                            120x
+                        </option>
+                        <option
+                            {{ isset($financing) && $financing->installments == 132 ? 'selected' : '' }} value="132">
+                            132x
+                        </option>
+                        <option
+                            {{ isset($financing) && $financing->installments == 144 ? 'selected' : '' }} value="144">
+                            144x
+                        </option>
+                    </select>
                 </div>
+                @error('installments')<span class="error-message">{{ $message }}</span>@enderror
             </div>
         </div>
         <div class="column">
             <div class="field">
-                <label for="payment_grace" class="label">Carência</label>
-                <div class="control">
-                    <input name="payment_grace" id="payment_grace"
-                           class="input is-rounded @error('payment_grace') is-danger @enderror" type="text"
-                           placeholder="Digite a Carência"
-                           value="{{ isset($financing) ? $financing->payment_grace : '0' }}">
-                    @error('payment_grace')<span class="error-message">{{ $message }}</span>@enderror
+                <label for="payment_grace" class="label">Carência*</label>
+                <div class="select is-multiline is-fullwidth is-rounded @error('payment_grace') is-danger @enderror">
+                    <select id="payment_grace" name="payment_grace">
+                        @for($i = 1; $i <= 12; $i++)
+                            <option
+                                {{ isset($financing) && $financing->payment_grace == $i ? 'selected' : '' }} value="{{$i}}">{{$i}}
+                                mês/meses
+                            </option>
+                        @endfor
+                    </select>
                 </div>
+                @error('payment_grace')<span class="error-message">{{ $message }}</span>@enderror
             </div>
         </div>
     </div>
@@ -248,7 +293,8 @@
                     class="select is-multiline is-fullwidth is-rounded  @error('status') is-danger @enderror">
                     <select id="status" name="status">
                         @foreach($financingStatuses as $status)
-                            <option value="{{ $status }}" {{ isset($financing) && $status == $financing->status ? 'selected' : '' }}>{{ $status }}</option>
+                            <option
+                                value="{{ $status }}" {{ isset($financing) && $status == $financing->status ? 'selected' : '' }}>{{ $status }}</option>
                         @endforeach
                     </select>
                     @error('status')<span class="error-message">{{ $message }}</span>@enderror
@@ -258,14 +304,17 @@
         </div>
         <div class="column">
             <label for="" class="label">Ações</label>
-            <button type="submit" class="button is-primary is-large"><ion-icon name="save-outline"></ion-icon> &nbsp;Salvar</button>
-            <a href="#" class="button is-danger is-large"><ion-icon name="save-outline"></ion-icon> &nbsp;Gerar resumo</a>
+            <button type="submit" class="button is-primary is-large">
+                <ion-icon name="save-outline"></ion-icon> &nbsp;Salvar
+            </button>
+            {{--            <a href="#" class="button is-danger is-large">--}}
+            {{--                <ion-icon name="save-outline"></ion-icon> &nbsp;Gerar resumo</a>--}}
         </div>
     </div>
 </form>
 
 <script>
-    //contract
+
     const document_file = document.querySelector('#document_file input[type=file]');
     const proof_of_income = document.querySelector('#proof_of_income input[type=file]');
 

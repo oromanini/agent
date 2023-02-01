@@ -9554,6 +9554,12 @@ $(function () {
   $('#cost').mask('000.000.000.000.000,00', {
     reverse: true
   });
+  $('#income').mask('000.000.000.000.000,00', {
+    reverse: true
+  });
+  $('#patrimony').mask('000.000.000.000.000,00', {
+    reverse: true
+  });
   $('#final_value').mask('000.000.000.000.000,00', {
     reverse: true
   });

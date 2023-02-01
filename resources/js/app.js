@@ -1,7 +1,7 @@
 require('./bootstrap');
+require('./masks');
 require('./sidebar');
 require('./whatsapp');
-require('./masks');
 require('./zipcodeSearch');
 require('./message');
 require('./kitsSearch');
