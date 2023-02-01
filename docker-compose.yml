@@ -1,0 +1,62 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - .docker/dbdata:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: Romanini.95!
+    networks:
+      - alluz-network
+
+  agent:
+    volumes:
+        - .:/var/www/html
+    build: .
+    ports:
+        - "8001:80"
+    networks:
+        - alluz-network
+
+  site:
+      volumes:
+          - ../site-alluz:/var/www/html
+      build: ../site-alluz
+      ports:
+          - "8000:80"
+      networks:
+          - alluz-network
+
+  warehouse:
+      volumes:
+          - ../warehouse:/var/www/html
+      build: ../warehouse
+      ports:
+          - "8002:80"
+      networks:
+          - alluz-network
+
+  simulator:
+      volumes:
+          - ../simulator:/var/www/html
+      build: ../simulator
+      ports:
+          - "8003:80"
+      networks:
+          - alluz-network
+          
+  landing-page:
+      volumes:
+          - ../landing-page:/var/www/html
+      build: ../landing-page
+      ports:
+          - "8004:80"
+      networks:
+          - alluz-network
+
+networks:
+  alluz-network:
+    driver: bridge

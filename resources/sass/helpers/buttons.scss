@@ -1,0 +1,40 @@
+.p-yellow-button {
+    background-color: $alluz-yellow;
+    text-decoration: none;
+    width: 240px;
+    border-radius: 10px;
+    color: #fff;
+    padding: 10px 15px;
+    font-size: 16pt;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.p-red-button {
+    background-color: #FF2B2BFF;
+    text-decoration: none;
+    width: 240px;
+    border-radius: 10px;
+    color: #fff;
+    padding: 5px 5px;
+    font-size: 16pt;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+a ion-icon {
+    padding-right: 10px;
+}
+
+.p-yellow-button:hover {
+    color: #fff;
+    transform: scale(1.1);
+    transition: width 0.3s;
+}
+.p-red-button:hover {
+    color: #fff;
+    transform: scale(1.1);
+    transition: width 0.3s;
+}

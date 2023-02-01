@@ -1,0 +1,39 @@
+@media (max-width: 866px) {
+
+    .container.is-fluid {
+        padding: 0;
+    }
+
+    .title.is-1 {
+        font-size: 26pt;
+    }
+
+    iframe {
+        height: 170px !important;
+        border-radius: 10px;
+    }
+
+    .box {
+        padding: 12px !important;
+    }
+
+    .columns.mt50 {
+        margin: 20px 0 !important;
+    }
+
+    #home-buttons {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        margin: 0 !important;
+    }
+
+    body {
+        //background-color: #eec125 !important;
+    }
+
+    .modal.is-active {
+        padding: 10px !important;
+    }
+}
