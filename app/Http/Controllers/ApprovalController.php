@@ -5,37 +5,28 @@ namespace App\Http\Controllers;
 use App\Models\Proposal;
 use App\Models\User;
 use App\Repositories\ApprovalRepository;
+use App\Services\ApprovalService;
 use App\Services\ContractService;
 use App\Services\FinancingService;
 use App\Services\InspectionService;
 use App\Services\ProposalValueHistoryService;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class ApprovalController extends Controller
 {
-    private ApprovalRepository $approvalRepository;
-    private ProposalValueHistoryService $valueHistoryService;
-    private InspectionService $inspectionService;
-    private FinancingService $financingService;
-    private ContractService $contractService;
-
     public function __construct(
-        ApprovalRepository $approvalRepository,
-        ProposalValueHistoryService $valueHistoryService,
-        InspectionService $inspectionService,
-        FinancingService $financingService,
-        ContractService $contractService
+        private readonly ApprovalRepository          $approvalRepository,
+        private readonly ProposalValueHistoryService $valueHistoryService,
+        private readonly InspectionService           $inspectionService,
+        private readonly FinancingService            $financingService,
+        private readonly ContractService             $contractService,
     )
     {
-        $this->approvalRepository = $approvalRepository;
-        $this->valueHistoryService = $valueHistoryService;
-        $this->inspectionService = $inspectionService;
-        $this->financingService = $financingService;
-        $this->contractService = $contractService;
     }
 
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $data = $request->all();
         $approvals = $this->approvalRepository->filter($data);
@@ -44,7 +35,7 @@ class ApprovalController extends Controller
         return view('approval.index', compact('approvals', 'agents'));
     }
 
-    public function show($id)
+    public function show($id): View
     {
         $proposal = Proposal::find($id);
         $client = $proposal->client;
@@ -64,31 +55,37 @@ class ApprovalController extends Controller
 
     public function updateContract($id, Request $request): RedirectResponse
     {
-        $data = $request->all();
-        $this->contractService->update($id, $data);
+        $this->contractService->update(
+            model: ApprovalService::CONTRACT,
+            proposalId: $id,
+            request: $request
+        );
 
-        session()->flash('message', ['success', 'Contrato atualizado!']);
-
+        $this->flashUpdateMessage(model: ApprovalService::CONTRACT);
         return redirect()->back();
     }
 
     public function updateInspection($id, Request $request): RedirectResponse
     {
-        $data = $request->all();
-        $this->inspectionService->update($id, $data);
+        $this->inspectionService->update(
+            model: ApprovalService::INSPECTION,
+            proposalId: $id,
+            request: $request
+        );
 
-        session()->flash('message', ['success', 'Vistoria atualizada!']);
-
+        $this->flashUpdateMessage(model: ApprovalService::INSPECTION);
         return redirect()->back();
     }
 
     public function updateFinancing($id, Request $request): RedirectResponse
     {
-        $data = $request->all();
-        $this->financingService->update($id, $data);
+        $this->financingService->update(
+            model: ApprovalService::FINANCING,
+            proposalId: $id,
+            request: $request
+        );
 
-        session()->flash('message', ['success', 'Financiamento atualizado!']);
-
+        $this->flashUpdateMessage(model: ApprovalService::FINANCING);
         return redirect()->back();
     }
 
@@ -127,21 +124,24 @@ class ApprovalController extends Controller
 
     private function setKits($proposal)
     {
-        return $proposal->is_manual ? json_decode($proposal->components, true) : getKitCodesFromProposal($proposal);
+        return $proposal->is_manual
+            ? json_decode($proposal->components, true)
+            : getKitCodesFromProposal($proposal);
     }
 
     private function isPromotional($proposal): bool
     {
-        return ($proposal->number_of_panels == 4
-                || $proposal->number_of_panels == 8
-                || $proposal->number_of_panels == 12
-                || $proposal->number_of_panels == 14)
-            &&
-            (
-                $proposal->kwp == 2.2
-                || $proposal->kwp == 4.4
-                || $proposal->kwp == 6.6
-                || $proposal->kwp == 7.7);
+        return false;
+//            ($proposal->number_of_panels == 4
+//                || $proposal->number_of_panels == 8
+//                || $proposal->number_of_panels == 12
+//                || $proposal->number_of_panels == 14)
+//            &&
+//            (
+//                $proposal->kwp == 2.2
+//                || $proposal->kwp == 4.4
+//                || $proposal->kwp == 6.6
+//                || $proposal->kwp == 7.7);
     }
 
     private function setApprovalParams(): array
@@ -159,5 +159,10 @@ class ApprovalController extends Controller
             'contract',
             'client'
         ];
+    }
+
+    private function flashUpdateMessage(string $model): void
+    {
+        session()->flash('message', ['success', "{$model} atualizado(a)!"]);
     }
 }
