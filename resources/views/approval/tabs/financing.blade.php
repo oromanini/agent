@@ -291,10 +291,10 @@
                 <label for="status" class="label">Status</label>
                 <div
                     class="select is-multiline is-fullwidth is-rounded  @error('status') is-danger @enderror">
-                    <select id="status" name="status">
+                    <select id="status" name="status_id">
                         @foreach($financingStatuses as $status)
                             <option
-                                value="{{ $status }}" {{ isset($financing) && $status == $financing->status ? 'selected' : '' }}>{{ $status }}</option>
+                                value="{{ $status->id }}" {{ isset($financing) && $status->id == $financing->status->id ? 'selected' : '' }}>{{ $status->name }}</option>
                         @endforeach
                     </select>
                     @error('status')<span class="error-message">{{ $message }}</span>@enderror

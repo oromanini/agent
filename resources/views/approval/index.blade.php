@@ -72,9 +72,9 @@
                         <th>{{$approval->id}}</th>
                         <td>{{ $approval->client->name }}</td>
                         @php
-                        $inspectionStatus = $approval->inspection ? $approval->inspection->status : 'Aguardando';
-                        $financingStatus = $approval->financing ? $approval->financing->status : 'Aguardando';
-                        $contractStatus = $approval->contract ? $approval->contract->status : 'Aguardando';
+                        $inspectionStatus = $approval->inspection ? $approval->inspection->status->name : 'Aguardando';
+                        $financingStatus = $approval->financing ? $approval->financing->status->name : 'Aguardando';
+                        $contractStatus = $approval->contract ? $approval->contract->status->name : 'Aguardando';
                         @endphp
                         <td><span class="tag box w100 {{ isApproved($inspectionStatus) }}">{{ $inspectionStatus }}</span></td>
                         <td><span class="tag box w100 {{ isApproved($financingStatus) }}">{{ $financingStatus }}</span></td>

@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\DepartmentsEnum;
+use App\Models\Contract;
 use App\Models\Proposal;
+use App\Models\Status;
 use App\Models\User;
 use App\Repositories\ApprovalRepository;
 use App\Services\ApprovalService;
@@ -39,12 +42,19 @@ class ApprovalController extends Controller
     {
         $proposal = Proposal::find($id);
         $client = $proposal->client;
+
         $valueHistoryData = $this->valueHistoryService->setValueHistoryData($proposal);
         $kits = $this->setKits($proposal);
         $isPromotional = $this->isPromotional($proposal);
-        $contractStatuses = setContractStatuses();
-        $inspectionStatuses = setInspectionStatuses();
-        $financingStatuses = setFinancingStatuses();
+
+        $contractStatuses = Status::query()->where('department', DepartmentsEnum::CONTRACT)
+            ->orWhere('department', DepartmentsEnum::GENERAL)->get();
+
+        $inspectionStatuses = Status::query()->where('department', DepartmentsEnum::INSPECTION)
+            ->orWhere('department', DepartmentsEnum::GENERAL)->get();
+
+        $financingStatuses = Status::query()->where('department', DepartmentsEnum::FINANCING)
+            ->orWhere('department', DepartmentsEnum::GENERAL)->get();
 
         $inspection = $proposal->inspection ?: null;
         $financing = $proposal->financing ?: null;

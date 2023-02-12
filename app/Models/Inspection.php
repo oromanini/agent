@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -19,8 +20,9 @@ class Inspection extends Model
         return $this->hasOne(Proposal::class);
     }
 
-    public function status()
+    public function status(): BelongsTo
     {
-        return $this->status;
+        return $this->belongsTo(Status::class);
     }
+
 }
