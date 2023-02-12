@@ -472,6 +472,9 @@
                                 '<div style="text-align: center"><br>' +
                                 inverterModel1 + ' ' + inverterModel2 + ' ' + inverterModel3 + inverterModel4 +
                                 '</div>' +
+                                '<div style="text-align: center"><br>' +
+                                 '<span style="font-size: 12pt" class="tag is-warning"><strong>' + 'Prazo de entrega' + '</strong>' + ' ' + setEstimatedDelivery(panelSpecs['panel_brand']) + '</span>' +
+                                '</div>'+
                                 '<hr>' +
                                 isPromo +
                                 '<div style="color: #6BC6A7; font-size: 18pt; text-align: center; font-weight: bold">' +
@@ -505,6 +508,18 @@
                 return '15 anos';
             }
             return '12 anos'
+        }
+
+        function setEstimatedDelivery(brand) {
+            if (brand === 'Sunova' || brand === 'Astronergy') {
+                return ': 15 a 35 dias';
+            }
+
+            if (brand === 'Jinko' || brand === 'Ja') {
+                return ': 3 a 7 dias';
+            }
+
+            return ': até 20 dias'
         }
 
         function calculateFinalValue(costValue, kwp, roof, panelCount, addressId) {
