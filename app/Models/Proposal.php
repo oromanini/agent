@@ -14,7 +14,7 @@ class Proposal extends Model
     use SoftDeletes;
 
     protected $guarded = [];
-    protected $data = [
+    protected array $data = [
         'created_at',
         'updated_at',
         'deleted_at',

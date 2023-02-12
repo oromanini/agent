@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\Contract;
+use App\Models\Financing;
 use App\Models\Proposal;
 use App\Services\Contracts\ApprovalInterface;
 use Illuminate\Http\Request;
@@ -36,7 +38,7 @@ abstract class ApprovalService implements ApprovalInterface
         DB::transaction(function () use ($request, $proposal, $lowerModel, $model) {
             is_null($proposal->$lowerModel)
                 ? $this->store(model: $model, proposal: $proposal, request: $request)
-                : ($proposal->$lowerModel)->update($request->all());
+                : $this->updateModel(model: $proposal->$lowerModel, data: $request->all());
         });
 
         $this->checkFiles(
@@ -72,5 +74,39 @@ abstract class ApprovalService implements ApprovalInterface
             'proof_of_income' => self::PROOF_OF_INCOME . "/financing",
             default => $filename,
         };
+    }
+
+    private function updateModel(object $model, array $data): void
+    {
+        $model->update($data);
+
+        if ($model instanceof Contract) {
+            $financing = $model->proposal->financing;
+            $inspection = $model->proposal->inspection;
+
+            ($model->status->is_final && $financing->status->is_final && $inspection->status->is_final)
+                && $this->sendToHomologation($model->proposal);
+
+        } elseif ($model instanceof Financing) {
+            $inspection = $model->proposal->inspection;
+            $contract = $model->proposal->contract;
+
+            ($model->status->is_final && $contract->status->is_final && $inspection->status->is_final)
+                && $this->sendToHomologation($model->proposal);
+
+        } else {
+            $contract = $model->proposal->contract;
+            $financing = $model->proposal->financing;
+
+            ($model->status->is_final && $contract->status->is_final && $financing->status->is_final)
+                && $this->sendToHomologation($model->proposal);
+        }
+    }
+
+    private function sendToHomologation(Proposal $proposal): void
+    {
+        $homologationService = new HomologationService();
+
+        $homologationService->store($proposal);
     }
 }
