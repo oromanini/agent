@@ -72,6 +72,15 @@
             </li>
 
             <li class="side-list">
+                <a href="{{ route('homologation.index') }}">
+                <span class="side-icon">
+                   <ion-icon name="ribbon-outline"></ion-icon>
+                </span>
+                    <span class="side-title">Homologação</span>
+                </a>
+            </li>
+
+            <li class="side-list">
                 <a href="{{ route('proposal.manual.create') }}">
                 <span class="side-icon">
                     <ion-icon name="star-outline"></ion-icon>
