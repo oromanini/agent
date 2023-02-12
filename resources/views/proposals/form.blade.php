@@ -459,6 +459,9 @@
                                 '<div style="text-align: center">' +
                                 '<strong>Eficiência: </strong>' + panelSpecs['panel_efficiency'] + '%' +
                                 '</div>' +
+                                '<div style="text-align: center">' +
+                                '<strong>Garantia: </strong>' + setWarranty(panelSpecs['panel_brand']) +
+                                '</div>' +
                                 '<hr>' +
                                 '<div style="text-align: center">' +
                                 '<div style="text-align: center">' +
@@ -496,6 +499,13 @@
                     });
             });
         });
+
+        function setWarranty(brand) {
+            if (brand == 'Sunova') {
+                return '15 anos';
+            }
+            return '12 anos'
+        }
 
         function calculateFinalValue(costValue, kwp, roof, panelCount, addressId) {
 
