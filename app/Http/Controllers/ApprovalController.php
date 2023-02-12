@@ -42,9 +42,9 @@ class ApprovalController extends Controller
         $valueHistoryData = $this->valueHistoryService->setValueHistoryData($proposal);
         $kits = $this->setKits($proposal);
         $isPromotional = $this->isPromotional($proposal);
-        $contractStatuses = $this->setContractStatuses();
-        $inspectionStatuses = $this->setInspectionStatuses();
-        $financingStatuses = $this->setFinancingStatuses();
+        $contractStatuses = setContractStatuses();
+        $inspectionStatuses = setInspectionStatuses();
+        $financingStatuses = setFinancingStatuses();
 
         $inspection = $proposal->inspection ?: null;
         $financing = $proposal->financing ?: null;
@@ -87,39 +87,6 @@ class ApprovalController extends Controller
 
         $this->flashUpdateMessage(model: ApprovalService::FINANCING);
         return redirect()->back();
-    }
-
-    private function setContractStatuses(): array
-    {
-        return [
-            'Aguardando',
-            'Aguardando assinatura',
-            'Finalizado',
-        ];
-    }
-
-    private function setInspectionStatuses(): array
-    {
-        return [
-            'Aguardando',
-            'Aguardando fotos agente',
-            'Aprovado',
-            'Aprovado com adequação',
-            'Reprovado',
-        ];
-    }
-
-    private function setFinancingStatuses(): array
-    {
-        return [
-            'Aguardando',
-            'Em análise',
-            'Reprovado',
-            'Aprovado',
-            'À Vista',
-            'Cartão',
-            '60/40'
-        ];
     }
 
     private function setKits($proposal)

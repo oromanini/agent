@@ -57,9 +57,9 @@
                 <tr>
                     <th><abbr title="Position">ID</abbr></th>
                     <th>Cliente</th>
-                    <th>Documento</th>
-                    <th>Cidade/Estado</th>
-                    <th>Telefone</th>
+                    <th>Vistoria</th>
+                    <th>Financiamento</th>
+                    <th>Contrato</th>
                     <th>Agente</th>
                     <th>Total</th>
                     <th>Ações</th>
@@ -71,10 +71,15 @@
                     <tr class="lh-40">
                         <th>{{$approval->id}}</th>
                         <td>{{ $approval->client->name }}</td>
-                        <td>{{$approval->client->document}}</td>
-                        <td>{{$approval->client->addresses->first()->city->name_and_federal_unit}}</td>
-                        <td>{{$approval->client->phone_number}}</td>
-                        <td>{{$approval->agent->name}}</td>
+                        @php
+                        $inspectionStatus = $approval->inspection ? $approval->inspection->status : 'Aguardando';
+                        $financingStatus = $approval->financing ? $approval->financing->status : 'Aguardando';
+                        $contractStatus = $approval->contract ? $approval->contract->status : 'Aguardando';
+                        @endphp
+                        <td><span class="tag box w100 {{ isApproved($inspectionStatus) }}">{{ $inspectionStatus }}</span></td>
+                        <td><span class="tag box w100 {{ isApproved($financingStatus) }}">{{ $financingStatus }}</span></td>
+                        <td><span class="tag  box w100 {{ isApproved($contractStatus) }}">{{ $contractStatus }}</span></td>
+                        <td>{{ $approval->agent->name }}</td>
                         <td>R$ {{ floatToMoney($approval->valueHistory->final_price) }}</td>
                         <td>
                             <a class="button is-primary" href="{{ route('approval.show', [$approval->id]) }}">

@@ -18,4 +18,9 @@ class Inspection extends Model
     {
         return $this->hasOne(Proposal::class);
     }
+
+    public function status()
+    {
+        return $this->status;
+    }
 }

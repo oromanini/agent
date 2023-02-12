@@ -1,5 +1,7 @@
 $(function () {
 
+
+
     setCities(null)
 
     function clean_form_zipcode() {
@@ -82,6 +84,7 @@ $(function () {
     function setCities(city_id) {
 
         let id = $('#state').find(":selected").val();
+        let city_id_saved = $('#city_id_saved').val();
 
         $.ajax({
             url: "/citiesByState/" + id,
@@ -100,10 +103,11 @@ $(function () {
                             text: item.name,
                         })
                     );
-                    $('#city option[value="' + city_id + '"]').prop("selected", "selected");
                 });
 
+                city_id = (city_id == null && city_id_saved !== null) ? city_id_saved : city_id;
 
+                $('#city option[value="' + city_id + '"]').attr("selected", "selected");
             })
             .fail(function (jqXHR, textStatus, msg) {
                 console.log(msg);
@@ -126,6 +130,7 @@ $(function () {
                 $('#city2').empty();
 
                 $.each(msg, function (i, item) {
+                    console.log(city_id)
                     $('#city2').append($('<option>', {
                         value: item.id,
                         text: item.name,

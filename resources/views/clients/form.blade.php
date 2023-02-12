@@ -24,6 +24,8 @@
 
                 @include('clients.form_inputs')
 
+                    <input type="hidden" id="city_id_saved" value="{{ isset($client) ? $client->addresses->first()->city->id : null }}">
+
                 <div class="is-flex is-justify-content-center">
                     <button type="submit" class="button is-primary is-large">
                         <ion-icon name="save-outline"></ion-icon> &nbsp;{{ isset($client) ? 'Atualizar' : 'Salvar' }}

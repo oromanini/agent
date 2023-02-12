@@ -6,10 +6,12 @@ use App\Enums\RoofStructure;
 use App\Http\Controllers\KitSearchController;
 use App\Models\Address;
 use App\Models\City;
+use App\Models\Proposal;
 use App\Models\User;
 use App\Services\KitSearchService;
 use App\Services\PricingService;
 use App\Services\ProposalService;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Http;
 use Ramsey\Uuid\Uuid;
 
@@ -331,5 +333,53 @@ function getKitCodesFromProposal($proposal)
 
 function setStringFromAddress(Address $address): string
 {
-    return $address->street . ', ' . $address->number . ', ' . $address->neighborhood . ', ' . $address->city->name_and_federal_unit . ', ' . $address->zipcode;
+    return $address->street
+        . ', ' . $address->number
+        . ', ' . $address->neighborhood
+        . ', ' . $address->city->name_and_federal_unit
+        . ', ' . $address->zipcode;
+}
+
+function isApproved($status): string
+{
+    return match ($status) {
+        'Aguardando', 'Em análise', 'Aguardando fotos agente', 'Aguardando assinatura' => '',
+        'Finalizado', 'Aprovado', 'Aprovado com adequação', 'À Vista', 'Cartão', '60/40' => 'is-success',
+        'reprovado' => 'is-danger',
+        default => $status
+    };
+}
+
+function setContractStatuses(): array
+{
+    return [
+        'Aguardando',
+        'Aguardando assinatura',
+        'Finalizado',
+
+    ];
+}
+
+function setInspectionStatuses(): array
+{
+    return [
+        'Aguardando',
+        'Aguardando fotos agente',
+        'Aprovado',
+        'Aprovado com adequação',
+        'Reprovado',
+    ];
+}
+
+function setFinancingStatuses(): array
+{
+    return [
+        'Aguardando',
+        'Em análise',
+        'Reprovado',
+        'Aprovado',
+        'À Vista',
+        'Cartão',
+        '60/40'
+    ];
 }
