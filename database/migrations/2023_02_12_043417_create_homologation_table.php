@@ -10,6 +10,7 @@ class CreateHomologationTable extends Migration
     {
         Schema::create('homologations', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('proposal_id')->unsigned();
             $table->dateTime('protocol_approval_date')->nullable();
             $table->string('trt_pay_order')->nullable();
             $table->string('proof_of_bill_payment')->nullable();
@@ -18,6 +19,8 @@ class CreateHomologationTable extends Migration
             $table->text('notes')->nullable();
             $table->string('single-line-project')->nullable();
             $table->json('checklist');
+
+            $table->foreign('proposal_id')->references('id')->on('proposals');
 
             $table->softDeletes();
             $table->timestamps();

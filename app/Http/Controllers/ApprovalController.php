@@ -44,7 +44,7 @@ class ApprovalController extends Controller
         $client = $proposal->client;
 
         $valueHistoryData = $this->valueHistoryService->setValueHistoryData($proposal);
-        $kits = $this->setKits($proposal);
+        $kits = $this::setKits($proposal);
         $isPromotional = $this->isPromotional($proposal);
 
         $contractStatuses = Status::query()->where('department', DepartmentsEnum::CONTRACT)
@@ -99,7 +99,7 @@ class ApprovalController extends Controller
         return redirect()->back();
     }
 
-    private function setKits($proposal)
+    public static function setKits($proposal)
     {
         return $proposal->is_manual
             ? json_decode($proposal->components, true)

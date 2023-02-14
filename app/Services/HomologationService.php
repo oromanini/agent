@@ -2,10 +2,38 @@
 
 namespace App\Services;
 
-class HomologationService
+use App\Enums\DepartmentsEnum;
+use App\Models\Homologation;
+use App\Models\Proposal;
+use App\Models\Status;
+
+class HomologationService extends AfterSalesProcessService
 {
-    public function store(Proposal $proposal)
+    public const CHECKLIST_ITEM_DUPLICATE_EMITTED = 'Boleto TRT Emitido';
+    public const CHECKLIST_ITEM_DUPLICATE_PAYED = 'Boleto TRT Pago';
+    public const CHECKLIST_ITEM_ACCESS_FORM_EMITTED = 'Formulário de acesso emitido';
+    public const CHECKLIST_ITEM_ACCESS_FORM_SIGNED = 'Formulário de acesso assinado';
+    public const CHECKLIST_ITEM_SINGLE_LINE_ATTACHED = 'Unifilar anexado';
+
+    public function store(Proposal $proposal):void
     {
-        return true;
+        $generalStatus = Status::where('department', DepartmentsEnum::GENERAL)->first()->id;
+
+        Homologation::create([
+            'proposal_id' => $proposal->id,
+            'status_id' => $generalStatus,
+            'checklist' => self::getChecklist()
+        ]);
+    }
+
+    public static function getChecklist(): string
+    {
+        return json_encode([
+            self::CHECKLIST_ITEM_DUPLICATE_EMITTED => false,
+            self::CHECKLIST_ITEM_DUPLICATE_PAYED => false,
+            self::CHECKLIST_ITEM_ACCESS_FORM_EMITTED => false,
+            self::CHECKLIST_ITEM_ACCESS_FORM_SIGNED => false,
+            self::CHECKLIST_ITEM_SINGLE_LINE_ATTACHED => false,
+        ]);
     }
 }

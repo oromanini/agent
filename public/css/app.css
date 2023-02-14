@@ -12280,6 +12280,14 @@ h6 {
   width: 100% !important;
 }
 
+.elipse-blue {
+  color: cornflowerblue !important;
+}
+
+.elipse-yellow {
+  color: #eec125 !important;
+}
+
 .mt50 {
   margin-top: 50px !important;
   margin-left: 20px;

@@ -4,7 +4,7 @@
     <div class="container is-fluid overflow-auto">
         <div class="box overflow-auto">
             <div class="columns mt-2 ml-1">
-                <h3 class="title"><img src="/img/logo/alluz-icon.png" width="30" alt=".."> Homologação</h3>
+                <h3 class="title"><img src="/img/logo/alluz-icon.png" width="30" alt=".."> Homologações</h3>
             </div>
 
             <form action="{{ route('homologation.index') }}" method="get">
@@ -57,6 +57,8 @@
                 <tr>
                     <th><abbr title="Position">ID</abbr></th>
                     <th>Cliente</th>
+                    <th>Status</th>
+                    <th>Prazo decorrido</th>
                     <th>Agente</th>
                     <th>Total</th>
                     <th>Ações</th>
@@ -65,10 +67,19 @@
                 <tbody>
                 @forelse($homologations as $homologation)
                         <tr class="lh-40">
-                            <th>{{$approval->id}}</th>
-                            <td>{{ $approval->client->name }}</td>
-                            <td>{{ $approval->agent->name }}</td>
-                            <td>R$ {{ floatToMoney($approval->valueHistory->final_price) }}</td>
+                            <th>{{$homologation->id}}</th>
+                            <td>{{ $homologation->proposal->client->name }}</td>
+                            <td><span style="font-size: 12pt" class="tag
+                            @if($homologation->status->is_final) is-success
+                            @elseif($homologation->status->name == 'Aguardando')
+                            @else is-info
+                            @endif box w100">{{ $homologation->status->name }}</span></td>
+                            <td><span style="font-size: 12pt" class="tag box w100 {{ deadLineColor($homologation->status, $homologation->created_at->diffInDays(now())) }}">
+                                    {{ $homologation->created_at->format('d/m/Y') . ' - ' . $homologation->created_at->diffInDays(now()) . ' Dias' }}
+                                </span>
+                            </td>
+                            <td>{{ $homologation->proposal->agent->name }}</td>
+                            <td>R$ {{ floatToMoney($homologation->proposal->valueHistory->final_price) }}</td>
                             <td>
                                 <a class="button is-primary" href="{{ route('homologation.show', [$homologation->id]) }}">
                                     <ion-icon name="create-outline" class="table-icon"></ion-icon>

@@ -113,6 +113,9 @@ Route::middleware('auth')->group(function () {
         Route::name('homologation.')->group(function () {
 
             Route::get('homologacoes', 'index')->name('index');
+            Route::get('homologacoes/{id}', 'show')->name('show');
+            Route::put('homologacoes/{id}/atualizar', 'update')->name('update');
+
         });
     });
 
