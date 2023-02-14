@@ -92,13 +92,15 @@ class UserController extends Controller
         return redirect()->route('user.index');
     }
 
-    public function inactive($id): array
+    public function inactive($id): RedirectResponse
     {
         DB::transaction(function () use ($id) {
             User::find($id)->delete();
         });
 
-        return ['message', ['success' => 'Agente inativado com sucesso!']];
+        session()->flash('message', ['success', 'Agente deletado com sucesso!']);
+
+        return redirect()->route('user.index');
     }
 
     private function fillUser($user, array $data): User
