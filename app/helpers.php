@@ -383,3 +383,14 @@ function setFinancingStatuses(): array
         '60/40'
     ];
 }
+
+function deadLineColor($status, $deadline): string
+{
+    if ($deadline <= 2 || $status->is_final) {
+        return 'is-success';
+    } elseif($deadline == 3) {
+        return 'is-warning';
+    } else {
+        return 'is-danger';
+    }
+}

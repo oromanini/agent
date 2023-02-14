@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\Contract;
-use App\Models\Financing;
 use App\Models\Proposal;
 use App\Services\Contracts\ApprovalInterface;
 use Illuminate\Http\Request;
@@ -25,9 +23,11 @@ abstract class ApprovalService implements ApprovalInterface
         $lowerModel = strtolower($model);
         $modelPath = self::MODEL_PATH . $model;
 
-        $model = (new $modelPath)::create($request->all());
-        $proposal->$lowerModel()->associate($model);
+        $savedModel = (new $modelPath)::create($request->all());
+        $proposal->$lowerModel()->associate($savedModel);
         $proposal->update();
+        ApprovalService::sendToHomologation($proposal);
+
     }
 
     public function update(string $model, int $proposalId, Request $request): void
@@ -38,7 +38,7 @@ abstract class ApprovalService implements ApprovalInterface
         DB::transaction(function () use ($request, $proposal, $lowerModel, $model) {
             is_null($proposal->$lowerModel)
                 ? $this->store(model: $model, proposal: $proposal, request: $request)
-                : $this->updateModel(model: $proposal->$lowerModel, data: $request->all());
+                : $proposal->$lowerModel->update($request->all());
         });
 
         $this->checkFiles(
@@ -56,9 +56,9 @@ abstract class ApprovalService implements ApprovalInterface
 
             $matchFolder = $this->matchFolder(filename: $name);
 
-            if (isset($proposal->$lowerModel->$name)) {
-                $proposal->$lowerModel->$name = $file->store("public/$matchFolder/$proposal->id");
-            }
+            (isset($proposal->$lowerModel->$name))
+                && $proposal->$lowerModel->$name = $file->store("public/$matchFolder/$proposal->id");
+
         }
 
         DB::transaction(function () use ($proposal, $lowerModel) {
@@ -76,37 +76,15 @@ abstract class ApprovalService implements ApprovalInterface
         };
     }
 
-    private function updateModel(object $model, array $data): void
-    {
-        $model->update($data);
-
-        if ($model instanceof Contract) {
-            $financing = $model->proposal->financing;
-            $inspection = $model->proposal->inspection;
-
-            ($model->status->is_final && $financing->status->is_final && $inspection->status->is_final)
-                && $this->sendToHomologation($model->proposal);
-
-        } elseif ($model instanceof Financing) {
-            $inspection = $model->proposal->inspection;
-            $contract = $model->proposal->contract;
-
-            ($model->status->is_final && $contract->status->is_final && $inspection->status->is_final)
-                && $this->sendToHomologation($model->proposal);
-
-        } else {
-            $contract = $model->proposal->contract;
-            $financing = $model->proposal->financing;
-
-            ($model->status->is_final && $contract->status->is_final && $financing->status->is_final)
-                && $this->sendToHomologation($model->proposal);
-        }
-    }
-
-    private function sendToHomologation(Proposal $proposal): void
+    public static function sendToHomologation(Proposal $proposal): void
     {
         $homologationService = new HomologationService();
 
-        $homologationService->store($proposal);
+        $conditionToAccept =
+            (isset($proposal->inspection) && $proposal->inspection->status->is_final)
+            && (isset($proposal->financing) && $proposal->financing->status->is_final)
+            && isset($proposal->contract) && ($proposal->contract->status->is_final);
+
+        $conditionToAccept && $homologationService->store($proposal);
     }
 }

@@ -7,6 +7,7 @@ use App\Http\Controllers\CityController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\FinancingController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\HomologationController;
 use App\Http\Controllers\KitSearchController;
 use App\Http\Controllers\PreInspectionController;
 use App\Http\Controllers\ProposalController;
@@ -104,6 +105,17 @@ Route::middleware('auth')->group(function () {
             Route::put('aprovacoes/{id}/vistoria', 'updateInspection')->name('update.inspection');
             Route::put('aprovacoes/{id}/financiamento', 'updateFinancing')->name('update.financing');
             Route::put('aprovacoes/{id}/contrato', 'updateContract')->name('update.contract');
+        });
+    });
+
+    Route::controller(HomologationController::class)->group(function () {
+
+        Route::name('homologation.')->group(function () {
+
+            Route::get('homologacoes', 'index')->name('index');
+            Route::get('homologacoes/{id}', 'show')->name('show');
+            Route::put('homologacoes/{id}/atualizar', 'update')->name('update');
+
         });
     });
 
