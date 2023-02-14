@@ -12,7 +12,7 @@ class HomologationRepository
     : LengthAwarePaginator
     {
         return Homologation::query()->with(['proposal' => function ($query) {
-            $query->onlyTrashed();
+            $query->withTrashed();
         }])
             ->where(function ($query) use($data) {
                 filterName($data, $query);
