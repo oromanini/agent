@@ -85,7 +85,7 @@
                             <a class="button is-primary" href="{{ route('approval.show', [$approval->id]) }}">
                                 <ion-icon name="create-outline" class="table-icon"></ion-icon>
                             </a>
-                            <a class="button is-danger">
+                            <a class="button is-danger" href="{{ route('approval.inactive', [$approval->id]) }}">
                                 <ion-icon name="trash-outline" class="table-icon"></ion-icon>
                             </a>
                         </td>

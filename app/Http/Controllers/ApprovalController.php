@@ -106,6 +106,15 @@ class ApprovalController extends Controller
             : getKitCodesFromProposal($proposal);
     }
 
+    public function inactive($id): RedirectResponse
+    {
+        $approval = Proposal::find($id);
+        $approval->delete();
+        session()->flash('message', ['error', "Aprovação Inativada!"]);
+
+        return redirect()->back();
+    }
+
     private function isPromotional($proposal): bool
     {
         return false;
