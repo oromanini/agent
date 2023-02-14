@@ -105,7 +105,7 @@ Route::middleware('auth')->group(function () {
             Route::put('aprovacoes/{id}/vistoria', 'updateInspection')->name('update.inspection');
             Route::put('aprovacoes/{id}/financiamento', 'updateFinancing')->name('update.financing');
             Route::put('aprovacoes/{id}/contrato', 'updateContract')->name('update.contract');
-            Route::post('aprovacoes/{id}/inativar', 'inactive')->name('inactive');
+            Route::get('aprovacoes/{id}/inativar', 'inactive')->name('inactive');
         });
     });
 
