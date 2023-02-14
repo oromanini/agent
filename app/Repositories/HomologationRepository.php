@@ -11,7 +11,7 @@ class HomologationRepository
     public function filter($data)
     : LengthAwarePaginator
     {
-        return Homologation::query()
+        return Homologation::withTrashed()->query()
             ->where(function ($query) use($data) {
                 filterName($data, $query);
                 filterAgent($data, $query);
