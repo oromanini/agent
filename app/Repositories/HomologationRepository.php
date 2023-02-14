@@ -11,7 +11,7 @@ class HomologationRepository
     public function filter($data)
     : LengthAwarePaginator
     {
-        return Homologation::query()->with(['proposals' => function ($query) {
+        return Homologation::query()->with(['proposal' => function ($query) {
             $query->where('deleted_at', '=', null);
         }])
             ->where(function ($query) use($data) {
