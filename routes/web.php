@@ -92,7 +92,7 @@ Route::middleware('auth')->group(function () {
             Route::post('usuarios/novo', 'store')->name('store');
             Route::get('usuarios/{id}', 'edit')->name('edit');
             Route::put('usuarios/{id}', 'edit')->name('update');
-            Route::post('usuarios/{id}/inativar', 'inactive')->name('inactive');
+            Route::get('usuarios/{id}/inativar', 'inactive')->name('inactive');
         });
     });
 
@@ -116,6 +116,7 @@ Route::middleware('auth')->group(function () {
             Route::get('homologacoes', 'index')->name('index');
             Route::get('homologacoes/{id}', 'show')->name('show');
             Route::put('homologacoes/{id}/atualizar', 'update')->name('update');
+            Route::get('homologacoes/{id}/inativar', 'inactive')->name('inactive');
 
         });
     });

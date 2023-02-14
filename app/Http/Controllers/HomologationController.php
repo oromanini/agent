@@ -52,4 +52,11 @@ class HomologationController extends Controller
 
         return redirect()->back();
     }
+
+    public function inactive(int $id): RedirectResponse
+    {
+        Homologation::find($id)->delete();
+        session()->flash('message', ['success', "Homologação deletada!"]);
+        return redirect()->back();
+    }
 }
