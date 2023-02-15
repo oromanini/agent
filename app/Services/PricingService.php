@@ -23,18 +23,18 @@ class PricingService
             return $finalValue * 1.3;
         }
 
-        if ($kwp == 2.77) {
-            return 13000;
-        }
-        if ($kwp == 3.88) {
-            return 16900;
-            }
-        if ($kwp == 6.66) {
-            return 23450;
-            }
-        if ($kwp == 7.77) {
-            return 26900    ;
-            }
+//        if ($kwp == 2.77) {
+//            return 13000;
+//        }
+//        if ($kwp == 3.88) {
+//            return 16900;
+//            }
+//        if ($kwp == 6.66) {
+//            return 23450;
+//            }
+//        if ($kwp == 7.77) {
+//            return 26900    ;
+//            }
 
         return $finalValue;
     }
