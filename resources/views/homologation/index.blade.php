@@ -75,7 +75,9 @@
                             @else is-info
                             @endif box w100">{{ $homologation->status->name }}</span></td>
                             <td><span style="font-size: 12pt" class="tag box w100 {{ deadLineColor($homologation->status, $homologation->created_at->diffInDays(now())) }}">
-                                    {{ $homologation->created_at->format('d/m/Y') . ' - ' . $homologation->created_at->diffInDays(now()) . ' Dias' }}
+                                    @if($homologation->status->is_final) {{ 'FINALIZADO' }}
+                                    @else {{ $homologation->created_at->format('d/m/Y') . ' - ' . $homologation->created_at->diffInDays(now()) . ' Dias' }}
+                                    @endif
                                 </span>
                             </td>
                             <td>{{ $homologation->proposal->agent->name }}</td>
