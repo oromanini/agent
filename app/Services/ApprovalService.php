@@ -17,6 +17,7 @@ abstract class ApprovalService implements ApprovalInterface
     private const CONTRACT_FILE = 'contracts';
     private const SIGNED_CONTRACT_FILE = 'signed_contracts';
     private const PROOF_OF_INCOME = 'proof_of_income';
+    private const THREE_DIMENSIONAL = 'three_dimensional';
 
     public function store(string $model, Proposal $proposal, Request $request): void
     {
@@ -70,6 +71,7 @@ abstract class ApprovalService implements ApprovalInterface
     {
         return match ($filename) {
             'file' => self::CONTRACT_FILE,
+            'three_dimensional' => self::THREE_DIMENSIONAL,
             'signed_file' => self::SIGNED_CONTRACT_FILE,
             'proof_of_income' => self::PROOF_OF_INCOME . "/financing",
             default => $filename,

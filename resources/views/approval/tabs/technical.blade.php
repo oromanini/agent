@@ -83,7 +83,37 @@
     </div>
 
     <hr>
-
+    <div class="columns">
+        <div class="column is-3">
+            <label for="three_dimensional" class="label">
+                <span class="icon"><ion-icon name="image-outline"></ion-icon></span>
+                3D dos módulos</label>
+            @if(isset($proposal->inspection->three_dimensional))
+                <a href="/storage/{{ str_replace('public/', '', $proposal->inspection->three_dimensional) }}"
+                   class="button is-danger" target="_blank">
+                    <ion-icon name="eye-outline"></ion-icon>
+                    Visualizar 3D</a>
+            @else
+                <div class="file has-name">
+                    <label class="file-label">
+                        <input class="file-input" type="file" name="three_dimensional" id="three_dimensional">
+                        <span class="file-cta">
+                                  <span class="file-icon">
+                                    <ion-icon name="folder-outline"></ion-icon>
+                                  </span>
+                                  <span class="file-label">
+                                    Escolher arquivo…
+                                  </span>
+                                </span>
+                        <span class="file-name">
+                                    Nenhum arquivo selecionado
+                                </span>
+                    </label>
+                </div>
+            @endif
+        </div>
+    </div>
+    <hr>
     <div class="columns">
         <div class="column">
             <label class="label" for="observations">Observações da vistoria e/ou medidas necessárias</label>
