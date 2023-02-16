@@ -106,3 +106,28 @@ h6 {
 .elipse-yellow {
     color: #eec125 !important;
 }
+
+.elipse-green {
+    color: #00ff22 !important;
+    font-size: 20pt;
+}
+
+.elipse-red {
+    color: #ee1742 !important;
+    font-size: 20pt;
+}
+
+.status-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    border: 1px solid #ffc600;
+    border-radius: 3px;
+    padding: 20px;
+}
+
+.span-status {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

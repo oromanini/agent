@@ -71,7 +71,7 @@
                             <td>{{ $homologation->proposal->client->name }}</td>
                             <td><span style="font-size: 12pt" class="tag
                             @if($homologation->status->is_final) is-success
-                            @elseif($homologation->status->name == 'Aguardando')
+                            @elseif($homologation->status->name == 'Pendente')
                             @else is-info
                             @endif box w100">{{ $homologation->status->name }}</span></td>
                             <td><span style="font-size: 12pt" class="tag box w100 {{ deadLineColor($homologation->status, $homologation->created_at->diffInDays(now())) }}">

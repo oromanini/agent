@@ -6,8 +6,6 @@ use App\Events\AfterSaleProcessDepartmentChanged;
 
 class UpdateChecklistAndStatus extends AfterSaleProcessBase
 {
-    public function __construct()
-    {}
 
     public function handle(AfterSaleProcessDepartmentChanged $event): void
     {

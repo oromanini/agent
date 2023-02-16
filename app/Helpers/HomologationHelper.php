@@ -10,7 +10,8 @@ class HomologationHelper
     public const STATUS_PROOF_OF_BILL_PAYMENT = 15;
     public const STATUS_ACCESS_OPINION_FORM = 16;
     public const STATUS_SIGNED_ACCESS_OPINION_FORM = 17;
-    public const STATUS_SINGLE_LINE_PROJECT = 14;
+    public const STATUS_ANALYSYS_AT_DEALERSHIP = 20;
+    public const STATUS_APPROVED_AT_DEALERSHIP = 19;
 
     public const STATUS_AWAITING = 13;
 
@@ -19,16 +20,18 @@ class HomologationHelper
     public const FIELD_ACCESS_OPINION_FORM = 'access_opinion_form';
     public const FIELD_SIGNED_ACCESS_OPINION_FORM = 'signed_access_opinion_form';
     public const FIELD_SINGLE_LINE_PROJECT = 'single_line_project';
+    public const FIELD_ANALYSYS_AT_DEALERSHIP = 'is_approved_on_dealership';
+    public const FIELD_APPROVED_AT_DEALERSHIP = 'is_approved_on_dealership';
 
 
-    public static function matchStatus(string $key, object $helper): int
+    public static function matchStatus(string $key): int
     {
         return match ($key) {
             self::FIELD_TRT_PAY_ORDER => self::STATUS_TRT_PAY_ORDER,
             self::FIELD_PROOF_OF_BILL_PAYMENT => self::STATUS_PROOF_OF_BILL_PAYMENT,
             self::FIELD_ACCESS_OPINION_FORM => self::STATUS_ACCESS_OPINION_FORM,
             self::FIELD_SIGNED_ACCESS_OPINION_FORM => self::STATUS_SIGNED_ACCESS_OPINION_FORM,
-            self::FIELD_SINGLE_LINE_PROJECT => self::STATUS_SINGLE_LINE_PROJECT,
+            self::FIELD_ANALYSYS_AT_DEALERSHIP => self::STATUS_ANALYSYS_AT_DEALERSHIP,
             default => self::STATUS_AWAITING
         };
     }
@@ -42,7 +45,7 @@ class HomologationHelper
             self::FIELD_PROOF_OF_BILL_PAYMENT => $homologationService::CHECKLIST_ITEM_DUPLICATE_PAYED,
             self::FIELD_ACCESS_OPINION_FORM => $homologationService::CHECKLIST_ITEM_ACCESS_FORM_EMITTED,
             self::FIELD_SIGNED_ACCESS_OPINION_FORM => $homologationService::CHECKLIST_ITEM_ACCESS_FORM_SIGNED,
-            self::FIELD_SINGLE_LINE_PROJECT => $homologationService::CHECKLIST_ITEM_SINGLE_LINE_ATTACHED,
+            self::FIELD_ANALYSYS_AT_DEALERSHIP => $homologationService::CHECKLIST_ANALISYS_AT_DEALERCHIP,
             default => ''
         };
     }
@@ -54,8 +57,8 @@ class HomologationHelper
             'proof_of_bill_payment',
             'access_opinion_form',
             'signed_access_opinion_form',
-            'single_line_project',
             'payment_voucher',
+            'is_approved_on_dealership',
         ];
     }
 }

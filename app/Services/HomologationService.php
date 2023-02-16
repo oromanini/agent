@@ -13,7 +13,7 @@ class HomologationService extends AfterSalesProcessService
     public const CHECKLIST_ITEM_DUPLICATE_PAYED = 'Boleto TRT Pago';
     public const CHECKLIST_ITEM_ACCESS_FORM_EMITTED = 'Formulário de acesso emitido';
     public const CHECKLIST_ITEM_ACCESS_FORM_SIGNED = 'Formulário de acesso assinado';
-    public const CHECKLIST_ITEM_SINGLE_LINE_ATTACHED = 'Unifilar anexado';
+    public const CHECKLIST_ANALISYS_AT_DEALERCHIP = 'Em Análise na concessionária';
 
     public function store(Proposal $proposal):void
     {
@@ -33,7 +33,6 @@ class HomologationService extends AfterSalesProcessService
             self::CHECKLIST_ITEM_DUPLICATE_PAYED => false,
             self::CHECKLIST_ITEM_ACCESS_FORM_EMITTED => false,
             self::CHECKLIST_ITEM_ACCESS_FORM_SIGNED => false,
-            self::CHECKLIST_ITEM_SINGLE_LINE_ATTACHED => false,
         ]);
     }
 }

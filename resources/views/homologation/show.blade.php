@@ -23,6 +23,16 @@
             <form action="{{ route('homologation.update', [$homologation->id]) }}" method="post" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
+
+                <div class="row status-box">
+                    @foreach(json_decode($homologation->checklist, true) as $key => $value)
+                        <span class="span-status">{{ $key }} &nbsp;
+                            <ion-icon class="{{ $value ? 'elipse-green' : 'elipse-red' }}" name="{{ $value ? 'checkmark-circle' : 'close-circle' }}"></ion-icon>
+                        </span>
+                    @endforeach
+
+                </div>
+                <br>
                 @include('proposals.show.cards')
 
                 @include('homologation.client_data')
@@ -74,7 +84,7 @@
                             </div>
                         @endif
                     </div>
-                    <div class="column is-3">
+                    <div class="column is-3 {{ !isset($homologation->trt_pay_order) ? 'is-hidden' : '' }}">
                         <label for="proof_of_bill_payment" class="label">
                             <ion-icon class="elipse-yellow" name="ellipse"></ion-icon>
                             Comprovante de pagamento TRT</label>
@@ -103,7 +113,7 @@
                             </div>
                         @endif
                     </div>
-                    <div class="column is-3">
+                    <div class="column is-3 {{ !isset($homologation->proof_of_bill_payment) ? 'is-hidden' : '' }}">
                         <label for="access_opinion_form" class="label">
                             <ion-icon class="elipse-blue" name="ellipse"></ion-icon>
                             Parecer de acesso</label>
@@ -134,7 +144,7 @@
                     </div>
                 </div>
                 <div class="columns">
-                    <div class="column is-3">
+                    <div class="column is-3 {{ !isset($homologation->access_opinion_form) ? 'is-hidden' : '' }}">
                         <label for="signed_access_opinion_form" class="label">
                             <ion-icon class="elipse-yellow" name="ellipse"></ion-icon>
                             Formulário de Parecer de acesso Assinado</label>
@@ -220,6 +230,28 @@
                                 </label>
                             </div>
                         @endif
+                    </div>
+                    <div class="column is-3 {{ !isset($homologation->signed_access_opinion_form) ? 'is-hidden' : '' }}">
+                        <div class="field">
+                            <label for="type" class="label">
+                                <ion-icon class="elipse-blue" name="ellipse"></ion-icon>
+                                Status da Concessionária</label>
+                            <div
+                                class="select is-multiline is-fullwidth">
+                                <select id="is_approved_on_dealership" name="is_approved_on_dealership">
+                                    <option value="Em Análise" {{ $homologation->is_approved_on_dealership == 'Em Análise' ? 'selected' : '' }}>
+                                        <ion-icon class="elipse-yellow" name="ellipse"></ion-icon> Em Análise
+                                    </option>
+                                    <option value="Aprovado" {{ $homologation->is_approved_on_dealership == 'Aprovado' ? 'selected' : '' }}>
+                                        <ion-icon class="elipse-green" name="ellipse"></ion-icon> Aprovado
+                                    </option>
+                                    <option value="Reprovado" {{ $homologation->is_approved_on_dealership == 'Reprovado' ? 'selected' : '' }}>
+                                        <ion-icon class="elipse-red" name="ellipse"></ion-icon> Reprovado
+                                    </option>
+                                </select>
+                            </div>
+                            @error('type')<span class="error-message">{{ $message }}</span>@enderror
+                        </div>
                     </div>
                 </div>
                 <hr>

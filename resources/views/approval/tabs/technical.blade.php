@@ -105,7 +105,7 @@
                                     Escolher arquivo…
                                   </span>
                                 </span>
-                        <span class="file-name">
+                        <span class="file-name">    
                                     Nenhum arquivo selecionado
                                 </span>
                     </label>
