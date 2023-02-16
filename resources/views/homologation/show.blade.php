@@ -206,7 +206,7 @@
                         <label for="payment_voucher" class="label">
                             <ion-icon class="elipse-yellow" name="ellipse"></ion-icon>
                             Pagamento ao homologador</label>
-                        @if(isset($homologation->single_line_project))
+                        @if(isset($homologation->payment_voucher))
                             <a href="/storage/{{ str_replace('public/', '', $homologation->payment_voucher) }}"
                                class="button is-danger" target="_blank">
                                 <ion-icon name="eye-outline"></ion-icon>

@@ -197,6 +197,8 @@
             </div>
         </div>
     </div>
+    <hr>
+    <hr>
     <div class="columns">
         <div class="column">
             <div class="field">
