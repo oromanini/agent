@@ -58,7 +58,7 @@ abstract class ApprovalService implements ApprovalInterface
             $matchFolder = $this->matchFolder(filename: $name);
 
             (isset($proposal->$lowerModel->$name))
-                && $proposal->$lowerModel->$name = $file->store("public/$matchFolder/$proposal->id");
+            && $proposal->$lowerModel->$name = $file->store("public/$matchFolder/$proposal->id");
 
         }
 
@@ -80,13 +80,16 @@ abstract class ApprovalService implements ApprovalInterface
 
     public static function sendToHomologation(Proposal $proposal): void
     {
-        $homologationService = new HomologationService();
+        if (!isset($proposal->homologation)) {
 
-        $conditionToAccept =
-            (isset($proposal->inspection) && $proposal->inspection->status->is_final)
-            && (isset($proposal->financing) && $proposal->financing->status->is_final)
-            && isset($proposal->contract) && ($proposal->contract->status->is_final);
+            $homologationService = new HomologationService();
 
-        $conditionToAccept && $homologationService->store($proposal);
+            $conditionToAccept =
+                (isset($proposal->inspection) && $proposal->inspection->status->is_final)
+                && (isset($proposal->financing) && $proposal->financing->status->is_final)
+                && isset($proposal->contract) && ($proposal->contract->status->is_final);
+
+            $conditionToAccept && $homologationService->store($proposal);
+        }
     }
 }
