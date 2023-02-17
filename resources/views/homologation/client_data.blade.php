@@ -15,26 +15,40 @@
                 <ion-icon name="logo-whatsapp"></ion-icon>
             </a></p>
     </div>
-    <div class="column is-3">
+    <div class="column is-2">
         <label for="">
             <ion-icon name="call-outline"></ion-icon>
             Telefone cliente</label>
         <p class="proposalData">{{ $proposal->client->phone_number }}</p>
     </div>
-    <div class="column is-3">
+    <div class="column is-2">
         <label for="">
             <ion-icon name="mail-outline"></ion-icon>
             Email agente</label>
         <p class="proposalData">{{ $proposal->agent->email }}</p>
     </div>
-</div>
-<div class="columns">
-    <div class="column is-3">
+    <div class="column is-2">
         <label for="">
             <ion-icon name="business-outline"></ion-icon>
             Cidade</label>
         <p class="proposalData">{{ $proposal->client->addresses->first()->city->name_and_federal_unit }}</p>
     </div>
+</div>
+<div class="columns">
+    @if(isset($proposal->client) && !is_null($proposal->client->account_owner_document))
+        <div class="column is-3">
+            <label for="account_owner_document" class="label">CNH/RG do Titular da conta</label>
+            <a href="/storage/{{ str_replace('public/', '', $proposal->client->account_owner_document) }}"
+               class="button is-danger" target="_blank">
+                <ion-icon name="eye-outline"></ion-icon>
+                Visualizar Documento</a>
+        </div>
+    @else
+        <div class="column is-3">
+            <label for="account_owner_document" class="label">CNH/RG do Titular da conta</label>
+            Não anexada!
+        </div>
+    @endif
     <div class="column is-3">
         <label for="">
             <ion-icon name="flash-outline"></ion-icon>
