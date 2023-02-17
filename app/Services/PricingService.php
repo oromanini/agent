@@ -90,12 +90,10 @@ class PricingService
     public function calculateCa(float $finalValue, float $kwp): float
     {
         if ($kwp <= 4) {
-            return $finalValue * 0.04;
-        } elseif ($kwp <= 10) {
-            return $finalValue * 0.035;
-        } else {
-            return $finalValue * 0.03;
+            return $finalValue * 0.045;
         }
+
+        return 0.04;
     }
 
     private function calculateDelivery(float $finalValue, int $stateId): float
