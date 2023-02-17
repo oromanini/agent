@@ -93,7 +93,7 @@ class PricingService
             return $finalValue * 0.045;
         }
 
-        return 0.04;
+        return $finalValue * 0.04;
     }
 
     private function calculateDelivery(float $finalValue, int $stateId): float
