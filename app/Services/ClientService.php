@@ -51,9 +51,14 @@ class ClientService implements BaseService
         $client->document = $data['document'];
         $client->email = $data['email'];
         $client->phone_number = $data['phone_number'];
+
         $client->owner_document = isset($data['owner_document'])
             ? $data['owner_document']->store('public/owner_document/' . $client->id)
             : $client->owner_document;
+
+        $client->account_owner_document = isset($data['account_owner_document'])
+            ? $data['account_owner_document']->store('public/account_owner_document/' . $client->id)
+            : $client->account_owner_document;
 
         $address->street = $data['street'];
         $address->number = $data['address_number'];
@@ -96,6 +101,10 @@ class ClientService implements BaseService
         $client->owner_document = isset($data['owner_document'])
             ? $data['owner_document']->store('public/owner_document/' . $client->id)
             : $client->owner_document;
+
+        $client->account_owner_document = isset($data['account_owner_document'])
+            ? $data['account_owner_document']->store('public/account_owner_document/' . $client->id)
+            : $client->account_owner_document;
 
         $client->agent_id = auth()->user()->id;
 
