@@ -118,8 +118,8 @@
         @endif
 
         @if(isset($client) && !is_null($client->account_owner_document))
-            <label for="account_owner_document" class="label">CNH/RG do Titular da conta</label>
             <div class="column is-3">
+                <label for="account_owner_document" class="label">CNH/RG do Titular da conta</label>
                 <label for="" class="label">&nbsp;</label>
                 <a href="/storage/{{ str_replace('public/', '', $client->account_owner_document) }}"
                    class="button is-danger" target="_blank">
