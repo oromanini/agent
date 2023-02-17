@@ -90,7 +90,6 @@
         @if(isset($client) && !is_null($client->owner_document))
             <div class="column is-3">
                 <label for="owner_document" class="label">CNH/RG do {{ isset($client) ? $client->type == 'person' ? 'cliente' : 'proprietário' : '' }}</label>
-                <label for="" class="label">&nbsp;</label>
                 <a href="/storage/{{ str_replace('public/', '', $client->owner_document) }}"
                    class="button is-danger" target="_blank">
                     <ion-icon name="eye-outline"></ion-icon>
