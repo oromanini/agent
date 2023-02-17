@@ -87,46 +87,6 @@
             </div>
         </div>
 
-        <div class="column is-3">
-            <label for="owner_document" class="label">CNH/RG do {{ isset($client) ? $client->type == 'person' ? 'cliente' : 'proprietário' : '' }}</label>
-            <div class="file has-name" id="owner_document">
-                <label class="file-label">
-                    <input class="file-input" type="file" name="owner_document">
-                    <span class="file-cta">
-                                  <span class="file-icon">
-                                    <ion-icon name="folder-outline"></ion-icon>
-                                  </span>
-                                  <span class="file-label">
-                                    Escolher foto…
-                                  </span>
-                                </span>
-                    <span class="file-name">
-                                    Nenhum arquivo selecionado
-                                </span>
-                </label>
-            </div>
-        </div>
-
-        <div class="column is-3">
-            <label for="account_owner_document" class="label">CNH/RG do Titular da conta</label>
-            <div class="file has-name" id="account_owner_document">
-                <label class="file-label">
-                    <input class="file-input" type="file" name="account_owner_document">
-                    <span class="file-cta">
-                                  <span class="file-icon">
-                                    <ion-icon name="folder-outline"></ion-icon>
-                                  </span>
-                                  <span class="file-label">
-                                    Escolher foto…
-                                  </span>
-                                </span>
-                    <span class="file-name">
-                                    Nenhum arquivo selecionado
-                                </span>
-                </label>
-            </div>
-        </div>
-
         @if(isset($client) && !is_null($client->owner_document))
             <div class="column is-3">
                 <label for="" class="label">&nbsp;</label>
@@ -135,8 +95,57 @@
                     <ion-icon name="eye-outline"></ion-icon>
                     Visualizar Documento</a>
             </div>
+        @else
+            <div class="column is-3">
+                <label for="owner_document" class="label">CNH/RG do {{ isset($client) ? $client->type == 'person' ? 'cliente' : 'proprietário' : '' }}</label>
+                <div class="file has-name" id="owner_document">
+                    <label class="file-label">
+                        <input class="file-input" type="file" name="owner_document">
+                        <span class="file-cta">
+                                  <span class="file-icon">
+                                    <ion-icon name="folder-outline"></ion-icon>
+                                  </span>
+                                  <span class="file-label">
+                                    Escolher foto…
+                                  </span>
+                                </span>
+                        <span class="file-name">
+                                    Nenhum arquivo selecionado
+                                </span>
+                    </label>
+                </div>
+            </div>
         @endif
 
+        @if(isset($client) && !is_null($client->account_owner_document))
+            <div class="column is-3">
+                <label for="" class="label">&nbsp;</label>
+                <a href="/storage/{{ str_replace('public/', '', $client->account_owner_document) }}"
+                   class="button is-danger" target="_blank">
+                    <ion-icon name="eye-outline"></ion-icon>
+                    Visualizar Documento</a>
+            </div>
+        @else
+            <div class="column is-3">
+                <label for="account_owner_document" class="label">CNH/RG do Titular da conta</label>
+                <div class="file has-name" id="account_owner_document">
+                    <label class="file-label">
+                        <input class="file-input" type="file" name="account_owner_document">
+                        <span class="file-cta">
+                                  <span class="file-icon">
+                                    <ion-icon name="folder-outline"></ion-icon>
+                                  </span>
+                                  <span class="file-label">
+                                    Escolher foto…
+                                  </span>
+                                </span>
+                        <span class="file-name">
+                                    Nenhum arquivo selecionado
+                                </span>
+                    </label>
+                </div>
+            </div>
+        @endif
     </div>
 </div>
 {{--            end client box--}}
