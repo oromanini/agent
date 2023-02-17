@@ -50,6 +50,7 @@ class ClientService implements BaseService
         $client->type = $data['type'];
         $client->document = $data['document'];
         $client->email = $data['email'];
+        $client->birthdate = $data['birthdate'];
         $client->phone_number = $data['phone_number'];
 
         $client->owner_document = isset($data['owner_document'])
@@ -94,6 +95,7 @@ class ClientService implements BaseService
 
         $client->name = $data['name'];
         $client->type = $data['type'];
+        $client->birthdate = $data['birthdate'];
         $client->document = $data['document'];
         $client->email = $data['email'];
         $client->phone_number = $data['phone_number'];

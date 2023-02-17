@@ -34,7 +34,7 @@
                 </div>
             </div>
         </div>
-        <div class="column is-3">
+        <div class="column is-2">
             <div class="field">
                 <label id="documentLabel" for="document" class="label">{{ isset($client) ? $client->type == 'person' ? 'CPF*' : 'CNPJ*' : 'CPF' }}</label>
                 <div class="control">
@@ -47,13 +47,22 @@
                 </div>
             </div>
         </div>
-        <div class="column is-3">
+        <div class="column is-2">
             <div class="field">
                 <label id="aliasLabel" for="alias" class="label">{{ isset($client) ? $client->type == 'person' ? 'Apelido' : 'Nome Fantasia*' : 'Apelido' }}</label>
                 <div class="control">
                     <input name="alias" id="alias" class="input is-rounded" type="text"
                            placeholder="Digite o apelido/nome fantasia"
                            value="{{ isset($client) ? $client->alias : '' }}">
+                </div>
+            </div>
+        </div>
+        <div class="column is-2">
+            <div class="field">
+                <label id="birthdate" for="alias" class="label">{{ isset($client) && $client->type == 'person' ? 'Data de nascimento' : 'Data de fundação' }}</label>
+                <div class="control">
+                    <input name="birthdate" id="birthdate" class="input is-rounded" type="date"
+                           value="{{ isset($client) ? $client->birthdate : '' }}">
                 </div>
             </div>
         </div>

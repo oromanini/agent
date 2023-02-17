@@ -6,7 +6,8 @@
 <form action="{{ route('approval.update.inspection', [$proposal->id]) }}" method="post" enctype="multipart/form-data">
     @method('PUT')
     @csrf
-    <div class="columns is-justify-content-left is-flex-wrap-wrap">
+
+    <div class="columns">
         <div class="column mr-3">
             <div class="field">
                 <label for="status" class="label">Status</label>
@@ -21,6 +22,24 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="columns is-justify-content-left is-flex-wrap-wrap">
+
+        @if(isset($inspection->proposal->client) && !is_null($inspection->proposal->client->account_owner_document))
+            <div class="column is-3">
+                <label for="account_owner_document" class="label">CNH/RG do Titular da conta</label>
+                <a href="/storage/{{ str_replace('public/', '', $client->account_owner_document) }}"
+                   class="button is-danger" target="_blank">
+                    <ion-icon name="eye-outline"></ion-icon>
+                    Visualizar Documento</a>
+            </div>
+        @else
+            <div class="column is-3">
+                <label for="account_owner_document" class="label">CNH/RG do Titular da conta</label>
+                Não anexada!
+            </div>
+        @endif
 
         <div class="column">
             <label class="label" for="tension_pattern">Tensão</label>
@@ -105,7 +124,7 @@
                                     Escolher arquivo…
                                   </span>
                                 </span>
-                        <span class="file-name">    
+                        <span class="file-name">
                                     Nenhum arquivo selecionado
                                 </span>
                     </label>
