@@ -21,7 +21,7 @@ class AfterSaleProcessBase extends AfterSalesProcessService
         $checklist[$translatedItem] = true;
         unset($checklist[""]);
         unset($checklist["Unifilar anexado"]);
-        unset($checklist["Em análise na concessionária"]);
+        unset($checklist["Em Análise na concessionária"]);
 
         $model->checklist = json_encode($checklist);
         $model->status_id = $helper::matchStatus(key: $item);
