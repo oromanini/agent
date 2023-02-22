@@ -2,44 +2,57 @@
 
 namespace App\Listeners;
 
+use App\Helpers\HomologationHelper;
+use App\Models\Proposal;
 use App\Services\AfterSalesProcessService;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class AfterSaleProcessBase extends AfterSalesProcessService
 {
-    protected const STATUS_AWAITING = 13;
+    private const CONCLUSION_STATUS = 14;
+    private const SUB_STATUS_APPROVED = 'Aprovado';
 
     protected function setStatusAndMarkItem(string $item, Model $model, array $checklist, object $helper): void
     {
         $translatedItem = $helper::translateItem($item);
-
-        (!$item == 'is_approved_on_dealership')
-            ? $checklist[$translatedItem] = true
-            : $checklist = $this->setDealershipStatus($item, $checklist, $model, $translatedItem);
+        $checklist[$translatedItem] = true;
+        unset($checklist[""]);
+        unset($checklist["Unifilar anexado"]);
 
         $model->checklist = json_encode($checklist);
         $model->status_id = $helper::matchStatus(key: $item);
 
+        $finished = $model->status->is_final && $model->is_approved_on_dealership == self::SUB_STATUS_APPROVED;
+
+        $finished && $model->status_id = self::CONCLUSION_STATUS;
+
+        $this->isReadyForNextDepartment(modelName: $helper::MODEL_NAME, model: $model)
+            && $this->sendToNextDepartment(modelName: $helper::MODEL_NAME, proposal: $model->proposal);
+
         $model->update();
     }
 
-    private function setDealershipStatus(string $item, array $checklist, Model $model, string $translatedItem): array
+    private function isReadyForNextDepartment(string $modelName, Model $model): bool
     {
-        if ($model->$item == 'Em Análise') {
-            unset($checklist[$translatedItem]);
-            $checklist['Em Análise na concessionária'] = true;
-
-        } elseif ($model->$item == 'Reprovado') {
-            unset($checklist[$translatedItem]);
-            if (isset($checklist['Em Análise na concessionária'])) { unset($checklist['Em Análise na concessionária']);}
-            $checklist['Reprovado na concessionária'] = false;
-
-        } else {
-            if (isset($checklist['Reprovado na concessionária'])) { unset($checklist['Reprovado na concessionária']);}
-            if (isset($checklist['Em Análise na concessionária'])) { unset($checklist['Em Análise na concessionária']);}
-            $checklist['Aprovado na concessionária'] = true;
+        if ($modelName == HomologationHelper::MODEL_NAME) {
+            return !isset($model->proposal->installation) && isset($model->single_line_project);
         }
 
-        return $checklist;
+        return false;
+    }
+
+    private function sendToNextDepartment(string $modelName, Proposal $proposal): void
+    {
+        $nextDepartment = null;
+
+        if ($modelName == HomologationHelper::MODEL_NAME) {
+            $nextDepartment = new Installation();
+            $nextDepartment->proposal_id = $proposal->id;
+        }
+
+        DB::transaction(function () use ($nextDepartment) {
+            $nextDepartment->save();
+        });
     }
 }

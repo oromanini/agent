@@ -59,7 +59,7 @@
         </div>
         <div class="column is-2">
             <div class="field">
-                <label id="birthdate" for="alias" class="label">{{ isset($client) && $client->type == 'person' ? 'Data de nascimento' : 'Data de fundação' }}</label>
+                <label id="birthdate" for="alias" class="label">{{ (isset($client) && $client->type === "person") ? 'Data de nascimento' : 'Data de fundação' }}</label>
                 <div class="control">
                     <input name="birthdate" id="birthdate" class="input is-rounded" type="date"
                            value="{{ isset($client) ? $client->birthdate : '' }}">

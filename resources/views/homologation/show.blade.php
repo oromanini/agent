@@ -5,8 +5,10 @@
         <div class="box overflow-auto">
             <div class="is-flex is-flex-direction-row is-justify-content-space-between mt-2 ml-1">
                 <h3 class="title"><img src="/img/logo/alluz-icon.png" width="30" alt=".."> Homologação</h3>
-                <a class="button is-primary" onclick="openTab(event,'vistoria')" style="font-size: 16pt" href="{{ route('approval.show', [$homologation->proposal->id]) . '#technical' }}">
-                    <ion-icon name="eye-outline"></ion-icon> Ver vistoria
+                <a class="button is-primary" style="font-size: 16pt"
+                   href="{{ route('approval.show', [$homologation->proposal->id]) . '#technical' }}">
+                    <ion-icon name="eye-outline"></ion-icon>
+                    Ver vistoria
                 </a>
             </div>
             <br>
@@ -17,27 +19,25 @@
                     </span>
                 </div>
             </div>
-            <div class="columns">
-                <div class="column is-4">
+            <div class="columns ml-1">
                     <span class="tag is-info" style="font-size: 16pt">
-                        {{ 'Status: ' . $homologation->status->name }}
+                        <strong style="color: #fff">Status: </strong> &nbsp; {{ $homologation->status->name }}
                     </span>
-                </div>
-                <div class="column is-4">
-                    <span class="tag is-info" style="font-size: 16pt">
-                        {{ 'Concessionária: ' . $homologation->is_approved_on_dealership }}
-                    </span>
-                </div>
+                <span class="tag {{ getSubstatusColor($homologation->is_approved_on_dealership) }} ml-1" style="font-size: 16pt">
+                        <strong style="color: #fff">{{ 'Concessionária: '}}</strong> &nbsp;{{ $homologation->is_approved_on_dealership }}
+                </span>
             </div>
             <br>
-            <form action="{{ route('homologation.update', [$homologation->id]) }}" method="post" enctype="multipart/form-data">
+            <form action="{{ route('homologation.update', [$homologation->id]) }}" method="post"
+                  enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
                 <div class="row status-box">
                     @foreach(json_decode($homologation->checklist, true) as $key => $value)
                         <span class="span-status">{{ $key }} &nbsp;
-                            <ion-icon class="{{ $value ? 'elipse-green' : 'elipse-red' }}" name="{{ $value ? 'checkmark-circle' : 'close-circle' }}"></ion-icon>
+                            <ion-icon class="{{ $value ? 'elipse-green' : 'elipse-red' }}"
+                                      name="{{ $value ? 'checkmark-circle' : 'close-circle' }}"></ion-icon>
                         </span>
                     @endforeach
 
@@ -249,14 +249,20 @@
                             <div
                                 class="select is-multiline is-fullwidth">
                                 <select id="is_approved_on_dealership" name="is_approved_on_dealership">
-                                    <option value="Em Análise" {{ $homologation->is_approved_on_dealership == 'Em Análise' ? 'selected' : '' }}>
-                                        <ion-icon class="elipse-yellow" name="ellipse"></ion-icon> Em Análise
+                                    <option
+                                        value="Em Análise" {{ $homologation->is_approved_on_dealership == 'Em Análise' ? 'selected' : '' }}>
+                                        <ion-icon class="elipse-yellow" name="ellipse"></ion-icon>
+                                        Em Análise
                                     </option>
-                                    <option value="Aprovado" {{ $homologation->is_approved_on_dealership == 'Aprovado' ? 'selected' : '' }}>
-                                        <ion-icon class="elipse-green" name="ellipse"></ion-icon> Aprovado
+                                    <option
+                                        value="Aprovado" {{ $homologation->is_approved_on_dealership == 'Aprovado' ? 'selected' : '' }}>
+                                        <ion-icon class="elipse-green" name="ellipse"></ion-icon>
+                                        Aprovado
                                     </option>
-                                    <option value="Reprovado" {{ $homologation->is_approved_on_dealership == 'Reprovado' ? 'selected' : '' }}>
-                                        <ion-icon class="elipse-red" name="ellipse"></ion-icon> Reprovado
+                                    <option
+                                        value="Reprovado" {{ $homologation->is_approved_on_dealership == 'Reprovado' ? 'selected' : '' }}>
+                                        <ion-icon class="elipse-red" name="ellipse"></ion-icon>
+                                        Reprovado
                                     </option>
                                 </select>
                             </div>

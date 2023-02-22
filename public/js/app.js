@@ -9578,6 +9578,7 @@ $(function () {
       $('#nameLabel').text('Razão Social*');
       $('#documentLabel').text('CNPJ*');
       $('#aliasLabel').text('Nome Fantasia*');
+      $('#birthdate').text('Data de fundação*');
     } else {
       $('#cnpj').attr("id", "cpf");
       $('#cpf').mask('000.000.000-00', {
@@ -9586,6 +9587,7 @@ $(function () {
       $('#nameLabel').text('Nome*');
       $('#documentLabel').text('CPF*');
       $('#aliasLabel').text('Apelido*');
+      $('#birthdate').text('Data de nascimento*');
     }
   });
 });

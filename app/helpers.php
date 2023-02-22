@@ -394,3 +394,15 @@ function deadLineColor($status, $deadline): string
         return 'is-danger';
     }
 }
+
+function getSubstatusColor(string $status): string
+{
+    if ($status === 'Em análise') {
+        return 'is-yellow';
+    }
+    if ($status === 'Aprovado') {
+        return 'is-green';
+    } if ($status === 'Reprovado') {
+        return 'is-danger';
+    }
+}
