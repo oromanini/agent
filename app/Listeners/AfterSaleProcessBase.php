@@ -2,12 +2,8 @@
 
 namespace App\Listeners;
 
-use App\Helpers\HomologationHelper;
-use App\Models\Installation;
-use App\Models\Proposal;
 use App\Services\AfterSalesProcessService;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 
 class AfterSaleProcessBase extends AfterSalesProcessService
 {
@@ -19,7 +15,6 @@ class AfterSaleProcessBase extends AfterSalesProcessService
     {
         $translatedItem = $helper::translateItem($item);
         $checklist[$translatedItem] = true;
-        unset($checklist[""]);
         unset($checklist["Unifilar anexado"]);
         unset($checklist["Em Análise na concessionária"]);
 
