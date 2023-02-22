@@ -3,6 +3,10 @@
 namespace App\Services;
 
 use App\Events\AfterSaleProcessDepartmentChanged;
+use App\Helpers\HomologationHelper;
+use App\Listeners\AfterSaleProcessBase;
+use App\Models\Installation;
+use App\Models\Proposal;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -27,9 +31,49 @@ abstract class AfterSalesProcessService
             && $model->$name = $file->store("public/$modelToLower/$model->id");
         }
 
-        DB::transaction(function () use ($model) {
+        DB::transaction(function () use ($model, $modelToLower) {
             $model->update();
-            event(new AfterSaleProcessDepartmentChanged(model: $model));
+            event(new AfterSaleProcessDepartmentChanged($model));
+            $this->finish($model);
+
+            $this->isReadyForNextDepartment(modelName: $modelToLower, model: $model)
+                && $this->sendToNextDepartment(modelName: $modelToLower, proposal: $model->proposal);
+        });
+    }
+
+    private function finish(Model $model): void
+    {
+        $finished = $model->status->is_final && $model->is_approved_on_dealership == AfterSaleProcessBase::SUB_STATUS_APPROVED;
+
+        $finished && $model->status_id = AfterSaleProcessBase::CONCLUSION_STATUS;
+
+        $model->update();
+    }
+
+
+
+    private function isReadyForNextDepartment(string $modelName, Model $model): bool
+    {
+        if (ucfirst($modelName) == HomologationHelper::MODEL_NAME) {
+            return !isset($model->proposal->installation) && isset($model->single_line_project);
+        }
+
+        return false;
+    }
+
+    private function sendToNextDepartment(string $modelName, Proposal $proposal): void
+    {
+        $nextDepartment = null;
+
+        if (ucfirst($modelName) == HomologationHelper::MODEL_NAME) {
+            $nextDepartment = new Installation();
+        }
+
+        $nextDepartment->status_id = AfterSaleProcessBase::START_STATUS;
+        $nextDepartment->proposal_id = $proposal->id;
+
+        DB::transaction(function () use ($nextDepartment) {
+            $nextDepartment->save();
         });
     }
 }

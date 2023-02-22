@@ -52,13 +52,20 @@ class Proposal extends Model
         return $this->belongsTo(Financing::class);
     }
 
+
+
+    public function contract(): BelongsTo
+    {
+        return $this->belongsTo(Contract::class);
+    }
+
     public function homologation(): HasOne
     {
         return $this->hasOne(Homologation::class);
     }
 
-    public function contract(): BelongsTo
+    public function installation(): HasOne
     {
-        return $this->belongsTo(Contract::class);
+        return $this->hasOne(Installation::class);
     }
 }
