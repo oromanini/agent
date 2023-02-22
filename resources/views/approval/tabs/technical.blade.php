@@ -2,7 +2,6 @@
     <h3 class="title"><img src="/img/logo/alluz-icon.png" width="30" alt=".."> Vistoria</h3>
 </div>
 <br>
-
 <form action="{{ route('approval.update.inspection', [$proposal->id]) }}" method="post" enctype="multipart/form-data">
     @method('PUT')
     @csrf
@@ -131,6 +130,14 @@
                 </div>
             @endif
         </div>
+        @if(isset($proposal->homologation))
+            <div class="column is-3">
+                <label class="label" for="observations">Homologação</label>
+                <a class="button is-primary" href="{{ route('homologation.show', [$proposal->homologation->id]) }}">
+                    <ion-icon name="ribbon-outline"></ion-icon> Ir para homologação
+                </a>
+            </div>
+        @endif
     </div>
     <hr>
     <div class="columns">
@@ -149,7 +156,6 @@
         </div>
     </div>
 </form>
-
 <hr>
 
 <hr>

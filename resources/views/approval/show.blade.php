@@ -55,6 +55,13 @@
                 document.getElementById(tabName).style.display = "block";
                 event.currentTarget.className += " is-active";
             }
+
+            $(function () {
+                let path = window.location.href;
+                if (path.search('#technical')) {
+                    openTab(event, 'vistoria')
+                }
+            })
         </script>
     @else
         <div>

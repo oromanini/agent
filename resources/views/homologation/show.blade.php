@@ -3,8 +3,11 @@
 @section('content')
     <div class="container is-fluid overflow-auto">
         <div class="box overflow-auto">
-            <div class="columns mt-2 ml-1">
+            <div class="is-flex is-flex-direction-row is-justify-content-space-between mt-2 ml-1">
                 <h3 class="title"><img src="/img/logo/alluz-icon.png" width="30" alt=".."> Homologação</h3>
+                <a class="button is-primary" onclick="openTab(event,'vistoria')" style="font-size: 16pt" href="{{ route('approval.show', [$homologation->proposal->id]) . '#technical' }}">
+                    <ion-icon name="eye-outline"></ion-icon> Ver vistoria
+                </a>
             </div>
             <br>
             <div class="columns">
@@ -13,9 +16,16 @@
                         {{ 'Proposta #' . $homologation->proposal->id . ' - ' .$homologation->proposal->client->name }}
                     </span>
                 </div>
+            </div>
+            <div class="columns">
                 <div class="column is-4">
                     <span class="tag is-info" style="font-size: 16pt">
                         {{ 'Status: ' . $homologation->status->name }}
+                    </span>
+                </div>
+                <div class="column is-4">
+                    <span class="tag is-info" style="font-size: 16pt">
+                        {{ 'Concessionária: ' . $homologation->is_approved_on_dealership }}
                     </span>
                 </div>
             </div>
