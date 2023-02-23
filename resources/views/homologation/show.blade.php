@@ -20,12 +20,15 @@
                 </div>
             </div>
             <div class="columns ml-1">
-                    <span class="tag is-info" style="font-size: 16pt">
-                        <strong style="color: #fff">Status: </strong> &nbsp; {{ $homologation->status->name }}
-                    </span>
-                <span class="tag {{ getSubstatusColor($homologation->is_approved_on_dealership) }} ml-1" style="font-size: 16pt">
-                        <strong style="color: #fff">{{ 'Concessionária: '}}</strong> &nbsp;{{ $homologation->is_approved_on_dealership }}
+                <span class="tag is-info" style="font-size: 16pt">
+                    <strong style="color: #fff">Status: </strong> &nbsp; {{ $homologation->status->name }}
                 </span>
+                @if($homologation->status->is_final)
+                    <span class="tag {{ getSubstatusColor($homologation->is_approved_on_dealership) }} ml-1"
+                          style="font-size: 16pt">
+                        <strong style="color: #fff">{{ 'Concessionária: '}}</strong> &nbsp;{{ $homologation->is_approved_on_dealership }}
+                    </span>
+                @endif
             </div>
             <br>
             <form action="{{ route('homologation.update', [$homologation->id]) }}" method="post"
