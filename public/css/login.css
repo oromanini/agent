@@ -665,17 +665,11 @@ select {
 .-ml-px {
   margin-left: -1px;
 }
-.mt-3 {
-  margin-top: 0.75rem;
-}
 .mt-2 {
   margin-top: 0.5rem;
 }
 .ml-1 {
   margin-left: 0.25rem;
-}
-.mr-3 {
-  margin-right: 0.75rem;
 }
 .mt-4 {
   margin-top: 1rem;
@@ -685,6 +679,12 @@ select {
 }
 .mt-1 {
   margin-top: 0.25rem;
+}
+.mt-3 {
+  margin-top: 0.75rem;
+}
+.mr-3 {
+  margin-right: 0.75rem;
 }
 .ml-2 {
   margin-left: 0.5rem;
@@ -945,6 +945,15 @@ select {
 .p-2 {
   padding: 0.5rem;
 }
+.p-4 {
+  padding: 1rem;
+}
+.p-8 {
+  padding: 2rem;
+}
+.p-1 {
+  padding: 0.25rem;
+}
 .px-4 {
   padding-left: 1rem;
   padding-right: 1rem;
@@ -1074,6 +1083,10 @@ select {
   --tw-text-opacity: 1;
   color: rgb(22 163 74 / var(--tw-text-opacity));
 }
+.text-gray-600 {
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
+}
 .text-gray-900 {
   --tw-text-opacity: 1;
   color: rgb(17 24 39 / var(--tw-text-opacity));
@@ -1081,10 +1094,6 @@ select {
 .text-indigo-600 {
   --tw-text-opacity: 1;
   color: rgb(79 70 229 / var(--tw-text-opacity));
-}
-.text-gray-600 {
-  --tw-text-opacity: 1;
-  color: rgb(75 85 99 / var(--tw-text-opacity));
 }
 .text-white {
   --tw-text-opacity: 1;

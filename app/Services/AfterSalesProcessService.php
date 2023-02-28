@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Events\AfterSaleProcessDepartmentChanged;
 use App\Helpers\HomologationHelper;
 use App\Listeners\AfterSaleProcessBase;
+use App\Models\Homologation;
 use App\Models\Installation;
 use App\Models\Proposal;
 use Illuminate\Database\Eloquent\Model;
@@ -37,19 +38,20 @@ abstract class AfterSalesProcessService
             $this->finish($model);
 
             $this->isReadyForNextDepartment(modelName: $modelToLower, model: $model)
-                && $this->sendToNextDepartment(modelName: $modelToLower, proposal: $model->proposal);
+            && $this->sendToNextDepartment(modelName: $modelToLower, proposal: $model->proposal);
         });
     }
 
     private function finish(Model $model): void
     {
-        $finished = $model->status->is_final && $model->is_approved_on_dealership == AfterSaleProcessBase::SUB_STATUS_APPROVED;
+        $finished = $model instanceof Homologation
+            ? $model->status->is_final && $model->is_approved_on_dealership == AfterSaleProcessBase::SUB_STATUS_APPROVED
+            : $model->status->is_final;
 
         $finished && $model->status_id = AfterSaleProcessBase::CONCLUSION_STATUS;
 
         $model->update();
     }
-
 
 
     private function isReadyForNextDepartment(string $modelName, Model $model): bool
@@ -65,15 +67,15 @@ abstract class AfterSalesProcessService
     {
         $nextDepartment = null;
 
-        if (ucfirst($modelName) == HomologationHelper::MODEL_NAME) {
-            $nextDepartment = new Installation();
+        (ucfirst($modelName) == HomologationHelper::MODEL_NAME) && $nextDepartment = new Installation();
+
+        if (!is_null($nextDepartment)) {
+            $nextDepartment->status_id = AfterSaleProcessBase::START_STATUS;
+            $nextDepartment->proposal_id = $proposal->id;
+
+            DB::transaction(function () use ($nextDepartment) {
+                $nextDepartment->save();
+            });
         }
-
-        $nextDepartment->status_id = AfterSaleProcessBase::START_STATUS;
-        $nextDepartment->proposal_id = $proposal->id;
-
-        DB::transaction(function () use ($nextDepartment) {
-            $nextDepartment->save();
-        });
     }
 }

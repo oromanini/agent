@@ -8,6 +8,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\FinancingController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HomologationController;
+use App\Http\Controllers\InstallationController;
 use App\Http\Controllers\KitSearchController;
 use App\Http\Controllers\PreInspectionController;
 use App\Http\Controllers\ProposalController;
@@ -117,6 +118,19 @@ Route::middleware('auth')->group(function () {
             Route::get('homologacoes/{id}', 'show')->name('show');
             Route::put('homologacoes/{id}/atualizar', 'update')->name('update');
             Route::get('homologacoes/{id}/inativar', 'inactive')->name('inactive');
+
+        });
+    });
+
+    Route::controller(InstallationController::class)->group(function () {
+
+        Route::name('installation.')->group(function () {
+
+            Route::get('instalacoes', 'index')->name('index');
+            Route::get('instalacoes/{id}', 'show')->name('show');
+            Route::put('instalacoes/{id}/atualizar', 'update')->name('update');
+            Route::get('instalacoes/{id}/inativar', 'inactive')->name('inactive');
+            Route::get('instalacoes/{id}/deletarCustoAdicional', 'deletePlusCost')->name('deletePlusCost');
 
         });
     });

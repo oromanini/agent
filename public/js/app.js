@@ -9563,6 +9563,15 @@ $(function () {
   $('#final_value').mask('000.000.000.000.000,00', {
     reverse: true
   });
+  $('#ca_cost').mask('000.000.000.000.000,00', {
+    reverse: true
+  });
+  $('#installation_cost').mask('000.000.000.000.000,00', {
+    reverse: true
+  });
+  $('#plus_cost_value').mask('000.000.000.000.000,00', {
+    reverse: true
+  });
   $('#cpf').mask('000.000.000-00', {
     reverse: true
   });
