@@ -79,6 +79,16 @@
                     <span class="side-title">Homologação</span>
                 </a>
             </li>
+            <li class="side-list">
+                <a href="{{ route('installation.index') }}">
+                <span class="side-icon">
+                    <ion-icon name="build-outline"></ion-icon>
+                </span>
+                    <span class="side-title">Instalação</span>
+                </a>
+            </li>
+
+            <hr style="margin-bottom: 2px !important;">
 
             <li class="side-list">
                 <a href="{{ route('proposal.manual.create') }}">
