@@ -184,6 +184,7 @@ class ProposalController extends Controller
         $pdfParams = $this->setPdfParams(proposal: $proposal);
         $city = $proposal->client->addresses->first()->city;
         $components = json_decode($proposal->components, true);
+        $finalValue = $proposal->valueHistory->final_price;
 
         $firstKit = $proposal->is_manual
             ? null
@@ -282,7 +283,8 @@ class ProposalController extends Controller
             'firstKit',
             'invertersCount',
             'overload',
-            'inverterModels'
+            'inverterModels',
+            'finalValue'
         ];
     }
 
