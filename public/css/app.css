@@ -5586,8 +5586,8 @@ body.has-spaced-navbar-fixed-bottom {
 }
 
 .pagination-link.is-current {
-  background-color: hsl(229deg, 53%, 53%);
-  border-color: hsl(229deg, 53%, 53%);
+  background-color: #3488CE;
+  border-color: #3488CE;
   color: #fff;
 }
 
