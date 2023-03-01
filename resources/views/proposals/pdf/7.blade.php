@@ -41,7 +41,7 @@
         font-size: 28pt;
         font-weight: 900;
         position: absolute;
-        top: 860px;
+        top: 840px;
         left: 640px;
         background-color: #fff;
         padding: 15px 15px 50px 15px;
