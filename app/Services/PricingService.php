@@ -48,7 +48,7 @@ class PricingService
         return $finalValue;
     }
 
-    function calculateHomologation(float $kwp, float $finalValue)
+    function calculateHomologation(float $kwp, float $finalValue): float
     {
         $homologation = 0;
 
@@ -73,7 +73,7 @@ class PricingService
 
     private function calculateNetProfit(float $cost, float $kwp, int $panelCount, float $finalValue, int $stateId): array
     {
-        $installation = $panelCount * env('INSTALLATION_PANEL_PRICE');
+        $installation = $this->calculateInstallation($panelCount);
         $delivery = $this->calculateDelivery($finalValue, $stateId);
         $homologation = $this->calculateHomologation($kwp, $finalValue);
         $ca = $this->calculateCa($finalValue, $kwp);
@@ -89,11 +89,9 @@ class PricingService
 
     public function calculateCa(float $finalValue, float $kwp): float
     {
-        if ($kwp <= 4) {
-            return $finalValue * 0.045;
-        }
+        $ca = $finalValue * 0.045;
 
-        return $finalValue * 0.04;
+        return max($ca, 750);
     }
 
     private function calculateDelivery(float $finalValue, int $stateId): float
@@ -107,12 +105,19 @@ class PricingService
         return $finalValue * env('DELIVERY_PERCENT');
     }
 
-    private function setStateId(array $data)
+    private function setStateId(array $data): int
     {
         if (isset($data['client'])) {
             return Client::find((int)$data['client'])->addresses->first()->city->state->id;
         }
 
         return Address::find((int)$data['address_id'])->city->state->id;
+    }
+
+    private function calculateInstallation(int $panelCount): float
+    {
+        $installation = $panelCount * env('INSTALLATION_PANEL_PRICE');
+
+        return max($installation, 700);
     }
 }
