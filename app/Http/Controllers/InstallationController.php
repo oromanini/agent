@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\MonitoringAppsEnum;
 use App\Models\Homologation;
 use App\Models\Installation;
 use App\Models\User;
@@ -35,6 +36,8 @@ class InstallationController extends Controller
         $deadline = $installation->created_at->diffInDays(now());
         $deadlineColor = deadLineColor(status: $installation->status, deadline: $deadline);
         $plusCosts = $this->installationRepository->getPlusCosts($installation);
+        $appList = MonitoringAppsEnum::cases();
+        $costSums = $this->installationService->setCostSums($installation);
 
         return view('installation.show', compact(
             'installation',
@@ -42,18 +45,38 @@ class InstallationController extends Controller
             'kits',
             'deadline',
             'deadlineColor',
-            'plusCosts'
+            'plusCosts',
+            'appList',
+            'costSums'
         ));
     }
 
     public function update(Request $request, int $id): RedirectResponse
     {
-        $homologation = Installation::find($id);
-        $this->installationService->update(model: $homologation, request: $request);
+        $installation = Installation::find($id);
+        $this->installationService->update(model: $installation, request: $request);
 
         session()->flash('message', ['success', "Instalação atualizada!"]);
 
-        return redirect()->back();
+        return redirect(route('installation.show', [$installation->id]) . '#installation');
+    }
+
+    public function addPlusCosts(Request $request, int $id): RedirectResponse
+    {
+        $installation = Installation::find($id);
+        $this->installationService->addPlusCost(installation: $installation, data: $request->all());
+
+        session()->flash('message', ['success', "Novo custo adicionado!"]);
+        return redirect(route('installation.show', [$installation->id]) . '#costs');
+    }
+
+    public function updatePictures(Request $request, int $id): RedirectResponse
+    {
+        $installation = Installation::find($id);
+        $this->installationService->updatePictures(installation: $installation, request: $request);
+
+        session()->flash('message', ['success', "Fotos atualizadas!"]);
+        return redirect(route('installation.show', [$installation->id]) . '#images');
     }
 
     public function inactive(int $id): RedirectResponse

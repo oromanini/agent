@@ -83,7 +83,7 @@
                             <td>{{ $installation->proposal->agent->name }}</td>
                             <td>R$ {{ floatToMoney($installation->proposal->valueHistory->final_price) }}</td>
                             <td>
-                                <a class="button is-primary" href="{{ route('installation.show', [$installation->id]) }}">
+                                <a class="button is-primary" href="{{ route('installation.show', [$installation->id]) . '#installation' }}">
                                     <ion-icon name="create-outline" class="table-icon"></ion-icon>
                                 </a>
                                 <a class="button is-danger" href="{{ route('installation.inactive', [$installation->id]) }}">

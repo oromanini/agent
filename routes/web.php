@@ -130,7 +130,9 @@ Route::middleware('auth')->group(function () {
             Route::get('instalacoes/{id}', 'show')->name('show');
             Route::put('instalacoes/{id}/atualizar', 'update')->name('update');
             Route::get('instalacoes/{id}/inativar', 'inactive')->name('inactive');
+            Route::post('instalacoes/{id}/novoCustoAdicional', 'addPlusCosts')->name('addPlusCosts');
             Route::get('instalacoes/{id}/deletarCustoAdicional', 'deletePlusCost')->name('deletePlusCost');
+            Route::post('instalacoes/{id}/fotos', 'updatePictures')->name('updatePictures');
 
         });
     });
