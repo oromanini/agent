@@ -13,4 +13,5 @@ final class InverterBrands extends Enum
     const Solis = 5;
     const Bel = 6;
     const Sungrow = 7;
+    const DeyeString = 8;
 }

@@ -162,6 +162,7 @@ function setInverterImage($brand): string
     $growatt = '/img/inverters/growatt.png';
     $chint = '/img/inverters/chint.png';
     $deye = '/img/inverters/deye.png';
+    $deyeString = '/img/inverters/deye-string.png';
     $sofar = '/img/inverters/sofar.png';
     $solis = '/img/inverters/solis.png';
     $bel = '/img/inverters/bel.png';
@@ -175,6 +176,8 @@ function setInverterImage($brand): string
             $img = $chint;
         } elseif ($brand == 'Deye') {
             $img = $deye;
+        } elseif ($brand == 'DeyeString') {
+            $img = $deyeString;
         } elseif ($brand == 'Sofar') {
             $img = $sofar;
         } elseif ($brand == 'Solis') {
@@ -208,6 +211,9 @@ function setInverterImage($brand): string
                 break;
             case 7:
                 $img = $sungrow;
+                break;
+            case 8:
+                $img = $deyeString;
                 break;
             default:
                 throw new Exception('Inversor não localizado.');
