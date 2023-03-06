@@ -82,7 +82,7 @@
                         <td>{{ $approval->agent->name }}</td>
                         <td>R$ {{ floatToMoney($approval->valueHistory->final_price) }}</td>
                         <td>
-                            <a class="button is-primary" href="{{ route('approval.show', [$approval->id]) }}">
+                            <a class="button is-primary" href="{{ route('approval.show', [$approval->id]) . '#project' }}">
                                 <ion-icon name="create-outline" class="table-icon"></ion-icon>
                             </a>
                             <a class="button is-danger" href="{{ route('approval.inactive', [$approval->id]) }}">

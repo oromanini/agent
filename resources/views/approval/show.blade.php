@@ -1,24 +1,23 @@
 @extends('base')
 
 @section('content')
-    @if(auth()->user()->id != 20)
         <div class="container is-fluid overflow-auto">
             <nav class="tabs is-boxed is-fullwidth is-large" style="margin-bottom: 0">
                 <div class="container">
                     <ul>
-                        <li class=" mytab is-active" onclick="openTab(event,'projeto')"><a
+                        <li id="project-li" class="mytab is-active" onclick="openTab(event,'projeto')"><a
                                 style="color: #6b7280; font-size: 12pt">
                                 <ion-icon name="flash-outline"></ion-icon>
                                 Projeto</a></li>
-                        <li class=" mytab" onclick="openTab(event,'vistoria')"><a
+                        <li id="technical-li" class="mytab" onclick="openTab(event,'vistoria')"><a
                                 style="color: #6b7280; font-size: 12pt">
                                 <ion-icon name="camera-outline"></ion-icon>
                                 Vistoria</a></li>
-                        <li class=" mytab" onclick="openTab(event,'financiamento')"><a
+                        <li id="financing-li" class="mytab" onclick="openTab(event,'financiamento')"><a
                                 style="color: #6b7280; font-size: 12pt">
                                 <ion-icon name="card-outline"></ion-icon>
                                 Financiamento</a></li>
-                        <li class=" mytab" onclick="openTab(event,'contrato')"><a
+                        <li id="contract-li" class="mytab" onclick="openTab(event,'contrato')"><a
                                 style="color: #6b7280; font-size: 12pt">
                                 <ion-icon name="document-text-outline"></ion-icon>
                                 Contrato</a></li>
@@ -54,18 +53,32 @@
                 }
                 document.getElementById(tabName).style.display = "block";
                 event.currentTarget.className += " is-active";
+
+            }
+
+            function checkHash(path) {
+                if (path.search('#technical') !== -1) {
+                    openTab(event, 'vistoria')
+                    $('#technical-li').addClass("is-active")
+
+                } else if (path.search('#project') !== -1) {
+                    openTab(event, 'projeto')
+                    $('#project-li').addClass("is-active")
+                    console.log('oiu')
+
+                } else if (path.search('#financing') !== -1) {
+                    openTab(event, 'financiamento')
+                    $('#financing-li').addClass("is-active")
+
+                } else if (path.search('#contract') !== -1) {
+                    openTab(event, 'contrato')
+                    $('#contract-li').addClass("is-active")
+                }
             }
 
             $(function () {
                 let path = window.location.href;
-                if (path.search('#technical')) {
-                    openTab(event, 'vistoria')
-                }
+                checkHash(path)
             })
         </script>
-    @else
-        <div>
-            [1684d68ad8f] - The server response returned a 505 error. Please contact your host (HOSTGATOR).
-        </div>
-    @endif
 @endsection

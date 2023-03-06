@@ -129,7 +129,7 @@
                     <div class="column is-3 {{ !isset($homologation->proof_of_bill_payment) ? 'is-hidden' : '' }}">
                         <label for="access_opinion_form" class="label">
                             <ion-icon class="elipse-blue" name="ellipse"></ion-icon>
-                            Parecer de acesso</label>
+                            Documentação para assinatura</label>
                         @if(isset($homologation->access_opinion_form))
                             <a href="/storage/{{ str_replace('public/', '', $homologation->access_opinion_form) }}"
                                class="button is-danger" target="_blank">
@@ -160,7 +160,7 @@
                     <div class="column is-3 {{ !isset($homologation->access_opinion_form) ? 'is-hidden' : '' }}">
                         <label for="signed_access_opinion_form" class="label">
                             <ion-icon class="elipse-yellow" name="ellipse"></ion-icon>
-                            Formulário de Parecer de acesso Assinado</label>
+                            Documentação assinada</label>
                         @if(isset($homologation->signed_access_opinion_form))
                             <a href="/storage/{{ str_replace('public/', '', $homologation->signed_access_opinion_form) }}"
                                class="button is-danger" target="_blank">
