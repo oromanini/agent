@@ -47,7 +47,9 @@ class InstallationService extends AfterSalesProcessService
     public function setCostSums($installation): array
     {
         $costsSum['plusCosts'] = 0;
-        $otherExpenses = json_decode($installation->other_expenses, true);
+        $otherExpenses = !is_null($installation->other_expenses)
+            ? jsonToArray($installation->other_expenses)
+            : [];
 
         foreach ($otherExpenses as $cost) {
             $costsSum['plusCosts'] += stringMoneyToFloat($cost['value']);
