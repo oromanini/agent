@@ -10,8 +10,6 @@ class UpdateChecklistAndStatus extends AfterSaleProcessBase
 
     public function handle(AfterSaleProcessDepartmentChanged $event): void
     {
-
-
         $helper = new ('App\\Helpers\\' . class_basename($event->model) . 'Helper');
 
         foreach ($helper::setListenedFields() as $field) {

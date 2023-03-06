@@ -4,10 +4,10 @@
     <div class="container is-fluid overflow-auto">
         <div class="box overflow-auto">
             <div class="columns mt-2 ml-1">
-                <h3 class="title"><img src="/img/logo/alluz-icon.png" width="30" alt=".."> Projetos para aprovação</h3>
+                <h3 class="title"><img src="/img/logo/alluz-icon.png" width="30" alt=".."> Instalações</h3>
             </div>
 
-            <form action="{{ route('approval.index') }}" method="get">
+            <form action="{{ route('installation.index') }}" method="get">
                 @csrf
                 <div id="client-filters" class="columns is-flex is-flex-direction-row mt-4 mb-4">
                     <div class="column is-3">
@@ -57,48 +57,48 @@
                 <tr>
                     <th><abbr title="Position">ID</abbr></th>
                     <th>Cliente</th>
-                    <th>Vistoria</th>
-                    <th>Financiamento</th>
-                    <th>Contrato</th>
+                    <th>Status</th>
+                    <th>Prazo decorrido</th>
                     <th>Agente</th>
                     <th>Total</th>
                     <th>Ações</th>
                 </tr>
                 </thead>
                 <tbody>
-                @forelse(auth()->user()->id == 20 ? $approvals->where('created_at', '<=', '2022-10-01') : $approvals as $approval)
-                    @if($approval->client)
-                    <tr class="lh-40">
-                        <th>{{$approval->id}}</th>
-                        <td>{{ $approval->client->name }}</td>
-                        @php
-                        $inspectionStatus = $approval->inspection ? $approval->inspection->status->name : 'Aguardando';
-                        $financingStatus = $approval->financing ? $approval->financing->status->name : 'Aguardando';
-                        $contractStatus = $approval->contract ? $approval->contract->status->name : 'Aguardando';
-                        @endphp
-                        <td><span class="tag box w100 {{ isApproved($inspectionStatus) }}">{{ $inspectionStatus }}</span></td>
-                        <td><span class="tag box w100 {{ isApproved($financingStatus) }}">{{ $financingStatus }}</span></td>
-                        <td><span class="tag  box w100 {{ isApproved($contractStatus) }}">{{ $contractStatus }}</span></td>
-                        <td>{{ $approval->agent->name }}</td>
-                        <td>R$ {{ floatToMoney($approval->valueHistory->final_price) }}</td>
-                        <td>
-                            <a class="button is-primary" href="{{ route('approval.show', [$approval->id]) . '#project' }}">
-                                <ion-icon name="create-outline" class="table-icon"></ion-icon>
-                            </a>
-                            <a class="button is-danger" href="{{ route('approval.inactive', [$approval->id]) }}">
-                                <ion-icon name="trash-outline" class="table-icon"></ion-icon>
-                            </a>
-                        </td>
-                    </tr>
-                    @endif
+                @forelse($installations as $installation)
+                        <tr class="lh-40">
+                            <th>{{$installation->id}}</th>
+                            <td>{{ $installation->proposal->client->name }}</td>
+                            <td><span style="font-size: 12pt" class="tag
+                            @if($installation->status->is_final) is-success
+                            @elseif($installation->status->name == 'Pendente')
+                            @else is-info
+                            @endif box w100">{{ $installation->status->name }}</span></td>
+                            <td><span style="font-size: 12pt" class="tag box w100 {{ deadLineColor($installation->status, $installation->created_at->diffInDays(now())) }}">
+                                    @if($installation->status->is_final) {{ 'FINALIZADO' }}
+                                    @else {{ $installation->created_at->format('d/m/Y') . ' - ' . $installation->created_at->diffInDays(now()) . ' Dias' }}
+                                    @endif
+                                </span>
+                            </td>
+                            <td>{{ $installation->proposal->agent->name }}</td>
+                            <td>R$ {{ floatToMoney($installation->proposal->valueHistory->final_price) }}</td>
+                            <td>
+                                <a class="button is-primary" href="{{ route('installation.show', [$installation->id]) . '#installation' }}">
+                                    <ion-icon name="create-outline" class="table-icon"></ion-icon>
+                                </a>
+                                <a class="button is-danger" href="{{ route('installation.inactive', [$installation->id]) }}">
+                                    <ion-icon name="trash-outline" class="table-icon"></ion-icon>
+                                </a>
+                            </td>
+                        </tr>
                 @empty
                     <tr>
-                        <td>Não há aprovações disponíveis</td>
+                        <td>Não há instalações disponíveis</td>
                     </tr>
                 @endforelse
                 </tbody>
             </table>
-            {{ $approvals->appends(request()->all())->links() }}
+            {{ $installations->appends(request()->all())->links() }}
         </div>
     </div>
 
