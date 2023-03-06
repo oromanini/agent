@@ -6,8 +6,7 @@
             <div class="columns mt-2 ml-1">
                 <h3 class="title"><img src="/img/logo/alluz-icon.png" width="30" alt=".."> Novo usuário</h3>
             </div>
-            <form
-                action="@if(isset($agent)){{ route('user.update', [$agent->id]) }}@else {{ route('user.store') }} @endif"
+            <form action="@if(isset($agent)) {{ route('user.update', [$agent->id]) }} @else {{ route('user.store') }} @endif"
                 method="post">
                 @if(isset($agent))
                     @method('PUT')
@@ -30,7 +29,14 @@
                 </div>
                 <hr>
                 <div class="columns is-flex is-justify-content-center" style="margin: 20px 0">
-                    @include('users.fields.submit_button')
+                    <button type="submit" class="button is-primary is-large">
+                        <ion-icon name="save-outline"></ion-icon> &nbsp;
+                        @if(!isset($agent))
+                            Salvar
+                        @else
+                            Atualizar
+                        @endif
+                    </button>
                 </div>
             </form>
         </div>

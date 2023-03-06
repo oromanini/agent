@@ -92,7 +92,7 @@ Route::middleware('auth')->group(function () {
             Route::get('usuarios/novo', 'create')->name('create');
             Route::post('usuarios/novo', 'store')->name('store');
             Route::get('usuarios/{id}', 'edit')->name('edit');
-            Route::put('usuarios/{id}', 'edit')->name('update');
+            Route::put('usuarios/{id}', 'update')->name('update');
             Route::get('usuarios/{id}/inativar', 'inactive')->name('inactive');
         });
     });

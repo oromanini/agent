@@ -53,7 +53,6 @@ class UserController extends Controller
         $request->validated();
         $data = $request->all();
 
-
         DB::transaction(function () use ($data) {
             $user = $this->fillUser(null, $data);
             $user->save();
@@ -69,10 +68,7 @@ class UserController extends Controller
         return redirect()->route('user.index');
     }
 
-    /**
-     * @throws Throwable
-     */
-    public function update($id, Request $request): RedirectResponse
+    public function update($id, AgentRequest $request): RedirectResponse
     {
         $data = $request->all();
         $user = User::find($id);
@@ -105,7 +101,7 @@ class UserController extends Controller
 
     private function fillUser($user, array $data): User
     {
-        $user = !is_null($user) ? $user  : new User();
+        $user = !is_null($user) ? $user : new User();
 
         $ascendant = $data['ascendant'] ? (int)$data['ascendant'] : 0;
 
