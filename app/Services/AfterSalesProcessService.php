@@ -99,8 +99,10 @@ abstract class AfterSalesProcessService
 
     private function convertMonetaryValues(array $data): array
     {
-        $data['ca_cost'] = stringMoneyToFloat($data['ca_cost']);
-        $data['installation_cost'] = stringMoneyToFloat($data['installation_cost']);
+        if (isset($data['ca_cost']) || isset($data['installation_cost'])) {
+            $data['ca_cost'] = stringMoneyToFloat($data['ca_cost']);
+            $data['installation_cost'] = stringMoneyToFloat($data['installation_cost']);
+        }
 
         return $data;
     }
