@@ -1,8 +1,16 @@
+@php
+    $forty_eight = floatToMoney(($finalValue * \App\Enums\InstallmentEnum::FORTY_EIGHT) / 48);
+    $sixty = floatToMoney(($finalValue * \App\Enums\InstallmentEnum::SIXTY) / 60);
+    $seventy_two = floatToMoney(($finalValue * \App\Enums\InstallmentEnum::SEVENTY_TWO) / 72);
+    $eighty_four = floatToMoney(($finalValue * \App\Enums\InstallmentEnum::EIGHTY_FOUR) / 84);
+
+@endphp
+
 <div class="page page-break" style="background-image: url({{public_path('/img/proposal/4.jpg')}})">
-    <div id="installment48"><span class="mini">R$</span> {{ floatToMoney(($finalValue * \App\Enums\InstallmentEnum::FORTY_EIGHT) / 48) }}</div>
-    <div id="installment60"><span class="mini">R$</span> {{ floatToMoney(($finalValue * \App\Enums\InstallmentEnum::SIXTY) / 60) }}</div>
-    <div id="installment72"><span class="mini">R$</span> {{ floatToMoney(($finalValue * \App\Enums\InstallmentEnum::SEVENTY_TWO) / 72) }}</div>
-    <div id="installment84"><span class="mini">R$</span> {{ floatToMoney(($finalValue * \App\Enums\InstallmentEnum::EIGHTY_FOUR) / 84) }}</div>
+    <div id="installment48" @if (strlen($forty_eight) >= 9) style="font-size: 18pt !important;" @endif><span class="mini">R$</span> {{ $forty_eight }}</div>
+    <div id="installment60" @if (strlen($sixty) >= 9) style="font-size: 18pt !important;" @endif><span class="mini">R$</span> {{ $sixty }}</div>
+    <div id="installment72"@if (strlen($seventy_two) >= 9) style="font-size: 18pt !important;" @endif><span class="mini">R$</span> {{ $seventy_two }}</div>
+    <div id="installment84"@if (strlen($eighty_four) >= 9) style="font-size: 18pt !important;" @endif><span class="mini">R$</span> {{ $eighty_four }}</div>
     <div id="finalValue">R$ {{ floatToMoney($proposal->valueHistory->final_price) }} <span class="minifiedText">*à vista</span></div>
     <div id="validate">Válido até {{ $proposal->created_at->addDays(7)->format('d/m/Y') }}</div>
 </div>
@@ -56,25 +64,5 @@
         top: 945px;
         left: 660px;
     }
-
-    #withoutSolar {
-        color: #F9880D;
-        position: absolute;
-        font-size: 28pt;
-        font-weight: 600;
-        top: 1600px;
-        left: 1040px;
-    }
-
-    #withSolar {
-        color: #F9880D;
-        position: absolute;
-        font-size: 28pt;
-        font-weight: 600;
-        top: 2030px;
-        left: 1040px;
-    }
-
-
 
 </style>
