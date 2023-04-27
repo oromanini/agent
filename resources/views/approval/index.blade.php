@@ -79,7 +79,7 @@
                         <td><span class="tag box w100 {{ isApproved($inspectionStatus) }}">{{ $inspectionStatus }}</span></td>
                         <td><span class="tag box w100 {{ isApproved($financingStatus) }}">{{ $financingStatus }}</span></td>
                         <td><span class="tag  box w100 {{ isApproved($contractStatus) }}">{{ $contractStatus }}</span></td>
-                        <td>{{ $approval->agent->name }}</td>
+                        <td>{{ $approval->agent ? $approval->agent->name : 'excluido'  }}</td>
                         <td>R$ {{ floatToMoney($approval->valueHistory->final_price) }}</td>
                         <td>
                             <a class="button is-primary" href="{{ route('approval.show', [$approval->id]) . '#project' }}">
