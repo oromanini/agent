@@ -133,7 +133,7 @@
             @else
                 <div class="file has-name">
                     <label class="file-label">
-                        we         <input class="file-input" type="file" name="installation_invoice"
+                                 <input class="file-input" type="file" name="installation_invoice"
                                           id="installation_invoice">
                         <span class="file-cta">
                                   <span class="file-icon">

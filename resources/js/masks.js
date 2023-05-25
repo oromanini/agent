@@ -22,18 +22,18 @@ $(function () {
 
             $('#cnpj').mask('00.000.000/0000-00', {reverse: true});
             $('#nameLabel').text('Razão Social*')
-            $('#documentLabel').text('CNPJ*')
-            $('#aliasLabel').text('Nome Fantasia*')
-            $('#birthdate').text('Data de fundação*')
+            $('#documentLabel').text('CNPJ')
+            $('#aliasLabel').text('Nome Fantasia')
+            $('#birthdate').text('Data de fundação')
         } else {
 
             $('#cnpj').attr("id", "cpf")
 
             $('#cpf').mask('000.000.000-00', {reverse: true});
             $('#nameLabel').text('Nome*')
-            $('#documentLabel').text('CPF*')
-            $('#aliasLabel').text('Apelido*')
-            $('#birthdate').text('Data de nascimento*')
+            $('#documentLabel').text('CPF')
+            $('#aliasLabel').text('Apelido')
+            $('#birthdate').text('Data de nascimento')
 
         }
     })
