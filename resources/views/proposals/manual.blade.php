@@ -328,6 +328,7 @@
             setIncidence(url);
 
             $("#client").selectize({});
+            $("#agent").selectize({});
 
             $('#client').on('change', function () {
                 setIncidence(url);
