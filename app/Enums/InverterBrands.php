@@ -14,4 +14,5 @@ final class InverterBrands extends Enum
     const Bel = 6;
     const Sungrow = 7;
     const DeyeString = 8;
+    const Canadian = 9;
 }
