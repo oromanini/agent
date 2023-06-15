@@ -3,7 +3,7 @@
 
     <div class="container is-fluid">
         <div class="box">
-{{--            @include('notices')--}}
+            @include('notices')
             <div class="header">
                 <h2 class="title is-1">Bem-vindo, {{auth()->user()->name}}!</h2>
                 <div class="title-bottom-line"></div>

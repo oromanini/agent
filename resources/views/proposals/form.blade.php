@@ -427,19 +427,12 @@
                             let isPromotionalText = isPromotional ? 'Promoção' : 'À vista';
                             let isPromotionalColor = isPromotional ? 'is-success' : 'is-success is-light';
 
-                            console.log(technicalDescription)
                             let isPromo = '';
                                 // panelSpecs.panel_brand === 'Astronergy Chint'
                                 // ? '<span class="tag is-success is-flex">5% DE DESCONTO JÁ APLICADO</span>'
                                 // : '<br>'
 
-                            let promoData = {
-                                'panel_brand': technicalDescription['panel_specs']['panel_brand'],
-                                'panel_power': technicalDescription['panel_specs']['panel_power'],
-                                'inverter_brand': technicalDescription['inverter_brand'],
-                            };
-
-                            let finalValue = calculateFinalValue(costValue, item['sum'].kwp.toFixed(2), roof, panelCount, addressId, promoData);
+                            let finalValue = calculateFinalValue(costValue, item['sum'].kwp.toFixed(2), roof, panelCount, addressId);
                             let averageProduction = calculateAverageProduction(addressId, item['sum'].kwp.toFixed(2));
 
                             $('#kits').append(
@@ -536,7 +529,7 @@
             return ': até 20 dias'
         }
 
-        function calculateFinalValue(costValue, kwp, roof, panelCount, addressId, promoData) {
+        function calculateFinalValue(costValue, kwp, roof, panelCount, addressId) {
 
             let url = '/setFinalValue';
             let result;
@@ -550,7 +543,6 @@
                     cost: costValue,
                     panel_count: panelCount,
                     address_id: addressId,
-                    promo_data: promoData,
                     _token: '{{csrf_token()}}'
                 },
                 type: 'post',
@@ -564,6 +556,19 @@
                 .fail(function (jqXHR, textStatus, msg) {
                     console.log(msg);
                 });
+
+            // if (kwp == 2.77) {
+            //     return 13000;
+            // }
+            // if (kwp == 3.88) {
+            //     return 16900
+            // }
+            // if (kwp == 6.66) {
+            //     return 23450
+            // }
+            // if (kwp == 7.77) {
+            //     return 26900
+            // }
 
             return result;
         }
