@@ -334,6 +334,9 @@
                 if (brand == 'Sunova') {
                     panelImage = '/img/panel_brands/sunova.png'
                 }
+                if (brand == 'Osda') {
+                    panelImage = '/img/panel_brands/osda.png'
+                }
 
                 return panelImage
             }
@@ -518,12 +521,16 @@
         }
 
         function setEstimatedDelivery(brand) {
-            if (brand === 'Sunova' || brand === 'Astronergy') {
-                return ': 15 a 35 dias';
+            if (brand === 'Sunova' || brand === 'Astronergy' ) {
+                return ': 15 a 30 dias';
             }
 
             if (brand === 'Jinko' || brand === 'Ja') {
                 return ': 3 a 7 dias';
+            }
+
+            if (brand === 'Dah' || brand === 'Osda') {
+                return ': 20 a 30 dias';
             }
 
             return ': até 20 dias'

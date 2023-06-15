@@ -16,4 +16,5 @@ final class PanelBrands extends Enum
     const Longi = 8;
     const Bel = 9;
     const Sunova = 10;
+    const Osda = 11;
 }
