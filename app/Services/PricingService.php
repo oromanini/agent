@@ -6,21 +6,32 @@ namespace App\Services;
 use App\Enums\NorthStates;
 use App\Models\Address;
 use App\Models\Client;
+use Illuminate\Support\Facades\DB;
 
 class PricingService
 {
+    const SOLO = 6;
+    const SOLO_MARGIN = 1.3;
+    const BASE_PROFIT = 1.45;
+    const DELIVERY_TAX = 0.06;
+
+
     public function calculateFinalPrice(array $data): float
     {
         $cost = isset($data['sumKits']) ? (float)$data['sumKits']['cost'] : (float)$data['cost'];
         $kwp = isset($data['sumKits']) ? $data['sumKits']['kwp'] : (float)$data['kwp'];
         $panelCount = isset($data['sumKits']) ? $data['sumKits']['panel_count'] : (int)$data['panel_count'];
-        $finalValue = $cost * 1.45;
+        $finalValue = $cost * self::BASE_PROFIT;
         $stateId = $this->setStateId($data);
 
         $finalValue = $this->adjustMargin($cost, $kwp, $panelCount, $finalValue, $stateId);
 
-        if ($data['roof_structure'] == 6) {
-            return $finalValue * 1.3;
+        if ($data['roof_structure'] == self::SOLO) {
+            return $finalValue * self::SOLO_MARGIN;
+        }
+
+        if(self::isPromotionalKit($kwp, $data['promo_data'])) {
+            return $this->getPromotionalKitValue();
         }
 
 //        if ($kwp == 2.77) {
@@ -96,10 +107,8 @@ class PricingService
 
     private function calculateDelivery(float $finalValue, int $stateId): float
     {
-        $isExpensiveState = NorthStates::hasValue($stateId);
-
-        if ($isExpensiveState) {
-            return $finalValue * 0.06;
+        if (NorthStates::hasValue($stateId)) {
+            return $finalValue * self::DELIVERY_TAX;
         }
 
         return $finalValue * env('DELIVERY_PERCENT');
@@ -119,5 +128,19 @@ class PricingService
         $installation = $panelCount * env('INSTALLATION_PANEL_PRICE');
 
         return max($installation, 700);
+    }
+
+    private static function isPromotionalKit(
+        float $kwp,
+        array $promoData
+    ): bool {
+        dump($kwp);
+        $kit = DB::table('promotional_kits')
+            ->where('kwp', $kwp)->get();
+//            ->where('inverter_brand', strtolower($promoData['inverter_brand']))
+//            ->where('panel_brand', strtolower($promoData['panel_brand']))
+//            ->where('panel_power', $promoData['panel_power'])
+        dd($kit);
+        return (bool) $kit;
     }
 }
