@@ -338,6 +338,10 @@
                     panelImage = '/img/panel_brands/osda.png'
                 }
 
+                if (brand == 'Ae_Solar') {
+                    panelImage = '/img/panel_brands/ae_solar.png'
+                }
+
                 return panelImage
             }
 
@@ -522,7 +526,7 @@
                 return ': 3 a 7 dias';
             }
 
-            if (brand === 'Dah' || brand === 'Osda') {
+            if (brand === 'Dah' || brand === 'Osda'|| brand === 'Ae_Solar') {
                 return ': 20 a 30 dias';
             }
 

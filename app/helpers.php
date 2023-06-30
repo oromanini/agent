@@ -92,6 +92,7 @@ function setPanelBrandImage($brand): string
     $bel = '/img/panel_brands/bel.png';
     $sunova = '/img/panel_brands/sunova.png';
     $osda = '/img/panel_brands/osda.png';
+    $ae_solar = '/img/panel_brands/ae_solar.png';
 
     if (is_string($brand)) {
 
@@ -117,6 +118,8 @@ function setPanelBrandImage($brand): string
             $img = $sunova;
         } elseif ($brand == 'Osda') {
             $img = $osda;
+        }  elseif ($brand == 'Ae_Solar') {
+            $img = $ae_solar;
         }
 
     } else {
@@ -154,6 +157,9 @@ function setPanelBrandImage($brand): string
                 break;
             case 11:
                 $img = $osda;
+                break;
+            case 12:
+                $img = $ae_solar;
                 break;
             default:
                 throw new Exception('Painel não localizado.');
