@@ -365,6 +365,10 @@
                     inverterImage = '/img/inverter_brands/sungrow.png'
                 }
 
+                if (brand == 'Saj') {
+                    inverterImage = '/img/inverter_brands/saj.png'
+                }
+
                 return inverterImage
             }
 

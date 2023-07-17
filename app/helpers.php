@@ -124,46 +124,21 @@ function setPanelBrandImage($brand): string
 
     } else {
 
-        switch ($brand) {
-            case 1:
-                $img = $jinko;
-                break;
-            case 2:
-                $img = $sunket;
-                break;
-            case 3:
-                $img = $trina;
-                break;
-            case 4:
-                $img = $dah;
-                break;
-            case 5:
-                $img = $astronergy;
-                break;
-            case 6:
-                $img = $ja;
-                break;
-            case 7:
-                $img = $phono;
-                break;
-            case 8:
-                $img = $longi;
-                break;
-            case 9:
-                $img = $bel;
-                break;
-            case 10:
-                $img = $sunova;
-                break;
-            case 11:
-                $img = $osda;
-                break;
-            case 12:
-                $img = $ae_solar;
-                break;
-            default:
-                throw new Exception('Painel não localizado.');
-        }
+        $img = match ($brand) {
+            1 => $jinko,
+            2 => $sunket,
+            3 => $trina,
+            4 => $dah,
+            5 => $astronergy,
+            6 => $ja,
+            7 => $phono,
+            8 => $longi,
+            9 => $bel,
+            10 => $sunova,
+            11 => $osda,
+            12 => $ae_solar,
+            default => throw new Exception('Painel não localizado.'),
+        };
     }
     return $img;
 }
@@ -180,62 +155,36 @@ function setInverterImage($brand): string
     $bel = '/img/inverters/bel.png';
     $sungrow = '/img/inverters/sungrow.png';
     $canadian = '/img/inverters/canadian.png';
+    $saj = '/img/inverters/saj.png';
 
     if (is_string($brand)) {
-
-        if ($brand == 'Growatt') {
-            $img = $growatt;
-        } elseif ($brand == 'Chint') {
-            $img = $chint;
-        } elseif ($brand == 'Deye') {
-            $img = $deye;
-        } elseif ($brand == 'DeyeString') {
-            $img = $deyeString;
-        } elseif ($brand == 'Sofar') {
-            $img = $sofar;
-        } elseif ($brand == 'Solis') {
-            $img = $solis;
-        } elseif ($brand == 'Bel') {
-            $img = $bel;
-        } elseif ($brand == 'Sungrow') {
-            $img = $sungrow;
-        } elseif ($brand == 'Canadian') {
-            $img = $canadian;
-        }
-
+        $img = match ($brand) {
+            'Growatt' => $growatt,
+            'Chint' => $chint,
+            'Deye' => $deye,
+            'DeyeString' => $deyeString,
+            'Sofar' => $sofar,
+            'Solis' => $solis,
+            'Bel' => $bel,
+            'Sungrow' => $sungrow,
+            'Canadian' => $canadian,
+            'Saj' => $saj,
+        };
     } else {
 
-        switch ($brand) {
-            case 1:
-                $img = $growatt;
-                break;
-            case 2:
-                $img = $chint;
-                break;
-            case 3:
-                $img = $deye;
-                break;
-            case 4:
-                $img = $sofar;
-                break;
-            case 5:
-                $img = $solis;
-                break;
-            case 6:
-                $img = $bel;
-                break;
-            case 7:
-                $img = $sungrow;
-                break;
-            case 8:
-                $img = $deyeString;
-                break;
-            case 9:
-                $img = $canadian;
-                break;
-            default:
-                throw new Exception('Inversor não localizado.');
-        }
+        $img = match ($brand) {
+            1 => $growatt,
+            2 => $chint,
+            3 => $deye,
+            4 => $sofar,
+            5 => $solis,
+            6 => $bel,
+            7 => $sungrow,
+            8 => $deyeString,
+            9 => $canadian,
+            10 => $saj,
+            default => throw new Exception('Inversor não localizado.'),
+        };
     }
     return $img;
 }
