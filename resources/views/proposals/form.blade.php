@@ -404,7 +404,6 @@
                         setTimeout(function () {
                             $('#loader').hide()
                         }, 2000)
-                        console.log(msg)
                         $('#kits').empty();
                         $('#generateProposalButton').empty();
                         $.each(msg, function (i, item) {
@@ -440,7 +439,17 @@
                                 // ? '<span class="tag is-success is-flex">5% DE DESCONTO JÁ APLICADO</span>'
                                 // : '<br>'
 
-                            let finalValue = calculateFinalValue(costValue, item['sum'].kwp.toFixed(2), roof, panelCount, addressId);
+                            let finalValue = calculateFinalValue(
+                                costValue,
+                                item['sum'].kwp.toFixed(2),
+                                roof,
+                                panelCount,
+                                addressId,
+                                panelSpecs['panel_brand'],
+                                panelSpecs['panel_power'],
+                                technicalDescription['inverter_brand']
+                            );
+
                             let averageProduction = calculateAverageProduction(addressId, item['sum'].kwp.toFixed(2));
 
                             $('#kits').append(
@@ -537,7 +546,7 @@
             return ': até 20 dias'
         }
 
-        function calculateFinalValue(costValue, kwp, roof, panelCount, addressId) {
+        function calculateFinalValue(costValue, kwp, roof, panelCount, addressId, panelBrand, panelPower, inverterBrand) {
 
             let url = '/setFinalValue';
             let result;
@@ -551,6 +560,9 @@
                     cost: costValue,
                     panel_count: panelCount,
                     address_id: addressId,
+                    panelBrand: panelBrand,
+                    panelPower: panelPower,
+                    inverterBrand: inverterBrand,
                     _token: '{{csrf_token()}}'
                 },
                 type: 'post',
@@ -564,19 +576,6 @@
                 .fail(function (jqXHR, textStatus, msg) {
                     console.log(msg);
                 });
-
-            // if (kwp == 2.77) {
-            //     return 13000;
-            // }
-            // if (kwp == 3.88) {
-            //     return 16900
-            // }
-            // if (kwp == 6.66) {
-            //     return 23450
-            // }
-            // if (kwp == 7.77) {
-            //     return 26900
-            // }
 
             return result;
         }

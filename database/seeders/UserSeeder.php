@@ -18,20 +18,13 @@ class UserSeeder extends Seeder
 
         DB::table('users')->insert([
             'name' => 'Oscar Romanini',
-            'document' => '111.111.111-11',
-            'phone' => '(44) 9 9915-5919',
+            'cpf' => '111.111.111-11',
+            'cnpj' => '00.000.000/0000-00',
+            'phone_number' => '(44) 9 9915-5919',
             'email' => 'oscar.romanini@alluzenergia.com.br',
             'password' => Hash::make('Neia@vida.2022!'),
-            'address_id' => 1
-        ]);
-
-        DB::table('users')->insert([
-            'name' => 'Natanael Cavalli',
-            'document' => '111.111.111-12',
-            'phone' => '(44) 9 9915-5919',
-            'email' => 'natanael.cavalli@alluzenergia.com.br',
-            'password' => Hash::make('Neno.2022!'),
-            'address_id' => 1
+            'city' => 1,
+            'ascendant' => 1
         ]);
     }
 }

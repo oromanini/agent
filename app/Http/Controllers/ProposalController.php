@@ -233,9 +233,8 @@ class ProposalController extends Controller
 
     public function setFinalValue(Request $request): float
     {
-        $data = $request->all();
         return $this->pricingService
-            ->calculateFinalPrice($data);
+            ->calculateFinalPrice($request->all());
     }
 
     public function setAverageProduction(Request $request): float
@@ -251,7 +250,8 @@ class ProposalController extends Controller
 
         return ceil(
             ((float) $data['kwp']) / ((1 + (float)env('GENERATION_LOST')))
-            * 30 * $incidence
+            * 30
+            * $incidence
         );
     }
 
