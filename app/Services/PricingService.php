@@ -4,10 +4,10 @@
 namespace App\Services;
 
 use App\Enums\NorthStates;
+use App\Enums\RoofStructure;
 use App\Models\Address;
 use App\Models\Client;
 use App\Models\PromotionalKit;
-use Illuminate\Support\Collection;
 
 class PricingService
 {
@@ -21,8 +21,8 @@ class PricingService
 
         $finalValue = $this->adjustMargin($cost, $kwp, $panelCount, $finalValue, $stateId);
 
-        if ($data['roof_structure'] == 6) {
-            return $finalValue * 1.3;
+        if ($data['roof_structure'] == RoofStructure::Solo) {
+            return ['finalPrice' => $finalValue * 1.3, 'isPromotional' => false];
         }
 
         return $this->findOrFailPromotionalKits(params: $data, finalPrice: $finalValue);

@@ -18,10 +18,11 @@ class ProposalValueHistoryService
     {
         $valueHistory = new ProposalValueHistory();
 
-        $valueHistory->kit_cost = $isManual ? stringMoneyToFloat($data['cost']) : $data['sumKits']['cost'];
-        $finalPrice = $isManual ? stringMoneyToFloat($data['final_value']) : setFinalPrice($data);
-        $valueHistory->initial_price = $finalPrice;
-        $valueHistory->final_price = $finalPrice;
+        $valueHistory->kit_cost = $this->getKitCost($data, $isManual);
+        $finalPrice = $this->getFinalPrice($data, $isManual);
+        $valueHistory->initial_price = $isManual ? $finalPrice : $finalPrice['finalPrice'];
+        $valueHistory->final_price = $isManual ? $finalPrice : $finalPrice['finalPrice'];
+        $valueHistory->is_promotional = false;
 
         $valueHistory->commission_percent = env('COMMISSION_PERCENT') * 100;
         $valueHistory->discount_percent = 0;
@@ -131,5 +132,22 @@ class ProposalValueHistoryService
         ];
     }
 
+    private function getKitCost(array $data, bool $isManual): float
+    {
+        return $isManual
+            ? stringMoneyToFloat($data['cost'])
+            : $data['sumKits']['cost'];
+    }
 
+    private function getFinalPrice($data, bool $isManual): float|array
+    {
+        if ($isManual) {
+            return stringMoneyToFloat($data['final_value']);
+        }
+
+        $pricingService = new PricingService();
+        $data['kwp'] = $data['sumKits']['kwp'];
+
+        return $pricingService->calculateFinalPrice($data);
+    }
 }

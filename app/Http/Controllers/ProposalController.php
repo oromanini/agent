@@ -17,6 +17,7 @@ use App\Services\ProposalService;
 use App\Services\ProposalValueHistoryService;
 use App\Services\SolarIncidenceService;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -231,10 +232,12 @@ class ProposalController extends Controller
             ->stream('#' . $proposal->id . ' ' . $proposal->client->name . '.pdf');
     }
 
-    public function setFinalValue(Request $request): float
+    public function setFinalValue(Request $request): JsonResponse
     {
-        return $this->pricingService
+        $finalPriceAndDetail = $this->pricingService
             ->calculateFinalPrice($request->all());
+
+        return response()->json($finalPriceAndDetail);
     }
 
     public function setAverageProduction(Request $request): float

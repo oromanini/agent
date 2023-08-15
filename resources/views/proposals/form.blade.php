@@ -243,7 +243,7 @@
                         $('#installation_address_text').attr('data-tooltip', 'Incidência: ' + setIncidence())
                     })
                     .fail(function (jqXHR, textStatus, msg) {
-                        console.log(msg);
+                        console.log('FALHA: ' + msg);
                     });
             }
 
@@ -272,7 +272,7 @@
                         }
                     })
                     .fail(function (jqXHR, textStatus, msg) {
-                        console.log(msg);
+                        console.log('FALHA: ' + msg);
                     });
             }
 
@@ -294,7 +294,7 @@
                         incidence = msg;
                     })
                     .fail(function (jqXHR, textStatus, msg) {
-                        console.log(msg);
+                        console.log('FALHA: ' + msg);
                     });
 
                 return incidence;
@@ -434,11 +434,6 @@
                             let isPromotionalText = isPromotional ? 'Promoção' : 'À vista';
                             let isPromotionalColor = isPromotional ? 'is-success' : 'is-success is-light';
 
-                            let isPromo = '';
-                                // panelSpecs.panel_brand === 'Astronergy Chint'
-                                // ? '<span class="tag is-success is-flex">5% DE DESCONTO JÁ APLICADO</span>'
-                                // : '<br>'
-
                             let finalValue = calculateFinalValue(
                                 costValue,
                                 item['sum'].kwp.toFixed(2),
@@ -449,6 +444,10 @@
                                 panelSpecs['panel_power'],
                                 technicalDescription['inverter_brand']
                             );
+
+                            let isPromo = finalValue.isPromotional
+                            ? '<span class="tag is-success is-flex">Promoção</span>'
+                            : '<br>'
 
                             let averageProduction = calculateAverageProduction(addressId, item['sum'].kwp.toFixed(2));
 
@@ -498,7 +497,7 @@
                                 '<hr>' +
                                 isPromo +
                                 '<div style="color: #6BC6A7; font-size: 18pt; text-align: center; font-weight: bold">' +
-                                parseFloat(finalValue).toLocaleString('pt-BR', {
+                                parseFloat(finalValue.finalPrice).toLocaleString('pt-BR', {
                                     style: 'currency',
                                     currency: 'BRL',
                                 }) +
@@ -518,7 +517,7 @@
                     })
 
                     .fail(function (jqXHR, textStatus, msg) {
-                        console.log(msg);
+                        console.log('FALHA: ' + msg);
                     });
             });
         });
@@ -567,14 +566,13 @@
                 },
                 type: 'post',
                 beforeSend: function () {
-                    console.log("ENVIANDO...");
                 }
             })
                 .done(function (msg, m) {
                     result = msg
                 })
                 .fail(function (jqXHR, textStatus, msg) {
-                    console.log(msg);
+                    console.log('FALHA: ' + msg);
                 });
 
             return result;
@@ -603,7 +601,7 @@
                     result = msg
                 })
                 .fail(function (jqXHR, textStatus, msg) {
-                    console.log(msg);
+                    console.log('FALHA: ' + msg);
                 });
 
 

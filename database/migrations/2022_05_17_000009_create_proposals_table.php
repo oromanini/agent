@@ -28,7 +28,7 @@ class CreateProposalsTable extends Migration
 
             $table->bigInteger('client_id')->unsigned();
             $table->bigInteger('agent_id')->unsigned();
-            $table->uuid('kit_uuid');
+            $table->longText('kit_uuid');
             $table->bigInteger('pre_inspection_id')->unsigned();
             $table->bigInteger('value_history_id')->unsigned();
 
