@@ -2,11 +2,10 @@
 
 namespace App\Services;
 
-use App\Models\Address;
 use App\Models\Client;
 use App\Models\PreInspection;
 use App\Models\Proposal;
-use Dflydev\DotAccessData\Data;
+use App\Models\SolarIncidence;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Ramsey\Uuid\Uuid;
@@ -26,12 +25,13 @@ class ProposalService
 
     public function store($data, bool $isManual = false): object
     {
-        $proposal = null;
+        $incidence = $this->getIncidence($data['client']);
 
-        $address = Client::find($data['client'])->addresses()->first();
-        $incidence = $this->incidenceService->getSolarIncidence($address->city);
-
-        $proposal = $this->fillObject($data, $isManual, $incidence);
+        $proposal = $this->fillObject(
+            data: $data,
+            isManual: $isManual,
+            incidence: $incidence,
+        );
 
         $preInspection = new PreInspection();
 
@@ -48,9 +48,13 @@ class ProposalService
         return $proposal;
     }
 
-    public function fillObject(array $data, bool $isManual = false, ?object $incidence = null, $sumKits = null): object
-    {
+    public function fillObject(
+        array $data,
+        bool $isManual,
+        SolarIncidence $incidence
+    ): object {
         $proposal = new Proposal();
+        $kit = null;
 
         if ($isManual) {
             $proposal->is_manual = true;
@@ -80,6 +84,11 @@ class ProposalService
             $proposal->kit_uuid = json_encode($uuids);
             $proposal->manual_data = json_encode([]);
             $proposal->components = json_encode($sumKits['components']);
+            $kit = kitByUuid(getKitCodesFromProposal($proposal)[0])['technical_description'];
+            $data['sumKits'] = $isManual ? null : $sumKits;
+            $data['panelBrand'] = $kit['panel_specs']['panel_brand'];
+            $data['panelPower'] = $kit['panel_specs']['panel_power'];
+            $data['inverterBrand'] = $kit['inverter_brand'];
         }
 
         $proposal->uuid = Uuid::uuid6();
@@ -94,9 +103,8 @@ class ProposalService
         $proposal->roof_structure = (int)$data['roof_structure'];
         $proposal->kw_price = (float)str_replace(',', '.', $data['kw_price']);
         $proposal->client_id = (int)$data['client'];
-        $data['sumKits'] = $isManual ? null : $sumKits;
-        $proposal->value_history_id = $this->valueHistoryService->store($data, $isManual);
 
+        $proposal->value_history_id = $this->valueHistoryService->store($data, $isManual);
 
         $roofOrientation = [];
 
@@ -105,7 +113,6 @@ class ProposalService
         }
 
         $proposal->roof_orientation = json_encode($roofOrientation);
-
 
         return $proposal;
     }
@@ -154,5 +161,14 @@ class ProposalService
             ($kwp / (1 + $generationLost))
             * 30
             * ((float)$incidence->{$month} / 1000);
+    }
+
+    private function getIncidence(int $client): SolarIncidence
+    {
+        $address = Client::find($client)
+            ->addresses()
+            ->first();
+
+        return $this->incidenceService->getSolarIncidence($address->city);
     }
 }

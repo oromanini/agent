@@ -4,12 +4,14 @@
 namespace App\Services;
 
 use App\Enums\NorthStates;
+use App\Enums\RoofStructure;
 use App\Models\Address;
 use App\Models\Client;
+use App\Models\PromotionalKit;
 
 class PricingService
 {
-    public function calculateFinalPrice(array $data): float
+    public function calculateFinalPrice(array $data): array
     {
         $cost = isset($data['sumKits']) ? (float)$data['sumKits']['cost'] : (float)$data['cost'];
         $kwp = isset($data['sumKits']) ? $data['sumKits']['kwp'] : (float)$data['kwp'];
@@ -19,24 +21,11 @@ class PricingService
 
         $finalValue = $this->adjustMargin($cost, $kwp, $panelCount, $finalValue, $stateId);
 
-        if ($data['roof_structure'] == 6) {
-            return $finalValue * 1.3;
+        if ($data['roof_structure'] == RoofStructure::Solo) {
+            return ['finalPrice' => $finalValue * 1.3, 'isPromotional' => false];
         }
 
-//        if ($kwp == 2.77) {
-//            return 13000;
-//        }
-//        if ($kwp == 3.88) {
-//            return 16900;
-//            }
-//        if ($kwp == 6.66) {
-//            return 23450;
-//            }
-//        if ($kwp == 7.77) {
-//            return 26900    ;
-//            }
-
-        return $finalValue;
+        return $this->findOrFailPromotionalKits(params: $data, finalPrice: $finalValue);
     }
 
     private function adjustMargin(float $cost, float $kwp, int $panelCount, float $finalValue, int $stateId): float
@@ -119,5 +108,34 @@ class PricingService
         $installation = $panelCount * env('INSTALLATION_PANEL_PRICE');
 
         return max($installation, 700);
+    }
+
+    public function findOrFailPromotionalKits(array $params, float $finalPrice): array
+    {
+        $promotionalKits = PromotionalKit::where('is_active', true)->get();
+        $isPromotional = false;
+
+        $promotionalKits->each(function ($promotion) use ($params, &$finalPrice, &$isPromotional) {
+            if($this->kitMatchPromotion($promotion, $params)) {
+                $finalPrice = $promotion->final_value;
+                $isPromotional = true;
+            }
+        });
+
+        return ['finalPrice' => $finalPrice, 'isPromotional' => $isPromotional];
+    }
+
+    private function kitMatchPromotion(PromotionalKit $promotion, array $params): bool
+    {
+        if (
+            $params['kwp'] == $promotion->kwp
+            && strtolower($params['panelBrand']) == $promotion->panel_brand
+            && strtolower($params['panelPower']) == $promotion->panel_power
+            && strtolower($params['inverterBrand']) == $promotion->inverter_brand
+        ) {
+            return true;
+        }
+
+        return false;
     }
 }

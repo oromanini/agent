@@ -17,8 +17,6 @@ class AddColumnsToUsersTable extends Migration
             $table->string('cpf');
             $table->string('cnpj');
             $table->string('ascendant');
-            $table->bigInteger('city')->unsigned();
-
         });
     }
 

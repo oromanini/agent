@@ -264,9 +264,10 @@ function kitByUuid($kit_uuid)
     return $kitService->getKitByUuid($kit_uuid);
 }
 
-function setFinalPrice($data): float
+function setFinalPrice($data)
 {
     $pricingService = new PricingService();
+    $data['kwp'] = $data['sumKits']['kwp'];
     return $pricingService->calculateFinalPrice($data);
 }
 
