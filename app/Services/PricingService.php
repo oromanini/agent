@@ -16,7 +16,7 @@ class PricingService
         $cost = isset($data['sumKits']) ? (float)$data['sumKits']['cost'] : (float)$data['cost'];
         $kwp = isset($data['sumKits']) ? $data['sumKits']['kwp'] : (float)$data['kwp'];
         $panelCount = isset($data['sumKits']) ? $data['sumKits']['panel_count'] : (int)$data['panel_count'];
-        $finalValue = $cost * 1.45;
+        $finalValue = $cost * 1.6;
         $stateId = $this->setStateId($data);
 
         $finalValue = $this->adjustMargin($cost, $kwp, $panelCount, $finalValue, $stateId);
@@ -30,7 +30,7 @@ class PricingService
 
     private function adjustMargin(float $cost, float $kwp, int $panelCount, float $finalValue, int $stateId): float
     {
-        while ($this->calculateNetProfit($cost, $kwp, $panelCount, $finalValue, $stateId)['netProfitPercent'] < 0.14) {
+        while ($this->calculateNetProfit($cost, $kwp, $panelCount, $finalValue, $stateId)['netProfitPercent'] < 0.10) {
             $finalValue += 250;
         }
 
@@ -41,20 +41,16 @@ class PricingService
     {
         $homologation = 0;
 
-        if ($kwp <= 15) {
-            $homologation = 600;
+        if ($kwp <= 10) {
+            $homologation = 500;
+        } elseif ($kwp <= 20) {
+            $homologation = 750;
         } elseif ($kwp <= 30) {
-            $homologation = 900;
-        } elseif ($kwp <= 45) {
-            $homologation = 1200;
-        } elseif ($kwp <= 60) {
-            $homologation = 1500;
-        } elseif ($kwp <= 75) {
-            $homologation = 2000;
-        } elseif ($kwp <= 90) {
-            $homologation = 2500;
+            $homologation = 1000;
+        } elseif ($kwp <= 40) {
+            $homologation = 1250;
         } else {
-            $homologation = $finalValue * 0.025;
+            $homologation = $finalValue * 0.015;
         }
 
         return $homologation;
@@ -68,10 +64,13 @@ class PricingService
         $ca = $this->calculateCa($finalValue, $kwp);
         $tax = $finalValue * env('TAX_PERCENT');
         $commission = $finalValue * env('COMMISSION_PERCENT');
+        $securityMargin = $finalValue * 0.015;
+        $internalCommission  = $finalValue * 0.03;
 
-        $totalCost = $cost + $installation + $homologation + $ca + $tax + $commission + $delivery;
+        $totalCost = $cost + $installation + $homologation + $ca + $tax + $commission + $delivery + $securityMargin + $internalCommission;
         $netProfit = $finalValue - $totalCost;
-        $netProfitPercent = ($finalValue / $totalCost) - 1;
+
+        $netProfitPercent = ($netProfit / $finalValue);
 
         return ['netProfit' => $netProfit, 'netProfitPercent' => $netProfitPercent, 'totalCost' => $totalCost];
     }
@@ -91,7 +90,7 @@ class PricingService
             return $finalValue * 0.06;
         }
 
-        return $finalValue * env('DELIVERY_PERCENT');
+        return 0;
     }
 
     private function setStateId(array $data): int

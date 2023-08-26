@@ -19,6 +19,7 @@ class AddressFactory extends Factory
     public function definition(): array
     {
         $state = State::create([
+            'id' => 1000,
             'name' => 'Paraná',
             'region' => 'Sudoeste',
         ]);

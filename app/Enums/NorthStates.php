@@ -23,4 +23,5 @@ final class NorthStates extends Enum
     const RONDONIA = 21;
     const RORAIMA = 22;
     const SERGIPE = 25;
+    const MATO_GROSSO = 13;
 }

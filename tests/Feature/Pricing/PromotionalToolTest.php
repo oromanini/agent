@@ -18,7 +18,7 @@ class PromotionalToolTest extends TestCase
     {
         yield 'is promotional scenario' => [
             'kwp' => 3.2,
-            'roof_structure' => RoofStructure::Colonial,
+            'roof_structure' => RoofStructure::Colonial->value,
             'cost' => 10000,
             'panel_count' => 5,
             'panelBrand' => 'ja',
@@ -29,7 +29,7 @@ class PromotionalToolTest extends TestCase
 
         yield 'is default scenario' => [
             'kwp' => 4.4,
-            'roof_structure' => RoofStructure::Colonial,
+            'roof_structure' => RoofStructure::Colonial->value,
             'cost' => 15000,
             'panel_count' => 5,
             'panelBrand' => 'jinko',

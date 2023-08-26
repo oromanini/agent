@@ -26,6 +26,8 @@ abstract class KitResource
         int $inverter_power,
         int $inverter_warranty,
         string $inverter_logo,
+        string $inverter_tension,
+        array $components
     ): array {
 
         return [
@@ -34,8 +36,9 @@ abstract class KitResource
             'roof_structure' => $roof_structure,
             'distributor_name' => strtoupper($distributor_name),
             'distributor_code' => $distributor_code,
-            'availability' => $availability->format('d/m/Y'),
+            'availability' => !$availability->isPast() ? $availability->format('d/m/Y') : 'Imediata',
             'kwp' => $kwp,
+            'components' => $components,
             'panel_specs' => [
                 'model' => $panel_model,
                 'brand' => $panel_brand,
@@ -51,7 +54,8 @@ abstract class KitResource
                 'power' => $inverter_power,
                 'warranty' => $inverter_warranty,
                 'logo' => $inverter_logo,
-            ]
+                'tension' => $inverter_tension,
+            ],
         ];
     }
 }

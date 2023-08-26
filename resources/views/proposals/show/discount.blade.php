@@ -7,9 +7,9 @@
         <div class="columns discount box">
             <div class="column is-2 " style="padding-right: 50px">
                 <div class="field">
-                    <label class="label">Desconto <span style="font-size: 8pt">(Máx. 4%)</span></label>
+                    <label class="label">Desconto <span style="font-size: 8pt">(Máx. 2%)</span></label>
                     <div class="control">
-                        <input class="input" type="number" step="0.25" min="0" max="4" name="discount_percent"
+                        <input class="input" type="number" step="0.25" min="0" max="2" name="discount_percent"
                                value="{{$proposal->valueHistory->discount_percent}}">
                     </div>
                 </div>

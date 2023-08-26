@@ -40,7 +40,12 @@ class ProposalValueHistoryService
         $initialPrice = $valueHistory->initial_price;
         $fullCommissionPercent = (float)env('COMMISSION_PERCENT');
 
-        if (isset($data['discount_percent'])) {
+        $isValidDiscount =
+            isset($data['discount_percent'])
+            && $data['discount_percent'] >= 0
+            && $data['discount_percent'] <= 2;
+
+        if ($isValidDiscount) {
 
             $valueHistory->discount_percent = (float)$data['discount_percent'];
 

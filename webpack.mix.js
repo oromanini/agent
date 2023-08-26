@@ -14,6 +14,7 @@ const mix = require('laravel-mix');
 mix.js('resources/js/app.js', 'public/js')
     .sass('resources/sass/app.scss', 'public/css')
     .copyDirectory('resources/images/', 'public/img')
+    .copyDirectory('app/Packages/EdeltecApiPackage/img', 'public/EdeltecApiPackage/img')
     .postCss('resources/css/login.css', 'public/css', [
         require('postcss-import'),
         require('tailwindcss'),

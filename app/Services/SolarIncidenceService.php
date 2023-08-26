@@ -4,10 +4,11 @@ namespace App\Services;
 
 use App\Models\City;
 use App\Models\SolarIncidence;
+use Illuminate\Database\Eloquent\Model;
 
 class SolarIncidenceService
 {
-    public function getSolarIncidence(City $city)
+    public function getSolarIncidence(City $city): Model|null
     {
         return SolarIncidence::query()
             ->where('latitude', '>=', $city->latitude)

@@ -14,10 +14,8 @@ class KitSearchController extends Controller
         $this->kitSearchService = $kitSearchService;
     }
 
-    public function kitsSearch($kwp, $roof, $tension)
+    public function kitsSearch($kwp, $roof, $tension): array
     {
-        $kits = $this->kitSearchService->kitSearch($kwp, $roof, $tension);
-
-        return $kits;
+        return $this->kitSearchService->kitSearch($kwp, $roof, $tension);
     }
 }
