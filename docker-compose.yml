@@ -21,6 +21,13 @@ services:
     networks:
         - alluz-network
 
+  redis:
+    image: redis:latest
+    ports:
+        - "6379:6379"
+    networks:
+        - alluz-network
+
 #  site:
 #      volumes:
 #          - ../site-alluz:/var/www/html

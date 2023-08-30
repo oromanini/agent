@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\KitSearch;
 
-use App\Enums\DistributorsEnum;
 use App\Enums\RoofStructure;
 use App\Models\ActiveKit;
 use App\Packages\EdeltecApiPackage\Enums\StructureType;

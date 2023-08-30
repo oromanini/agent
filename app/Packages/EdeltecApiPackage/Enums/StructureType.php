@@ -10,6 +10,7 @@ enum StructureType: string
     case LAJE = 'LAJE';
     case METALICO = 'METALICO';
     case SOLO = 'SOLO';
+    case SEM_ESTRUTURA = 'S/ESTRUTURA';
 
     public static function matchRoof($roof): StructureType
     {
@@ -21,7 +22,8 @@ enum StructureType: string
             'PARAFMETAL', 'FIBROCIMENTO METAL', 'FIBROMETAL' => self::FIBROMETAL,
             'SOLO' => self::SOLO,
             'LAJE' => self::LAJE,
-            'METALICO', 'TRAPEZOIDAL', 'ZINCO' => self::METALICO
+            'METALICO', 'TRAPEZOIDAL', 'ZINCO' => self::METALICO,
+            'S/ESTRUTURA' => self::SEM_ESTRUTURA,
         };
     }
 

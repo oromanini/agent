@@ -11,11 +11,11 @@ enum RoofStructure: int
     case ParafMadeira = 5;
     case Solo = 6;
     case Ondulada = 7;
+    case SemEstrutura = 8;
 
     public static function matchRoof($roof): RoofStructure
     {
-        $upperRoof = strtoupper($roof->value);
-
+        $upperRoof = strtoupper($roof->value ?? $roof);
         return match ($upperRoof) {
             'COLONIAL', 'CERAMICO', 'CERÂMICO' => self::Colonial,
             'PARAFMADEIRA', 'FIBROCIMENTO MADEIRA', 'FIBROMADEIRA' => self::ParafMadeira,
@@ -23,7 +23,8 @@ enum RoofStructure: int
             'ONDULADO' => self::Ondulada,
             'SOLO' => self::Solo,
             'LAJE' => self::Laje,
-            'METALICO', 'TRAPEZOIDAL', 'ZINCO' => self::Trapezoidal
+            'METALICO', 'TRAPEZOIDAL', 'ZINCO' => self::Trapezoidal,
+            'S/ESTRUTURA' => self::SemEstrutura
         };
     }
 }

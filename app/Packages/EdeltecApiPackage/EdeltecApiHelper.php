@@ -9,8 +9,6 @@ use DOMDocument;
 
 class EdeltecApiHelper
 {
-    const MAX_AVAILABILITY_DAYS = 10;
-
     public static function getPanelModel(string $panelData): string
     {
         preg_match('/^(.*?)(?=\s*<br>)/', $panelData, $panelModel);
@@ -20,27 +18,34 @@ class EdeltecApiHelper
     public static function getPanelEfficiency(string $panelData): string
     {
         preg_match('/Eficiência: (\d+\.\d+) %/', $panelData, $panelEfficiency);
-        return $panelEfficiency[1];
+        return $panelEfficiency[1]  ?? 'N/I';
     }
 
     public static function getInverterModel(string $inverterData): string
     {
         preg_match('/MODELO\s(.*?)<br>/', $inverterData, $inverterModel);
-        return $inverterModel[1] ?? 'N/I';
+
+        if (!$inverterModel) {
+            $firstSentence = strtok($inverterData, '<br>');
+
+            return $firstSentence;
+        }
+
+        return $inverterModel[1];
     }
 
     public static function getPanelWarranty(PanelBrand $panelBrand): int
     {
         return match ($panelBrand) {
-            PanelBrand::SINE => 12,
             PanelBrand::OSDA, PanelBrand::HONOR => 15,
+            default => 12,
         };
     }
 
     public static function getPanelLinearWarranty(PanelBrand $panelBrand): int
     {
         return match ($panelBrand) {
-            PanelBrand::SINE => 25,
+            PanelBrand::SINE, PanelBrand::RESUN => 25,
             PanelBrand::OSDA, PanelBrand::HONOR => 30,
         };
     }
@@ -53,19 +58,6 @@ class EdeltecApiHelper
             InverterBrand::DEYE,
             InverterBrand::SUNGROW => 10,
         };
-    }
-
-    public static function isAvailable($kit): bool
-    {
-        $availabilityDate =
-            !is_null($kit['dataPrevistaParaDisponibilidade'])
-            && (
-                (new Carbon($kit['dataPrevistaParaDisponibilidade']))->diffInDays(now())
-                <= self::MAX_AVAILABILITY_DAYS
-            );
-        $hasInventory = $kit['disponivelEmEstoque'];
-
-        return $hasInventory || $availabilityDate;
     }
 
     public static function decodeResponse($response)
@@ -82,6 +74,7 @@ class EdeltecApiHelper
             PanelBrand::SINE->value => '/EdeltecApiPackage/img/panels/sine.png',
             PanelBrand::HONOR->value => '/EdeltecApiPackage/img/panels/honor.png',
             PanelBrand::OSDA->value => '/EdeltecApiPackage/img/panels/osda.png',
+            PanelBrand::RESUN->value => '/EdeltecApiPackage/img/panels/resun.png',
         };
     }
 
@@ -128,5 +121,30 @@ class EdeltecApiHelper
         }
 
         return $optimizedArray;
+    }
+
+    public static function setPanelSpecs(array $item): string
+    {
+        $panel = PanelBrand::matchCases($item['marca']);
+
+        return json_encode([
+            'model' => self::getPanelModel($item['caracteristicasModulo']),
+            'logo' => self::getPanelLogo($item['marca']),
+            'efficiency' => self::getPanelEfficiency($item['caracteristicasModulo']),
+            'warranty' => self::getPanelWarranty($panel),
+            'linear_warranty' => self::getPanelLinearWarranty($panel),
+        ]);
+    }
+
+    public static function setInverterSpecs(array $item): string
+    {
+        $inverter = InverterBrand::tryFrom($item['fabricante']);
+
+        return json_encode([
+            'marca' => $item['fabricante'],
+            'model' => self::getInverterModel($item['caracteristicasInversor']),
+            'logo' => self::getInverterLogo($item['fabricante']),
+            'warranty' => self::getInverterWarranty($inverter),
+        ]);
     }
 }

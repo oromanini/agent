@@ -2,126 +2,67 @@
 
 namespace App\Packages\EdeltecApiPackage;
 
+use App\Enums\DistributorsEnum;
+use App\Enums\RoofStructure;
+use App\Models\Kit;
 use App\Packages\EdeltecApiPackage\Enums\Category;
+use \App\Enums\TensionPattern;
 use App\Packages\EdeltecApiPackage\Enums\InverterBrand;
-use App\Packages\EdeltecApiPackage\Enums\PanelBrand;
-use App\Packages\EdeltecApiPackage\Enums\StructureType;
-use App\Packages\EdeltecApiPackage\Enums\TensionPattern;
+use App\Packages\EdeltecApiPackage\Exceptions\EdeltecApiSearchFailException;
 use App\Packages\KitResource;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Log;
-use Psr\Http\Message\ResponseInterface;
+use GuzzleHttp\Exception\GuzzleException;
 
 class EdeltecApiService extends KitResource
 {
-    const PAGE = 1;
-    const MAX_API_TRIES = 3;
     const DISTRIBUTOR = 'EDELTEC';
+    const DAYS_FOR_INACTIVE = 12;
     private Client $client;
-    private array $compatibleKit;
 
     public function __construct(Client $client)
     {
         $this->client = $client;
     }
 
-    public function searchKits(
-        InverterBrand $inverterBrand,
-        PanelBrand    $panelBrand,
-        StructureType $structureType,
-        Category      $category,
-        float         $kwp,
-        string        $tensionPattern,
-        string        $apiToken,
-    ): array|null
+    /** @throws GuzzleException|EdeltecApiSearchFailException */
+    public function importKitsFromGateway(): string
     {
         $productUrl = "https://api.edeltecsolar.com.br/produtos/integration?";
-        $i = 0;
-        $tries = 0;
-        do {
-            $queryParams = $this->setQueryParams(
-                category: $category,
-                inverterBrand: $inverterBrand,
-                panelBrand: $panelBrand,
-                structureType: $structureType,
-                power: $kwp + (0.5 * $i),
-                tension: $tensionPattern
-            );
+        $token = self::setApiToken();
 
-            try {
+        $finished = false;
+        $page = 1;
 
-                $response = $this->client->get($productUrl, [
-                    'headers' => [
-                        'Authorization' => 'Bearer ' . $apiToken,
-                        'Content-Type' => 'application/json',
-                    ],
-                    'query' => $queryParams,
-                ]);
+        foreach (InverterBrand::cases() as $inverterBrand) {
+            while (!$finished) {
+                try {
+                    $response = $this->client->get($productUrl, [
+                        'headers' => [
+                            'Authorization' => 'Bearer ' . $token,
+                            'Content-Type' => 'application/json',
+                        ],
+                        'query' => [
+                            'tipo' => Category::ONGRID->value,
+                            'page' => $page,
+                            'fabricante' => $inverterBrand->value
+                        ],
+                    ])->getBody()->getContents();
 
-            } catch (\Throwable $e) {
-                $message = 'Erro ao buscar kit Edeltec: ';
-                $exception = new \Exception($message . $e);
-                Log::error($message . $exception);
-            }
-            $i++;
-            $tries++;
+                    $response = json_decode($response, true);
 
-            if ($tries === self::MAX_API_TRIES) {
-                return null;
-            }
+                    $this->storeKits(items: $response['items']);
 
-        } while (!$this->isCompatibleKit(response: $response, initialKwp: $kwp, tensionPattern: $tensionPattern));
+                    $page === $response['meta']['totalPages'] && $finished = true;
+                    $page++;
 
-        $kit = $this->compatibleKit;
-
-        return self::sanitizeToDefaultProperties(
-            description: $kit['titulo'],
-            cost: $kit['precoDoIntegrador'],
-            roof_structure: $kit['estrutura'],
-            distributor_name: self::DISTRIBUTOR,
-            distributor_code: $kit['id'],
-            availability: new Carbon($kit['dataPrevistaParaDisponibilidade']),
-            kwp: $kit['potenciaGerador'],
-            panel_model: EdeltecApiHelper::getPanelModel($kit['caracteristicasModulo']),
-            panel_brand: $kit['marca'],
-            panel_power: $kit['potenciaModulo'],
-            panel_warranty: EdeltecApiHelper::getPanelWarranty($panelBrand),
-            panel_efficiency: EdeltecApiHelper::getPanelEfficiency($kit['caracteristicasModulo']),
-            panel_logo: EdeltecApiHelper::getPanelLogo($kit['marca']),
-            panel_linear_warranty: EdeltecApiHelper::getPanelLinearWarranty($panelBrand),
-            inverter_model: EdeltecApiHelper::getInverterModel($kit['caracteristicasInversor']),
-            inverter_brand: $kit['fabricante'],
-            inverter_power: $kit['potenciaInversor'],
-            inverter_warranty: EdeltecApiHelper::getInverterWarranty($inverterBrand),
-            inverter_logo: EdeltecApiHelper::getInverterLogo($kit['fabricante']),
-            inverter_tension: $kit['fase'] . ' ' . $kit['tensaoSaida'],
-            components: EdeltecApiHelper::getComponents($kit['componentes']),
-        );
-    }
-
-    private function isCompatibleKit(ResponseInterface $response, float $initialKwp, string $tensionPattern): bool
-    {
-        $kits = EdeltecApiHelper::decodeResponse($response);
-
-        if (isset($kits['items'])) {
-            foreach ($kits['items'] as $kit) {
-                $isCompatibleKwp = $kit['potenciaGerador'] >= $initialKwp;
-
-                $isCompatibleTension = TensionPattern::isCompatibleTension(
-                    possiblePattern: $tensionPattern,
-                    phase: $kit['fase'],
-                    tension: $kit['tensaoSaida']
-                );
-
-                if ($isCompatibleKwp && $isCompatibleTension && EdeltecApiHelper::isAvailable($kit)) {
-                    $this->compatibleKit = $kit;
-                    return true;
+                } catch (EdeltecApiSearchFailException $e) {
+                    throw new EdeltecApiSearchFailException('Erro ao buscar kits: ' . $e);
                 }
             }
-            return false;
         }
-        return false;
+
+        return 'Kits atualizados com sucesso!';
     }
 
     public static function setApiToken(): string
@@ -145,38 +86,48 @@ class EdeltecApiService extends KitResource
         return $response->getBody()->getContents();
     }
 
-    private function setQueryParams(
-        Category      $category,
-        InverterBrand $inverterBrand,
-        PanelBrand    $panelBrand,
-        StructureType $structureType,
-        float         $power,
-        string        $tension
-    ): array
+    private function storeKits(array $items): void
     {
-        return [
-            "tipo" => $category->value,
-            "fabricante" => $inverterBrand->value,
-            "marca" => $panelBrand->value,
-            "estrutura" => $structureType->value,
-            "q" => $power,
-            "limit" => 15,
-            "page" => self::PAGE,
-            "sort" => self::setSort($tension, $power)
-        ];
+        array_map(function ($item) {
+            $this->storeOrUpdateKit($item);
+        }, $items);
     }
 
-    public static function setSort(string $tension, float $power): int
+    private function storeOrUpdateKit(array $item): void
     {
-        $filterPriceDesc = in_array($tension, ['Monofásico 220V', 'Bifásico 220V', 'Trifásico 220V']) && $power > 13.5;
-        $filterPriceAsc = $tension[0] == 'Trifásico 380V' && $power > 13.5;
+        $kit = Kit::query()->where('distributor_code', $item['id'])->first();
+        $days_to_availability = !is_null($item['dataPrevistaParaDisponibilidade'])
+            ? (new Carbon($item['dataPrevistaParaDisponibilidade']))->diffInDays(now())
+            : 0;
 
-        if ($filterPriceDesc) {
-            return 2;
-        } elseif ($filterPriceAsc) {
-            return 1;
+        if (!is_null($kit)) {
+            $kit->cost = $item['precoDoIntegrador'];
+            $kit->update();
         } else {
-            return 0;
+            $days_to_availability <= self::DAYS_FOR_INACTIVE
+            && Kit::create($this->setKitParams($item));
         }
+    }
+
+    private function setKitParams(array $item): array
+    {
+        $tension_pattern = TensionPattern::setTensionPattern($item['fase'] . ' ' . $item['tensaoSaida']);
+        $structure = RoofStructure::matchRoof($item['estrutura'])->value;
+        $availability = new Carbon($item['dataPrevistaParaDisponibilidade']);
+
+        return [
+            'description' => $item['titulo'],
+            'kwp' => $item['potenciaGerador'],
+            'cost' => $item['precoDoIntegrador'],
+            'roof_structure' => $structure,
+            'tension_pattern' => $tension_pattern,
+            'components' => json_encode(EdeltecApiHelper::getComponents($item['componentes'])),
+            'panel_specs' => json_encode(EdeltecApiHelper::setPanelSpecs($item)),
+            'inverter_specs' => json_encode(EdeltecApiHelper::setInverterSpecs($item)),
+            'distributor_name' => DistributorsEnum::EDELTEC->value,
+            'distributor_code' => $item['id'],
+            'availability' => $availability,
+            'is_active' => true,
+        ];
     }
 }
