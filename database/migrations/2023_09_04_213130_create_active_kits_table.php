@@ -1,0 +1,26 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateActiveKitsTable extends Migration
+{
+    public function up(): void
+    {
+
+        Schema::create('active_kits', function (Blueprint $table) {
+            $table->id();
+            $table->string('panel_brand');
+            $table->string('inverter_brand');
+            $table->string('distributor');
+            $table->boolean('is_active')->default(true);
+            $table->dateTime('last_updated_time');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('active_kits');
+    }
+}
