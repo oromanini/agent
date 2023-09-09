@@ -151,5 +151,17 @@ Route::middleware('auth')->group(function () {
 
 Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
 
+Route::get('/kitSearchTest', function () {
+
+    $service = new \App\Services\KitSearchService(
+      kwp: 3,
+      roof: \App\Enums\RoofStructure::COLONIAL->value,
+      tension: \App\Enums\TensionPattern::MONOFASICO_220V,
+    );
+
+    dd($service->kitSearch());
+});
+
+
 
 require __DIR__ . '/auth.php';

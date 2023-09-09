@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\InverterBrands;
 use App\Enums\PanelBrands;
+use App\Enums\RoofStructure;
 use App\Enums\TensionPattern;
 use App\Http\Requests\ProposalRequest;
 use App\Models\Address;
@@ -73,8 +74,8 @@ class ProposalController extends Controller
                 ->get();
         }
 
-        $tensions = $this->setTensions();
-        $roofs = setRoofs();
+        $tensions = TensionPattern::cases();
+        $roofs = RoofStructure::setRoofsToScreen();
         $agents = User::query()->orderBy('name')->get();
 
         return view('proposals.form', compact('clients', 'tensions', 'roofs', 'agents'));
@@ -92,8 +93,8 @@ class ProposalController extends Controller
     {
         $clients = Client::all();
         $agents = User::all();
-        $tensions = TensionPattern::asSelectArray();
-        $roofs = setRoofs();
+        $tensions = TensionPattern::cases();
+        $roofs = RoofStructure::setRoofsToScreen();
         $panels = PanelBrands::asSelectArray();
         $inverters = InverterBrands::asSelectArray();
 
@@ -288,16 +289,6 @@ class ProposalController extends Controller
             'overload',
             'inverterModels',
             'finalValue'
-        ];
-    }
-
-    private function setTensions(): array
-    {
-        return [
-            'MONOFASICO-220V' => 'Monofásico 220V',
-            'BIFASICO-220V' => 'Bifásico 220V',
-            'TRIFASICO-220V' => 'Trifásico 220V',
-            'TRIFASICO-380V' => 'Trifásico 380V',
         ];
     }
 

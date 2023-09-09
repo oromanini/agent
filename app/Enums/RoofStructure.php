@@ -4,27 +4,68 @@ namespace App\Enums;
 
 enum RoofStructure: int
 {
-    case Colonial = 1;
-    case Trapezoidal = 2;
-    case Laje = 3;
-    case ParafMetal = 4;
-    case ParafMadeira = 5;
-    case Solo = 6;
-    case Ondulada = 7;
-    case SemEstrutura = 8;
+    case COLONIAL = 1;
+    case METALICO = 2;
+    case LAJE = 3;
+    case FIBROCIMENTO_MADEIRA = 4;
+    case FIBROCIMENTO_METAL = 5;
+    case SOLO = 6;
+    case ONDULADA = 7;
+    case SEM_ESTRUTURA = 8;
 
-    public static function matchRoof($roof): RoofStructure
+    public static function translateExternalRoof($roof): RoofStructure
     {
         $upperRoof = strtoupper($roof->value ?? $roof);
         return match ($upperRoof) {
-            'COLONIAL', 'CERAMICO', 'CERÂMICO' => self::Colonial,
-            'PARAFMADEIRA', 'FIBROCIMENTO MADEIRA', 'FIBROMADEIRA' => self::ParafMadeira,
-            'PARAFMETAL', 'FIBROCIMENTO METAL', 'FIBROMETAL' => self::ParafMetal,
-            'ONDULADO' => self::Ondulada,
-            'SOLO' => self::Solo,
-            'LAJE' => self::Laje,
-            'METALICO', 'TRAPEZOIDAL', 'ZINCO' => self::Trapezoidal,
-            'S/ESTRUTURA' => self::SemEstrutura
+            'COLONIAL', 'CERAMICO', 'CERÂMICO' => self::COLONIAL,
+            'PARAFMADEIRA', 'FIBROCIMENTO MADEIRA', 'FIBROMADEIRA' => self::FIBROCIMENTO_MADEIRA,
+            'PARAFMETAL', 'FIBROCIMENTO METAL', 'FIBROMETAL' => self::FIBROCIMENTO_METAL,
+            'ONDULADO' => self::ONDULADA,
+            'SOLO' => self::SOLO,
+            'LAJE' => self::LAJE,
+            'METALICO', 'TRAPEZOIDAL', 'ZINCO' => self::METALICO,
+            'S/ESTRUTURA' => self::SEM_ESTRUTURA
         };
+    }
+
+    public static function setRoofsToScreen(): array
+    {
+        return [
+            [
+                'id' => RoofStructure::COLONIAL,
+                'image' => '/img/roofs/colonial.png',
+                'description' => 'Colonial'
+            ],
+            [
+                'id' => RoofStructure::METALICO,
+                'image' => '/img/roofs/trapezoidal.png',
+                'description' => 'Metálica'
+            ],
+            [
+                'id' => RoofStructure::LAJE,
+                'image' => '/img/roofs/laje.png',
+                'description' => 'Laje'
+            ],
+            [
+                'id' => RoofStructure::FIBROCIMENTO_MADEIRA,
+                'image' => '/img/roofs/paraf-madeira.png',
+                'description' => 'Fibrocimento c/ Madeira'
+            ],
+            [
+                'id' => RoofStructure::FIBROCIMENTO_METAL,
+                'image' => '/img/roofs/paraf-metal.png',
+                'description' => 'Fibrocimento c/ Metal'
+            ],
+            [
+                'id' => RoofStructure::SOLO,
+                'image' => '/img/roofs/solo.png',
+                'description' => 'Solo'
+            ],
+            [
+                'id' => RoofStructure::ONDULADA,
+                'image' => '/img/roofs/ondulada.png',
+                'description' => 'Ondulada'
+            ],
+        ];
     }
 }

@@ -20,27 +20,18 @@ use Psr\Http\Message\ResponseInterface;
 
 class EdeltecApiService extends KitResource
 {
-    const BASE_API_URL = "https://api.edeltecsolar.com.br";
     const KITS_URI = "/produtos/integration?";
     const DAYS_FOR_INACTIVE = 15;
     const UNAUTHORIZED = 401;
     const ITEMS_LIMIT = 30;
     const MAX_UPDATE_DAYS = 7;
     private Client $client;
-    private $bearerToken;
+    private EdeltecCredentials $credentials;
 
     public function __construct()
     {
         $this->client = new Client();
-        $this->bearerToken = null;
-    }
-
-    private static function responseToArray(ResponseInterface $response)
-    {
-        return json_decode(
-            json: $response->getBody()->getContents(),
-            associative: true
-        );
+        $this->credentials = new EdeltecCredentials();
     }
 
     public function importKitsFromApi(): void
@@ -53,7 +44,6 @@ class EdeltecApiService extends KitResource
                 $combination = $this->searchCombination($panelBrand, $inverterBrand);
 
                 if (!is_null($combination) && $this->getCombinationDiffInDays($combination) <= self::MAX_UPDATE_DAYS) {
-
                     Log::info(
                         $this->setLogMessage(
                             panelBrand: $panelBrand->value,
@@ -70,19 +60,19 @@ class EdeltecApiService extends KitResource
 
                 while (!$finished) {
 
-                    is_null($this->bearerToken) && $this->setOrRenewApiToken();
+                    is_null($this->credentials->bearerToken) && $this->credentials->setOrRenewApiToken();
 
                     $response = self::responseToArray(
                         $this->sendRequest(
                             page: $page,
                             panel: $panelBrand->value,
                             inverter: $inverterBrand->value,
-                            bearerToken: $this->bearerToken
+                            bearerToken: $this->credentials->bearerToken
                         )
                     );
 
-                    if (isset($response['statusCode'])) {
-                        $response['statusCode'] === self::UNAUTHORIZED && $this->setOrRenewApiToken();
+                    if (isset($response['statusCode']) && $response['statusCode'] === self::UNAUTHORIZED) {
+                        $this->credentials->setOrRenewApiToken();
                     }
 
                     $this->storeKits($response['items']);
@@ -97,7 +87,15 @@ class EdeltecApiService extends KitResource
                         progress: $progress,
                         page: $page,
                         totalPages: $totalPages,
-                    )->progress);
+                    )->progress,
+                        [
+                            'import' => [
+                                'kits' => [
+                                    'distributor' => DistributorsEnum::EDELTEC->value,
+                                ]
+                            ]
+                        ]);
+                    $page++;
 
                     if ($page > $response["meta"]["totalPages"]) {
                         $finished = true;
@@ -107,35 +105,13 @@ class EdeltecApiService extends KitResource
             }
         }
 
-        Log::alert('Kits atualizados com sucesso! (' . $this->setConclusionTime($start_time) . ')');
-    }
-
-    private function setOrRenewApiToken(): void
-    {
-        $headers = ['Content-Type' => 'application/json'];
-        $jsonBody = [
-            "apiKey" => '72043154-b241-4e91-86cf-4e5ccf39a1e2',
-            "secret" => 'KHd4Iqqky+0lSBbAV76UsTSFnwcotRt1crfltFW7RIc='
-        ];
-
-        try {
-            $response = $this->client->post(self::BASE_API_URL . '/api-access/token', [
-                'headers' => $headers,
-                'json' => $jsonBody,
-            ]);
-
-            $this->bearerToken = $response->getBody()->getContents();
-            $this->lastUpdateTimeToken = time();
-
-        } catch (\Throwable $error) {
-            throw new \Exception('[EDELTEC] Erro ao retornar token: ' . $error);
-        }
+        Log::notice('Kits atualizados com sucesso! (' . $this->setConclusionTime($start_time) . ')');
     }
 
     private function sendRequest(int $page, string $panel, string $inverter, string $bearerToken): ResponseInterface
     {
         try {
-            return $this->client->get(self::BASE_API_URL . self::KITS_URI, [
+            return $this->client->get(EdeltecApiHelper::BASE_API_URL . self::KITS_URI, [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $bearerToken,
                     'Content-Type' => 'application/json',
@@ -181,8 +157,8 @@ class EdeltecApiService extends KitResource
 
     private function setKitParams(array $item): array
     {
-        $tension_pattern = TensionPattern::setTensionPattern($item['fase'] . ' ' . $item['tensaoSaida']);
-        $structure = RoofStructure::matchRoof($item['estrutura'])->value;
+        $tension_pattern = TensionPattern::translateExternalTension($item['fase'] . ' ' . $item['tensaoSaida']);
+        $structure = RoofStructure::translateExternalRoof($item['estrutura'])->value;
         $availability = new Carbon($item['dataPrevistaParaDisponibilidade']);
 
         return [
@@ -191,9 +167,9 @@ class EdeltecApiService extends KitResource
             'cost' => $item['precoDoIntegrador'],
             'roof_structure' => $structure,
             'tension_pattern' => $tension_pattern,
-            'components' => json_encode(EdeltecApiHelper::getComponents($item['componentes'])),
-            'panel_specs' => json_encode(EdeltecApiHelper::setPanelSpecs($item)),
-            'inverter_specs' => json_encode(EdeltecApiHelper::setInverterSpecs($item)),
+            'components' => EdeltecApiHelper::getComponents($item['componentes']),
+            'panel_specs' => EdeltecApiHelper::setPanelSpecs($item),
+            'inverter_specs' => EdeltecApiHelper::setInverterSpecs($item),
             'distributor_name' => DistributorsEnum::EDELTEC->value,
             'distributor_code' => $item['id'],
             'availability' => $availability,
@@ -233,12 +209,11 @@ class EdeltecApiService extends KitResource
     private function setLogMessage(
         string $panelBrand,
         string $inverterBrand,
-        $progress = null,
-        $page = null,
-        $totalPages = null,
-        $combination = null
-    ): \stdClass
-    {
+               $progress = null,
+               $page = null,
+               $totalPages = null,
+               $combination = null
+    ): \stdClass {
         $message = new \stdClass();
 
         $message->progress = 'Progresso de importação: '
@@ -246,7 +221,7 @@ class EdeltecApiService extends KitResource
             . $page . ' de ' . $totalPages
             . ' (' . $progress . ' %)';
 
-        if(!is_null($combination)) {
+        if (!is_null($combination)) {
             $message->alreadyUpdated =
                 'A combinação '
                 . $panelBrand . '/' . $inverterBrand
@@ -265,8 +240,16 @@ class EdeltecApiService extends KitResource
 
     private function setConclusionTime(int $start_time): string
     {
-       $secondsToFinish = time() - $start_time;
+        $secondsToFinish = time() - $start_time;
 
-       return CarbonInterval::seconds($secondsToFinish)->cascade()->forHumans();
+        return CarbonInterval::seconds($secondsToFinish)->cascade()->forHumans();
+    }
+
+    private static function responseToArray(ResponseInterface $response)
+    {
+        return json_decode(
+            json: $response->getBody()->getContents(),
+            associative: true
+        );
     }
 }

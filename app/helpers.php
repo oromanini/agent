@@ -36,47 +36,6 @@ function floatToMoney(float $money): string
     return number_format($money, 2, ',', '.');
 }
 
-function setRoofs(): array
-{
-    return [
-        [
-            'id' => RoofStructure::Colonial,
-            'image' => '/img/roofs/colonial.png',
-            'description' => 'Colonial'
-        ],
-        [
-            'id' => RoofStructure::Trapezoidal,
-            'image' => '/img/roofs/trapezoidal.png',
-            'description' => 'Trapezoidal'
-        ],
-        [
-            'id' => RoofStructure::Laje,
-            'image' => '/img/roofs/laje.png',
-            'description' => 'Laje'
-        ],
-        [
-            'id' => RoofStructure::ParafMadeira,
-            'image' => '/img/roofs/paraf-madeira.png',
-            'description' => 'Parafuso Madeira'
-        ],
-        [
-            'id' => RoofStructure::ParafMetal,
-            'image' => '/img/roofs/paraf-metal.png',
-            'description' => 'Parafuso Metal'
-        ],
-        [
-            'id' => RoofStructure::Solo,
-            'image' => '/img/roofs/solo.png',
-            'description' => 'Solo'
-        ],
-        [
-            'id' => RoofStructure::Ondulada,
-            'image' => '/img/roofs/ondulada.png',
-            'description' => 'Ondulada'
-        ],
-    ];
-}
-
 
 function setPanelBrandImage($brand): string
 {

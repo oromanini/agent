@@ -8,6 +8,8 @@ use DOMDocument;
 
 class EdeltecApiHelper
 {
+    const BASE_API_URL = "https://api.edeltecsolar.com.br";
+
     public static function getPanelModel(string $panelData): string
     {
         preg_match('/^(.*?)(?=\s*<br>)/', $panelData, $panelModel);
@@ -79,7 +81,7 @@ class EdeltecApiHelper
         };
     }
 
-    public static function getComponents(string $components): array
+    public static function getComponents(string $components): bool|string
     {
         $result = [];
 
@@ -111,7 +113,7 @@ class EdeltecApiHelper
             $optimizedArray[] = "{$quantidade} {$descricao}";
         }
 
-        return $optimizedArray;
+        return json_encode($optimizedArray);
     }
 
     public static function setPanelSpecs(array $item): string
@@ -119,6 +121,7 @@ class EdeltecApiHelper
         $panel = PanelBrand::matchCases($item['marca']);
 
         return json_encode([
+            'brand' => $item['marca'],
             'model' => self::getPanelModel($item['caracteristicasModulo']),
             'logo' => self::getPanelLogo($item['marca']),
             'efficiency' => self::getPanelEfficiency($item['caracteristicasModulo']),
@@ -132,7 +135,7 @@ class EdeltecApiHelper
         $inverter = InverterBrand::tryFrom($item['fabricante']);
 
         return json_encode([
-            'marca' => $item['fabricante'],
+            'brand' => $item['fabricante'],
             'model' => self::getInverterModel($item['caracteristicasInversor']),
             'logo' => self::getInverterLogo($item['fabricante']),
             'warranty' => self::getInverterWarranty($inverter),
