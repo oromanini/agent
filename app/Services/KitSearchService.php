@@ -57,14 +57,13 @@ class KitSearchService
                         ->whereIn('tension_pattern', $tensionPossibilities)
                         ->whereJsonContains('panel_specs->brand', $panel->value)
                         ->whereJsonContains('inverter_specs->brand', $inverter->value)
-                        ->orderBy('kwp', 'DESC')
+                        ->orderBy('kwp')
                         ->first();
 
                     !is_null($kit) && $compatibleKits->push($kit);
                 }
             }
         }
-
         return $compatibleKits;
     }
 

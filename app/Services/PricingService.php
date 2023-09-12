@@ -21,7 +21,7 @@ class PricingService
 
         $finalValue = $this->adjustMargin($cost, $kwp, $panelCount, $finalValue, $stateId);
 
-        if ($data['roof_structure'] == RoofStructure::Solo) {
+        if ($data['roof_structure'] == RoofStructure::SOLO) {
             return ['finalPrice' => $finalValue * 1.3, 'isPromotional' => false];
         }
 

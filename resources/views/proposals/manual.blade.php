@@ -85,9 +85,10 @@
                 </div>
                 <div class="columns" style="margin-bottom: 10px">
                     @foreach($roofs as $roof)
+                        @dd($roof)
                         <div class="column">
                             <label>
-                                <input type="radio" name="roof_structure" value="{{$roof['id']}}" class="radio-image">
+                                <input type="radio" name="roof_structure" value="{{$roof['id']->value}}" class="radio-image">
                                 <img src="{{ $roof['image'] }}" width="200" class="roof-img">
                             </label>
                         </div>

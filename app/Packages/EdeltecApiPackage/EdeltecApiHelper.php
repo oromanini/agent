@@ -122,6 +122,7 @@ class EdeltecApiHelper
 
         return json_encode([
             'brand' => $item['marca'],
+            'power' => $item['potenciaModulo'],
             'model' => self::getPanelModel($item['caracteristicasModulo']),
             'logo' => self::getPanelLogo($item['marca']),
             'efficiency' => self::getPanelEfficiency($item['caracteristicasModulo']),
@@ -136,6 +137,7 @@ class EdeltecApiHelper
 
         return json_encode([
             'brand' => $item['fabricante'],
+            'power' => $item['potenciaInversor'],
             'model' => self::getInverterModel($item['caracteristicasInversor']),
             'logo' => self::getInverterLogo($item['fabricante']),
             'warranty' => self::getInverterWarranty($inverter),

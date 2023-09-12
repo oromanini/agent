@@ -77,8 +77,8 @@
                             <div
                                 class="select is-multiline is-fullwidth  @error('tension_pattern') is-danger @enderror">
                                 <select id="tension_pattern" name="tension_pattern">
-                                    @foreach($tensions as $key => $value)
-                                        <option value="{{ $key }}">{{ $value }}</option>
+                                    @foreach($tensions as $tension)
+                                        <option value="{{ $tension->value }}">{{ $tension->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -95,7 +95,8 @@
                                     <ion-icon class="info-icon" name="information-circle-outline"></ion-icon>
                                 </span>
                             </label>
-                            <div class="select is-multiline is-fullwidth  @error('installation_address') is-danger @enderror">
+                            <div
+                                class="select is-multiline is-fullwidth  @error('installation_address') is-danger @enderror">
                                 <select id="installation_address" name="installation_address"></select>
                             </div>
                             @error('installation_address')<span class="error-message">{{ $message }}</span>@enderror
@@ -139,14 +140,15 @@
                     @foreach($roofs as $roof)
                         <div class="column">
                             <label>
-                                <input type="radio" name="roof_structure" value="{{$roof['id']}}"
+                                <input type="radio" name="roof_structure" value="{{$roof['id']->value}}"
                                        class="radio-image roof-structure">
-                                <img src="{{ $roof['image'] }}" width="200" class="roof-img">
+                                <img src="{{ $roof['image'] }}" width="170" class="roof-img">
                             </label>
                         </div>
                     @endforeach
                 </div>
-                <div class="columns is-flex is-justify-content-center" style="margin-top: 15px; margin-bottom: 30px">
+                <div class="columns is-flex is-justify-content-center"
+                     style="display:none !important; margin-top: 15px; margin-bottom: 30px">
                     <div class="column is-6 is-flex is-justify-content-space-around is-align-items-center is-warning"
                          style="border: 2px solid #f2a714; border-radius: 100px;">
                         <label class="checkbox">
@@ -168,7 +170,6 @@
 
                     </div>
                 </div>
-                <hr style="margin: 10px">
                 <div class="column is-flex is-justify-content-center">
                     <span class="button is-medium is-info " id="kitSearchSubmit">
                         <ion-icon name="sunny-outline"></ion-icon>&nbsp;Buscar Kits
@@ -196,30 +197,147 @@
             $("#client").selectize({});
             $("#agent").selectize({});
 
-
             let consumption = null;
             let clientId = $('select[name=client] option').filter(':selected').val();
-
 
             $('#average_consumption').on('change', function () {
                 consumption = $('#average_consumption').val();
             })
 
-            setAddresses(clientId)
-            setUcs(clientId)
-            disableSubmitIfConsumptionIsNull()
+            Address.setAddresses(clientId)
+            Address.setUcs(clientId)
+            ScreenHelper.disableSubmitIfConsumptionIsNull()
 
             $('#client').change(function () {
                 clientId = $('select[name=client] option').filter(':selected').val();
-                setAddresses(clientId)
-                setUcs(clientId)
+                Address.setAddresses(clientId)
+                Address.setUcs(clientId)
             });
 
             $('#average_consumption').change(function () {
-                disableSubmitIfConsumptionIsNull()
+                ScreenHelper.disableSubmitIfConsumptionIsNull()
             });
 
-            function setAddresses(clientId) {
+            $('#kitSearchSubmit').on('click', function () {
+                $('#loader').show()
+                let consumption = $('#average_consumption').val();
+                let incidence = Address.setIncidence()
+
+                let kwp = Kit.setKwp(consumption, incidence);
+                let roof = $("input[name=roof_structure]:checked").val();
+                let tension = $('select[name=tension_pattern] option').filter(':selected').val()
+                let addressId = $('select[name=installation_address] option').filter(':selected').val()
+
+                $.ajax({
+                    url: "/kitSearch/" + kwp.toFixed(2) + '/' + roof + '/' + tension,
+                    type: 'get',
+                    beforeSend: function () {
+                        $('#loader').removeClass('disable');
+                        $('#loader').addClass('enable');
+                    },
+                })
+                    .done(function (msg) {
+                        setTimeout(function () {
+                            $('#loader').hide()
+                        }, 2000)
+                        $('#kits').empty();
+                        $('#generateProposalButton').empty();
+
+                        $.each(msg, function (i, distributor_kits) {
+
+                            distributor_kits.sort((a, b) => a.cost - b.cost);
+
+                            $.each(distributor_kits, function (j, item) {
+
+                                let panelSpecs = JSON.parse(item.panel_specs);
+                                let inverterSpecs = JSON.parse(item.inverter_specs);
+                                let banks = '/img/banks/banks.png';
+
+                                let panelCount = Kit.setPanelCount(item);
+
+                                let isPromotional = false;
+                                let isPromotionalText = isPromotional ? 'Promoção' : 'À vista';
+                                let isPromotionalColor = isPromotional ? 'is-success' : 'is-success is-light';
+
+                                let finalValue = Kit.calculateFinalValue(
+                                    item.cost,
+                                    item.kwp,
+                                    roof,
+                                    panelCount,
+                                    addressId,
+                                    panelSpecs['brand'],
+                                    panelSpecs['power'],
+                                    inverterSpecs['brand']
+                                );
+
+                                let isPromo = finalValue.isPromotional
+                                    ? '<span class="tag is-success is-flex">Promoção</span>' : ''
+
+                                let averageProduction = Kit.calculateAverageProduction(addressId, item.kwp);
+
+                                $('#kits').append(
+                                    '<div class="column is-3">' +
+                                    '<label>' +
+                                    '<input type="radio" name="kit_id" value="' + item.distributor_code + '">' +
+                                    '<div id="all" class="my-box-shadow">' +
+                                    '<span class="tag ' + isPromotionalColor + '">' +
+                                    isPromotionalText +
+                                    '</span>' +
+                                    '<div class="is-flex is-justify-content-center">' +
+                                    '<img src="' + panelSpecs.logo + '" alt="" width="135">' +
+                                    '<img src="' + inverterSpecs.logo + '" alt="" width="135">' +
+                                    '</div>' +
+                                    '<div style="display:flex; justify-content: center; text-align: center; font-size: 14pt; color: #6b7280; font-weight: 900; margin: 20px 0px">' +
+                                    item.kwp + ' kWp' +
+                                    '</div>' +
+                                    '<div style="font-size: 10pt; text-align: center">' +
+                                    '<strong>Geração aproximada de ' + averageProduction + ' kWh/mês</strong>' +
+                                    '</div>' +
+                                    '<hr>' +
+                                    '<div style="text-align: center">' +
+                                    '<strong>Painel: </strong>' + panelCount + ' x ' + panelSpecs.brand + ' ' + panelSpecs.power + 'W ' +
+                                    '</div>' +
+                                    '<div style="text-align: center">' +
+                                    '<strong>Garantia: </strong>' + Kit.setWarranty(panelSpecs['panel_brand']) +
+                                    '</div>' +
+                                    '<hr>' +
+                                    '<div style="text-align: center">' +
+                                    '<strong>Inversor: </strong>' + inverterSpecs.brand + ' ' + inverterSpecs.power + ' KW' +
+                                    '<div style="text-align: center">' +
+                                    '<strong>Tensão: </strong>' + Kit.setStringTensionPattern(item.tension_pattern) +
+                                    '</div>' +
+                                    '</div>' +
+                                    '<hr>' +
+                                    isPromo +
+                                    '<div style="color: #6BC6A7; font-size: 18pt; text-align: center; font-weight: bold">' +
+                                    parseFloat(finalValue.finalPrice).toLocaleString('pt-BR', {
+                                        style: 'currency',
+                                        currency: 'BRL',
+                                    }) +
+                                    '</div>' +
+                                    '<hr/>' +
+                                    '<div style="display: flex; justify-content: center"><img src="' + banks + '" alt="..." width="230" style="a"></div>' +
+                                    '</div>' +
+                                    '</label>' +
+                                    '</div>'
+                                );
+                            });
+                        });
+                        $('#generateProposalButton').append(
+                            '<div class="columns"><button type="submit" class="button is-primary is-large">Gerar Proposta</button></div>'
+                        );
+
+                    })
+
+                    .fail(function (jqXHR, textStatus, msg) {
+                        console.log('FALHA: ' + msg);
+                    });
+            });
+        });
+
+        class Address {
+
+            static setAddresses(clientId) {
 
                 let url = '/addressesFromClientId/';
 
@@ -240,14 +358,14 @@
                             }));
                         });
 
-                        $('#installation_address_text').attr('data-tooltip', 'Incidência: ' + setIncidence())
+                        $('#installation_address_text').attr('data-tooltip', 'Incidência: ' + Address.setIncidence())
                     })
                     .fail(function (jqXHR, textStatus, msg) {
                         console.log('FALHA: ' + msg);
                     });
             }
 
-            function setUcs(clientId) {
+            static setUcs(clientId) {
 
                 let url = '/ucsFromClientId/';
 
@@ -276,7 +394,7 @@
                     });
             }
 
-            function setIncidence() {
+            static setIncidence() {
 
                 let addressId = $('select[name=installation_address] option').filter(':selected').val();
                 let url = '/incidenceFromAddressId/';
@@ -299,8 +417,11 @@
 
                 return incidence;
             }
+        }
 
-            function disableSubmitIfConsumptionIsNull() {
+        class ScreenHelper {
+
+            static disableSubmitIfConsumptionIsNull() {
 
                 if (!$('#average_consumption').val() && !$('input:radio[name="roof_structure"]').is(':checked') && !$('#orientation input:checked').length > 0) {
                     $('#kitSearchSubmit').attr("disabled", "disabled");
@@ -309,7 +430,7 @@
                 }
             }
 
-            function getPanelImage(brand) {
+            static getPanelImage(brand) {
 
                 let panelImage = null;
 
@@ -345,7 +466,7 @@
                 return panelImage
             }
 
-            function getInverterImage(brand) {
+            static getInverterImage(brand) {
 
                 let inverterImage = null;
 
@@ -371,8 +492,11 @@
 
                 return inverterImage
             }
+        }
 
-            function setKwp(consumption, incidence) {
+        class Kit {
+
+            static setKwp(consumption, incidence) {
                 return (
                     parseFloat(consumption)
                     / 30
@@ -381,241 +505,115 @@
                     1 + {{ (float)env('GENERATION_LOST') }});
             }
 
-            $('#kitSearchSubmit').on('click', function () {
-                $('#loader').show()
-                let consumption = $('#average_consumption').val();
-                let incidence = setIncidence()
+            static setWarranty(brand) {
+                if (brand === 'Sunova') {
+                    return '15 anos';
+                }
+                return '12 anos'
+            }
 
-                let kwp = setKwp(consumption, incidence);
-                let roof = $("input[name=roof_structure]:checked").val();
-                let tension = $('select[name=tension_pattern] option').filter(':selected').val()
-                let addressId = $('select[name=installation_address] option').filter(':selected').val()
+            static setEstimatedDelivery(brand) {
+                if (brand === 'Sunova' || brand === 'Astronergy') {
+                    return ': 15 a 30 dias';
+                }
+
+                if (brand === 'Jinko' || brand === 'Ja') {
+                    return ': 3 a 7 dias';
+                }
+
+                if (brand === 'Dah' || brand === 'Osda' || brand === 'Ae_Solar') {
+                    return ': 20 a 30 dias';
+                }
+
+                return ': até 20 dias'
+            }
+
+            static setPanelCount(item) {
+                let panel_specs = JSON.parse(item.panel_specs);
+                let panel_count = item.kwp / (panel_specs.power / 1000);
+
+                return panel_count.toFixed(0);
+            }
+
+            static calculateAverageProduction(addressId, kwp) {
+
+                let url = '/setAverageProduction';
+                let result;
 
                 $.ajax({
-                    url: "/kitSearch/" + kwp.toFixed(2) + '/' + roof + '/' + tension,
-                    type: 'get',
-                    beforeSend: function () {
-                        $('#loader').removeClass('disable');
-                        $('#loader').addClass('enable');
+                    url: url,
+                    async: false,
+                    data: {
+                        kwp: kwp,
+                        addressId: addressId,
+                        _token: '{{csrf_token()}}'
                     },
+                    type: 'post',
+                    beforeSend: function () {
+                        console.log("ENVIANDO...");
+                    }
                 })
-                    .done(function (msg) {
-                        msg = msg.reverse()
-                        setTimeout(function () {
-                            $('#loader').hide()
-                        }, 2000)
-                        $('#kits').empty();
-                        $('#generateProposalButton').empty();
-                        $.each(msg, function (i, item) {
-
-                            let technicalDescription = item[0]['technical_description']
-                            let technicalDescription2 = item[1] ? item[1]['technical_description'] : null;
-                            let technicalDescription3 = item[2] ? item[2]['technical_description'] : null;
-                            let technicalDescription4 = item[3] ? item[3]['technical_description'] : null;
-                            let panelSpecs = technicalDescription['panel_specs'];
-                            let panelImage = getPanelImage(panelSpecs['panel_brand'])
-                            let banks = '/img/banks/banks.png';
-                            let inverterImage = getInverterImage(technicalDescription['inverter_brand'])
-
-                            let inverterPower1 = technicalDescription['inverter_power'];
-                            let inverterPower2 = technicalDescription2 != null ? '+' + technicalDescription2['inverter_power'] + 'kW ' : '';
-                            let inverterPower3 = technicalDescription3 != null ? '+' + technicalDescription3['inverter_power'] + 'kW ' : '';
-                            let inverterPower4 = technicalDescription4 != null ? '+' + technicalDescription4['inverter_power'] + 'kW ' : '';
-
-                            let inverterModel1 = technicalDescription['inverter_model'] + 'KW ';
-                            let inverterModel2 = technicalDescription2 != null ? ' + ' + technicalDescription2['inverter_model'] : '';
-                            let inverterModel3 = technicalDescription3 != null ? ' + ' + technicalDescription3['inverter_model'] : '';
-                            let inverterModel4 = technicalDescription4 != null ? ' + ' + technicalDescription4['inverter_model'] : '';
-
-                            let costValue = item[0].price + (item[1] ? item[1].price : 0) + (item[2] ? item[2].price : 0) + (item[3] ? item[3].price : 0);
-                            let panelCount = setPanelCount(item);
-
-                            let isPromotional = false;
-                            let isPromotionalText = isPromotional ? 'Promoção' : 'À vista';
-                            let isPromotionalColor = isPromotional ? 'is-success' : 'is-success is-light';
-
-                            let finalValue = calculateFinalValue(
-                                costValue,
-                                item['sum'].kwp.toFixed(2),
-                                roof,
-                                panelCount,
-                                addressId,
-                                panelSpecs['panel_brand'],
-                                panelSpecs['panel_power'],
-                                technicalDescription['inverter_brand']
-                            );
-
-                            let isPromo = finalValue.isPromotional
-                            ? '<span class="tag is-success is-flex">Promoção</span>'
-                            : '<br>'
-
-                            let averageProduction = calculateAverageProduction(addressId, item['sum'].kwp.toFixed(2));
-
-                            $('#kits').append(
-                                '<div class="column is-3">' +
-                                '<label>' +
-                                '<input type="radio" name="kit_id" value="' + item[0]['code'] + ';' + (item[1] ? item[1]['code'] + ';' : 'null') + (item[2] ? item[2]['code'] + ';' : '') + (item[3] ? item[3]['code'] : '') + '">' +
-                                '<div id="all" class="my-box-shadow">' +
-                                '<span class="tag ' + isPromotionalColor + '">' +
-                                isPromotionalText +
-                                '</span>' +
-                                '<div class="is-flex is-justify-content-center">' +
-                                '<img src="' + inverterImage + '" alt="" width="150">' +
-                                '</div>' +
-                                '<div class="is-flex is-justify-content-center">' +
-                                '<img src="' + panelImage + '" alt="" width="200">' +
-                                '</div>' +
-                                '<div style="display:flex; justify-content: center; text-align: center; font-size: 18pt; color: #6b7280; font-weight: 900; margin: 20px 0px">' +
-                                item['sum'].kwp.toFixed(2) + ' kWp' +
-                                '</div>' +
-                                '<div style="font-size: 10pt; text-align: center">' +
-                                'Geração aproximada de ' + averageProduction + ' kWh/mês' +
-                                '</div>' +
-                                '<hr>' +
-                                '<div style="text-align: center">' +
-                                '<strong>Painel: </strong>' + panelCount + ' ' + panelSpecs['panel_brand'] + ' ' + panelSpecs['panel_power'] + 'W ' +
-                                '</div>' +
-                                '<div style="text-align: center">' +
-                                '<strong>Eficiência: </strong>' + panelSpecs['panel_efficiency'] + '%' +
-                                '</div>' +
-                                '<div style="text-align: center">' +
-                                '<strong>Garantia: </strong>' + setWarranty(panelSpecs['panel_brand']) +
-                                '</div>' +
-                                '<hr>' +
-                                '<div style="text-align: center">' +
-                                '<div style="text-align: center">' +
-                                '<strong>Tensão: </strong>' + technicalDescription['inverter_tension'] +
-                                '</div>' +
-                                '<strong>Inversor: </strong>' + technicalDescription['inverter_brand'] + ' ' + inverterPower1 + inverterPower2 + inverterPower3 + inverterPower4 +
-                                '</div>' +
-                                '<div style="text-align: center"><br>' +
-                                inverterModel1 + ' ' + inverterModel2 + ' ' + inverterModel3 + inverterModel4 +
-                                '</div>' +
-                                '<div style="text-align: center"><br>' +
-                                 '<span style="font-size: 12pt" class="tag is-warning"><strong>' + 'Prazo de entrega' + '</strong>' + ' ' + setEstimatedDelivery(panelSpecs['panel_brand']) + '</span>' +
-                                '</div>'+
-                                '<hr>' +
-                                isPromo +
-                                '<div style="color: #6BC6A7; font-size: 18pt; text-align: center; font-weight: bold">' +
-                                parseFloat(finalValue.finalPrice).toLocaleString('pt-BR', {
-                                    style: 'currency',
-                                    currency: 'BRL',
-                                }) +
-                                '</div>' +
-                                '<hr/>' +
-                                '<div><img src="' + banks + '" alt="..."></div>' +
-                                '</div>' +
-                                '</label>' +
-                                '</div>'
-                            );
-                        });
-
-                        $('#generateProposalButton').append(
-                            '<div class="columns"><button type="submit" class="button is-primary is-large">Gerar Proposta</button></div>'
-                        );
-
+                    .done(function (msg, m) {
+                        result = msg
                     })
-
                     .fail(function (jqXHR, textStatus, msg) {
                         console.log('FALHA: ' + msg);
                     });
-            });
-        });
 
-        function setWarranty(brand) {
-            if (brand == 'Sunova') {
-                return '15 anos';
-            }
-            return '12 anos'
-        }
-
-        function setEstimatedDelivery(brand) {
-            if (brand === 'Sunova' || brand === 'Astronergy' ) {
-                return ': 15 a 30 dias';
+                return result;
             }
 
-            if (brand === 'Jinko' || brand === 'Ja') {
-                return ': 3 a 7 dias';
-            }
+            static calculateFinalValue(costValue, kwp, roof, panelCount, addressId, panelBrand, panelPower, inverterBrand) {
 
-            if (brand === 'Dah' || brand === 'Osda'|| brand === 'Ae_Solar') {
-                return ': 20 a 30 dias';
-            }
+                let url = '/setFinalValue';
+                let result;
 
-            return ': até 20 dias'
-        }
-
-        function calculateFinalValue(costValue, kwp, roof, panelCount, addressId, panelBrand, panelPower, inverterBrand) {
-
-            let url = '/setFinalValue';
-            let result;
-
-            $.ajax({
-                url: url,
-                async: false,
-                data: {
-                    kwp: kwp,
-                    roof_structure: roof,
-                    cost: costValue,
-                    panel_count: panelCount,
-                    address_id: addressId,
-                    panelBrand: panelBrand,
-                    panelPower: panelPower,
-                    inverterBrand: inverterBrand,
-                    _token: '{{csrf_token()}}'
-                },
-                type: 'post',
-                beforeSend: function () {
-                }
-            })
-                .done(function (msg, m) {
-                    result = msg
+                $.ajax({
+                    url: url,
+                    async: false,
+                    data: {
+                        kwp: kwp,
+                        roof_structure: roof,
+                        cost: costValue,
+                        panel_count: panelCount,
+                        address_id: addressId,
+                        panelBrand: panelBrand,
+                        panelPower: panelPower,
+                        inverterBrand: inverterBrand,
+                        _token: '{{csrf_token()}}'
+                    },
+                    type: 'post',
+                    beforeSend: function () {
+                    }
                 })
-                .fail(function (jqXHR, textStatus, msg) {
-                    console.log('FALHA: ' + msg);
-                });
+                    .done(function (msg, m) {
+                        result = msg
+                    })
+                    .fail(function (jqXHR, textStatus, msg) {
+                        console.log('FALHA: ' + msg);
+                    });
 
-            return result;
-        }
+                return result;
+            }
 
+            static setStringTensionPattern(tension_pattern) {
 
-        function calculateAverageProduction(addressId, kwp) {
+                let tension = null;
 
-            let url = '/setAverageProduction';
-            let result;
-
-            $.ajax({
-                url: url,
-                async: false,
-                data: {
-                    kwp: kwp,
-                    addressId: addressId,
-                    _token: '{{csrf_token()}}'
-                },
-                type: 'post',
-                beforeSend: function () {
-                    console.log("ENVIANDO...");
-                }
-            })
-                .done(function (msg, m) {
-                    result = msg
+                $.ajax({
+                    type: 'POST',
+                    url: '/get-tension-by-value',
+                    async: false,
+                    data: {
+                        tension: tension_pattern,
+                        _token: '{{csrf_token()}}'
+                    }
                 })
-                .fail(function (jqXHR, textStatus, msg) {
-                    console.log('FALHA: ' + msg);
-                });
-
-
-            return result;
-        }
-
-        function setPanelCount(item) {
-
-            let one = item[0] ? item[0].panel_count : 0;
-            let two = item[1] ? item[1].panel_count : 0;
-            let three = item[2] ? item[2].panel_count : 0;
-            let four = item[3] ? item[3].panel_count : 0;
-
-            return parseInt(one) + parseInt(two) + parseInt(three) + parseInt(four);
+                    .done(function (data) {
+                        tension = data;
+                    });
+                return tension;
+            }
         }
 
     </script>

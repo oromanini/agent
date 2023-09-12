@@ -12,6 +12,7 @@ use App\Models\Client;
 use App\Models\Proposal;
 use App\Models\User;
 use App\Repositories\ProposalRepository;
+use App\Services\KitSpecService;
 use App\Services\PaybackService;
 use App\Services\PricingService;
 use App\Services\ProposalService;
@@ -26,28 +27,13 @@ use Illuminate\Http\Response;
 
 class ProposalController extends Controller
 {
-    private ProposalService $proposalService;
-    private ProposalRepository $proposalRepository;
-    private ProposalValueHistoryService $proposalValueHistoryService;
-    private SolarIncidenceService $solarIncidenceService;
-    private PaybackService $paybackService;
-    private PricingService $pricingService;
-
     public function __construct(
-        ProposalService             $proposalService,
-        ProposalRepository          $proposalRepository,
-        ProposalValueHistoryService $proposalValueHistoryService,
-        PaybackService              $paybackService,
-        SolarIncidenceService       $solarIncidenceService,
-        PricingService              $pricingService
-    )
-    {
-        $this->proposalService = $proposalService;
-        $this->proposalRepository = $proposalRepository;
-        $this->proposalValueHistoryService = $proposalValueHistoryService;
-        $this->solarIncidenceService = $solarIncidenceService;
-        $this->paybackService = $paybackService;
-        $this->pricingService = $pricingService;
+        private readonly ProposalService $proposalService,
+        private readonly ProposalRepository $proposalRepository,
+        private readonly ProposalValueHistoryService $proposalValueHistoryService,
+        private readonly PaybackService $paybackService,
+        private readonly PricingService $pricingService
+    ) {
     }
 
     public function index(Request $request): View
@@ -73,7 +59,6 @@ class ProposalController extends Controller
                 ->orderBy('id', 'desc')
                 ->get();
         }
-
         $tensions = TensionPattern::cases();
         $roofs = RoofStructure::setRoofsToScreen();
         $agents = User::query()->orderBy('name')->get();
@@ -92,7 +77,7 @@ class ProposalController extends Controller
     public function manual(): View
     {
         $clients = Client::all();
-        $agents = User::all();
+        $agents = User::query()->where('deleted_at', '!=', null);
         $tensions = TensionPattern::cases();
         $roofs = RoofStructure::setRoofsToScreen();
         $panels = PanelBrands::asSelectArray();
@@ -114,10 +99,6 @@ class ProposalController extends Controller
         $proposal = Proposal::find($id);
         $valueHistoryData = $this->proposalValueHistoryService->setValueHistoryData($proposal);
         $isPromotional = false;
-
-        if ($proposal->kwp == 3.82 || $proposal->kwp == 4.91 || $proposal->kwp == 6 || $proposal->kwp == 7.08) {
-            $isPromotional = true;
-        }
 
         $kits = $proposal->is_manual
             ? json_decode($proposal->components, true)
@@ -207,7 +188,7 @@ class ProposalController extends Controller
         $withoutSolar = calculateWithoutSolar(proposal: $proposal);
         $withSolar = floatToMoney(calculateWithSolar(proposal: $proposal));
 
-        $incidence = $this->solarIncidenceService->getSolarIncidence(city: $city)->average;
+        $incidence = (new SolarIncidenceService())->getSolarIncidence(city: $city)->average;
         $payback = $this->paybackService->setPaybackData(proposal: $proposal);
         $generationData = $this->paybackService->setGenerationData(proposal: $proposal);
 
@@ -243,20 +224,15 @@ class ProposalController extends Controller
 
     public function setAverageProduction(Request $request): float
     {
-        $data = $request->all();
-        $city = Address::find((int)$data['addressId'])->city;
+        return (new KitSpecService())
+            ->setAverageProduction($request->all());
+    }
 
-        $incidence = (float)str_replace(
-            search: ',',
-            replace: '.',
-            subject: $this->solarIncidenceService->getSolarIncidence($city)->average
-        );
-
-        return ceil(
-            ((float) $data['kwp']) / ((1 + (float)env('GENERATION_LOST')))
-            * 30
-            * $incidence
-        );
+    public function setTensionByValue(Request $request): string
+    {
+        return response()->json(
+            (new KitSpecService())->setTensionByValue($request->all())
+        )->getContent();
     }
 
     private function setManualParams(): array
@@ -290,49 +266,6 @@ class ProposalController extends Controller
             'inverterModels',
             'finalValue'
         ];
-    }
-
-    private function setInvertersCount(array $components): string
-    {
-        $inverter_count = 0;
-
-        array_map(function ($item) use (&$inverter_count) {
-            (str_contains($item, 'Inversor')) && $inverter_count++;
-        }, $components);
-
-        return $inverter_count;
-    }
-
-    private function getKitOverload(array $codes): int
-    {
-        return array_map(function ($code) {
-            $kit = kitByUuid($code);
-
-            return floor(
-                $kit['technical_description']['inverter_overload']
-                / ($kit['technical_description']['panel_specs']['panel_power'] / 1000)
-            );
-
-        }, $codes)[0];
-    }
-
-    private function setInverterModels(array $components): string
-    {
-        $inverter_models = [];
-
-        array_map(function ($item) use (&$inverter_models) {
-            (str_contains($item, 'Inversor')) && $inverter_models[] = $item;
-        }, $components);
-
-        $string = '';
-
-        foreach ($inverter_models as $key => $inverter_model) {
-            $string .= $key == 0
-                ? explode(' ', $inverter_model)[3]
-                : ' + ' . explode(' ', $inverter_model)[3];
-        }
-
-        return $string;
     }
 
 }

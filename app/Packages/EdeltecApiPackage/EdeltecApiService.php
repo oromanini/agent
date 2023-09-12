@@ -18,13 +18,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Psr\Http\Message\ResponseInterface;
 
-class EdeltecApiService extends KitResource
+class EdeltecApiService
 {
     const KITS_URI = "/produtos/integration?";
     const DAYS_FOR_INACTIVE = 15;
     const UNAUTHORIZED = 401;
     const ITEMS_LIMIT = 30;
-    const MAX_UPDATE_DAYS = 7;
+    const MAX_UPDATE_DAYS = 1;
     private Client $client;
     private EdeltecCredentials $credentials;
 

@@ -10,7 +10,6 @@ enum RoofStructure: int
     case FIBROCIMENTO_MADEIRA = 4;
     case FIBROCIMENTO_METAL = 5;
     case SOLO = 6;
-    case ONDULADA = 7;
     case SEM_ESTRUTURA = 8;
 
     public static function translateExternalRoof($roof): RoofStructure
@@ -20,7 +19,6 @@ enum RoofStructure: int
             'COLONIAL', 'CERAMICO', 'CERÂMICO' => self::COLONIAL,
             'PARAFMADEIRA', 'FIBROCIMENTO MADEIRA', 'FIBROMADEIRA' => self::FIBROCIMENTO_MADEIRA,
             'PARAFMETAL', 'FIBROCIMENTO METAL', 'FIBROMETAL' => self::FIBROCIMENTO_METAL,
-            'ONDULADO' => self::ONDULADA,
             'SOLO' => self::SOLO,
             'LAJE' => self::LAJE,
             'METALICO', 'TRAPEZOIDAL', 'ZINCO' => self::METALICO,
@@ -60,11 +58,6 @@ enum RoofStructure: int
                 'id' => RoofStructure::SOLO,
                 'image' => '/img/roofs/solo.png',
                 'description' => 'Solo'
-            ],
-            [
-                'id' => RoofStructure::ONDULADA,
-                'image' => '/img/roofs/ondulada.png',
-                'description' => 'Ondulada'
             ],
         ];
     }

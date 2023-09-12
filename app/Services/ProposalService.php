@@ -25,6 +25,8 @@ class ProposalService
 
     public function store($data, bool $isManual = false): object
     {
+        dd($data);
+
         $incidence = $this->getIncidence($data['client']);
 
         $proposal = $this->fillObject(
