@@ -159,7 +159,7 @@ class ProposalService
 
         $this->data['cost'] = $kit->cost;
         $this->data['kwp'] = $kit->kwp;
-        $this->data['panel_count'] = roundOrFloorDecimalNumber($kit->kwp / $panel_power);
+        $this->data['panel_count'] = roundOrFloorDecimalNumber($kit->kwp / ($panel_power / 1000));
 
         $proposal->number_of_panels = $this->data['panel_count'];
 

@@ -9,23 +9,17 @@ use Illuminate\Http\Request;
 
 class ValueHistoryController extends Controller
 {
-    protected $valueHistoryService;
+    const MAX_DISCOUNT_PERCENT = 3;
 
-    public function __construct(ProposalValueHistoryService $valueHistoryService)
-    {
-        $this->valueHistoryService = $valueHistoryService;
-    }
+    public function __construct(private readonly ProposalValueHistoryService $valueHistoryService)
+    {}
 
     public function applyCommissionOrDiscount($id, Request $request): RedirectResponse
     {
         $data = $request->all();
 
-        if (
-            isset($data['discount_percent'])
-            && ($request->all()['discount_percent'] > 4 || $request->all()['discount_percent'] < 0)
-        ) {
-            session()->flash('message', ['error', 'O desconto não pode ser maior do que 4%']);
-        }
+         (isset($data['discount_percent']) && $this->isValidDiscount($data))
+         && session()->flash('message', ['error', 'O desconto não pode ser maior do que 4%']);
 
         $proposal = Proposal::find($id);
         $valueHistory = $proposal->valueHistory;
@@ -35,6 +29,12 @@ class ValueHistoryController extends Controller
         session()->flash('message', $message);
 
         return redirect()->route('proposal.edit', [$proposal->id]);
+    }
+
+    private function isValidDiscount(array $data): bool
+    {
+        return $data['discount_percent'] > self::MAX_DISCOUNT_PERCENT
+            || $data['discount_percent'] < 0;
     }
 
 }
