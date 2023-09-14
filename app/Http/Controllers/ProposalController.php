@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\DistributorsEnum;
 use App\Enums\InverterBrands;
 use App\Enums\PanelBrands;
 use App\Enums\RoofStructure;
@@ -153,14 +154,8 @@ class ProposalController extends Controller
         if (!$proposal->is_manual) {
 
             $kit = $this->kitSpecService->getKitFromProposal($proposal);
-
-            $inverterBrand = jsonToArray(
-                $kit->inverter_specs
-            )['brand'];
-
-            $panelBrand = jsonToArray(
-                $kit->panel_specs
-            )['logo'];
+            $inverterBrand = jsonToArray($kit->inverter_specs)['brand'];
+            $panelBrand = jsonToArray($kit->panel_specs)['logo'];
         }
 
         $manualData = $proposal->is_manual
@@ -169,7 +164,7 @@ class ProposalController extends Controller
 
         $inverterImage = $proposal->is_manual
             ? setInverterImage((int)$manualData['inverter_brand'])
-            : setInverterImage($inverterBrand);
+            : $this->setInverterImageByDistributor($inverterBrand, $kit->distributor_name);
 
         $panelBrandImage = $proposal->is_manual
             ? setPanelBrandImage((int)$manualData['panel_brand'])
@@ -275,6 +270,13 @@ class ProposalController extends Controller
             })
             ->orderBy('id', 'desc')
             ->get();
+    }
+
+    private function setInverterImageByDistributor(string $inverterBrand, string $distributor)
+    {
+        if ($distributor === DistributorsEnum::EDELTEC) {
+            return \App\Packages\EdeltecApiPackage\Enums\InverterImage::tryFrom($inverterBrand)->value;
+        }
     }
 
 }
