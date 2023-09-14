@@ -16,23 +16,20 @@
             </div>
         </div>
     @else
-        @foreach($kits as $kit)
-            <div class="column is-12" style="padding: 0">
-                <div class="accordion-tabs">
-                    <div class="tab">
-                        <input type="checkbox" id="chck2{{ $loop->iteration }}" class="checkbox-accordion">
-                        <label class="tab-label" for="chck2{{ $loop->iteration }}">Kit {{ $loop->iteration }}</label>
-                        <div class="tab-content content">
-                            <ul style="display: block !important;">
-{{--                                <li>{{ $kit }}</li>--}}
-                                @foreach(kitByUuid($kit)['components'] as $component)
-                                    <li>{{ $component }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
+        <div class="column is-12" style="padding: 0">
+            <div class="accordion-tabs">
+                <div class="tab">
+                    <input type="checkbox" id="chck" class="checkbox-accordion">
+                    <label class="tab-label" for="chck">Kit</label>
+                    <div class="tab-content content">
+                        <ul style="display: block !important;">
+                            @foreach($kits as $component)
+                                <li>{{ $component }}</li>
+                            @endforeach
+                        </ul>
                     </div>
                 </div>
             </div>
-        @endforeach
+        </div>
     @endif
 </div>

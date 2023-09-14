@@ -4,9 +4,13 @@ namespace App\Services;
 
 use App\Enums\TensionPattern;
 use App\Models\Address;
+use App\Models\Kit;
+use App\Models\Proposal;
 
 class KitSpecService
 {
+    const INVERTER_OVERLOAD = 1.35;
+
     public function setAverageProduction(array $data): float
     {
         $city = Address::find((int)$data['addressId'])->city;
@@ -29,20 +33,26 @@ class KitSpecService
         return TensionPattern::tryFrom($data['tension'])->name;
     }
 
-    private function getKitOverload(array $codes): int
+    public function getKitFromProposal(Proposal $proposal): Kit
     {
-        return array_map(function ($code) {
-            $kit = kitByUuid($code);
-
-            return floor(
-                $kit['technical_description']['inverter_overload']
-                / ($kit['technical_description']['panel_specs']['panel_power'] / 1000)
-            );
-
-        }, $codes)[0];
+        return Kit::where('distributor_code', $proposal->kit_uuid)->first();
     }
 
-    private function setInvertersCount(array $components): string
+    public function getKitOverload(Kit $kit = null, array $manualData = null): int
+    {
+        if (!is_null($manualData)) {
+            return (stringInverterPowerToFloat($manualData['inverter_power']) * 1.35) / ((int)$manualData['panel_power'] / 1000);
+        }
+
+        $panelPower = jsonToArray($kit->inverter_specs)['power'] / 1000;
+        $inverterPower = jsonToArray($kit->panel_specs)['power'];
+
+        $overload = $inverterPower * self::INVERTER_OVERLOAD;
+
+        return roundOrFloorDecimalNumber($overload / $panelPower);
+    }
+
+    public function setInvertersCount(array $components): string
     {
         $inverter_count = 0;
 
@@ -53,7 +63,7 @@ class KitSpecService
         return $inverter_count;
     }
 
-    private function setInverterModels(array $components): string
+    public function setInverterModels(array $components): string
     {
         $inverter_models = [];
 
