@@ -68,16 +68,16 @@ function setInverterImage($brand): string
     $saj = '/img/inverters/saj.png';
 
     return match ($brand) {
-        InverterBrands::Growatt, 'Growatt' => $growatt,
-        InverterBrands::Chint, 'Chint' => $chint,
-        InverterBrands::Deye, 'Deye' => $deye,
-        InverterBrands::DeyeString, 'DeyeString' => $sofar,
-        InverterBrands::Sofar, 'Sofar' => $solis,
-        InverterBrands::Solis, 'Solis' => $bel,
-        InverterBrands::Bel, 'Bel' => $sungrow,
-        InverterBrands::Sungrow, 'Sungrow' => $deyeString,
-        InverterBrands::Canadian, 'Canadian' => $canadian,
-        InverterBrands::Saj, 'Saj' => $saj,
+        InverterBrands::Growatt->value, 'Growatt' => $growatt,
+        InverterBrands::Chint->value, 'Chint' => $chint,
+        InverterBrands::Deye->value, 'Deye' => $deye,
+        InverterBrands::DeyeString->value, 'DeyeString' => $sofar,
+        InverterBrands::Sofar->value, 'Sofar' => $solis,
+        InverterBrands::Solis->value, 'Solis' => $bel,
+        InverterBrands::Bel->value, 'Bel' => $sungrow,
+        InverterBrands::Sungrow->value, 'Sungrow' => $deyeString,
+        InverterBrands::Canadian->value, 'Canadian' => $canadian,
+        InverterBrands::Saj->value, 'Saj' => $saj,
         default => throw new Exception('Inversor não localizado.'),
     };
 }
@@ -178,4 +178,22 @@ function roundOrFloorDecimalNumber(float $number): int
     }
 
     return ceil($number);
+}
+
+function calculateWithoutSolar($proposal): string
+{
+
+    return floatToMoney($proposal->average_consumption * $proposal->kw_price);
+}
+
+
+function calculateWithSolar($proposal): string
+{
+    if ($proposal->tension_pattern == 'MONO-220') {
+        return 50;
+    } elseif ($proposal->tension_pattern == 'BI-220') {
+        return 75;
+    }
+
+    return 100;
 }

@@ -1,5 +1,4 @@
-<div class="page page-break" style="background-image: url({{public_path('/img/proposal/6.jpg')}})">
-    <div id="components">
+<div class="page page-break" style="background-image: url({{public_path('/img/proposal/6.jpg')}})"><div id="components">
         <ul>
             @foreach($components as $component)
                 <li>{{ $component }}</li>

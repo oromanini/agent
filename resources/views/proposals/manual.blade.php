@@ -63,8 +63,8 @@
                             <div
                                 class="select is-multiline is-fullwidth  @error('tension_pattern') is-danger @enderror">
                                 <select id="tension_pattern" name="tension_pattern">
-                                    @foreach($tensions as $key => $value)
-                                        <option value="{{ $value }}">{{ $key }}</option>
+                                    @foreach($tensions as $tension)
+                                        <option value="{{ $tension->value }}">{{ $tension->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -85,7 +85,6 @@
                 </div>
                 <div class="columns" style="margin-bottom: 10px">
                     @foreach($roofs as $roof)
-                        @dd($roof)
                         <div class="column">
                             <label>
                                 <input type="radio" name="roof_structure" value="{{$roof['id']->value}}" class="radio-image">
@@ -190,9 +189,9 @@
                             <div
                                 class="select is-multiline is-fullwidth  @error('panel_brand') is-danger @enderror">
                                 <select id="panel_brand" name="panel_brand">
-                                    @forelse($panels as $key => $value)
+                                    @forelse($panels as $panel)
 
-                                        <option value="{{ $key }}">{{$value}}</option>
+                                        <option value="{{ $panel->value }}">{{$panel->name}}</option>
                                     @empty
                                         <option value="">Não há painéis cadastrados</option>
                                     @endforelse
@@ -244,8 +243,8 @@
                             <div
                                 class="select is-multiline is-fullwidth  @error('inverter_brand') is-danger @enderror">
                                 <select id="inverter_brand" name="inverter_brand">
-                                    @forelse($inverters as $key => $value)
-                                        <option value="{{ $key }}">{{$value}}</option>
+                                    @forelse($inverters as $inverter)
+                                        <option value="{{ $inverter->value }}">{{$inverter->name}}</option>
                                     @empty
                                         <option value="">Não há inversores cadastrados</option>
                                     @endforelse

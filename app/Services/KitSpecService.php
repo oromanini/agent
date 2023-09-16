@@ -44,8 +44,8 @@ class KitSpecService
             return (stringInverterPowerToFloat($manualData['inverter_power']) * 1.35) / ((int)$manualData['panel_power'] / 1000);
         }
 
-        $panelPower = jsonToArray($kit->inverter_specs)['power'] / 1000;
-        $inverterPower = jsonToArray($kit->panel_specs)['power'];
+        $panelPower = jsonToArray($kit->panel_specs)['power'] / 1000;
+        $inverterPower = jsonToArray($kit->inverter_specs)['power'];
 
         $overload = $inverterPower * self::INVERTER_OVERLOAD;
 
@@ -57,7 +57,7 @@ class KitSpecService
         $inverter_count = 0;
 
         array_map(function ($item) use (&$inverter_count) {
-            (str_contains($item, 'Inversor')) && $inverter_count++;
+            (str_contains($item, 'INVERSOR')) && $inverter_count++;
         }, $components);
 
         return $inverter_count;

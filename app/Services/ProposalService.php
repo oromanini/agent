@@ -29,7 +29,6 @@ class ProposalService
             isManual: $isManual,
             incidence: $incidence,
         );
-
         $proposal->pre_inspection_id = $this->createPreInspection()->id;
 
         DB::transaction(function () use ($proposal) {
@@ -126,8 +125,9 @@ class ProposalService
         $proposal->components = json_encode(explode(PHP_EOL, $this->data['components']));
         $proposal->client_id = (int)$this->data['client'];
         $proposal->agent_id = (int)$this->data['agent'];
-        $proposal->type = 'manual';
+        $proposal->type = 'normal';
         $proposal->kwp = (float) $this->data['kwp'];
+        $proposal->number_of_panels = (float) $this->data['panel_quantity'];
 
         $proposal->manual_data = json_encode([
             'panel_brand' => $this->data['panel_brand'],
@@ -154,7 +154,7 @@ class ProposalService
         $proposal->agent_id = $this->data['agent'] ?? auth()->user()->id;
         $proposal->kit_uuid = $this->data['kit_id'];
         $proposal->manual_data = json_encode([]);
-        $proposal->components = json_encode($kit->components);
+        $proposal->components = $kit->components;
         $proposal->type = 'normal';
 
         $this->data['cost'] = $kit->cost;

@@ -35,8 +35,7 @@ class ProposalController extends Controller
         private readonly PaybackService              $paybackService,
         private readonly PricingService              $pricingService,
         private readonly KitSpecService              $kitSpecService,
-    )
-    {
+    ) {
     }
 
     public function index(Request $request): View
@@ -69,11 +68,11 @@ class ProposalController extends Controller
     public function manual(): View
     {
         $clients = Client::all();
-        $agents = User::query()->where('deleted_at', '!=', null);
+        $agents = User::query()->whereNull('deleted_at')->get();
         $tensions = TensionPattern::cases();
         $roofs = RoofStructure::setRoofsToScreen();
-        $panels = PanelBrands::asSelectArray();
-        $inverters = InverterBrands::asSelectArray();
+        $panels = PanelBrands::cases();
+        $inverters = InverterBrands::cases();
 
         return view('proposals.manual', compact($this->setManualParams()));
     }
@@ -168,19 +167,21 @@ class ProposalController extends Controller
 
         $panelBrandImage = $proposal->is_manual
             ? setPanelBrandImage((int)$manualData['panel_brand'])
-            : $panelBrand;
+            : jsonToArray($kit->panel_specs)['logo'];
 
         $incidence = (new SolarIncidenceService())->getSolarIncidence(city: $city)->average;
         $payback = $this->paybackService->setPaybackData(proposal: $proposal);
         $generationData = $this->paybackService->setGenerationData(proposal: $proposal);
 
-        $overload = 'Até ' . $this->kitSpecService->getKitOverload($kit, $manualData) . ' módulos';
+        $overload = 'Até ' . $this->kitSpecService->getKitOverload($kit ?? null, $manualData) . ' módulos';
 
         $invertersCount = $proposal->is_manual
             ? ($manualData['inverter_quantity'] ?? 1)
-            : $this->kitSpecService->setInvertersCount($components);
+            : $this->kitSpecService->setInvertersCount(is_array($components) ? $components : jsonToArray($components));
 
-        $inverterModels = $this->kitSpecService->setInverterModels($components);
+        $inverterModels = $this->kitSpecService->setInverterModels(is_array($components) ? $components : jsonToArray($components));
+
+        $firstKit = $kit ?? null;
 
         $pdf = $isSample
             ? PDF::loadView('proposals.small_pdf', compact($pdfParams))
@@ -231,8 +232,8 @@ class ProposalController extends Controller
             'manualData',
             'inverterImage',
             'panelBrandImage',
-            'withoutSolar',
-            'withSolar',
+//            'withoutSolar',
+//            'withSolar',
             'incidence',
             'payback',
             'generationData',
@@ -274,8 +275,8 @@ class ProposalController extends Controller
 
     private function setInverterImageByDistributor(string $inverterBrand, string $distributor)
     {
-        if ($distributor === DistributorsEnum::EDELTEC) {
-            return \App\Packages\EdeltecApiPackage\Enums\InverterImage::tryFrom($inverterBrand)->value;
+        if ($distributor === DistributorsEnum::EDELTEC->value) {
+            return \App\Packages\EdeltecApiPackage\Enums\InverterImage::getByCase($inverterBrand);
         }
     }
 
