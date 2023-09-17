@@ -1,4 +1,3 @@
-@if(is_null($proposal->send_date))
 <form action="{{ route('valueHistory.updatePrice', [$proposal->id]) }}" method="post">
     @csrf
     <div class="columns discount box">
@@ -6,7 +5,8 @@
             <div class="field">
                 <label class="label">Comissão</label>
                 <div class="control">
-                    <input class="input" type="number" step="0.01" min="3" max="10" name="commission_percent"
+                    <input {{ $proposal->send_date !== null ? 'disabled' : '' }}
+                           class="input" type="number" step="0.01" min="3" max="10" name="commission_percent"
                            value="{{ $proposal->valueHistory->commission_percent }}">
                 </div>
             </div>
@@ -48,8 +48,8 @@
                 </p></div>
         </div>
         <div class="column is-1">
-            <button class="button is-primary is-large is-rounded" type="submit"><ion-icon name="checkmark-outline"></ion-icon></button>
+            <button {{ $proposal->send_date !== null ? 'disabled' : '' }}
+                class="button is-primary is-large is-rounded" type="submit"><ion-icon name="checkmark-outline"></ion-icon></button>
         </div>
     </div>
 </form>
-@endif

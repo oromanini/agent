@@ -19,4 +19,19 @@ class PromotionalKit extends Model
         'final_value',
         'active',
     ];
+
+    public static function isPromotional(Kit $kit): bool
+    {
+        $panel_specs = jsonToArray($kit->panel_specs);
+        $inverter_specs = jsonToArray($kit->inverter_specs);
+
+        $promotion = PromotionalKit::where('kwp', $kit->kwp)
+            ->where('panel_brand', $panel_specs['brand'])
+            ->where('panel_power', $panel_specs['power'])
+            ->where('inverter_brand', $inverter_specs['brand'])
+            ->where('is_active', true)
+            ->first();
+
+        return !is_null($promotion);
+    }
 }

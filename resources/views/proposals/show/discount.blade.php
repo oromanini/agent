@@ -9,7 +9,8 @@
                 <div class="field">
                     <label class="label">Desconto <span style="font-size: 8pt">(Máx. 3%)</span></label>
                     <div class="control">
-                        <input class="input" type="number" step="0.25" min="0" max="3" name="discount_percent"
+                        <input {{ $proposal->send_date !== null ? 'disabled' : '' }}
+                            class="input" type="number" step="0.25" min="0" max="3" name="discount_percent"
                                value="{{$proposal->valueHistory->discount_percent}}">
                     </div>
                 </div>
@@ -34,7 +35,8 @@
             </div>
             <div class="column is-1">
                 <br>
-                <button class="button is-primary is-large is-rounded" type="submit">
+                <button {{ $proposal->send_date !== null ? 'disabled' : '' }}
+                    class="button is-primary is-large is-rounded" type="submit">
                     <ion-icon name="checkmark-outline"></ion-icon>
                 </button>
             </div>
