@@ -101,7 +101,7 @@ class ApprovalController extends Controller
         return redirect()->back();
     }
 
-    public static function setKits(Proposal $proposal): string|Kit
+    public static function setKits(Proposal $proposal): array|Kit
     {
         return $proposal->is_manual
             ? json_decode($proposal->components, true)
