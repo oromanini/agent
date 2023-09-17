@@ -2,16 +2,14 @@
 
 namespace App\Services;
 
+use App\Models\Proposal;
 use App\Models\ProposalValueHistory;
 use Illuminate\Support\Facades\DB;
 
 class ProposalValueHistoryService
 {
-    private $pricingService;
-
-    public function __construct(PricingService $pricingService)
+    public function __construct(private readonly PricingService $pricingService)
     {
-        $this->pricingService = $pricingService;
     }
 
     public function store($data, bool $isManual): int
@@ -20,8 +18,15 @@ class ProposalValueHistoryService
 
         $valueHistory->kit_cost = $this->getKitCost($data, $isManual);
         $finalPrice = $this->getFinalPrice($data, $isManual);
-        $valueHistory->initial_price = $isManual ? $finalPrice : $finalPrice['finalPrice'];
-        $valueHistory->final_price = $isManual ? $finalPrice : $finalPrice['finalPrice'];
+
+        $valueHistory->initial_price = $isManual
+            ? $finalPrice
+            : $finalPrice['finalPrice'];
+
+        $valueHistory->final_price = $isManual
+            ? $finalPrice
+            : $finalPrice['finalPrice'];
+
         $valueHistory->is_promotional = false;
 
         $valueHistory->commission_percent = env('COMMISSION_PERCENT') * 100;
@@ -40,36 +45,21 @@ class ProposalValueHistoryService
         $initialPrice = $valueHistory->initial_price;
         $fullCommissionPercent = (float)env('COMMISSION_PERCENT');
 
-        if (isset($data['discount_percent'])) {
+        isset($data['discount_percent']) && $valueHistory =
+            $this->updateWithDiscountPercent(
+                $valueHistory,
+                $data,
+                $initialPrice,
+                $fullCommissionPercent
+            );
 
-            $valueHistory->discount_percent = (float)$data['discount_percent'];
-
-            $discount = $valueHistory->initial_price * ((float)$data['discount_percent'] / 100);
-
-            $commissionPercent = $valueHistory->commission_percent / 100;
-
-            $calculationBasis = $initialPrice - $discount;
-
-            $fullCommissionValue = $calculationBasis * $fullCommissionPercent;
-
-            $commissionDiscount = $fullCommissionValue - ($calculationBasis * $commissionPercent);
-
-            $valueHistory->final_price = round($initialPrice - $discount - $commissionDiscount, 2);
-        }
-
-        if (isset($data['commission_percent'])) {
-
-            $valueHistory->commission_percent = (float)$data['commission_percent'];
-            $commissionPercent = (float)$data['commission_percent'] / 100;
-            $discount = $valueHistory->initial_price * ($valueHistory->discount_percent / 100);
-
-            $calculationBasis = $initialPrice - $discount;
-            $fullCommissionValue = $calculationBasis * $fullCommissionPercent;
-            $newCommissionValue = $calculationBasis * $commissionPercent;
-            $commissionDiscount = $fullCommissionValue - $newCommissionValue;
-
-            $valueHistory->final_price = round($initialPrice - $discount - $commissionDiscount, 2);
-        }
+        isset($data['commission_percent']) && $valueHistory =
+            $this->updateWithCommissionPercent(
+                $valueHistory,
+                $data,
+                $initialPrice,
+                $fullCommissionPercent
+            );
 
         DB::transaction(function () use ($valueHistory) {
             $valueHistory->update();
@@ -78,9 +68,8 @@ class ProposalValueHistoryService
         return ['success', 'Alteração de valor aplicada!'];
     }
 
-    public function setValueHistoryData($proposal): array
+    public function setValueHistoryData(Proposal $proposal): array
     {
-
         $valueHistory = $proposal->valueHistory;
 
         $discountPercent = $valueHistory->discount_percent / 100;
@@ -96,7 +85,6 @@ class ProposalValueHistoryService
 
         $totalCost = $this->setTotalCost($proposal);
 
-
         return [
             'discountValue' => $discountValue,
             'calculateBase' => $calculateBase,
@@ -109,7 +97,7 @@ class ProposalValueHistoryService
         ];
     }
 
-    private function setTotalCost($proposal): array
+    private function setTotalCost(Proposal $proposal): array
     {
         $installation = $proposal->number_of_panels * env('INSTALLATION_PANEL_PRICE');
         $homologation = $this->pricingService->calculateHomologation($proposal->kwp, $proposal->valueHistory->final_price);
@@ -136,7 +124,7 @@ class ProposalValueHistoryService
     {
         return $isManual
             ? stringMoneyToFloat($data['cost'])
-            : $data['sumKits']['cost'];
+            : $data['cost'];
     }
 
     private function getFinalPrice($data, bool $isManual): float|array
@@ -146,8 +134,46 @@ class ProposalValueHistoryService
         }
 
         $pricingService = new PricingService();
-        $data['kwp'] = $data['sumKits']['kwp'];
-
         return $pricingService->calculateFinalPrice($data);
+    }
+
+    private function updateWithDiscountPercent(
+        ProposalValueHistory $valueHistory,
+        array                $data,
+        float                $initialPrice,
+        float                $fullCommissionPercent
+    ): ProposalValueHistory {
+
+        $valueHistory->discount_percent = (float)$data['discount_percent'];
+
+        $discount = $valueHistory->initial_price * ((float)$data['discount_percent'] / 100);
+        $commissionPercent = $valueHistory->commission_percent / 100;
+        $calculationBasis = $initialPrice - $discount;
+        $fullCommissionValue = $calculationBasis * $fullCommissionPercent;
+        $commissionDiscount = $fullCommissionValue - ($calculationBasis * $commissionPercent);
+
+        $valueHistory->final_price = round($initialPrice - $discount - $commissionDiscount, 2);
+
+        return $valueHistory;
+    }
+
+    private function updateWithCommissionPercent(
+        ProposalValueHistory $valueHistory,
+        array                $data,
+        float                $initialPrice,
+        float                $fullCommissionPercent
+    ): ProposalValueHistory {
+
+        $valueHistory->commission_percent = (float)$data['commission_percent'];
+
+        $commissionPercent = (float) $data['commission_percent'] / 100;
+        $discount = $valueHistory->initial_price * ($valueHistory->discount_percent / 100);
+        $calculationBasis = $initialPrice - $discount;
+        $fullCommissionValue = $calculationBasis * $fullCommissionPercent;
+        $newCommissionValue = $calculationBasis * $commissionPercent;
+        $commissionDiscount = $fullCommissionValue - $newCommissionValue;
+
+        $valueHistory->final_price = round($initialPrice - $discount - $commissionDiscount, 2);
+        return $valueHistory;
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Client;
+use App\Models\Kit;
 use App\Models\PreInspection;
 use App\Models\Proposal;
 use App\Models\SolarIncidence;
@@ -12,34 +13,23 @@ use Ramsey\Uuid\Uuid;
 
 class ProposalService
 {
-    private SolarIncidenceService $incidenceService;
-    private ProposalValueHistoryService $valueHistoryService;
+    private array $data;
 
     public function __construct(
-        SolarIncidenceService       $incidenceService,
-        ProposalValueHistoryService $valueHistoryService
-    ) {
-        $this->incidenceService = $incidenceService;
-        $this->valueHistoryService = $valueHistoryService;
-    }
+        private readonly SolarIncidenceService $incidenceService,
+        private readonly ProposalValueHistoryService $valueHistoryService
+    ) {}
 
     public function store($data, bool $isManual = false): object
     {
-        $incidence = $this->getIncidence($data['client']);
+        $this->data = $data;
+        $incidence = $this->getIncidence($this->data['client']);
 
         $proposal = $this->fillObject(
-            data: $data,
             isManual: $isManual,
             incidence: $incidence,
         );
-
-        $preInspection = new PreInspection();
-
-        DB::transaction(function () use ($preInspection) {
-            $preInspection->save();
-        });
-
-        $proposal->pre_inspection_id = $preInspection->id;
+        $proposal->pre_inspection_id = $this->createPreInspection()->id;
 
         DB::transaction(function () use ($proposal) {
             $proposal->save();
@@ -49,72 +39,17 @@ class ProposalService
     }
 
     public function fillObject(
-        array $data,
         bool $isManual,
         SolarIncidence $incidence
     ): object {
         $proposal = new Proposal();
-        $kit = null;
-
-        if ($isManual) {
-            $proposal->is_manual = true;
-            $proposal->kit_uuid = Uuid::uuid6();
-            $proposal->components = json_encode(explode(PHP_EOL, $data['components']));
-            $proposal->client_id = (int)$data['client'];
-            $proposal->agent_id = (int)$data['agent'];
-
-            $proposal->manual_data = json_encode([
-                'panel_brand' => $data['panel_brand'],
-                'panel_model' => $data['panel_model'],
-                'panel_power' => $data['panel_power'],
-                'panel_warranty' => $data['panel_warranty'],
-                'inverter_brand' => $data['inverter_brand'],
-                'inverter_model' => $data['inverter_model'],
-                'inverter_power' => $data['inverter_power'],
-                'inverter_warranty' => $data['inverter_warranty'],
-                'inverter_quantity' => $data['inverter_quantity']
-            ]);
-
-        } else {
-            $proposal->is_manual = false;
-            $proposal->agent_id = $data['agent'] ?? auth()->user()->id;
-
-            $uuids = $data['kit_id'];
-            $sumKits = json_decode(Http::get(env('KITS_URL') . 'getInventoryKitsByCodes/' . $uuids)->body(), true);
-            $proposal->kit_uuid = json_encode($uuids);
-            $proposal->manual_data = json_encode([]);
-            $proposal->components = json_encode($sumKits['components']);
-            $kit = kitByUuid(getKitCodesFromProposal($proposal)[0])['technical_description'];
-            $data['sumKits'] = $isManual ? null : $sumKits;
-            $data['panelBrand'] = $kit['panel_specs']['panel_brand'];
-            $data['panelPower'] = $kit['panel_specs']['panel_power'];
-            $data['inverterBrand'] = $kit['inverter_brand'];
-        }
-
         $proposal->uuid = Uuid::uuid6();
-        $proposal->type = 'normal';
-        $proposal->kwp = $isManual ? (float)$data['kwp'] : (float)$sumKits['kwp'];
-        $proposal->number_of_panels = $isManual ? (int)$data['panel_quantity'] : (float)$sumKits['panel_count'];
 
-        $proposal->estimated_generation = $this->calculateEstimatedGeneration($proposal->kwp, $incidence)['average'];
+        $isManual
+            ? $proposal = $this->fillManualProposal($proposal)
+            : $proposal = $this->fillDefaultProposal($proposal);
 
-        $proposal->average_consumption = (float)$data['average_consumption'];
-        $proposal->tension_pattern = formatTension($data['tension_pattern']);
-        $proposal->roof_structure = (int)$data['roof_structure'];
-        $proposal->kw_price = (float)str_replace(',', '.', $data['kw_price']);
-        $proposal->client_id = (int)$data['client'];
-
-        $proposal->value_history_id = $this->valueHistoryService->store($data, $isManual);
-
-        $roofOrientation = [];
-
-        foreach ($data['orientation'] as $value) {
-            $roofOrientation[] = $value;
-        }
-
-        $proposal->roof_orientation = json_encode($roofOrientation);
-
-        return $proposal;
+        return $this->fillCommonFields($proposal, $isManual, $incidence);
     }
 
     public function calculateEstimatedGeneration($kwp, $incidence): array
@@ -139,7 +74,7 @@ class ProposalService
 
         $sum = 0;
 
-        foreach ($months as $key => $val) {
+        foreach ($months as $val) {
             $sum += $val;
         }
 
@@ -170,5 +105,93 @@ class ProposalService
             ->first();
 
         return $this->incidenceService->getSolarIncidence($address->city);
+    }
+
+    private function createPreInspection(): PreInspection
+    {
+        $preInspection = new PreInspection();
+
+        DB::transaction(function () use ($preInspection) {
+            $preInspection->save();
+        });
+
+        return $preInspection;
+    }
+
+    private function fillManualProposal(Proposal $proposal): Proposal
+    {
+        $proposal->is_manual = true;
+        $proposal->kit_uuid = Uuid::uuid6();
+        $proposal->components = json_encode(explode(PHP_EOL, $this->data['components']));
+        $proposal->client_id = (int)$this->data['client'];
+        $proposal->agent_id = (int)$this->data['agent'];
+        $proposal->type = 'normal';
+        $proposal->kwp = (float) $this->data['kwp'];
+        $proposal->number_of_panels = (float) $this->data['panel_quantity'];
+
+        $proposal->manual_data = json_encode([
+            'panel_brand' => $this->data['panel_brand'],
+            'panel_model' => $this->data['panel_model'],
+            'panel_power' => $this->data['panel_power'],
+            'panel_warranty' => $this->data['panel_warranty'],
+            'inverter_brand' => $this->data['inverter_brand'],
+            'inverter_model' => $this->data['inverter_model'],
+            'inverter_power' => $this->data['inverter_power'],
+            'inverter_warranty' => $this->data['inverter_warranty'],
+            'inverter_quantity' => $this->data['inverter_quantity']
+        ]);
+
+        return $proposal;
+    }
+
+    private function fillDefaultProposal(Proposal $proposal): Proposal
+    {
+        $kit = Kit::query()->where('distributor_code', $this->data['kit_id'])->first();
+        $panel_power = json_decode($kit->panel_specs, true)['power'];
+
+        $proposal->kwp = $kit->kwp;
+        $proposal->is_manual = false;
+        $proposal->agent_id = $this->data['agent'] ?? auth()->user()->id;
+        $proposal->kit_uuid = $this->data['kit_id'];
+        $proposal->manual_data = json_encode([]);
+        $proposal->components = $kit->components;
+        $proposal->type = 'normal';
+
+        $this->data['cost'] = $kit->cost;
+        $this->data['kwp'] = $kit->kwp;
+        $this->data['panel_count'] = roundOrFloorDecimalNumber($kit->kwp / ($panel_power / 1000));
+
+        $proposal->number_of_panels = $this->data['panel_count'];
+
+        return $proposal;
+    }
+
+    private function setRoofOrientations(array $data): array
+    {
+        $roofOrientation = [];
+
+        foreach ($data['orientation'] as $value) {
+            $roofOrientation[] = $value;
+        }
+
+        return $roofOrientation;
+    }
+
+    private function fillCommonFields(
+        Proposal $proposal,
+        bool $isManual,
+        SolarIncidence $incidence
+    ): Proposal {
+        $proposal->estimated_generation = $this->calculateEstimatedGeneration($proposal->kwp, $incidence)['average'];
+        $proposal->average_consumption = (float) $this->data['average_consumption'];
+        $proposal->tension_pattern = (int) $this->data['tension_pattern'];
+        $proposal->roof_structure = (int) $this->data['roof_structure'];
+        $proposal->kw_price = commaFloatToDotFloat($this->data['kw_price']);
+        $proposal->client_id = (int) $this->data['client'];
+        $proposal->roof_orientation = json_encode($this->setRoofOrientations($this->data));
+
+        $proposal->value_history_id = $this->valueHistoryService->store($this->data, $isManual);
+
+        return $proposal;
     }
 }

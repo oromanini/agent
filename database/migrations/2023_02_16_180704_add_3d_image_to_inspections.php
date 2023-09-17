@@ -9,7 +9,7 @@ class Add3dImageToInspections extends Migration
     public function up(): void
     {
         Schema::table('inspections', function (Blueprint $table) {
-            $table->string('3d_image');
+            $table->string('3d_image')->nullable();
         });
     }
 

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Enums\DepartmentsEnum;
 use App\Models\Contract;
+use App\Models\Kit;
+use App\Models\PromotionalKit;
 use App\Models\Proposal;
 use App\Models\Status;
 use App\Models\User;
@@ -12,6 +14,7 @@ use App\Services\ApprovalService;
 use App\Services\ContractService;
 use App\Services\FinancingService;
 use App\Services\InspectionService;
+use App\Services\KitSpecService;
 use App\Services\ProposalValueHistoryService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -26,8 +29,7 @@ class ApprovalController extends Controller
         private readonly FinancingService            $financingService,
         private readonly ContractService             $contractService,
     )
-    {
-    }
+    {}
 
     public function index(Request $request): View
     {
@@ -45,7 +47,7 @@ class ApprovalController extends Controller
 
         $valueHistoryData = $this->valueHistoryService->setValueHistoryData($proposal);
         $kits = $this::setKits($proposal);
-        $isPromotional = $this->isPromotional($proposal);
+        $isPromotional = $kits instanceof Kit && PromotionalKit::isPromotional($kits);
 
         $contractStatuses = Status::query()->where('department', DepartmentsEnum::CONTRACT)
             ->orWhere('department', DepartmentsEnum::GENERAL)->get();
@@ -99,35 +101,20 @@ class ApprovalController extends Controller
         return redirect()->back();
     }
 
-    public static function setKits($proposal)
+    public static function setKits(Proposal $proposal): array|Kit
     {
         return $proposal->is_manual
             ? json_decode($proposal->components, true)
-            : getKitCodesFromProposal($proposal);
+            : (new KitSpecService())->getKitFromProposal($proposal);
     }
 
-    public function inactive($id): RedirectResponse
+    public function inactive(int $id): RedirectResponse
     {
         $approval = Proposal::find($id);
         $approval->delete();
         session()->flash('message', ['error', "Aprovação Inativada!"]);
 
         return redirect()->back();
-    }
-
-    private function isPromotional($proposal): bool
-    {
-        return false;
-//            ($proposal->number_of_panels == 4
-//                || $proposal->number_of_panels == 8
-//                || $proposal->number_of_panels == 12
-//                || $proposal->number_of_panels == 14)
-//            &&
-//            (
-//                $proposal->kwp == 2.2
-//                || $proposal->kwp == 4.4
-//                || $proposal->kwp == 6.6
-//                || $proposal->kwp == 7.7);
     }
 
     private function setApprovalParams(): array

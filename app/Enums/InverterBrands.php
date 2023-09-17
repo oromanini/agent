@@ -2,18 +2,16 @@
 
 namespace App\Enums;
 
-use BenSampo\Enum\Enum;
-
-final class InverterBrands extends Enum
+enum InverterBrands: int
 {
-    const Growatt =   1;
-    const Chint =   2;
-    const Deye = 3;
-    const Sofar = 4;
-    const Solis = 5;
-    const Bel = 6;
-    const Sungrow = 7;
-    const DeyeString = 8;
-    const Canadian = 9;
-    const Saj = 10;
+    case Growatt =   1;
+    case Chint =   2;
+    case Deye = 3;
+    case Sofar = 4;
+    case Solis = 5;
+    case Bel = 6;
+    case Sungrow = 7;
+    case DeyeString = 8;
+    case Canadian = 9;
+    case Saj = 10;
 }

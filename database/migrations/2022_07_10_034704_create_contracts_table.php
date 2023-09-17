@@ -17,7 +17,6 @@ class CreateContractsTable extends Migration
             $table->id();
             $table->longText('file')->nullable();
             $table->longText('signed_file')->nullable();
-            $table->string('status')->default('Aguardando');
             $table->longText('note')->nullable();
             $table->softDeletes();
             $table->timestamps();

@@ -68,7 +68,7 @@
                 <tbody>
                 @forelse(auth()->user()->id == 20 ? $approvals->where('created_at', '<=', '2022-10-01') : $approvals as $approval)
                     @if($approval->client)
-                    <tr class="lh-40">
+                        <tr class="lh-40">
                         <th>{{$approval->id}}</th>
                         <td>{{ $approval->client->name }}</td>
                         @php
