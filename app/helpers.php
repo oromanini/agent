@@ -50,6 +50,7 @@ function setPanelBrandImage($brand): string
         'Osda', PanelBrands::Osda->value => '/img/panel_brands/osda.png',
         'Ae_solar', PanelBrands::Ae_Solar->value => '/img/panel_brands/ae_solar.png',
         'Znshine', PanelBrands::ZNShine->value => '/img/panel_brands/ae_solar.png',
+        'Astroenergy', PanelBrands::Astronergy->value => '/img/panel_brands/astroenergy.png',
     };
 }
 
