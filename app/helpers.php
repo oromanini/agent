@@ -49,8 +49,8 @@ function setPanelBrandImage($brand): string
         'Sunova', PanelBrands::Sunova->value => '/img/panel_brands/sunova.png',
         'Osda', PanelBrands::Osda->value => '/img/panel_brands/osda.png',
         'Ae_solar', PanelBrands::Ae_Solar->value => '/img/panel_brands/ae_solar.png',
-        'Znshine', PanelBrands::ZNShine->value => '/img/panel_brands/ae_solar.png',
-        'Astroenergy', PanelBrands::Astronergy->value => '/img/panel_brands/astroenergy.png',
+        'Znshine', PanelBrands::ZNShine->value => '/img/panel_brands/znshine.png',
+        'Astroenergy', PanelBrands::Astronergy->value => '/img/panel_brands/astronergy.png',
     };
 }
 
@@ -72,11 +72,11 @@ function setInverterImage($brand): string
         InverterBrands::Growatt->value, 'Growatt' => $growatt,
         InverterBrands::Chint->value, 'Chint' => $chint,
         InverterBrands::Deye->value, 'Deye' => $deye,
-        InverterBrands::DeyeString->value, 'DeyeString' => $sofar,
-        InverterBrands::Sofar->value, 'Sofar' => $solis,
-        InverterBrands::Solis->value, 'Solis' => $bel,
-        InverterBrands::Bel->value, 'Bel' => $sungrow,
-        InverterBrands::Sungrow->value, 'Sungrow' => $deyeString,
+        InverterBrands::DeyeString->value, 'DeyeString' => $deyeString,
+        InverterBrands::Sofar->value, 'Sofar' => $sofar,
+        InverterBrands::Solis->value, 'Solis' => $solis,
+        InverterBrands::Bel->value, 'Bel' => $bel,
+        InverterBrands::Sungrow->value, 'Sungrow' => $sungrow,
         InverterBrands::Canadian->value, 'Canadian' => $canadian,
         InverterBrands::Saj->value, 'Saj' => $saj,
         default => throw new Exception('Inversor não localizado.'),
