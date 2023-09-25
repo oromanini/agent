@@ -203,6 +203,10 @@ class EdeltecApiService
 
     public function setProgress(int $page, $totalPages): float
     {
+        if ($totalPages === 0) {
+            throw new \Exception('Total page is zero!');
+        }
+
         return round(($page / $totalPages) * 100, 2);
     }
 
