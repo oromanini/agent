@@ -61,7 +61,6 @@ class EdeltecApiService
                 while (!$finished) {
 
                     is_null($this->credentials->bearerToken) && $this->credentials->setOrRenewApiToken();
-
                     $response = self::responseToArray(
                         $this->sendRequest(
                             page: $page,
@@ -70,6 +69,8 @@ class EdeltecApiService
                             bearerToken: $this->credentials->bearerToken
                         )
                     );
+
+                    dd($response);
 
                     if (isset($response['statusCode']) && $response['statusCode'] === self::UNAUTHORIZED) {
                         $this->credentials->setOrRenewApiToken();
