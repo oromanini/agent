@@ -70,8 +70,6 @@ class EdeltecApiService
                         )
                     );
 
-                    dd($response);
-
                     if (isset($response['statusCode']) && $response['statusCode'] === self::UNAUTHORIZED) {
                         $this->credentials->setOrRenewApiToken();
                     }
@@ -205,7 +203,8 @@ class EdeltecApiService
     public function setProgress(int $page, $totalPages): float
     {
         if ($totalPages === 0) {
-            throw new \Exception('Total page is zero!');
+            Log::error('Total page is zero!');
+            return 0;
         }
 
         return round(($page / $totalPages) * 100, 2);
