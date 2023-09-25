@@ -78,7 +78,9 @@ class EdeltecApiService
                     $page++;
                     $totalPages = $response["meta"]["totalPages"];
 
-                    $progress = $this->setProgress(page: $page, totalPages: $totalPages);
+                    $progress = $totalPages === 0
+                        ? $this->inactiveKitsAndGoToNext($combination)
+                        : $this->setProgress(page: $page, totalPages: $totalPages);
 
                     Log::info($this->setLogMessage(
                         panelBrand: $panelBrand->value,
@@ -202,11 +204,6 @@ class EdeltecApiService
 
     public function setProgress(int $page, $totalPages): float
     {
-        if ($totalPages === 0) {
-            Log::error('Total page is zero!');
-            return 0;
-        }
-
         return round(($page / $totalPages) * 100, 2);
     }
 
@@ -255,5 +252,13 @@ class EdeltecApiService
             json: $response->getBody()->getContents(),
             associative: true
         );
+    }
+
+    private function inactiveKitsAndGoToNext(ActiveKit $combination): int
+    {
+        $combination->is_active = false;
+        $combination->update();
+
+        return 0;
     }
 }
