@@ -214,7 +214,8 @@ class EdeltecApiService
                $page = null,
                $totalPages = null,
                $combination = null
-    ): \stdClass {
+    ): \stdClass
+    {
         $message = new \stdClass();
 
         $message->progress = 'Progresso de importação: '
@@ -254,10 +255,12 @@ class EdeltecApiService
         );
     }
 
-    private function inactiveKitsAndGoToNext(ActiveKit $combination): int
+    private function inactiveKitsAndGoToNext(?ActiveKit $combination): int
     {
-        $combination->is_active = false;
-        $combination->update();
+        if ($combination) {
+            $combination->is_active = false;
+            $combination->update();
+        }
 
         return 0;
     }
