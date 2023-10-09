@@ -21,7 +21,7 @@ use Psr\Http\Message\ResponseInterface;
 class EdeltecApiService
 {
     const KITS_URI = "/produtos/integration?";
-    const DAYS_FOR_INACTIVE = 21;
+    const DAYS_FOR_INACTIVE = 25;
     const UNAUTHORIZED = 401;
     const ITEMS_LIMIT = 30;
     const MAX_UPDATE_DAYS = 1;
@@ -149,7 +149,7 @@ class EdeltecApiService
 
         if (!is_null($kit)) {
             $kit->cost = $item['precoDoIntegrador'];
-            $kit->update();
+            $days_to_availability <= self::DAYS_FOR_INACTIVE && $kit->update();
         } else {
             $days_to_availability <= self::DAYS_FOR_INACTIVE
             && Kit::create($this->setKitParams($item));
