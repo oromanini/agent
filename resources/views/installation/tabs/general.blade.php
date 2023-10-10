@@ -224,7 +224,7 @@
         </div>
         <div class="column is-3">
             <label for="" class="label">Tipo de telhado</label>
-            <p>{{ \App\Enums\RoofStructure::getDescription($installation->proposal->roof_structure) }}</p>
+            <p>{{ \App\Enums\RoofStructure::translateExternalRoof($installation->proposal->roof_structure)->value }}</p>
         </div>
         <div class="column is-3">
             <label for="" class="label">Tensão do cliente</label>
