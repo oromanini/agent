@@ -94,7 +94,7 @@ class ProposalController extends Controller
         $kits = $proposal->is_manual
             ? jsonToArray($proposal->components)
             : jsonToArray(
-                (new KitSpecService())->getKitFromProposal($proposal)->components
+                (new KitSpecService())->getKitFromProposal($proposal)->components ?? explode(',',$proposal->components)
             );
 
         $fields = $this->setEditFields();
