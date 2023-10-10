@@ -32,7 +32,7 @@ class InstallationController extends Controller
     {
         $installation = Installation::find($id);
         $proposal = $installation->proposal;
-        $kits = ApprovalController::setKits($proposal);
+        $kits = $proposal->components;
         $deadline = $installation->created_at->diffInDays(now());
         $deadlineColor = deadLineColor(status: $installation->status, deadline: $deadline);
         $plusCosts = $this->installationRepository->getPlusCosts($installation);
