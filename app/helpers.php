@@ -51,6 +51,7 @@ function setPanelBrandImage($brand): string
         'Ae_solar', PanelBrands::Ae_Solar->value => '/img/panel_brands/ae_solar.png',
         'Znshine', PanelBrands::ZNShine->value => '/img/panel_brands/znshine.png',
         'Astroenergy', PanelBrands::Astronergy->value => '/img/panel_brands/astronergy.png',
+        'Pulling', PanelBrands::Pulling->value => '/img/panel_brands/pulling.png',
     };
 }
 

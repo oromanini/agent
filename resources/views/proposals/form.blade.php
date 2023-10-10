@@ -463,6 +463,10 @@
                     panelImage = '/img/panel_brands/ae_solar.png'
                 }
 
+                if (brand == 'Pulling') {
+                    panelImage = '/img/panel_brands/pulling.png'
+                }
+
                 return panelImage
             }
 
