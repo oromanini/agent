@@ -33,7 +33,7 @@ class KitSpecService
         return TensionPattern::tryFrom($data['tension'])->name;
     }
 
-    public function getKitFromProposal(Proposal $proposal): Kit
+    public function getKitFromProposal(Proposal $proposal): Kit|null
     {
         return Kit::where('distributor_code', $proposal->kit_uuid)->first();
     }
