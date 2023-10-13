@@ -91,9 +91,9 @@ class ProposalController extends Controller
         $valueHistoryData = $this->proposalValueHistoryService->setValueHistoryData($proposal);
         $isPromotional = false;
 
-        $kit = (new KitSpecService())->getKitFromProposal($proposal)->components
+        $kit = !is_null((new KitSpecService())->getKitFromProposal($proposal)->components)
             ? jsonToArray((new KitSpecService())->getKitFromProposal($proposal)->components)
-            : explode(',', $proposal);
+            : explode(',', $proposal->components);
 
         $kits = $proposal->is_manual
             ? jsonToArray($proposal->components)
