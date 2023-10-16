@@ -104,7 +104,7 @@ class ApprovalController extends Controller
     public static function setKits(Proposal $proposal): array|Kit
     {
         return $proposal->components
-            ? json_decode($proposal->components, true)
+            ? jsonToArray($proposal->components)
             : (new KitSpecService())->getKitFromProposal($proposal);
     }
 
