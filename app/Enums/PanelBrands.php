@@ -18,4 +18,5 @@ enum PanelBrands: int
     case Ae_Solar = 12;
     case ZNShine = 13;
     case Pulling = 14;
+    case Hanersun = 15;
 }

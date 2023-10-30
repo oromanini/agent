@@ -467,6 +467,10 @@
                     panelImage = '/img/panel_brands/pulling.png'
                 }
 
+                if (brand == 'Hanersun') {
+                    panelImage = '/img/panel_brands/hanersun.png'
+                }
+
                 return panelImage
             }
 
