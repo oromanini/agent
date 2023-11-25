@@ -69,11 +69,12 @@ function setInverterImage($brand): string
     $sungrow = '/img/inverters/sungrow.png';
     $canadian = '/img/inverters/canadian.png';
     $saj = '/img/inverters/saj.png';
+    $techpower = '/img/inverters/techpower.png';
 
     return match ($brand) {
         InverterBrands::Growatt->value, 'Growatt' => $growatt,
         InverterBrands::Chint->value, 'Chint' => $chint,
-        InverterBrands::Deye->value, 'Deye' => $deye,
+        InverterBrands::DeyeMicro->value, 'Deye' => $deye,
         InverterBrands::DeyeString->value, 'DeyeString' => $deyeString,
         InverterBrands::Sofar->value, 'Sofar' => $sofar,
         InverterBrands::Solis->value, 'Solis' => $solis,
@@ -81,6 +82,7 @@ function setInverterImage($brand): string
         InverterBrands::Sungrow->value, 'Sungrow' => $sungrow,
         InverterBrands::Canadian->value, 'Canadian' => $canadian,
         InverterBrands::Saj->value, 'Saj' => $saj,
+        InverterBrands::TechPowerMicro->value, 'TechPowerMicro' => $techpower,
         default => throw new Exception('Inversor não localizado.'),
     };
 }

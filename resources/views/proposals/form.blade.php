@@ -498,6 +498,10 @@
                     inverterImage = '/img/inverter_brands/saj.png'
                 }
 
+                if (brand == 'TechPowerMicro') {
+                    inverterImage = '/img/inverter_brands/techpower.png'
+                }
+
                 return inverterImage
             }
         }
