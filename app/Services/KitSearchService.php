@@ -45,8 +45,10 @@ class KitSearchService
                     ->where('panel_brand', $panel->value)
                     ->where('inverter_brand', $inverter->value)
                     ->where('distributor', $distributor)
-                    ->where('is_active', true)
+                    ->where('is_active', '=', 1)
                     ->first();
+
+                dd($combination);
 
                 $tensionPossibilities = TensionPattern::setTensionPossibilities(tension: $this->tension);
 
