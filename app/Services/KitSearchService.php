@@ -48,8 +48,6 @@ class KitSearchService
                     ->where('is_active', '=', 1)
                     ->first();
 
-                dd($combination);
-
                 $tensionPossibilities = TensionPattern::setTensionPossibilities(tension: $this->tension);
 
                 if (!is_null($combination) && $combination->is_active) {
