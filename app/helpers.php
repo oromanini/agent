@@ -53,6 +53,7 @@ function setPanelBrandImage($brand): string
         'Astroenergy', PanelBrands::Astronergy->value => '/img/panel_brands/astronergy.png',
         'Pulling', PanelBrands::Pulling->value => '/img/panel_brands/pulling.png',
         'Hanersun', PanelBrands::Hanersun->value => '/img/panel_brands/hanersun.png',
+        'Resun', PanelBrands::Resun->value => '/img/panel_brands/resun.png',
     };
 }
 

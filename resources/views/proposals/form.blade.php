@@ -315,6 +315,10 @@
                                         currency: 'BRL',
                                     }) +
                                     '</div>' +
+                                    '<div style="text-align: center">' +
+                                    '<br>' +
+                                    '<strong style="color: darkred">Chegada em estoque: </strong>' + DateHelper.databaseDateToString(item.availability) +
+                                    '</div>' +
                                     '<hr/>' +
                                     '<div style="display: flex; justify-content: center"><img src="' + banks + '" alt="..." width="230" style="a"></div>' +
                                     '</div>' +
@@ -471,6 +475,10 @@
                     panelImage = '/img/panel_brands/hanersun.png'
                 }
 
+                if (brand == 'Resun') {
+                    panelImage = '/img/panel_brands/resun.png'
+                }
+
                 return panelImage
             }
 
@@ -625,6 +633,14 @@
                         tension = data;
                     });
                 return tension;
+            }
+        }
+
+        class DateHelper {
+
+            static databaseDateToString(date) {
+                let dataMoment = moment(date);
+                return dataMoment.format('DD/MM/YYYY');
             }
         }
 
