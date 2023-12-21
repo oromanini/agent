@@ -149,12 +149,9 @@ class EdeltecApiService
 
         if (!is_null($kit)) {
             $kit->cost = $item['precoDoIntegrador'];
-            $kit->availability = $days_to_availability;
-//            $days_to_availability <= self::DAYS_FOR_INACTIVE &&
+            $kit->availability = $item['dataPrevistaParaDisponibilidade'];
             $kit->update();
         } else {
-//            $days_to_availability <= self::DAYS_FOR_INACTIVE
-//            &&
             Kit::create($this->setKitParams($item));
         }
     }
