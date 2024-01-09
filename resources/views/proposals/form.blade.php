@@ -479,6 +479,10 @@
                     panelImage = '/img/panel_brands/resun.png'
                 }
 
+                if (brand == 'Sine') {
+                    panelImage = '/img/panel_brands/sine.png'
+                }
+
                 return panelImage
             }
 
