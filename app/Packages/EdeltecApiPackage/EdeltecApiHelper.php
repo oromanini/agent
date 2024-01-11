@@ -29,10 +29,10 @@ class EdeltecApiHelper
         if (!$inverterModel) {
             $firstSentence = strtok($inverterData, '<br>');
 
-            return $firstSentence;
+            return $firstSentence ?? 'MODELO';
         }
 
-        return $inverterModel[1];
+        return $inverterModel[1]  ?? 'MODELO';
     }
 
     public static function getPanelWarranty(PanelBrand $panelBrand): int
