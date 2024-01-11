@@ -135,10 +135,14 @@ class EdeltecApiHelper
     {
         $inverter = InverterBrand::tryFrom($item['fabricante']);
 
+        $model = isset($item['caracteristicasInversor'])
+            ? self::getInverterModel($item['caracteristicasInversor'])
+            : 'model';
+
         return json_encode([
             'brand' => $item['fabricante'],
             'power' => $item['potenciaInversor'],
-            'model' => self::getInverterModel($item['caracteristicasInversor']),
+            'model' => $model,
             'logo' => self::getInverterLogo($item['fabricante']),
             'warranty' => self::getInverterWarranty($inverter),
         ]);
