@@ -7,7 +7,7 @@ use App\Enums\WorkCostClassificationEnum;
 use App\Models\Pricing\InstallationCost;
 use Tests\TestCase;
 
-class WorkCostTest extends TestCase
+class InstallationCostTest extends TestCase
 {
     protected function setUp(): void
     {
@@ -25,8 +25,10 @@ class WorkCostTest extends TestCase
             ->build();
     }
 
-    public function testToArray(): void
+    public function testInstalationCost(): void
     {
-        $this->assertIsArray($this->workCost->toArray());
+        $cost = $this->installationCost->cost();
+
+        $this->assertEquals(1200, $cost);
     }
 }
