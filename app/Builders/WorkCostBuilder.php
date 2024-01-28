@@ -3,7 +3,6 @@
 namespace App\Builders;
 
 use App\Models\Pricing\WorkCost;
-use Illuminate\Support\Facades\Auth;
 
 class WorkCostBuilder
 {
@@ -35,13 +34,14 @@ class WorkCostBuilder
             'date' => now()->toDateTimeString(),
         ];
 
-        $this->workCost->changeHistory = json_encode($history);
+        $this->workCost->change_history = json_encode($history);
 
         return $this;
     }
 
     public function build(): WorkCost
     {
+        $this->workCost->save();
         return $this->workCost;
     }
 }
