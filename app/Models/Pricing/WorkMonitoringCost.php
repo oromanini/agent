@@ -11,7 +11,7 @@ class WorkMonitoringCost extends BaseCostWithRange implements Cost
     protected const MAX_RANGE_PERCENT = 0.03;
     protected const MINIMUM_MONITORING_COST = 160;
 
-    const KEY = 'monitoring_cost_range';
+    private const KEY = 'monitoring_cost_range';
 
     public function __construct(private readonly float $kwp)
     {
