@@ -6,7 +6,7 @@ use App\Enums\WorkCostClassificationEnum;
 
 class InstallationCost extends BaseCost implements Cost
 {
-    const KEY = 'panel_price';
+    private const KEY = 'panel_price';
 
     public function __construct(
         private readonly int $panelQuantity

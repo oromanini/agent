@@ -10,7 +10,7 @@ class HomologationCost extends BaseCostWithRange implements Cost
     const MAX_RANGE_POWER = 30;
     const MAX_RANGE_PERCENT = 0.05;
     const MINIMUM_HOMOLOGATION_COST = 100;
-    const KEY = 'homologation_cost_range';
+    private const KEY = 'homologation_cost_range';
 
     public function __construct(private readonly float $kwp)
     {

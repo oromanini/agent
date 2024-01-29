@@ -7,7 +7,7 @@ use App\Enums\WorkCostClassificationEnum;
 class DirectCurrentCost extends BaseCost implements Cost
 {
     const MINIMUM_CA_COST = 800;
-    const KEY = 'estimated_material_percentage';
+    private const KEY = 'estimated_material_percentage';
 
     public function __construct(
         private readonly float $finalValue
