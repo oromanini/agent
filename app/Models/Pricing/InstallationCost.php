@@ -3,17 +3,13 @@
 namespace App\Models\Pricing;
 
 use App\Enums\WorkCostClassificationEnum;
-use App\Repositories\WorkCostRepository;
 
-class InstallationCost implements Cost
+class InstallationCost extends BaseCost implements Cost
 {
-    private WorkCostRepository $workCostRepository;
-
     public function __construct(
         private readonly int $panelQuantity
-    )
-    {
-        $this->workCostRepository = new WorkCostRepository();
+    ) {
+        parent::__construct();
     }
 
     public function cost(): float
@@ -21,16 +17,13 @@ class InstallationCost implements Cost
         return $this->panelQuantity * $this->panelPrice();
     }
 
-    public function workCostInfo(): array
-    {
-        return $this->workCostRepository
-            ->getWorkCostByClassification(
-                WorkCostClassificationEnum::INSTALLATION
-            )->toArray();
-    }
-
     private function panelPrice(): float
     {
         return $this->workCostInfo()['costs']['panel_price'];
+    }
+
+    protected function classification(): int
+    {
+        return WorkCostClassificationEnum::INSTALLATION;
     }
 }
