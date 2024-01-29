@@ -1,0 +1,31 @@
+<?php
+
+namespace App\Models\Pricing;
+
+use App\Enums\WorkCostClassificationEnum;
+
+class InternalCommercialCommissionCost extends BaseCost implements Cost
+{
+    private const KEY = 'commission_percentage';
+
+    public function __construct(
+        private readonly float $finalValue
+    ) {
+        parent::__construct();
+    }
+
+    public function cost(): float
+    {
+        return $this->finalValue * $this->commissionPercentage();
+    }
+
+    private function commissionPercentage(): float
+    {
+        return $this->workCostInfo()['costs'][self::KEY];
+    }
+
+    protected function classification(): int
+    {
+        return WorkCostClassificationEnum::INTERNAL_COMMERCIAL_COMMISSION;
+    }
+}
