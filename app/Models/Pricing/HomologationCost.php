@@ -5,11 +5,12 @@ namespace App\Models\Pricing;
 use App\Enums\WorkCostClassificationEnum;
 use App\Exceptions\CostRangeNotFound;
 
-class HomologationCost extends BaseCost implements Cost
+class HomologationCost extends BaseCostWithRange implements Cost
 {
     const MAX_RANGE_POWER = 30;
     const MAX_RANGE_PERCENT = 0.05;
     const MINIMUM_HOMOLOGATION_COST = 100;
+    const KEY = 'homologation_cost_range';
 
     public function __construct(private readonly float $kwp)
     {
@@ -44,7 +45,7 @@ class HomologationCost extends BaseCost implements Cost
 
     protected function costRanges(): array
     {
-        return $this->workCostInfo()['costs']['homologation_cost_range'];
+        return $this->workCostInfo()['costs'][self::KEY];
     }
 
     private function calculateCostWithMaximumPowerRange(): float

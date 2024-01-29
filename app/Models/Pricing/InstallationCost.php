@@ -6,6 +6,8 @@ use App\Enums\WorkCostClassificationEnum;
 
 class InstallationCost extends BaseCost implements Cost
 {
+    const KEY = 'panel_price';
+
     public function __construct(
         private readonly int $panelQuantity
     ) {
@@ -19,7 +21,7 @@ class InstallationCost extends BaseCost implements Cost
 
     private function panelPrice(): float
     {
-        return $this->workCostInfo()['costs']['panel_price'];
+        return $this->workCostInfo()['costs'][self::KEY];
     }
 
     protected function classification(): int
