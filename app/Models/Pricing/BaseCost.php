@@ -27,23 +27,5 @@ abstract class BaseCost
         Log::error($message);
     }
 
-    protected function calculateRange(
-        float $minimumCost,
-        float $kwp
-    ): float {
-        $cost = $minimumCost;
-        $range = $this->costRanges();
-
-        foreach ($range as $rangeKwp => $rangeCost) {
-            if ($kwp < $rangeKwp) {
-                $cost = $rangeCost;
-                break;
-            }
-        }
-
-        return $cost;
-    }
-
     protected abstract function classification(): int;
-    protected abstract function costRanges(): array;
 }

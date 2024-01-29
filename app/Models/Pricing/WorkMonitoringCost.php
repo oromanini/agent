@@ -5,11 +5,13 @@ namespace App\Models\Pricing;
 use App\Enums\WorkCostClassificationEnum;
 use App\Exceptions\CostRangeNotFound;
 
-class WorkMonitoringCost extends BaseCost implements Cost
+class WorkMonitoringCost extends BaseCostWithRange implements Cost
 {
     protected const MAX_RANGE_POWER = 20;
     protected const MAX_RANGE_PERCENT = 0.03;
     protected const MINIMUM_MONITORING_COST = 160;
+
+    const KEY = 'monitoring_cost_range';
 
     public function __construct(private readonly float $kwp)
     {
@@ -39,7 +41,7 @@ class WorkMonitoringCost extends BaseCost implements Cost
 
     protected function costRanges(): array
     {
-        return $this->workCostInfo()['costs']['monitoring_cost_range'];
+        return $this->workCostInfo()['costs'][self::KEY];
     }
 
     private function calculateCostWithMaximumPowerRange(): float
