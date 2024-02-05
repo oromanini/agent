@@ -46,6 +46,7 @@ class KitSearchService
                     ->where('inverter_brand', $inverter->value)
                     ->where('distributor', $distributor)
                     ->where('is_active', '=', 1)
+                    ->orderBy('updated_at', 'desc')
                     ->first();
 
                 $tensionPossibilities = TensionPattern::setTensionPossibilities(tension: $this->tension);
