@@ -46,7 +46,6 @@ class KitSearchService
                     ->where('inverter_brand', $inverter->value)
                     ->where('distributor', $distributor)
                     ->where('is_active', '=', 1)
-                    ->orderBy('updated_at', 'desc')
                     ->first();
 
                 $tensionPossibilities = TensionPattern::setTensionPossibilities(tension: $this->tension);
@@ -59,7 +58,7 @@ class KitSearchService
                         ->whereIn('tension_pattern', $tensionPossibilities)
                         ->whereJsonContains('panel_specs->brand', $panel->value)
                         ->whereJsonContains('inverter_specs->brand', $inverter->value)
-                        ->orderBy('kwp')
+                        ->orderBy('kwp', 'updated_at')
                         ->first();
 
                     !is_null($kit) && $compatibleKits->push($kit);
