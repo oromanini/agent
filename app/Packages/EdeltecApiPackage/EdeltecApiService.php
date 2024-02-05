@@ -150,7 +150,9 @@ class EdeltecApiService
         if (!is_null($kit)) {
             $kit->cost = $item['precoDoIntegrador'];
             $kit->availability = $item['dataPrevistaParaDisponibilidade'] ?? now()->toDateString();
+            $kit->is_active = true;
             $kit->update();
+            Log::info("Data prevista para disponibilidade: {$item['dataPrevistaParaDisponibilidade']}");
         } else {
             Kit::create($this->setKitParams($item));
         }

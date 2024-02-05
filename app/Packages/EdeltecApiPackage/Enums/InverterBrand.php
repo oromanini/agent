@@ -8,5 +8,6 @@ enum InverterBrand: string
     case GROWATT = 'GROWATT';
     case SUNGROW = 'SUNGROW';
     case DEYE = 'DEYE';
+    case SOLIS = 'SOLIS';
 
 }

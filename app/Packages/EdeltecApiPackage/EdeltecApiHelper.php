@@ -58,6 +58,7 @@ class EdeltecApiHelper
             InverterBrand::GROWATT,
             InverterBrand::DEYE,
             InverterBrand::SUNGROW => 10,
+            default => 10
         };
     }
 
@@ -78,6 +79,7 @@ class EdeltecApiHelper
             InverterBrand::DEYE->value => '/EdeltecApiPackage/img/inverters/deye.png',
             InverterBrand::SUNGROW->value => '/EdeltecApiPackage/img/inverters/sungrow.png',
             InverterBrand::GROWATT->value => '/EdeltecApiPackage/img/inverters/growatt.png',
+            InverterBrand::SOLIS->value => '/EdeltecApiPackage/img/inverters/solis.png',
         };
     }
 
