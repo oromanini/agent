@@ -58,8 +58,8 @@ class KitSearchService
                         ->whereIn('tension_pattern', $tensionPossibilities)
                         ->whereJsonContains('panel_specs->brand', $panel->value)
                         ->whereJsonContains('inverter_specs->brand', $inverter->value)
+                        ->where('availability', '>', now())
                         ->orderBy('kwp')
-                        ->orderBy('updated_at', 'desc')
                         ->first();
 
                     !is_null($kit) && $compatibleKits->push($kit);
