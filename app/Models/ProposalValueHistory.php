@@ -5,13 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ProposalValueHistory extends Model
 {
     use HasFactory;
 
     protected $guarded = [];
+
+    protected $casts = [
+        'commission' => 'array',
+        'cash_initial_price' => 'decimal:2',
+        'card_initial_price' => 'decimal:2',
+        'card_final_price' => 'decimal:2',
+        'cash_final_price' => 'decimal:2',
+    ];
 
     public function proposal(): HasOne
     {
@@ -22,5 +29,4 @@ class ProposalValueHistory extends Model
     {
         return $this->hasOne(User::class);
     }
-
 }

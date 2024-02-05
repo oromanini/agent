@@ -10,7 +10,7 @@ class HomologationCost extends BaseCostWithRange implements Cost
     const MAX_RANGE_POWER = 30;
     const MAX_RANGE_PERCENT = 0.05;
     const MINIMUM_HOMOLOGATION_COST = 100;
-    private const KEY = 'homologation_cost_range';
+    public const KEY = 'homologation_cost_range';
 
     public function __construct(private readonly float $kwp)
     {
@@ -18,7 +18,7 @@ class HomologationCost extends BaseCostWithRange implements Cost
     }
 
     /** @throws CostRangeNotFound */
-    public function cost(): float
+    public function cost(?float $getPercent = null): float
     {
         if ($this->kwp >= self::MAX_RANGE_POWER) {
             return $this->calculateCostWithMaximumPowerRange();
@@ -26,9 +26,8 @@ class HomologationCost extends BaseCostWithRange implements Cost
 
         $range = $this->costRanges();
         $cost = self::MINIMUM_HOMOLOGATION_COST;
-
         foreach ($range as $rangeKwp => $rangeCost) {
-            if ($this->kwp < $rangeKwp) {
+            if ($this->kwp <= $rangeKwp) {
                 $cost = $rangeCost;
                 break;
             }

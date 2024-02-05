@@ -6,8 +6,6 @@ use App\Builders\WorkCostBuilder;
 use App\Enums\PaymentTypeEnum;
 use App\Enums\WorkCostClassificationEnum;
 use App\Models\Pricing\CardFeeCost;
-use App\Models\Pricing\RoyaltyCost;
-use App\Models\Pricing\SafetyMarginCost;
 use Tests\TestCase;
 
 class CardFeeCostTest extends TestCase

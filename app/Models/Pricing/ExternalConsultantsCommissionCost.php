@@ -7,8 +7,8 @@ use App\Enums\WorkCostClassificationEnum;
 
 class ExternalConsultantsCommissionCost extends BaseCost implements Cost
 {
-    private const STANDARD_KEY = 'commission_percentage';
-    private const CREDIT_CARD_KEY = 'credit_card_commission_percentage';
+    public const STANDARD_KEY = 'commission_percentage';
+    public const CREDIT_CARD_KEY = 'credit_card_commission_percentage';
 
     public function __construct(
         private readonly float $finalValue,
@@ -17,13 +17,17 @@ class ExternalConsultantsCommissionCost extends BaseCost implements Cost
         parent::__construct();
     }
 
-    public function cost(): float
+    public function cost(?float $getPercent = null): float
     {
         if ($this->paymentType === PaymentTypeEnum::CREDIT_CARD) {
-            return $this->finalValue * $this->creditCardCommissionPercentage();
+            return $getPercent
+                ? $this->creditCardCommissionPercentage()
+                : $this->finalValue * $this->creditCardCommissionPercentage();
         }
 
-        return $this->finalValue * $this->standardCommissionPercentage();
+        return $getPercent
+            ? $this->standardCommissionPercentage()
+            : $this->finalValue * $this->standardCommissionPercentage();
     }
 
     private function standardCommissionPercentage(): float

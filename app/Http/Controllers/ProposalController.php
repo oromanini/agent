@@ -11,6 +11,7 @@ use App\Http\Requests\ProposalRequest;
 use App\Models\Client;
 use App\Models\Proposal;
 use App\Models\User;
+use App\Models\ValueHistoryInfo;
 use App\Repositories\ProposalRepository;
 use App\Services\KitSpecService;
 use App\Services\PaybackService;
@@ -91,12 +92,7 @@ class ProposalController extends Controller
         $valueHistoryData = $this->proposalValueHistoryService->setValueHistoryData($proposal);
         $isPromotional = false;
 
-        $kitSearchComponents = !is_null((new KitSpecService())->getKitFromProposal($proposal))
-            && (new KitSpecService())->getKitFromProposal($proposal)->components;
-
-        $kit = $kitSearchComponents
-            ? jsonToArray($kitSearchComponents)
-            : explode(',', $proposal);
+        $valueHistoryInfo = (new ValueHistoryInfo($proposal))->pricingInfo();
 
         $kits = $proposal->components
             ? jsonToArray($proposal->components)
@@ -108,6 +104,7 @@ class ProposalController extends Controller
             compact(
                 'proposal',
                 'valueHistoryData',
+                'valueHistoryInfo',
                 'kits',
                 'isPromotional',
                 'fields')

@@ -7,7 +7,7 @@ use App\Enums\WorkCostClassificationEnum;
 
 class InternalFinancialCommissionCost extends BaseCost implements Cost
 {
-    private const STANDARD_KEY = 'commission_percentage';
+    public const KEY = 'commission_percentage';
 
     public function __construct(
         private readonly float $finalValue,
@@ -16,7 +16,7 @@ class InternalFinancialCommissionCost extends BaseCost implements Cost
         parent::__construct();
     }
 
-    public function cost(): float
+    public function cost(?float $getPercent = null): float
     {
         if ($this->paymentType !== PaymentTypeEnum::FINANCING) {
             return 0;
@@ -27,7 +27,7 @@ class InternalFinancialCommissionCost extends BaseCost implements Cost
 
     private function commissionPercentage(): float
     {
-        return $this->workCostInfo()['costs'][self::STANDARD_KEY];
+        return $this->workCostInfo()['costs'][self::KEY];
     }
 
     protected function classification(): int

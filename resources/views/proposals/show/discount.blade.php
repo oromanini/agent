@@ -18,7 +18,7 @@
             <div class="column is-2">
                 <label for=""> Valor do desconto</label>
                 <div class="control"><p class="proposalData">
-                        R$ {{ floatToMoney($valueHistoryData['discountValue']) }}</p>
+                        R$ {{ floatToMoney($valueHistoryData['financingDiscountValue']) }}</p>
                 </div>
             </div>
             <div class="column is-2">

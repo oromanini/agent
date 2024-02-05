@@ -1,13 +1,14 @@
 <form action="{{ route('valueHistory.updatePrice', [$proposal->id]) }}" method="post">
     @csrf
     <div class="columns discount box">
+
         <div class="column is-2" style="padding-right: 50px">
             <div class="field">
-                <label class="label">Comissão</label>
+                <label class="label">Comissão Cartão</label>
                 <div class="control">
                     <input {{ $proposal->send_date !== null ? 'disabled' : '' }}
-                           class="input" type="number" step="0.01" min="3" max="10" name="commission_percent"
-                           value="{{ $proposal->valueHistory->commission_percent }}">
+                           class="input" type="number" step="0.01" min="3" max="8" name="card_commission_percent"
+                           value="{{ jsonToArray($proposal->valueHistory->commission)['credit_card_commission_percentage'] }}">
                 </div>
             </div>
         </div>

@@ -7,7 +7,7 @@ use App\Enums\WorkCostClassificationEnum;
 
 class CardFeeCost extends BaseCost implements Cost
 {
-    private const KEY = 'estimated_fee';
+    public const KEY = 'estimated_fee';
 
     public function __construct(
         private readonly float $finalValue,
@@ -16,7 +16,7 @@ class CardFeeCost extends BaseCost implements Cost
         parent::__construct();
     }
 
-    public function cost(): float
+    public function cost(?float $getPercent = null): float
     {
         if (!$this->paymentType == PaymentTypeEnum::CREDIT_CARD) {
             return 0;

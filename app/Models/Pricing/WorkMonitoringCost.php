@@ -11,7 +11,7 @@ class WorkMonitoringCost extends BaseCostWithRange implements Cost
     protected const MAX_RANGE_PERCENT = 0.03;
     protected const MINIMUM_MONITORING_COST = 160;
 
-    private const KEY = 'monitoring_cost_range';
+    public const KEY = 'monitoring_cost_range';
 
     public function __construct(private readonly float $kwp)
     {
@@ -19,7 +19,7 @@ class WorkMonitoringCost extends BaseCostWithRange implements Cost
     }
 
     /** @throws CostRangeNotFound */
-    public function cost(): float
+    public function cost(?float $getPercent = null): float
     {
         if ($this->kwp >= self::MAX_RANGE_POWER) {
             return $this->calculateCostWithMaximumPowerRange();

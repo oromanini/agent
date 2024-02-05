@@ -6,7 +6,7 @@ use App\Enums\WorkCostClassificationEnum;
 
 class InternalCommercialCommissionCost extends BaseCost implements Cost
 {
-    private const KEY = 'commission_percentage';
+    public const KEY = 'commission_percentage';
 
     public function __construct(
         private readonly float $finalValue
@@ -14,7 +14,7 @@ class InternalCommercialCommissionCost extends BaseCost implements Cost
         parent::__construct();
     }
 
-    public function cost(): float
+    public function cost(?float $getPercent = null): float
     {
         return $this->finalValue * $this->commissionPercentage();
     }

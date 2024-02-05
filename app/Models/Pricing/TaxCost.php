@@ -7,8 +7,8 @@ use App\Enums\WorkCostClassificationEnum;
 
 class TaxCost extends BaseCost implements Cost
 {
-    private const SELL_KEY = 'sell_estimated_percentage';
-    private const SERVICE_KEY = 'service_estimated_percentage';
+    public const SELL_KEY = 'sell_estimated_percentage';
+    public const SERVICE_KEY = 'service_estimated_percentage';
 
     public function __construct(
         private readonly float $costValue,
@@ -18,7 +18,7 @@ class TaxCost extends BaseCost implements Cost
         parent::__construct();
     }
 
-    public function cost(): float
+    public function cost(?float $getPercent = null): float
     {
         if ($this->paymentType === PaymentTypeEnum::FINANCING) {
             return ($this->finalValue - $this->costValue)

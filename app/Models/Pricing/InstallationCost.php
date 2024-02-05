@@ -6,7 +6,7 @@ use App\Enums\WorkCostClassificationEnum;
 
 class InstallationCost extends BaseCost implements Cost
 {
-    private const KEY = 'panel_price';
+    public const KEY = 'panel_price';
 
     public function __construct(
         private readonly int $panelQuantity
@@ -14,7 +14,7 @@ class InstallationCost extends BaseCost implements Cost
         parent::__construct();
     }
 
-    public function cost(): float
+    public function cost(?float $getPercent = null): float
     {
         return $this->panelQuantity * $this->panelPrice();
     }
