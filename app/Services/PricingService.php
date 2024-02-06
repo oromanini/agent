@@ -13,14 +13,14 @@ class PricingService
 {
     const BASE_GROSS_PROFIT = 1.8;
     const SOLO_PLUS = 1.3;
-    const LIQUID_PROFIT_PERCENTAGE = 0.12;
+    const LIQUID_PROFIT_PERCENTAGE = 0.16;
     const PLUS_TO_ADJUST_MARGIN = 250;
     const HOMOLOGATION_COST_ABOVE_90_KWP = 0.025;
     const CA_COST_PERCENT =  0.045;
     const CA_MINIMUN_COST = 750;
     const DELIVERY_FEE = 0.06;
     const INSTALLATION_MINIMUM_COST = 700;
-    private float $netProfit = 0.08;
+    private float $netProfit = 0.12;
 
     public function calculateFinalPrice(array $data): array
     {
