@@ -10,6 +10,7 @@ enum InverterImage: string
     case GROWATT = self::PREFIX . '/growatt.png';
     case SUNGROW = self::PREFIX . '/sungrow.png';
     case DEYE = self::PREFIX . '/deye-string.png';
+    case SOLIS = self::PREFIX . '/solis.png';
 
     public static function getByCase(string $brand): ?string
     {
