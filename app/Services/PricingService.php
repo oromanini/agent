@@ -11,7 +11,7 @@ use App\Models\PromotionalKit;
 
 class PricingService
 {
-    const BASE_GROSS_PROFIT = 1.6;
+    const BASE_GROSS_PROFIT = 1.8;
     const SOLO_PLUS = 1.3;
     const LIQUID_PROFIT_PERCENTAGE = 0.12;
     const PLUS_TO_ADJUST_MARGIN = 250;
