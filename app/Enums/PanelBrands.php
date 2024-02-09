@@ -21,4 +21,5 @@ enum PanelBrands: int
     case Hanersun = 15;
     case Resun = 16;
     case Sine = 17;
+    case Era = 18;
 }

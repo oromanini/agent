@@ -483,6 +483,10 @@
                     panelImage = '/img/panel_brands/sine.png'
                 }
 
+                if (brand == 'Era') {
+                    panelImage = '/img/panel_brands/era.png'
+                }
+
                 return panelImage
             }
 

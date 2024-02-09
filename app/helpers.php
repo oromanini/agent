@@ -55,6 +55,7 @@ function setPanelBrandImage($brand): string
         'Hanersun', PanelBrands::Hanersun->value => '/img/panel_brands/hanersun.png',
         'Resun', PanelBrands::Resun->value => '/img/panel_brands/resun.png',
         'Sine', PanelBrands::Sine->value => '/img/panel_brands/sine.png',
+        'Era', PanelBrands::Era->value => '/img/panel_brands/era.png',
     };
 }
 
