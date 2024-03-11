@@ -220,13 +220,12 @@
 
             $('#kitSearchSubmit').on('click', function () {
                 $('#loader').show()
+                let addressId = $('select[name=installation_address] option').filter(':selected').val()
                 let consumption = $('#average_consumption').val();
-                let incidence = Address.setIncidence()
-
+                let incidence = Address.setIncidence(addressId)
                 let kwp = Kit.setKwp(consumption, incidence);
                 let roof = $("input[name=roof_structure]:checked").val();
                 let tension = $('select[name=tension_pattern] option').filter(':selected').val()
-                let addressId = $('select[name=installation_address] option').filter(':selected').val()
 
                 $.ajax({
                     url: "/kitSearch/" + kwp.toFixed(2) + '/' + roof + '/' + tension,
@@ -398,9 +397,8 @@
                     });
             }
 
-            static setIncidence() {
+            static setIncidence(addressId) {
 
-                let addressId = $('select[name=installation_address] option').filter(':selected').val();
                 let url = '/incidenceFromAddressId/';
                 let incidence = 1;
 
@@ -601,10 +599,10 @@
                     async: false,
                     data: {
                         kwp: kwp,
-                        roof_structure: roof,
+                        roofStructure: roof,
                         cost: costValue,
-                        panel_count: panelCount,
-                        address_id: addressId,
+                        panelCount: panelCount,
+                        addressId: addressId,
                         panelBrand: panelBrand,
                         panelPower: panelPower,
                         inverterBrand: inverterBrand,

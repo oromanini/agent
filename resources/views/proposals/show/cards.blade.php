@@ -13,6 +13,19 @@
     <div class="column">
         <div class="tile">
             <article class="tile is-child notification is-warning">
+                <h5 class="title is-7">
+                    <ion-icon name="pricetags-outline"></ion-icon>
+                    Cartão de crédito
+                </h5>
+                <p class="title">
+                <span style="font-size: 14pt">10x de R$ </span>{{ floatToMoney($valueHistoryInfo->card['finalPriceWithFee'] / 10) }}
+                </p>
+            </article>
+        </div>
+    </div>
+    <div class="column">
+        <div class="tile">
+            <article class="tile is-child notification is-warning">
                 <h5 class="title is-5">
                     <ion-icon name="flash-outline"></ion-icon>
                     Geração
@@ -29,17 +42,6 @@
                     Consumo
                 </h5>
                 <p class="title">{{ ceil($proposal->average_consumption) }} <span style="font-size: 8pt">kWh/mês</span></p>
-            </article>
-        </div>
-    </div>
-    <div class="column">
-        <div class="tile">
-            <article class="tile is-child notification is-warning">
-                <h5 class="title is-5">
-                    <ion-icon name="sunny-outline"></ion-icon>
-                    Qtd. de painéis
-                </h5>
-                <p class="title">{{ $proposal->number_of_panels }}</p>
             </article>
         </div>
     </div>

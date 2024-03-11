@@ -14,9 +14,10 @@ class KitSearchService
 {
     public function __construct(
         private readonly float  $kwp,
-        private readonly int $roof,
+        private string $roof,
         private readonly int $tension
     ) {
+        is_string($this->roof) && $this->roof = (int) $this->roof;
     }
 
     public function kitSearch(): array
@@ -49,7 +50,6 @@ class KitSearchService
                     ->first();
 
                 $tensionPossibilities = TensionPattern::setTensionPossibilities(tension: $this->tension);
-
                 if (!is_null($combination) && $combination->is_active) {
                     $kit = Kit::query()
                         ->where('kwp', '>=', $this->kwp)
@@ -58,7 +58,6 @@ class KitSearchService
                         ->whereIn('tension_pattern', $tensionPossibilities)
                         ->whereJsonContains('panel_specs->brand', $panel->value)
                         ->whereJsonContains('inverter_specs->brand', $inverter->value)
-                        ->where('availability', '>', now())
                         ->orderBy('kwp')
                         ->first();
 
@@ -84,6 +83,4 @@ class KitSearchService
             default => throw new DistributorNotFoundException('Distribuidor não encontrado!')
         };
     }
-
-
 }

@@ -29,4 +29,9 @@ class ProposalValueHistory extends Model
     {
         return $this->hasOne(User::class);
     }
+
+    public function commissionPercentage(): array
+    {
+        return jsonToArray($this->commission);
+    }
 }

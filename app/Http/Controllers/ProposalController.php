@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\DistributorsEnum;
 use App\Enums\InverterBrands;
 use App\Enums\PanelBrands;
+use App\Enums\PaymentTypeEnum;
 use App\Enums\RoofStructure;
 use App\Enums\TensionPattern;
 use App\Http\Requests\ProposalRequest;
@@ -195,8 +196,26 @@ class ProposalController extends Controller
 
     public function setFinalValue(Request $request): JsonResponse
     {
+        $cost = $request->get('cost');
+        $kwp = $request->get('kwp');
+        $panelCount = $request->get('panelCount');
+        $panelBrand = $request->get('panelBrand');
+        $panelPower = $request->get('panelPower');
+        $inverterBrand = $request->get('inverterBrand');
+        $roofStructure = $request->get('roofStructure');
+
         $finalPriceAndDetail = $this->pricingService
-            ->calculateFinalPrice($request->all());
+            ->calculateFinalPrice(
+                $cost,
+                $kwp,
+                $panelCount,
+                $panelBrand,
+                $panelPower,
+                $inverterBrand,
+                $roofStructure,
+                $cost * ProposalValueHistoryService::BASE_GROSS_PROFIT,
+                PaymentTypeEnum::FINANCING
+            );
 
         return response()->json($finalPriceAndDetail);
     }

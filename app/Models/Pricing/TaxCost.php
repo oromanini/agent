@@ -25,6 +25,11 @@ class TaxCost extends BaseCost implements Cost
                 * $this->estimatedServicePercentage();
         }
 
+        if ($this->paymentType === PaymentTypeEnum::CREDIT_CARD) {
+            return ($this->finalValue - $this->costValue)
+                * $this->estimatedSellPercentage();
+        }
+
         return $this->finalValue * $this->estimatedSellPercentage();
     }
 

@@ -7,7 +7,7 @@
                 <div class="control">
                     <input {{ $proposal->send_date !== null ? 'disabled' : '' }}
                            class="input" type="number" step="0.01" min="3" max="10" name="commission_percent"
-                           value="{{ $proposal->valueHistory->commission_percent }}">
+                           value="{{ jsonToArray($proposal->valueHistory->commission)['commission_percentage'] * 100}}">
                 </div>
             </div>
         </div>
@@ -15,7 +15,7 @@
             <label for=""> Comissão Inicial</label>
             <div class="control">
                 <p class="proposalData">
-                    R$ {{ floatToMoney($valueHistoryData['initialCommission']) }}
+                    R$ {{ floatToMoney($valueHistoryInfo->cash['InitialExternalCommission']) }}
                 </p>
             </div>
         </div>
@@ -23,7 +23,7 @@
             <label for=""> Comissão Final</label>
             <div class="control">
                 <p class="proposalData">
-                    R$ {{ floatToMoney($valueHistoryData['finalFinancingCommission']) }}
+                    R$ {{ floatToMoney($valueHistoryInfo->cash['externalCommission']) }}
                 </p>
             </div>
         </div>
@@ -31,20 +31,24 @@
             <label for=""> Descto. Comissão</label>
             <div class="control">
                 <p class="proposalData">
-                    R$ {{ floatToMoney($valueHistoryData['initialCommission'] - $valueHistoryData['finalFinancingCommission']) }}
+                    R$ {{ floatToMoney($valueHistoryInfo->cash['commissionDiscount']) }}
                 </p>
             </div>
         </div>
         <div class="column is-2">
             <label for="">
                 Preço Antes</label>
-            <div class="control"><p class="proposalData">R$ {{ floatToMoney($valueHistoryData['calculateBase']) }}</p></div>
+            <div class="control">
+                <p class="proposalData">
+                    R$ {{ floatToMoney($valueHistoryInfo->financing['initialPrice'] - $valueHistoryInfo->financing['defaultDiscount']) }}
+                </p>
+            </div>
         </div>
         <div class="column is-2 ">
             <label for="">
                 Preço Depois</label>
             <div class="control"><p class="proposalData">
-                    R$ {{ floatToMoney($proposal->valueHistory->final_price) }}
+                    R$ {{ floatToMoney($valueHistoryInfo->cash['finalPrice']) }}
                 </p></div>
         </div>
         <div class="column is-1">

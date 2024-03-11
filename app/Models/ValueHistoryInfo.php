@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\PaymentTypeEnum;
+use App\Enums\WorkCostClassificationEnum;
 use App\Models\Pricing\CardFeeCost;
 use App\Models\Pricing\DirectCurrentCost;
 use App\Models\Pricing\ExternalConsultantsCommissionCost;
@@ -13,7 +14,9 @@ use App\Models\Pricing\InternalFinancialCommissionCost;
 use App\Models\Pricing\RoyaltyCost;
 use App\Models\Pricing\SafetyMarginCost;
 use App\Models\Pricing\TaxCost;
+use App\Models\Pricing\WorkCost;
 use App\Models\Pricing\WorkMonitoringCost;
+use App\Repositories\WorkCostRepository;
 use App\Services\TotalCostForCash;
 use App\Services\TotalCostForCreditCard;
 use App\Services\TotalCostForFinancing;
@@ -46,7 +49,10 @@ class ValueHistoryInfo
         $this->setRoyaltyCost(PaymentTypeEnum::CASH_PAYMENT);
         $this->setSafetyMarginCost(PaymentTypeEnum::CASH_PAYMENT);
         $this->setExternalCommission(PaymentTypeEnum::CASH_PAYMENT);
+        $this->setInitialExternalCommission(PaymentTypeEnum::CASH_PAYMENT);
         $this->setInternalCommission(PaymentTypeEnum::CASH_PAYMENT);
+        $this->setCommissionDiscount(PaymentTypeEnum::CASH_PAYMENT);
+        $this->setDiscount(PaymentTypeEnum::CASH_PAYMENT);
 
         return $this;
     }
@@ -62,8 +68,11 @@ class ValueHistoryInfo
         $this->setTaxCost(PaymentTypeEnum::FINANCING);
         $this->setRoyaltyCost(PaymentTypeEnum::FINANCING);
         $this->setSafetyMarginCost(PaymentTypeEnum::FINANCING);
+        $this->setInitialExternalCommission(PaymentTypeEnum::FINANCING);
         $this->setExternalCommission(PaymentTypeEnum::FINANCING);
         $this->setInternalCommission(PaymentTypeEnum::FINANCING);
+        $this->setCommissionDiscount(PaymentTypeEnum::FINANCING);
+        $this->setDiscount(PaymentTypeEnum::FINANCING);
 
         return $this;
     }
@@ -80,8 +89,11 @@ class ValueHistoryInfo
         $this->setRoyaltyCost(PaymentTypeEnum::CREDIT_CARD);
         $this->setSafetyMarginCost(PaymentTypeEnum::CREDIT_CARD);
         $this->setExternalCommission(PaymentTypeEnum::CREDIT_CARD);
+        $this->setInitialExternalCommission(PaymentTypeEnum::CREDIT_CARD);
         $this->setInternalCommission(PaymentTypeEnum::CREDIT_CARD);
         $this->setCardFee(PaymentTypeEnum::CREDIT_CARD);
+        $this->setCommissionDiscount(PaymentTypeEnum::CREDIT_CARD);
+        $this->setCardFinalPriceWithFee();
 
         return $this;
     }
@@ -224,11 +236,15 @@ class ValueHistoryInfo
     private function setExternalCommission(int $paymentType): void
     {
         $attribute = $this->getAttributeByPaymentType($paymentType);
+        $commission = $this->proposal->valueHistory->commissionPercentage();
+        $discountBase = 1 - ($this->proposal->valueHistory->discount_percent / 100);
 
-        $cost = (new ExternalConsultantsCommissionCost(
-            finalValue: $this->proposal->valueHistory->{$this->getFinalPriceAttributeByPaymentType($paymentType)},
-            paymentType: $paymentType
-        ))->cost();
+        // PREÇO FINAL COM DESCONTO
+        $financingPriceWithDiscount = (float) $this->proposal->valueHistory->initial_price * $discountBase;
+
+        $cost = $paymentType === PaymentTypeEnum::CREDIT_CARD
+            ? $financingPriceWithDiscount * $commission['credit_card_commission_percentage']
+            : $financingPriceWithDiscount * $commission['commission_percentage'];
 
         $this->{$attribute}["externalCommission"] = $cost;
     }
@@ -238,7 +254,7 @@ class ValueHistoryInfo
         $attribute = $this->getAttributeByPaymentType($paymentType);
 
         $cost = (new CardFeeCost(
-            finalValue: $this->proposal->valueHistory->{$this->getFinalPriceAttributeByPaymentType($paymentType)},
+            finalValue: $this->card['finalPrice'],
             paymentType: $paymentType
         ))->cost();
 
@@ -254,6 +270,23 @@ class ValueHistoryInfo
 
         $this->{$attribute}["initialPrice"] = (float) $this->proposal->valueHistory
             ->{$this->getInitialPriceAttributeByPaymentType($paymentType)};
+
+        if ($paymentType === PaymentTypeEnum::CREDIT_CARD) {
+            $priceWithDiscount = $this->financing["initialPrice"]
+                - ($this->financing["initialPrice"] * ($this->proposal->valueHistory->discount_percent / 100));
+
+            $workCost = (new WorkCostRepository())
+                ->getWorkCostByClassification(
+                    WorkCostClassificationEnum::EXTERNAL_CONSULTANT_COMMISSION
+                );
+
+            $finalCommissionPercent = $this->proposal->valueHistory->commissionPercentage()['credit_card_commission_percentage'];
+
+            $initialCommission = $workCost->costs()[ExternalConsultantsCommissionCost::CREDIT_CARD_KEY];
+            $commissionDiscount = ($priceWithDiscount * $initialCommission) - ($priceWithDiscount * $finalCommissionPercent);
+
+            $this->{$attribute}["finalPrice"] = $priceWithDiscount - $commissionDiscount;
+        }
     }
 
     private function getAttributeByPaymentType(int $paymentType): string
@@ -284,5 +317,53 @@ class ValueHistoryInfo
             PaymentTypeEnum::CREDIT_CARD => 'card_initial_price',
             default => throw new \Exception('Invalid payment Type')
         };
+    }
+
+    private function setInitialExternalCommission(int $paymentType): void
+    {
+        $attribute = $this->getAttributeByPaymentType($paymentType);
+        $discountPercent = $this->proposal->valueHistory->discount_percent / 100;
+
+        $priceWithDiscount = $this->cash["initialPrice"]
+            - ($this->cash["initialPrice"] * $discountPercent);
+
+        $workCost = (new WorkCostRepository())
+            ->getWorkCostByClassification(
+                WorkCostClassificationEnum::EXTERNAL_CONSULTANT_COMMISSION
+            );
+
+        $commission = $paymentType === PaymentTypeEnum::CREDIT_CARD
+            ? $workCost->costs()[ExternalConsultantsCommissionCost::CREDIT_CARD_KEY]
+            : $workCost->costs()[ExternalConsultantsCommissionCost::STANDARD_KEY];
+
+        $initialCommission = $priceWithDiscount * $commission;
+
+        $this->{$attribute}["InitialExternalCommission"] = $initialCommission;
+    }
+
+    private function setCommissionDiscount(int $paymentType): void
+    {
+        $attribute = $this->getAttributeByPaymentType($paymentType);
+        $initialCommission = $this->{$attribute}["InitialExternalCommission"];
+        $finalCommission = $this->{$attribute}["externalCommission"];
+
+        $this->{$attribute}["commissionDiscount"] = $initialCommission - $finalCommission;
+    }
+
+    private function setDiscount(int $paymentType): void
+    {
+        $attribute = $this->getAttributeByPaymentType($paymentType);
+        $initialPrice = $this->{$attribute}["initialPrice"];
+
+        $discountValue = $initialPrice * ($this->proposal->valueHistory->discount_percent / 100);
+
+        $this->{$attribute}["defaultDiscount"] = $discountValue;
+    }
+
+    private function setCardFinalPriceWithFee(): void
+    {
+        $this->card["finalPriceWithFee"] = $this->card["finalPrice"] + $this->card["cardFee"];
+        $this->card["finalPriceWithFee"] = $this->card["finalPrice"] + $this->card["cardFee"];
+        $this->card["finalPriceWithFee"] = $this->card["finalPrice"] + $this->card["cardFee"];
     }
 }

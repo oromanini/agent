@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\RoofStructure;
 use App\Models\Client;
 use App\Models\Kit;
 use App\Models\PreInspection;
@@ -190,8 +191,24 @@ class ProposalService
         $proposal->client_id = (int) $this->data['client'];
         $proposal->roof_orientation = json_encode($this->setRoofOrientations($this->data));
 
+        $this->setKitSpecs($this->data['kit_id']);
+
         $proposal->value_history_id = $this->valueHistoryService->store($this->data, $isManual);
 
         return $proposal;
+    }
+
+    private function setKitSpecs(string $kitUuid): void
+    {
+        $kit = Kit::query()
+            ->where('distributor_code', $kitUuid)
+            ->first();
+
+        $specs = $kit->kitSpecs();
+
+        $this->data['panel_brand'] = $specs['panel']['brand'];
+        $this->data['panelPower'] = $specs['panel']['power'];
+        $this->data['inverterBrand'] = $specs['inverter']['brand'];
+        $this->data['roofStructure'] = RoofStructure::from($kit->roof_structure);
     }
 }

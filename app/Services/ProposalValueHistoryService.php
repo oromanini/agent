@@ -12,7 +12,7 @@ use App\Repositories\WorkCostRepository;
 
 class ProposalValueHistoryService
 {
-    const BASE_GROSS_PROFIT = 1.6;
+    public const BASE_GROSS_PROFIT = 1.6;
 
     private readonly PricingService $pricingService;
     private ProposalValueHistory $valueHistory;
@@ -30,8 +30,8 @@ class ProposalValueHistoryService
         $financingInitialPrice = $this->getFinalPrice(data: $data, isManual: $isManual, paymentType: PaymentTypeEnum::FINANCING);
         $cashInitialPrice = $this->getFinalPrice(data: $data, isManual: $isManual, paymentType: PaymentTypeEnum::CASH_PAYMENT);
         $cardInitialPrice = $this->getFinalPrice(data: $data, isManual: $isManual, paymentType: PaymentTypeEnum::CREDIT_CARD);
-
         $commissionPercent = $this->commissionPercent();
+
         $userId = auth()->user()->id;
 
         $this->valueHistory = (new ValueHistoryBuilder())
@@ -50,15 +50,26 @@ class ProposalValueHistoryService
     {
         $this->valueHistory = $valueHistory;
 
-        isset($data['discount_percent']) && $this->valueHistory =
-            $this->updateWithDiscountPercent(
+        if (isset($data['discount_percent'])) {
+            $this->valueHistory = $this->updateWithDiscountPercent(
                 discountPercent: $data['discount_percent'],
             );
+            $this->valueHistory->update();
+            return ['success', 'Alteração de valor aplicada!'];
+        }
 
-        $this->commissionPercentIsChanged($data['commission_percent'], $data['card_commission_percent'])
+        $commissionPercent = isset($data['commission_percent'])
+            ? (float) $data['commission_percent'] / 100
+            : $this->valueHistory->commissionPercentage()['commission_percentage'];
+
+        $cardCommissionPercent = isset($data['card_commission_percent'])
+            ? (float) $data['card_commission_percent'] / 100
+            : $this->valueHistory->commissionPercentage()['credit_card_commission_percentage'];
+
+        ($this->commissionPercentIsChanged($commissionPercent, $cardCommissionPercent))
         && $this->valueHistory = $this->updateWithCommissionPercent(
-            commissionPercent: $data['commission_percent'],
-            cardCommissionPercent: $data['card_commission_percent'],
+            commissionPercent: $commissionPercent,
+            cardCommissionPercent: $cardCommissionPercent,
         );
 
         $this->valueHistory->update();
@@ -69,15 +80,14 @@ class ProposalValueHistoryService
     private function updateWithDiscountPercent(
         float $discountPercent,
     ): ProposalValueHistory {
-        $financingInitialPrice = $this->valueHistory->initial_price;
-        $cashInitialPrice = $this->valueHistory->cash_initial_price;
-        $cardInitialPrice = $this->valueHistory->card_initial_price;
 
-        $discountPercent = $this->toDecimal($discountPercent);
+        $financingInitialPrice = (float) $this->valueHistory->initial_price;
+        $cashInitialPrice = (float) $this->valueHistory->cash_initial_price;
+        $cardInitialPrice = (float) $this->valueHistory->card_initial_price;
 
-        $this->valueHistory->final_price = $this->calculateFinalPriceWithDiscount($financingInitialPrice, $discountPercent);
-        $this->valueHistory->cash_final_price = $this->calculateFinalPriceWithDiscount($cashInitialPrice, $discountPercent);
-        $this->valueHistory->card_final_price = $this->calculateFinalPriceWithDiscount($cardInitialPrice, $discountPercent);
+        $this->valueHistory->final_price = $this->calculateFinalPriceWithDiscount($financingInitialPrice, $this->toDecimal($discountPercent));
+        $this->valueHistory->cash_final_price = $this->calculateFinalPriceWithDiscount($cashInitialPrice, $this->toDecimal($discountPercent));
+        $this->valueHistory->card_final_price = $this->calculateFinalPriceWithDiscount($cardInitialPrice, $this->toDecimal($discountPercent));
 
         $this->valueHistory->discount_percent = $discountPercent;
 
@@ -93,36 +103,33 @@ class ProposalValueHistoryService
         float $commissionPercent,
         float $cardCommissionPercent
     ): ProposalValueHistory {
-
         $this->valueHistory->commission = $this->setCommission($commissionPercent, $cardCommissionPercent);
 
-        $commissionPercent = $this->toDecimal($commissionPercent);
-        $cardCommissionPercent = $this->toDecimal($cardCommissionPercent);
+        $discountBase = 1 - ($this->valueHistory->discount_percent / 100);
 
-        $financingFinalPrice = $this->valueHistory->final_price;
-        $cashFinalPrice = $this->valueHistory->cash_final_price;
-        $cardFinalPrice = $this->valueHistory->card_final_price;
+        // PREÇO FINAL COM DESCONTO
+        $financingPriceWithDiscount = (float) $this->valueHistory->initial_price * $discountBase;
+        $cardPriceWithDiscount = (float) $this->valueHistory->card_initial_price * $discountBase;
 
-        $decimalCommission = $this->commissionPercent(isDecimal: true);
+        // % COMISSÃO CHEIA
+        $fullCommissionPercent = $this->commissionPercent()[ExternalConsultantsCommissionCost::STANDARD_KEY];
+        $fullCardCommissionPercent = $this->commissionPercent()[ExternalConsultantsCommissionCost::CREDIT_CARD_KEY];
 
-        // COMISSAO C/DESCTO APLICADO
-        $financingInitialCommission = $financingFinalPrice * $decimalCommission[ExternalConsultantsCommissionCost::STANDARD_KEY];
-        $cashInitialCommission = $cashFinalPrice * $decimalCommission[ExternalConsultantsCommissionCost::STANDARD_KEY];
-        $cardInitialCommission = $cardFinalPrice * $decimalCommission[ExternalConsultantsCommissionCost::CREDIT_CARD_KEY];
+        // VALOR COMISSÃO CHEIA
+        $fullCommissionValue = $financingPriceWithDiscount * $fullCommissionPercent;
+        $fullCardCommissionValue = $cardPriceWithDiscount * $fullCardCommissionPercent;
 
-        // COMISSAO C/ DESCONTO APLICADO + NOVA COMISSAO
-        $financingFinalCommission = $financingFinalPrice * $commissionPercent;
-        $cashFinalCommission = $cashFinalPrice * $commissionPercent;
-        $cardFinalCommission = $cardFinalPrice * $cardCommissionPercent;
+        // VALOR COMISSÃO APÓS DESCONTO DA COMISSÃO
+        $financingCommissionAfterDiscount = $financingPriceWithDiscount * $commissionPercent;
+        $cardCommissionAfterDiscount = $cardPriceWithDiscount * $cardCommissionPercent;
 
-        // DIFERENÇA DA COMISSAO C DESCTO - DESCONTO SOBRE COMISSÂO
-        $financingDiscountCommission = $financingInitialCommission - $financingFinalCommission;
-        $cashDiscountCommission = $cashInitialCommission - $cashFinalCommission;
-        $cardDiscountCommission = $cardInitialCommission - $cardFinalCommission;
+        // DESCONTO DA COMISSÃO
+        $financingCommissionDiscountValue = $fullCommissionValue - $financingCommissionAfterDiscount;
+        $cardCommissionDiscountValue = $fullCardCommissionValue - $cardCommissionAfterDiscount;
 
-        $this->valueHistory->final_price = round($financingFinalPrice - $financingDiscountCommission, 2);
-        $this->valueHistory->cash_final_price = round($cashFinalPrice - $cashDiscountCommission, 2);
-        $this->valueHistory->card_final_price = round($cardFinalPrice - $cardDiscountCommission, 2);
+        $this->valueHistory->final_price = $financingPriceWithDiscount - $financingCommissionDiscountValue;
+        $this->valueHistory->cash_final_price = $this->valueHistory->final_price;
+        $this->valueHistory->card_final_price = $cardPriceWithDiscount - $cardCommissionDiscountValue;
 
         return $this->valueHistory;
     }
@@ -225,9 +232,9 @@ class ProposalValueHistoryService
             kwp: (float)$data['kwp'],
             panelCount: $data['panel_count'],
             panelBrand: $data['panel_brand'],
-            panelPower: $data['panel_power'],
-            inverterBrand: $data['inverter_brand'],
-            roofStructure: $data['roof_structure']->value,
+            panelPower: $data['panelPower'],
+            inverterBrand: $data['inverterBrand'],
+            roofStructure: $data['roofStructure']->value,
             finalValue: $data['cost'] * self::BASE_GROSS_PROFIT,
             paymentType: $paymentType
         )['finalPrice'];
@@ -240,8 +247,8 @@ class ProposalValueHistoryService
             ->getWorkCostByClassification(WorkCostClassificationEnum::EXTERNAL_CONSULTANT_COMMISSION);
 
         return [
-            ExternalConsultantsCommissionCost::STANDARD_KEY => ($isDecimal ? 1 : 100) * $workCost->costs()[ExternalConsultantsCommissionCost::STANDARD_KEY],
-            ExternalConsultantsCommissionCost::CREDIT_CARD_KEY => ($isDecimal ? 1 : 100) * $workCost->costs()[ExternalConsultantsCommissionCost::CREDIT_CARD_KEY],
+            ExternalConsultantsCommissionCost::STANDARD_KEY => $workCost->costs()[ExternalConsultantsCommissionCost::STANDARD_KEY],
+            ExternalConsultantsCommissionCost::CREDIT_CARD_KEY => $workCost->costs()[ExternalConsultantsCommissionCost::CREDIT_CARD_KEY],
         ];
     }
 
@@ -260,8 +267,8 @@ class ProposalValueHistoryService
 
     private function commissionPercentIsChanged(float $commissionPercent, float $cardCommissionPercent): bool
     {
-        $defaultCommissionPercent = $this->commissionPercent()[ExternalConsultantsCommissionCost::STANDARD_KEY];
-        $defaultCardCommissionPercent = $this->commissionPercent()[ExternalConsultantsCommissionCost::CREDIT_CARD_KEY];
+        $defaultCommissionPercent = $this->commissionPercent()[ExternalConsultantsCommissionCost::STANDARD_KEY] * 100;
+        $defaultCardCommissionPercent = $this->commissionPercent()[ExternalConsultantsCommissionCost::CREDIT_CARD_KEY] * 100;
 
         if (
             $defaultCommissionPercent === $commissionPercent
