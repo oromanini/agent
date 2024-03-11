@@ -18,19 +18,19 @@
             <div class="column is-2">
                 <label for=""> Valor do desconto</label>
                 <div class="control"><p class="proposalData">
-                        R$ {{ floatToMoney($valueHistoryData['discountValue']) }}</p>
+                        R$ {{ floatToMoney($valueHistoryInfo->financing['defaultDiscount']) }}</p>
                 </div>
             </div>
             <div class="column is-2">
                 <label for="">Antes</label>
                 <div class="control"><p class="proposalData">
-                        R$ {{ floatToMoney($proposal->valueHistory->initial_price) }}</p>
+                        R$ {{ floatToMoney($valueHistoryInfo->financing['initialPrice']) }}</p>
                 </div>
             </div>
             <div class="column is-2">
                 <label for="">Depois</label>
                 <div class="control"><p class="proposalData">
-                        R$ {{ floatToMoney($valueHistoryData['calculateBase']) }}</p>
+                        R$ {{ floatToMoney($valueHistoryInfo->financing['initialPrice'] - $valueHistoryInfo->financing['defaultDiscount']) }}</p>
                 </div>
             </div>
             <div class="column is-1">

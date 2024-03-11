@@ -24,8 +24,6 @@ class KitSearchServiceTest extends TestCase
             roof: RoofStructure::Colonial->value,
             tension: TensionPattern::mono220
         );
-
-        dd($service->kitSearch());
     }
 
     private function insertKitsToTest(): void

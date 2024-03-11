@@ -1,31 +1,12 @@
-@if(auth()->user()->is_admin)
+@if(auth()->user()->id == 1 || auth()->user()->id == 2)
     <div class="columns box discount is-flex-wrap-wrap">
         <div class="column is-12">
             <button class="button is-rounded " id="button-show-hide" type="button">
                 <ion-icon name="eye-outline"></ion-icon>&nbsp; Diretoria
             </button>
         </div>
-        <div id="show-hide" class="hide">
-            <div class="column is-2">
-                <label for="">Custo Kit</label>
-                <p class="proposalData">{{ $valueHistoryData['cost'] }}</p>
-            </div>
-            <div class="column is-2">
-                <label for="">Custo Serviços</label>
-                <p class="proposalData">R$ {{ floatToMoney($valueHistoryData['totalCost']['services_cost'])  }}</p>
-            </div>
-            <div class="column is-2">
-                <label for="">Lucro bruto</label>
-                <p class="proposalData">{{ round($valueHistoryData['gross_profit']*100, 2) }}%</p>
-            </div>
-            <div class="column is-2">
-                <label for="">Lucro Líquido (R$)</label>
-                <p class="proposalData">{{ round($valueHistoryData['totalCost']['net_profit_percent'] * 100, 2) }}%</p>
-            </div>
-            <div class="column is-2">
-                <label for="">Lucro Líquido (R$)</label>
-                <p class="proposalData">{{ floatToMoney($valueHistoryData['totalCost']['net_profit_value']) }}</p>
-            </div>
+        <div id="show-hide" class="hide d-flex">
+            @include('proposals.show.staff_table')
         </div>
     </div>
 @endif
@@ -54,6 +35,7 @@
 
     .show {
         display: flex;
+        flex-wrap: wrap;
     }
 
 </style>

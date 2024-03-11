@@ -10,4 +10,12 @@ class Kit extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+    public function kitSpecs(): array
+    {
+        return [
+            'panel' => json_decode($this->panel_specs, true),
+            'inverter' => json_decode($this->inverter_specs, true),
+        ];
+    }
 }
