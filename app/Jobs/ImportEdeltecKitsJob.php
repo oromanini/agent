@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Packages\EdeltecApiPackage\EdeltecApiRepository;
 use App\Packages\EdeltecApiPackage\EdeltecApiService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -18,6 +19,8 @@ class ImportEdeltecKitsJob implements ShouldQueue
 
     public function handle(): void
     {
-        (new EdeltecApiService())->importKitsFromApi();
+        (new EdeltecApiService(
+            new EdeltecApiRepository()
+        ))->importKitsFromApi();
     }
 }
