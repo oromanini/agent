@@ -52,6 +52,7 @@ class KitSearchService
                 $tensionPossibilities = TensionPattern::setTensionPossibilities(tension: $this->tension);
                 if (!is_null($combination) && $combination->is_active) {
                     $kit = Kit::query()
+                        ->where('is_active', true)
                         ->where('kwp', '>=', $this->kwp)
                         ->where('distributor_name', $distributor)
                         ->where('roof_structure', $this->roof)

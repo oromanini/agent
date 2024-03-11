@@ -5,6 +5,7 @@ namespace App\Packages\EdeltecApiPackage;
 use App\Enums\DistributorsEnum;
 use App\Enums\RoofStructure;
 use App\Enums\TensionPattern;
+use App\Jobs\InactiveKitsJob;
 use App\Models\ActiveKit;
 use App\Models\Kit;
 use App\Packages\EdeltecApiPackage\Enums\Category;
@@ -28,7 +29,7 @@ class EdeltecApiService
     private Client $client;
     private EdeltecCredentials $credentials;
 
-    public function __construct()
+    public function __construct(private readonly EdeltecApiRepositoryInterface $edeltecApiRepository)
     {
         $this->client = new Client();
         $this->credentials = new EdeltecCredentials();
@@ -57,6 +58,8 @@ class EdeltecApiService
 
                 $page = 1;
                 $finished = false;
+
+                $this->inactiveAllKitsBeforeUpdate();
 
                 while (!$finished) {
 
@@ -265,5 +268,11 @@ class EdeltecApiService
         }
 
         return 0;
+    }
+
+    private function inactiveAllKitsBeforeUpdate(): void
+    {
+        $kits = $this->edeltecApiRepository->getAllActiveKits();
+        (new InactiveKitsJob($kits))::dispatch();
     }
 }
