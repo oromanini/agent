@@ -273,6 +273,6 @@ class EdeltecApiService
     private function inactiveAllKitsBeforeUpdate(): void
     {
         $kits = $this->edeltecApiRepository->getAllActiveKits();
-        (new InactiveKitsJob($kits))::dispatch();
+        InactiveKitsJob::dispatch($kits);
     }
 }
