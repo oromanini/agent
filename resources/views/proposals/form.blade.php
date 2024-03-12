@@ -485,6 +485,10 @@
                     panelImage = '/img/panel_brands/era.png'
                 }
 
+                if (brand == 'Honor') {
+                    panelImage = '/img/panel_brands/honor.png'
+                }
+
                 return panelImage
             }
 
