@@ -222,9 +222,8 @@ class ProposalValueHistoryService
 
     private function getFinalPrice(array $data, bool $isManual, int $paymentType): float|array
     {
-        dd($data);
         if ($isManual) {
-            return stringMoneyToFloat($data['finalValue']);
+            return stringMoneyToFloat($data['final_value']);
         }
 
         return $this->pricingService->calculateFinalPrice(
