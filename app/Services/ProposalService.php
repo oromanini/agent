@@ -191,7 +191,8 @@ class ProposalService
         $proposal->client_id = (int) $this->data['client'];
         $proposal->roof_orientation = json_encode($this->setRoofOrientations($this->data));
 
-        $this->setKitSpecs($this->data['kit_id']);
+
+        !$isManual && $this->setKitSpecs($this->data['kit_id']);
 
         $proposal->value_history_id = $this->valueHistoryService->store($this->data, $isManual);
 
