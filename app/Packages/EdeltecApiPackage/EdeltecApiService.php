@@ -150,6 +150,13 @@ class EdeltecApiService
             ? (new Carbon($item['dataPrevistaParaDisponibilidade']))->diffInDays(now())
             : 0;
 
+        if ($item['potenciaGerador'] >= 4.9 && $item['potenciaGerador'] <= 6) {
+            Log::info("Kit encontrado:
+            {$item['potenciaGerador']} -
+            {$item['dataPrevistaParaDisponibilidade']} -
+            {$item['id']}");
+        }
+
         if (!is_null($kit)) {
             $kit->cost = $item['precoDoIntegrador'];
             $kit->availability = $item['dataPrevistaParaDisponibilidade'] ?? now()->toDateString();

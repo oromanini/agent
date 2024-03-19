@@ -9,7 +9,6 @@ use App\Models\PreInspection;
 use App\Models\Proposal;
 use App\Models\SolarIncidence;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
 use Ramsey\Uuid\Uuid;
 
 class ProposalService
@@ -30,6 +29,7 @@ class ProposalService
             isManual: $isManual,
             incidence: $incidence,
         );
+
         $proposal->pre_inspection_id = $this->createPreInspection()->id;
 
         DB::transaction(function () use ($proposal) {
@@ -191,9 +191,7 @@ class ProposalService
         $proposal->client_id = (int) $this->data['client'];
         $proposal->roof_orientation = json_encode($this->setRoofOrientations($this->data));
 
-
         !$isManual && $this->setKitSpecs($this->data['kit_id']);
-
         $proposal->value_history_id = $this->valueHistoryService->store($this->data, $isManual);
 
         return $proposal;
