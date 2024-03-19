@@ -151,7 +151,7 @@ class EdeltecApiService
             : 0;
 
         if ($item['potenciaGerador'] >= 4.9 && $item['potenciaGerador'] <= 6) {
-            Log::info("Kit encontrado:
+            Log::warning("Kit encontrado:
             {$item['potenciaGerador']} -
             {$item['dataPrevistaParaDisponibilidade']} -
             {$item['id']}");
