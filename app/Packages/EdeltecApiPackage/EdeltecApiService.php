@@ -80,10 +80,11 @@ class EdeltecApiService
                     $this->storeKits($response['items']);
                     $page++;
                     $totalPages = $response["meta"]["totalPages"];
+                    $currentPage = $response["meta"]["currentPage"];
 
                     $progress = $totalPages === 0
                         ? $this->inactiveKitsAndGoToNext($combination)
-                        : $this->setProgress(page: $page, totalPages: $totalPages);
+                        : $this->setProgress(page: $currentPage, totalPages: $totalPages);
 
                     Log::info($this->setLogMessage(
                         panelBrand: $panelBrand->value,
@@ -101,7 +102,7 @@ class EdeltecApiService
                         ]);
                     $page++;
 
-                    if ($page > $response["meta"]["totalPages"]) {
+                    if ($currentPage == $totalPages) {
                         $finished = true;
                     }
                 }
@@ -164,7 +165,12 @@ class EdeltecApiService
             $kit->update();
             Log::info("Data prevista para disponibilidade: {$item['dataPrevistaParaDisponibilidade']}");
         } else {
-            Kit::create($this->setKitParams($item));
+            try {
+                Kit::create($this->setKitParams($item));
+            } catch (\Throwable $e) {
+                throw new \Exception('Erro ao criar novo kit: ' . $e->getMessage());
+            }
+
         }
     }
 
