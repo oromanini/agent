@@ -81,10 +81,15 @@ class EdeltecApiService
                     $page++;
                     $totalPages = $response["meta"]["totalPages"];
                     $currentPage = $response["meta"]["currentPage"];
-                    dd($totalPages);
-                    $progress = $totalPages === 0
-                        ? $this->inactiveKitsAndGoToNext($combination)
-                        : $this->setProgress(page: $currentPage, totalPages: $totalPages);
+                    Log::warning($totalPages);
+
+                    if ($totalPages === 0) {
+                        $this->inactiveKitsAndGoToNext($combination);
+                        $finished = true;
+                        return;
+                    }
+
+                    $progress = $this->setProgress(page: $currentPage, totalPages: $totalPages);
 
                     Log::info($this->setLogMessage(
                         panelBrand: $panelBrand->value,
