@@ -38,32 +38,20 @@ class EdeltecApiService
     public function importKitsFromApi(): void
     {
         $start_time = time();
+        $this->inactiveAllKitsBeforeUpdate();
 
         foreach (InverterBrand::cases() as $inverterBrand) {
             foreach (PanelBrand::cases() as $panelBrand) {
 
                 $combination = $this->searchCombination($panelBrand, $inverterBrand);
 
-                if (!is_null($combination) && $this->getCombinationDiffInDays($combination) <= self::MAX_UPDATE_DAYS) {
-                    Log::info(
-                        $this->setLogMessage(
-                            panelBrand: $panelBrand->value,
-                            inverterBrand: $inverterBrand->value,
-                            combination: $combination,
-                        )->alreadyUpdated
-                    );
-
-                    continue;
-                }
-
                 $page = 1;
                 $finished = false;
-
-                $this->inactiveAllKitsBeforeUpdate();
 
                 while (!$finished) {
 
                     is_null($this->credentials->bearerToken) && $this->credentials->setOrRenewApiToken();
+
                     $response = self::responseToArray(
                         $this->sendRequest(
                             page: $page,
@@ -73,21 +61,19 @@ class EdeltecApiService
                         )
                     );
 
+                    $totalPages = $response["meta"]["totalPages"];
+                    $currentPage = $response["meta"]["currentPage"];
+
+                    if ($totalPages == 0) {
+                        $finished = true;
+                        continue;
+                    }
+
                     if (isset($response['statusCode']) && $response['statusCode'] === self::UNAUTHORIZED) {
                         $this->credentials->setOrRenewApiToken();
                     }
 
                     $this->storeKits($response['items']);
-                    $page++;
-                    $totalPages = $response["meta"]["totalPages"];
-                    $currentPage = $response["meta"]["currentPage"];
-                    Log::warning($totalPages);
-
-                    if ($totalPages === 0) {
-                        $this->inactiveKitsAndGoToNext($combination);
-                        $finished = true;
-                        return;
-                    }
 
                     $progress = $this->setProgress(page: $currentPage, totalPages: $totalPages);
 
@@ -95,7 +81,7 @@ class EdeltecApiService
                         panelBrand: $panelBrand->value,
                         inverterBrand: $inverterBrand->value,
                         progress: $progress,
-                        page: $page,
+                        page: $currentPage,
                         totalPages: $totalPages,
                     )->progress,
                         [
@@ -109,6 +95,7 @@ class EdeltecApiService
 
                     if ($currentPage == $totalPages) {
                         $finished = true;
+                        $page = 1;
                     }
                 }
                 $this->updateCombination($panelBrand, $inverterBrand, $combination);
@@ -137,7 +124,8 @@ class EdeltecApiService
 
         } catch (\Throwable $e) {
             $message = 'Erro ao buscar kit Edeltec: ';
-            Log::error($message . $e);
+            Log::warning($message . $e);
+
         }
     }
 
@@ -156,19 +144,11 @@ class EdeltecApiService
             ? (new Carbon($item['dataPrevistaParaDisponibilidade']))->diffInDays(now())
             : 0;
 
-        if ($item['potenciaGerador'] >= 4.9 && $item['potenciaGerador'] <= 6) {
-            Log::warning("Kit encontrado:
-            {$item['potenciaGerador']} -
-            {$item['dataPrevistaParaDisponibilidade']} -
-            {$item['id']}");
-        }
-
         if (!is_null($kit)) {
             $kit->cost = $item['precoDoIntegrador'];
             $kit->availability = $item['dataPrevistaParaDisponibilidade'] ?? now()->toDateString();
             $kit->is_active = true;
             $kit->update();
-            Log::info("Data prevista para disponibilidade: {$item['dataPrevistaParaDisponibilidade']}");
         } else {
             try {
                 Kit::create($this->setKitParams($item));

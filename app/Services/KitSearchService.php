@@ -9,6 +9,7 @@ use App\Models\ActiveKit;
 use App\Models\Kit;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Log;
 
 class KitSearchService
 {
