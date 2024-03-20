@@ -81,7 +81,7 @@ class EdeltecApiService
                     $page++;
                     $totalPages = $response["meta"]["totalPages"];
                     $currentPage = $response["meta"]["currentPage"];
-
+                    dd($totalPages);
                     $progress = $totalPages === 0
                         ? $this->inactiveKitsAndGoToNext($combination)
                         : $this->setProgress(page: $currentPage, totalPages: $totalPages);
@@ -170,7 +170,6 @@ class EdeltecApiService
             } catch (\Throwable $e) {
                 throw new \Exception('Erro ao criar novo kit: ' . $e->getMessage());
             }
-
         }
     }
 
