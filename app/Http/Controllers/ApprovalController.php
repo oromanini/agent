@@ -9,6 +9,7 @@ use App\Models\PromotionalKit;
 use App\Models\Proposal;
 use App\Models\Status;
 use App\Models\User;
+use App\Models\ValueHistoryInfo;
 use App\Repositories\ApprovalRepository;
 use App\Services\ApprovalService;
 use App\Services\ContractService;
@@ -61,6 +62,8 @@ class ApprovalController extends Controller
         $inspection = $proposal->inspection ?: null;
         $financing = $proposal->financing ?: null;
         $contract = $proposal->contract ?: null;
+
+        $valueHistoryInfo = (new ValueHistoryInfo($proposal))->pricingInfo();
 
         return view('approval.show', compact($this->setApprovalParams()));
     }
@@ -130,7 +133,8 @@ class ApprovalController extends Controller
             'inspection',
             'financing',
             'contract',
-            'client'
+            'client',
+            'valueHistoryInfo'
         ];
     }
 
