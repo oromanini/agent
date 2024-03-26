@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Homologation;
 use App\Models\User;
+use App\Models\ValueHistoryInfo;
 use App\Repositories\HomologationRepository;
 use App\Services\HomologationService;
 use Illuminate\Http\RedirectResponse;
@@ -33,13 +34,15 @@ class HomologationController extends Controller
         $kits = ApprovalController::setKits($proposal);
         $deadline = $homologation->created_at->diffInDays(now());
         $deadlineColor = deadLineColor(status: $homologation->status, deadline: $deadline);
+        $valueHistoryInfo = (new ValueHistoryInfo($proposal))->pricingInfo();
 
         return view('homologation.show', compact(
             'homologation',
             'proposal',
             'kits',
             'deadline',
-            'deadlineColor'
+            'deadlineColor',
+            'valueHistoryInfo'
         ));
     }
 
