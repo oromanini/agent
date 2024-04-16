@@ -9,12 +9,14 @@ use App\Enums\TensionPattern;
 use App\Models\Kit;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class OdexKitsImportService
 {
     public function importMicroInverterKits(int $limit): void
     {
         $this->mountMicroInverterKits($limit);
+        Log::info('ODEX kits import finished!');
     }
 
     private function mountMicroInverterKits(int $limit): void
@@ -77,6 +79,10 @@ class OdexKitsImportService
         while ($panelCount <= $limit) {
 
             foreach (RoofStructure::cases() as $structure) {
+                if ($structure == RoofStructure::SOLO) {
+                    continue;
+                }
+
                 $kwp = $this->getKwp($microInverterConfigs, $panelCount);
                 $cost = $this->setCost($panelCount, $microinverterData[0]);
 
@@ -96,7 +102,7 @@ class OdexKitsImportService
                 ];
 
                 $kit = new Kit($kitParams);
-                $kit->save();
+                $this->saveOrUpdateMicroInverterKit($kit);
             }
 
             $panelCount++;
@@ -145,5 +151,24 @@ class OdexKitsImportService
             "{$connectorQuantity} CONECTOR MC4 - STAUBLI / MACHO + FEMEA 2 PARES",
             "{$cableQuantity} CABO SOLAR 6MM 1.8KV CSO6P50 20M PRETO + VERMELHO",
         ];
+    }
+
+    private function saveOrUpdateMicroInverterKit(Kit $kit): void
+    {
+        $search = Kit::query()
+            ->where('kwp', $kit->kwp)
+            ->where('roof_structure', $kit->roof_structure)
+            ->where('tension_pattern', $kit->tension_pattern)
+            ->where('tension_pattern', $kit->tension_pattern)
+            ->where('distributor_name', $kit->distributor_name)
+            ->where('description', "Kit gerador {$kit->kwp} kWP microinversor SAJ/ Era 555W")
+            ->first();
+
+
+        if (is_null($search)) {
+            $kit->save();
+        } else {
+         $search->update($kit->attributesToArray());
+        }
     }
 }
