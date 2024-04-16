@@ -1,0 +1,149 @@
+<?php
+
+namespace App\Services;
+
+use App\Enums\DistributorsEnum;
+use App\Enums\PanelBrands;
+use App\Enums\RoofStructure;
+use App\Enums\TensionPattern;
+use App\Models\Kit;
+use Carbon\Carbon;
+use Illuminate\Support\Collection;
+
+class OdexKitsImportService
+{
+    public function importMicroInverterKits(int $limit): void
+    {
+        $this->mountMicroInverterKits($limit);
+    }
+
+    private function mountMicroInverterKits(int $limit): void
+    {
+        $csvFilePath = 'resources/kits/odex/microinverter/kits_odex.csv';
+        $microinverterData = $this->getMicroInverterDataFromCsvFile($csvFilePath);
+        $microInverterConfigs = $this->setMicroInverterConfigs();
+
+        $this->storeMicroInverterKits($microinverterData, $microInverterConfigs, $limit);
+    }
+
+    private function getMicroInverterDataFromCsvFile(string $microinverterCsvPath): array
+    {
+        $fileHandle = fopen($microinverterCsvPath, 'r');
+
+        try {
+            $headers = fgetcsv($fileHandle);
+
+            $data = [];
+
+            while (($row = fgetcsv($fileHandle)) !== false) {
+                $rowData = array_combine($headers, $row);
+                $data[] = $rowData;
+            }
+
+            fclose($fileHandle);
+            return $data;
+
+        } catch (\Throwable $exception) {
+            throw new \Exception("Não foi possível abrir o arquivo CSV: {$exception->getMessage()}");
+        }
+    }
+
+    private function setMicroInverterConfigs(): array
+    {
+        return [
+            'panel_specs' => [
+                'power' => 555,
+                'brand' => PanelBrands::Era,
+                'model' => 'ESPHSC555-M',
+                'logo' => 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.enfsolar.com%2Fera-solar&psig=AOvVaw3B4UOxSbDtaQMC_ZLafr8x&ust=1713324693432000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCPC01v_lxYUDFQAAAAAdAAAAABAE',
+            ],
+            'inverter_specs' => [
+                'power' => 2.25,
+                'brand' => 'Saj',
+                'model' => 'M2-2.25K-S4',
+                'image' => 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fempalux.com.br%2Filuminacao%2Fenergia-solar%2Finversor-solar%2Fmicro-inversor-solar-sj02250%2F&psig=AOvVaw3LPrwcc0wWLpWGIqITDehe&ust=1713324861208000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCOjbw9DmxYUDFQAAAAAdAAAAABAE',
+                'warranty' => 10
+
+            ],
+            'screw_per_panel' => 2,
+            'connector_per_inverter' => 4
+        ];
+    }
+
+    private function storeMicroInverterKits(array $microinverterData, array $microInverterConfigs, int $limit)
+    {
+        $panelCount = 4;
+
+        while ($panelCount <= $limit) {
+
+            foreach (RoofStructure::cases() as $structure) {
+                $kwp = $this->getKwp($microInverterConfigs, $panelCount);
+                $cost = $this->setCost($panelCount, $microinverterData[0]);
+
+                $kitParams = [
+                    'description' => "Kit gerador {$kwp} kWP microinversor SAJ/ Era 555W",
+                    'kwp' => $kwp,
+                    'cost' => $cost,
+                    'roof_structure' => $structure->value,
+                    'tension_pattern' => TensionPattern::MONOFASICO_220V->value,
+                    'components' => json_encode($this->setComponents($panelCount, $structure->value)),
+                    'panel_specs' => json_encode($microInverterConfigs['panel_specs']),
+                    'inverter_specs' => json_encode($microInverterConfigs['inverter_specs']),
+                    'distributor_name' => DistributorsEnum::ODEX->value,
+                    'distributor_code' => 'N/A',
+                    'availability' => (new Carbon('2024-04-24'))->toDateTimeString(),
+                    'is_active' => true,
+                ];
+
+                $kit = new Kit($kitParams);
+                $kit->save();
+            }
+
+            $panelCount++;
+        }
+    }
+
+    public function getKwp(array $microInverterConfigs, int $panelCount): int|float
+    {
+        return ($microInverterConfigs['panel_specs']['power'] / 1000) * $panelCount;
+    }
+
+    private function setCost(int $panelCount, array $microinverterData): float
+    {
+        $panelCost = (float)$microinverterData['Painel'];
+        $microinverterCost = (float)$microinverterData['Microinversor'];
+        $structureCost = (float)$microinverterData['Estrutura'];
+        $connectorCost = (float)$microinverterData['conector'];
+        $screwCost = (float)$microinverterData['parafuso'];
+        $cableCost = (float)$microinverterData['Cabo'];
+
+        $microInverterQuantity = ceil($panelCount / 4);
+
+        $cableQuantity = $microInverterQuantity;
+
+        return ($panelCount * $panelCost)
+            + ($microinverterCost * $microInverterQuantity)
+            + ($structureCost * $microInverterQuantity)
+            + ($connectorCost * 4 * $microInverterQuantity)
+            + ($screwCost * 2 * $microInverterQuantity)
+            + ($cableCost * $cableQuantity);
+    }
+
+    private function setComponents(int $panelCount, string $structure): array
+    {
+        $microInverterQuantity = ceil($panelCount / 4);
+        $screwQuantity = $microInverterQuantity * 2;
+        $connectorQuantity = $microInverterQuantity * 4;
+        $cableQuantity = $microInverterQuantity;
+
+        return [
+            "{$panelCount} PAINEL SOLAR FOTOVOLTAICO ERA SOLAR 555W 30MM 144 CELULAS MONO ESPHSC555-M",
+            "{$microInverterQuantity} MICROINVERSOR SAJ 2.25KW M2-2.25-S4 MONOFASICO 220V 4 MPPT",
+            "{$microInverterQuantity} KIT ESTRUTURA 4 PAINEIS {$structure}",
+            "{$microInverterQuantity} KIT ESTRUTURA 4 PAINEIS {$structure}",
+            "{$screwQuantity} PARAFUSO T CABECA DE MARTELO INOX M 8X25MM",
+            "{$connectorQuantity} CONECTOR MC4 - STAUBLI / MACHO + FEMEA 2 PARES",
+            "{$cableQuantity} CABO SOLAR 6MM 1.8KV CSO6P50 20M PRETO + VERMELHO",
+        ];
+    }
+}
