@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Odex;
 
 use App\Enums\DistributorsEnum;
 use App\Enums\PanelBrands;
@@ -8,7 +8,6 @@ use App\Enums\RoofStructure;
 use App\Enums\TensionPattern;
 use App\Models\Kit;
 use Carbon\Carbon;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
 class OdexKitsImportService
@@ -55,13 +54,13 @@ class OdexKitsImportService
         return [
             'panel_specs' => [
                 'power' => 555,
-                'brand' => PanelBrands::Era,
+                'brand' => 'ERA',
                 'model' => 'ESPHSC555-M',
                 'logo' => 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.enfsolar.com%2Fera-solar&psig=AOvVaw3B4UOxSbDtaQMC_ZLafr8x&ust=1713324693432000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCPC01v_lxYUDFQAAAAAdAAAAABAE',
             ],
             'inverter_specs' => [
                 'power' => 2.25,
-                'brand' => 'Saj',
+                'brand' => 'SAJ Microinverter',
                 'model' => 'M2-2.25K-S4',
                 'image' => 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fempalux.com.br%2Filuminacao%2Fenergia-solar%2Finversor-solar%2Fmicro-inversor-solar-sj02250%2F&psig=AOvVaw3LPrwcc0wWLpWGIqITDehe&ust=1713324861208000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCOjbw9DmxYUDFQAAAAAdAAAAABAE',
                 'warranty' => 10
@@ -79,7 +78,7 @@ class OdexKitsImportService
         while ($panelCount <= $limit) {
 
             foreach (RoofStructure::cases() as $structure) {
-                if ($structure == RoofStructure::SOLO) {
+                if ($structure->value == RoofStructure::SOLO->value) {
                     continue;
                 }
 
@@ -102,7 +101,7 @@ class OdexKitsImportService
                 ];
 
                 $kit = new Kit($kitParams);
-                $this->saveOrUpdateMicroInverterKit($kit);
+                $this->saveOrUpdateMicroInverterKit($kit, $kitParams);
             }
 
             $panelCount++;
@@ -153,7 +152,7 @@ class OdexKitsImportService
         ];
     }
 
-    private function saveOrUpdateMicroInverterKit(Kit $kit): void
+    private function saveOrUpdateMicroInverterKit(Kit $kit, array $kitParams): void
     {
         $search = Kit::query()
             ->where('kwp', $kit->kwp)
@@ -168,7 +167,7 @@ class OdexKitsImportService
         if (is_null($search)) {
             $kit->save();
         } else {
-         $search->update($kit->attributesToArray());
+         $search->update($kitParams);
         }
     }
 }

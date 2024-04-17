@@ -2,9 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Packages\EdeltecApiPackage\EdeltecApiRepository;
-use App\Packages\EdeltecApiPackage\EdeltecApiService;
-use App\Services\OdexKitsImportService;
+use App\Services\Odex\OdexKitsImportService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;

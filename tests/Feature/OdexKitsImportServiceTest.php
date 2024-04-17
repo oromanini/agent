@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Kit;
-use App\Services\OdexKitsImportService;
+use App\Services\Odex\OdexKitsImportService;
 use Tests\TestCase;
 
 class OdexKitsImportServiceTest extends TestCase
