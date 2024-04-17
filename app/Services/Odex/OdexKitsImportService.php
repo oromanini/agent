@@ -56,13 +56,13 @@ class OdexKitsImportService
                 'power' => 555,
                 'brand' => 'ERA',
                 'model' => 'ESPHSC555-M',
-                'logo' => 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.enfsolar.com%2Fera-solar&psig=AOvVaw3B4UOxSbDtaQMC_ZLafr8x&ust=1713324693432000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCPC01v_lxYUDFQAAAAAdAAAAABAE',
+                'logo' => '/img/panel_brands/era.png',
             ],
             'inverter_specs' => [
                 'power' => 2.25,
                 'brand' => 'SAJ Microinverter',
                 'model' => 'M2-2.25K-S4',
-                'image' => 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fempalux.com.br%2Filuminacao%2Fenergia-solar%2Finversor-solar%2Fmicro-inversor-solar-sj02250%2F&psig=AOvVaw3LPrwcc0wWLpWGIqITDehe&ust=1713324861208000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCOjbw9DmxYUDFQAAAAAdAAAAABAE',
+                'logo' => '/img/inverter_brands/saj_micro.png',
                 'warranty' => 10
 
             ],
