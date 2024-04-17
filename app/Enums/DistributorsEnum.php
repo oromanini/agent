@@ -4,7 +4,6 @@ namespace App\Enums;
 
 enum DistributorsEnum: string
 {
+    case ODEX = 'ODEX';
     case EDELTEC = 'EDELTEC';
-//    case SOLMAIS = 'SOL MAIS';
-//    case ODERCO = 'ODERÇO';
 }

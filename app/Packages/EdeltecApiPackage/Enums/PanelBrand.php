@@ -20,4 +20,5 @@ enum PanelBrand: string
             'RESUN' => self::RESUN,
             default => Log::alert("Padrão {$panel} não encontrado!")
         };
-    }}
+    }
+}
