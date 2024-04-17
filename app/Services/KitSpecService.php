@@ -49,7 +49,9 @@ class KitSpecService
 
         $overload = $inverterPower * self::INVERTER_OVERLOAD;
 
-        return roundOrFloorDecimalNumber($overload / $panelPower);
+        return (!is_null($kit) && $kit->distributor_name == 'ODEX')
+            ? 4
+            : roundOrFloorDecimalNumber($overload / $panelPower);
     }
 
     public function setInvertersCount(array $components): string

@@ -520,7 +520,7 @@
                     inverterImage = '/img/inverter_brands/techpower.png'
                 }
 
-                if (brand == 'SAJ Microinverter') {
+                if (brand == 'SAJ Microinverter' || brand == 'SajMicroinverter') {
                     inverterImage = '/img/inverter_brands/saj_micro.png'
                 }
 

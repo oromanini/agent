@@ -26,10 +26,10 @@ class ProposalValueHistoryService
     public function store($data, bool $isManual): int
     {
         $cost = $this->getKitCost(cost: $data['cost'], isManual: $isManual);
-
         $financingInitialPrice = $this->getFinalPrice(data: $data, isManual: $isManual, paymentType: PaymentTypeEnum::FINANCING);
         $cashInitialPrice = $this->getFinalPrice(data: $data, isManual: $isManual, paymentType: PaymentTypeEnum::CASH_PAYMENT);
         $cardInitialPrice = $this->getFinalPrice(data: $data, isManual: $isManual, paymentType: PaymentTypeEnum::CREDIT_CARD);
+
         $commissionPercent = $this->commissionPercent();
 
         $userId = auth()->user()->id;

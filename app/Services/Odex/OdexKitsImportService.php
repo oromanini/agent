@@ -9,6 +9,7 @@ use App\Enums\TensionPattern;
 use App\Models\Kit;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use Ramsey\Uuid\Uuid;
 
 class OdexKitsImportService
 {
@@ -57,6 +58,7 @@ class OdexKitsImportService
                 'brand' => 'ERA',
                 'model' => 'ESPHSC555-M',
                 'logo' => '/img/panel_brands/era.png',
+                'warranty' => 15
             ],
             'inverter_specs' => [
                 'power' => 2.25,
@@ -145,7 +147,6 @@ class OdexKitsImportService
             "{$panelCount} PAINEL SOLAR FOTOVOLTAICO ERA SOLAR 555W 30MM 144 CELULAS MONO ESPHSC555-M",
             "{$microInverterQuantity} MICROINVERSOR SAJ 2.25KW M2-2.25-S4 MONOFASICO 220V 4 MPPT",
             "{$microInverterQuantity} KIT ESTRUTURA 4 PAINEIS {$structure}",
-            "{$microInverterQuantity} KIT ESTRUTURA 4 PAINEIS {$structure}",
             "{$screwQuantity} PARAFUSO T CABECA DE MARTELO INOX M 8X25MM",
             "{$connectorQuantity} CONECTOR MC4 - STAUBLI / MACHO + FEMEA 2 PARES",
             "{$cableQuantity} CABO SOLAR 6MM 1.8KV CSO6P50 20M PRETO + VERMELHO",
@@ -165,6 +166,7 @@ class OdexKitsImportService
 
 
         if (is_null($search)) {
+            $kit->distributor_code = Uuid::uuid4();
             $kit->save();
         } else {
          $search->update($kitParams);

@@ -74,6 +74,7 @@ function setInverterImage($brand): string
     $canadian = '/img/inverters/canadian.png';
     $saj = '/img/inverters/saj.png';
     $techpower = '/img/inverters/techpower.png';
+    $sajMicro = '/img/inverters/saj_micro.png';
 
     return match ($brand) {
         InverterBrands::Growatt->value, 'Growatt' => $growatt,
@@ -87,6 +88,7 @@ function setInverterImage($brand): string
         InverterBrands::Canadian->value, 'Canadian' => $canadian,
         InverterBrands::Saj->value, 'Saj' => $saj,
         InverterBrands::TechPowerMicro->value, 'TechPowerMicro' => $techpower,
+        InverterBrands::SajMicroinverter->value, 'SajMicroinverter' => $sajMicro,
         default => throw new Exception('Inversor não localizado.'),
     };
 }

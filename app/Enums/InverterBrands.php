@@ -15,4 +15,5 @@ enum InverterBrands: int
     case Canadian = 9;
     case Saj = 10;
     case TechPowerMicro = 11;
+    case SajMicroinverter = 12;
 }
