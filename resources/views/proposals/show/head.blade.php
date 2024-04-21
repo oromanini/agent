@@ -2,6 +2,11 @@
     <div class="column is-7">
         <h3 class="title"><img src="/img/logo/alluz-icon.png" width="30" alt="..">Proposta &nbsp;&nbsp;<div
                 class="tag @if(!is_null($proposal->send_date)) is-success @else is-danger @endif">{{ !is_null($proposal->send_date) ? 'Formalizada' : 'Não formalizada' }}</div>
+            @if($isPromotional)
+                <span class="tag is-success">
+                   $ Promocional $
+                </span>
+            @endif
         </h3>
     </div>
     <div id="action-buttons" class="column is-5 is-flex is-justify-content-space-around">

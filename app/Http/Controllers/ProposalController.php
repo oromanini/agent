@@ -10,6 +10,8 @@ use App\Enums\RoofStructure;
 use App\Enums\TensionPattern;
 use App\Http\Requests\ProposalRequest;
 use App\Models\Client;
+use App\Models\Kit;
+use App\Models\PromotionalKit;
 use App\Models\Proposal;
 use App\Models\User;
 use App\Models\ValueHistoryInfo;
@@ -91,13 +93,27 @@ class ProposalController extends Controller
     {
         $proposal = Proposal::find($id);
         $valueHistoryData = $this->proposalValueHistoryService->setValueHistoryData($proposal);
-        $isPromotional = false;
 
         $valueHistoryInfo = (new ValueHistoryInfo($proposal))->pricingInfo();
 
         $kits = $proposal->components
             ? jsonToArray($proposal->components)
             : (new KitSpecService())->getKitFromProposal($proposal)->components;
+
+        $kit = Kit::query()
+            ->where('distributor_code', $proposal->kit_uuid)
+            ->first();
+
+        $panelSpecs = jsonToArray($kit->panel_specs);
+        $inverterSpecs = jsonToArray($kit->inverter_specs);
+
+        $isPromotional = PromotionalKit::query()
+            ->where('kwp', $kit->kwp)
+            ->where('panel_brand', $panelSpecs['brand'])
+            ->where('panel_power', $panelSpecs['power'])
+            ->where('inverter_brand', $inverterSpecs['brand'])
+            ->exists()
+        ;
 
         $fields = $this->setEditFields();
 
@@ -300,7 +316,9 @@ class ProposalController extends Controller
             return \App\Packages\EdeltecApiPackage\Enums\InverterImage::getByCase($inverterBrand);
         }
         if ($distributor === DistributorsEnum::ODEX->value) {
-            return '/img/inverters/saj_micro.png';
+            return strtolower($inverterBrand) == 'saj'
+                ? '/img/inverters/saj.png'
+                : '/img/inverters/saj_micro.png';
         }
     }
 

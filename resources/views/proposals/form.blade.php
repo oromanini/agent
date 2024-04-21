@@ -254,10 +254,6 @@
 
                                 let panelCount = Kit.setPanelCount(item);
 
-                                let isPromotional = false;
-                                let isPromotionalText = isPromotional ? 'Promoção' : 'À vista';
-                                let isPromotionalColor = isPromotional ? 'is-success' : 'is-success is-light';
-
                                 let finalValue = Kit.calculateFinalValue(
                                     item.cost,
                                     item.kwp,
@@ -269,9 +265,12 @@
                                     inverterSpecs['brand']
                                 );
 
-                                let isPromo = finalValue.isPromotional
-                                    ? '<span class="tag is-success is-flex">Promoção</span>' : ''
+                                let isPromotional = finalValue.isPromotional;
+                                let isPromotionalText = isPromotional ? '* PROMOÇÃO *' : 'Preço padrão';
+                                let isPromotionalColor = isPromotional ? 'is-success' : 'is-success is-light';
 
+                                let isPromo = '';
+                                let inverterBrand = inverterSpecs.brand === 'SAJ Microinverter' ? 'SAJ MICRO' : inverterSpecs.brand;
                                 let averageProduction = Kit.calculateAverageProduction(addressId, item.kwp);
 
                                 $('#kits').append(
@@ -301,7 +300,7 @@
                                     '</div>' +
                                     '<hr>' +
                                     '<div style="text-align: center">' +
-                                    '<strong>Inversor: </strong>' + inverterSpecs.brand + ' ' + inverterSpecs.power + ' KW' +
+                                    '<strong>Inversor: </strong>' + inverterBrand + ' ' + inverterSpecs.power + ' KW' +
                                     '<div style="text-align: center">' +
                                     '<strong>Tensão: </strong>' + Kit.setStringTensionPattern(item.tension_pattern) +
                                     '</div>' +
