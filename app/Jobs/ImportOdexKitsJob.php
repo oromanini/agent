@@ -16,11 +16,14 @@ class ImportOdexKitsJob implements ShouldQueue
     public $tries = 3;
     public $timeout = 10800;
 
-    public function __construct(private readonly int $limit)
+    public function __construct(private readonly int $limit, private readonly string $type)
     {}
 
     public function handle(): void
     {
-        (new OdexKitsImportService())->importMicroInverterKits(limit: $this->limit);
+        $this->type == 'microinverter'
+            ? (new OdexKitsImportService())->importMicroInverterKits(limit: $this->limit)
+            : (new OdexKitsImportService())->importStringMono220InverterKits()
+        ;
     }
 }

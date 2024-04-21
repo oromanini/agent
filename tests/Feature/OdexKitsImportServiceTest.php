@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Jobs\ImportOdexKitsJob;
 use App\Models\Kit;
 use App\Services\Odex\OdexKitsImportService;
 use Tests\TestCase;
@@ -55,4 +56,9 @@ class OdexKitsImportServiceTest extends TestCase
         $this->assertEquals($expected["roof_structure"], $first["roof_structure"]);
         $this->assertEquals($expected["tension_pattern"], $first["tension_pattern"]);
     }
+
+//    public function testJob(): void
+//    {
+//        (new ImportOdexKitsJob(1, type: 'microinverter'))->handle();
+//    }
 }
