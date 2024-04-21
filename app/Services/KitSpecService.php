@@ -49,7 +49,7 @@ class KitSpecService
 
         $overload = $inverterPower * self::INVERTER_OVERLOAD;
 
-        return (!is_null($kit) && $kit->distributor_name == 'ODEX')
+        return (!is_null($kit) && $kit->kitSpecs()['inverter']['brand'] == 'SAJ Microinverter')
             ? 4
             : roundOrFloorDecimalNumber($overload / $panelPower);
     }

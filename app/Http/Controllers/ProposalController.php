@@ -316,7 +316,9 @@ class ProposalController extends Controller
             return \App\Packages\EdeltecApiPackage\Enums\InverterImage::getByCase($inverterBrand);
         }
         if ($distributor === DistributorsEnum::ODEX->value) {
-            return '/img/inverters/saj_micro.png';
+            return strtolower($inverterBrand) == 'saj'
+                ? '/img/inverters/saj.png'
+                : '/img/inverters/saj_micro.png';
         }
     }
 
