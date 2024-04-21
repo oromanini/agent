@@ -106,6 +106,11 @@
                                 Não formalizada
                             </span>
                             @endif
+                            @if($isPromotional)
+                                <span class="tag is-success">
+                                    Promocional
+                                </span>
+                            @endif
                         </td>
                         <td>{{ $proposal->kwp }} kWp</td>
                         <td>R$ {{ floatToMoney($proposal->valueHistory->final_price) }}</td>
