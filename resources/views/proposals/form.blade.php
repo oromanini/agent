@@ -267,7 +267,7 @@
 
                                 let isPromotional = finalValue.isPromotional;
                                 let isPromotionalText = isPromotional ? '* PROMOÇÃO *' : 'Preço padrão';
-                                let isPromotionalColor = isPromotional ? 'is-success' : 'is-success is-light';
+                                let isPromotionalColor = isPromotional ? 'is-success' : 'is-warning';
 
                                 let isPromo = '';
                                 let inverterBrand = inverterSpecs.brand === 'SAJ Microinverter' ? 'SAJ MICRO' : inverterSpecs.brand;
