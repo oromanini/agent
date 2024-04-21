@@ -21,6 +21,7 @@ class ClientRequest extends FormRequest
             'type' => 'required',
             'phone_number' => 'required',
             'street' => 'required',
+            'document' => 'required',
             'address_number' => 'required',
             'neighborhood' => 'required',
             'state' => 'required',

@@ -36,9 +36,9 @@
         </div>
         <div class="column is-2">
             <div class="field">
-                <label id="documentLabel" for="document" class="label">{{ isset($client) ? $client->type == 'person' ? 'CPF' : 'CNPJ' : 'CPF' }}</label>
+                <label id="documentLabel" for="document" class="label">{{ isset($client) ? $client->type == 'person' ? 'CPF*' : 'CNPJ*' : 'CPF*' }}</label>
                 <div class="control">
-                    <input name="document" id="{{ isset($client) && $client->type == 'company' ? 'cnpj' : 'cpf' }}"
+                    <input required name="document" id="{{ isset($client) && $client->type == 'company' ? 'cnpj' : 'cpf' }}"
                            class="input is-rounded @error('document') is-danger @enderror" type="text"
                            placeholder="Digite o documento"
                            value="{{ isset($client) ? $client->document : '' }}">
@@ -85,7 +85,7 @@
             <div class="field">
                 <label for="phone_number" class="label">Telefone/Whatsapp*</label>
                 <div class="control">
-                    <input name="phone_number" id="phone_number"
+                    <input required name="phone_number" id="phone_number"
                            class="input is-rounded @error('phone_number') is-danger @enderror"
                            type="text"
                            placeholder="Digite o telefone/whatsapp"
