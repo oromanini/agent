@@ -9,16 +9,22 @@ class ExternalConsultantsCommissionCost extends BaseCost implements Cost
 {
     public const STANDARD_KEY = 'commission_percentage';
     public const CREDIT_CARD_KEY = 'credit_card_commission_percentage';
+    public const LEAD_COMMISSION = 0.04;
 
     public function __construct(
         private readonly float $finalValue,
-        private readonly int $paymentType
+        private readonly int $paymentType,
+        private readonly bool $isLead
     ) {
         parent::__construct();
     }
 
     public function cost(?float $getPercent = null): float
     {
+        if ($this->isLead) {
+            return $this->finalValue * self::LEAD_COMMISSION;
+        }
+
         if ($this->paymentType === PaymentTypeEnum::CREDIT_CARD) {
             return $getPercent
                 ? $this->creditCardCommissionPercentage()

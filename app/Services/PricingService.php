@@ -24,10 +24,10 @@ class PricingService
         string $inverterBrand,
         int    $roofStructure,
         float  $finalValue,
-        int    $paymentType
-    ): array
-    {
-        $finalValue = $this->adjustMargin($cost, $kwp, $panelCount, $finalValue, $paymentType);
+        int    $paymentType,
+        ?bool   $isLead = false
+    ): array {
+        $finalValue = $this->adjustMargin($cost, $kwp, $panelCount, $finalValue, $paymentType, $isLead);
 
         if ($roofStructure == RoofStructure::SOLO) {
             return $this->priceWithSolo($finalValue);
@@ -40,7 +40,8 @@ class PricingService
         float $kwp,
         int   $panelCount,
         float $finalValue,
-        int   $paymentType
+        int   $paymentType,
+        ?bool $isLead = false
     ): float
     {
         $this->netProfit =
@@ -49,12 +50,20 @@ class PricingService
                 kwp: $kwp,
                 panelCount: $panelCount,
                 finalValue: $finalValue,
-                paymentType: $paymentType
+                paymentType: $paymentType,
+                isLead: $isLead
             )['netProfitPercent'];
 
         if ($this->netProfit < self::LIQUID_PROFIT_PERCENTAGE) {
             $finalValue += self::PLUS_TO_ADJUST_MARGIN;
-            $finalValue = $this->adjustMargin($cost, $kwp, $panelCount, $finalValue, $paymentType);
+            $finalValue = $this->adjustMargin(
+                $cost,
+                $kwp,
+                $panelCount,
+                $finalValue,
+                $paymentType,
+                $isLead
+            );
         }
 
         return $finalValue;
@@ -65,7 +74,8 @@ class PricingService
         float $kwp,
         int   $panelCount,
         float $finalValue,
-        int   $paymentType
+        int   $paymentType,
+        ?bool $isLead = false
     ): array {
 
         $paymentTypeTotalCost = $this->getPaymentTypeTotalCost($paymentType);
@@ -75,7 +85,8 @@ class PricingService
             panelCount: $panelCount,
             kwp: $kwp,
             finalValue: $finalValue,
-            paymentType: $paymentType
+            paymentType: $paymentType,
+            isLead: $isLead
         ))->cost();
 
         $netProfitValue = $finalValue - $totalCost;

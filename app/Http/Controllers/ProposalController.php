@@ -39,7 +39,8 @@ class ProposalController extends Controller
         private readonly PaybackService              $paybackService,
         private readonly PricingService              $pricingService,
         private readonly KitSpecService              $kitSpecService,
-    ) {
+    )
+    {
     }
 
     public function index(Request $request): View
@@ -104,16 +105,14 @@ class ProposalController extends Controller
             ->where('distributor_code', $proposal->kit_uuid)
             ->first();
 
-        $panelSpecs = jsonToArray($kit->panel_specs);
-        $inverterSpecs = jsonToArray($kit->inverter_specs);
+        list($panelSpecs, $inverterSpecs) = $this->getComponentsSpec($proposal, $kit);
 
         $isPromotional = PromotionalKit::query()
             ->where('kwp', $kit->kwp)
             ->where('panel_brand', $panelSpecs['brand'])
             ->where('panel_power', $panelSpecs['power'])
             ->where('inverter_brand', $inverterSpecs['brand'])
-            ->exists()
-        ;
+            ->exists();
 
         $fields = $this->setEditFields();
 
@@ -222,15 +221,16 @@ class ProposalController extends Controller
 
         $finalPriceAndDetail = $this->pricingService
             ->calculateFinalPrice(
-                $cost,
-                $kwp,
-                $panelCount,
-                $panelBrand,
-                $panelPower,
-                $inverterBrand,
-                $roofStructure,
-                $cost * ProposalValueHistoryService::BASE_GROSS_PROFIT,
-                PaymentTypeEnum::FINANCING
+                cost: $cost,
+                kwp: $kwp,
+                panelCount: $panelCount,
+                panelBrand: $panelBrand,
+                panelPower: $panelPower,
+                inverterBrand: $inverterBrand,
+                roofStructure: $roofStructure,
+                finalValue: $cost * ProposalValueHistoryService::BASE_GROSS_PROFIT,
+                paymentType: PaymentTypeEnum::FINANCING,
+                isLead: $request->get('isLead') == true
             );
 
         return response()->json($finalPriceAndDetail);
@@ -320,6 +320,30 @@ class ProposalController extends Controller
                 ? '/img/inverters/saj.png'
                 : '/img/inverters/saj_micro.png';
         }
+    }
+
+    public function getComponentsSpec(Proposal $proposal, Kit $kit): array
+    {
+        if ($proposal->is_manual) {
+            $manualData = jsonToArray($proposal->manual_data);
+            $panelSpecs = [
+                "brand" => $manualData['panel_brand'],
+                "model" => $manualData['panel_model'],
+                "power" => $manualData['panel_power'],
+                "warranty" => $manualData['panel_warranty'],
+            ];
+            $inverterSpecs = [
+                "brand" => $manualData['inverter_brand'],
+                "model" => $manualData['inverter_model'],
+                "power" => $manualData['inverter_power'],
+                "warranty" => $manualData['inverter_warranty'],
+                "quantity" => $manualData['inverter_quantity']
+            ];
+        } else {
+            $panelSpecs = jsonToArray($kit->panel_specs);
+            $inverterSpecs = jsonToArray($kit->inverter_specs);
+        }
+        return array($panelSpecs, $inverterSpecs);
     }
 
 }

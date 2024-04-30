@@ -98,7 +98,7 @@ $(function () {
                 $('#city').empty();
 
                 $.each(msg, function (i, item) {
-                    $('#city').append($('<option>', {
+                    $('#city').append($('<option ' + item.name === 'MARINGÁ' ? 'selected ' : '' + '>', {
                             value: item.id,
                             text: item.name,
                         })

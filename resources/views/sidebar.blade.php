@@ -42,6 +42,17 @@
             </a>
         </li>
 
+        @if(auth()->user()->is_admin)
+        <li class="side-list">
+            <a href="{{ route('leads.index') }}">
+                <span class="side-icon">
+                    <ion-icon name="accessibility-outline"></ion-icon>
+                </span>
+                <span class="side-title">Leads</span>
+            </a>
+        </li>
+        @endif
+
         <li class="side-list">
             <a href="{{ route('simulator.index') }}">
                 <span class="side-icon">
