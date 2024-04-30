@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Enums\TensionPattern;
 use App\Models\Address;
+use App\Models\City;
 use App\Models\Kit;
 use App\Models\Proposal;
 
@@ -13,7 +14,9 @@ class KitSpecService
 
     public function setAverageProduction(array $data): float
     {
-        $city = Address::find((int)$data['addressId'])->city;
+        $city = isset($data['cityId'])
+            ? City::find((int)$data['cityId'])
+            : Address::find((int)$data['addressId'])->city;
 
         $incidence = (float)str_replace(
             search: ',',

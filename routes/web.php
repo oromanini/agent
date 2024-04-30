@@ -10,6 +10,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HomologationController;
 use App\Http\Controllers\InstallationController;
 use App\Http\Controllers\KitSearchController;
+use App\Http\Controllers\LeadController;
 use App\Http\Controllers\PreInspectionController;
 use App\Http\Controllers\ProposalController;
 use App\Http\Controllers\UserController;
@@ -17,7 +18,7 @@ use App\Http\Controllers\ValueHistoryController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Route::controller(FinancingController::class)->group(function (){
+Route::controller(FinancingController::class)->group(function () {
     Route::name('simulator.')->group(function () {
         Route::get('financing-simulator', 'show')->name('index');
         Route::get('financing-simulator/mfs', 'getMfs')->name('mfs');
@@ -65,12 +66,25 @@ Route::middleware('auth')->group(function () {
         });
     });
 
+    Route::controller(LeadController::class)->group(function () {
+        Route::name('leads.')->group(function () {
+            Route::get('leads/propostas', 'index')->name('index');
+            Route::get('leads/nova-proposta', 'create')->name('create');
+            Route::post('leads/nova-proposta', 'store')->name('store');
+            Route::get('leads/{id}', 'show')->name('show');
+            Route::delete('leads/{id}', 'delete')->name('delete');
+            Route::get('incidenceFromCity/{id}', 'incidenceFromCity')->name('incidenceFromCity');
+            Route::put('update-lead-status', 'updateLeadStatus')->name('status');
+        });
+    });
+
     Route::controller(ValueHistoryController::class)->group(function () {
 
         Route::name('valueHistory.')->group(function () {
             Route::post('propostas/{id}/comissao', 'applyCommissionOrDiscount')->name('updatePrice');
         });
     });
+
 
     Route::controller(PreInspectionController::class)->group(function () {
 
@@ -146,6 +160,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/kitSearch/{kwp}/{roof}/{tension}', [KitSearchController::class, 'kitsSearch']);
     Route::post('/setFinalValue', [ProposalController::class, 'setFinalValue']);
     Route::post('/setAverageProduction', [ProposalController::class, 'setAverageProduction']);
+    Route::post('/setAverageProductionByCity', [LeadController::class, 'setAverageProductionByCity']);
     Route::post('/get-tension-by-value', [ProposalController::class, 'setTensionByValue']);
 
 });
