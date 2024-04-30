@@ -134,7 +134,7 @@ class ProposalValueHistoryService
         return $this->valueHistory;
     }
 
-    public function setValueHistoryData(Proposal $proposal): array
+    public function setValueHistoryData(Proposal $proposal, ?bool $isLead = false): array
     {
         $valueHistory = $proposal->valueHistory;
 
@@ -169,21 +169,24 @@ class ProposalValueHistoryService
             panelCount: $proposal->number_of_panels,
             kwp: $proposal->kwp,
             finalValue: $proposal->valueHistory->final_price,
-            paymentType: PaymentTypeEnum::FINANCING
+            paymentType: PaymentTypeEnum::FINANCING,
+            isLead:$isLead
         );
         $cashTotalCost = new TotalCostForCash(
             cost: $proposal->valueHistory->kit_cost,
             panelCount: $proposal->number_of_panels,
             kwp: $proposal->kwp,
             finalValue: $proposal->valueHistory->final_price,
-            paymentType: PaymentTypeEnum::CASH_PAYMENT
+            paymentType: PaymentTypeEnum::CASH_PAYMENT,
+            isLead:$isLead
         );
         $cardTotalCost = new TotalCostForCreditCard(
             cost: $proposal->valueHistory->kit_cost,
             panelCount: $proposal->number_of_panels,
             kwp: $proposal->kwp,
             finalValue: $proposal->valueHistory->final_price,
-            paymentType: PaymentTypeEnum::CREDIT_CARD
+            paymentType: PaymentTypeEnum::CREDIT_CARD,
+            isLead:$isLead
         );
 
         return [

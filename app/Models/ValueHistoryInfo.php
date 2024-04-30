@@ -112,7 +112,8 @@ class ValueHistoryInfo
                 panelCount: $this->proposal->number_of_panels,
                 kwp: $this->proposal->kwp,
                 finalValue: $this->proposal->valueHistory->final_price,
-                paymentType: PaymentTypeEnum::FINANCING
+                paymentType: PaymentTypeEnum::FINANCING,
+                isLead: false
             ))->cost();
     }
 
@@ -124,7 +125,8 @@ class ValueHistoryInfo
                 panelCount: $this->proposal->number_of_panels,
                 kwp: $this->proposal->kwp,
                 finalValue: $this->proposal->valueHistory->final_price,
-                paymentType: PaymentTypeEnum::CASH_PAYMENT
+                paymentType: PaymentTypeEnum::CASH_PAYMENT,
+                isLead: false
             ))->cost();
     }
 
@@ -136,7 +138,8 @@ class ValueHistoryInfo
                 panelCount: $this->proposal->number_of_panels,
                 kwp: $this->proposal->kwp,
                 finalValue: $this->proposal->valueHistory->final_price,
-                paymentType: PaymentTypeEnum::CREDIT_CARD
+                paymentType: PaymentTypeEnum::CREDIT_CARD,
+                isLead: false
             ))->cost();
     }
 
