@@ -322,7 +322,7 @@ class ProposalController extends Controller
         }
     }
 
-    public function getComponentsSpec(Proposal $proposal, Kit $kit): array
+    public function getComponentsSpec(Proposal $proposal, ?Kit $kit = null): array
     {
         if ($proposal->is_manual) {
             $manualData = jsonToArray($proposal->manual_data);
