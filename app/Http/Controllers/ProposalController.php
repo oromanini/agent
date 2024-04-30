@@ -108,7 +108,7 @@ class ProposalController extends Controller
         list($panelSpecs, $inverterSpecs) = $this->getComponentsSpec($proposal, $kit);
 
         $isPromotional = PromotionalKit::query()
-            ->where('kwp', $kit->kwp)
+            ->where('kwp', $kit->kwp ?? $proposal->kwp)
             ->where('panel_brand', $panelSpecs['brand'])
             ->where('panel_power', $panelSpecs['power'])
             ->where('inverter_brand', $inverterSpecs['brand'])
