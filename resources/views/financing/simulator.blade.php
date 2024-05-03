@@ -11,7 +11,8 @@
                 <div class="column is-3 is-flex is-flex-direction-column">
                     <img src="/img/simulators/mfs.png" alt="" width="300">
                     <a class="button is-info m-4" href="{{ route('simulator.mfs') }}">
-                        Simular</a>
+                        Simular
+                    </a>
                 </div>
             </div>
         </div>
