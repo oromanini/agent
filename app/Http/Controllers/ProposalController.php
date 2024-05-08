@@ -9,14 +9,17 @@ use App\Enums\PaymentTypeEnum;
 use App\Enums\RoofStructure;
 use App\Enums\TensionPattern;
 use App\Http\Requests\ProposalRequest;
+use App\Models\City;
 use App\Models\Client;
 use App\Models\Kit;
+use App\Models\Lead;
 use App\Models\PromotionalKit;
 use App\Models\Proposal;
 use App\Models\User;
 use App\Models\ValueHistoryInfo;
 use App\Repositories\ProposalRepository;
 use App\Services\KitSpecService;
+use App\Services\LeadService;
 use App\Services\PaybackService;
 use App\Services\PricingService;
 use App\Services\ProposalService;
@@ -40,8 +43,7 @@ class ProposalController extends Controller
         private readonly PricingService              $pricingService,
         private readonly KitSpecService              $kitSpecService,
     )
-    {
-    }
+    {}
 
     public function index(Request $request): View
     {
@@ -207,6 +209,42 @@ class ProposalController extends Controller
 
         return $pdf
             ->stream('#' . $proposal->id . ' ' . $proposal->client->name . '.pdf');
+    }
+
+    public function generateLeadPdf(int $id): Response
+    {
+        $lead = Lead::find($id);
+        $city = City::find($lead->city_id);
+        $kitData = $lead->kit();
+        $components = $lead->components();
+
+        $inverterSpecs = jsonToArray($kitData['inverter_specs']);
+        $panelSpecs = jsonToArray($kitData['panel_specs']);
+        $inverterImage = setInverterImage($inverterSpecs['brand']);
+        $panelBrandImage = setPanelBrandImage($panelSpecs['brand']);
+        $incidence = (new SolarIncidenceService())->getSolarIncidence(city: $city)->average;
+        $panelQuantity = (new LeadService($this))->getLeadPanelQuantity($lead);
+
+        $payback = $this->paybackService->setLeadPaybackData(lead: $lead);
+        $overload =
+            "Até " .
+            ceil(($inverterSpecs['power'] * 1.4) / ($panelSpecs['power'] / 1000)) .
+            " módulos";
+
+        $pdfParams = [
+            'lead',
+            'city',
+            'payback',
+            'panelQuantity',
+            'panelBrandImage',
+            'inverterImage',
+            'inverterSpecs',
+            'panelSpecs',
+            'overload'
+        ];
+
+        $pdf = PDF::loadView('leads.base', compact($pdfParams));
+        return $pdf->stream("#L{$lead->id} {$lead->name}.pdf");
     }
 
     public function setFinalValue(Request $request): JsonResponse

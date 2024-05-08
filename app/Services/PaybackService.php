@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\City;
+use App\Models\Lead;
 use App\Models\Proposal;
 
 class PaybackService
@@ -162,5 +164,68 @@ class PaybackService
             ($kwp * 30 * ((float)$incidence->{$month} / 1000)) / (1 + (float) env('GENERATION_LOST'))
         );
     }
+
+    public function setLeadPaybackData(Lead $lead): array
+    {
+        $solarIncidenceService = new SolarIncidenceService();
+        $valueService = new ProposalValueHistoryService();
+
+        $generation = (new ProposalService(
+            $solarIncidenceService,
+            $valueService,
+        ))->calculateEstimatedGeneration(
+            kwp: $lead->kit()['kwp'],
+            incidence: $solarIncidenceService->getSolarIncidence($lead->city())
+        )['average'];
+
+        $kwhValue = $lead->kwh_price;
+        $minTax = ($lead->average_consumption * $kwhValue) * 0.1;
+        $solarSystemPrice = $lead->pricing()['final_price']['finalPrice'];
+        $balance = $lead->pricing()['final_price']['finalPrice'];
+        $totalEconomy = 0;
+        $tusd = 0;
+
+        $payback = [
+            'years' => paybackToString(round($solarSystemPrice / ((($generation * $kwhValue) - $minTax) * 12), 1)),
+        ];
+
+        for ($count = 1; $count <= 25; $count++) {
+            if ($count == 1) {
+
+                $tusd = (formatFloat($generation) - $lead->average_consumption) * 0.09;
+
+                $payback['data'][$count] = [
+                    'economy' => formatFloat(((($generation * $kwhValue) - $minTax - $tusd) * 12)),
+                    'balance' => formatFloat(((($generation * $kwhValue) - $minTax - $tusd) * 12) - $solarSystemPrice),
+                    'kw_value' => formatFloat($kwhValue),
+                    'generation' => formatFloat($generation),
+                ];
+
+                $balance = formatFloat($payback['data'][$count]['economy'] - $solarSystemPrice);
+
+            } else {
+
+                $generation -= $generation * 0.008;
+                $kwhValue *= 1.03;
+                $economy = ((($generation * $kwhValue) - $minTax) * 12);
+                $balance += $economy;
+
+                $payback['data'][$count] = [
+                    'economy' => formatFloat($economy),
+                    'balance' => formatFloat($balance),
+                    'kw_value' => formatFloat($kwhValue),
+                    'generation' => formatFloat($generation),
+                ];
+
+            }
+
+            $totalEconomy += $payback['data'][$count]['economy'];
+        }
+
+        $payback['totalEconomy'] = $totalEconomy;
+
+        return $payback;
+    }
+
 
 }

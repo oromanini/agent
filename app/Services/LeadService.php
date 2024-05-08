@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\PaymentTypeEnum;
+use App\Http\Controllers\ProposalController;
 use App\Models\Kit;
 use App\Models\Lead;
 use Illuminate\Support\Facades\DB;
@@ -10,6 +11,11 @@ use Ramsey\Uuid\Uuid;
 
 class LeadService implements BaseService
 {
+    public function __construct(private readonly ProposalController $proposalController)
+    {}
+
+    private const INITIAL_STATUS = 'Tratativa inicial';
+
     public function delete(int $id): array
     {
         $lead = Lead::find($id);
@@ -46,6 +52,7 @@ class LeadService implements BaseService
         $lead->roof_structure = $data['roof_structure'];
         $lead->name = $data['lead_name'];
         $lead->uuid = Uuid::uuid4();
+        $lead->status = self::INITIAL_STATUS;
 
         $kit = Kit::query()
             ->where('distributor_code', $data['kit_id'])
@@ -93,5 +100,14 @@ class LeadService implements BaseService
     {
         Lead::find($data['lead_id'])->update(['status' => $data['status']]);
         return ['success' => 'Status atualizado com sucesso!'];
+    }
+
+    public function getLeadPanelQuantity(Lead $lead): int
+    {
+        $kit = $lead->kit();
+        $power = jsonToArray($kit['panel_specs'])['power'] / 1000;
+        $kwp = $kit['kwp'];
+
+        return $kwp / $power;
     }
 }

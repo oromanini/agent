@@ -24,7 +24,7 @@ class Lead extends Model
         return json_decode($this->manual_data, true);
     }
 
-    public function kit(): array
+    public function kit(): array|null
     {
         return json_decode($this->kit_data, true);
     }
@@ -38,6 +38,11 @@ class Lead extends Model
     {
         $kit = json_decode($this->kit_data, true);
         return json_decode($kit['components'], true);
+    }
+
+    public function city(): City
+    {
+        return City::find($this->city_id);
     }
 
 }

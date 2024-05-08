@@ -19,7 +19,7 @@
         </h3>
     </div>
     <div class="column is-6 is-flex is-justify-content-end">
-        <a class="button is-info" href="">Gerar proposta</a>&nbsp;
+        <a class="button is-info" target="_blank" href="{{route('proposal.leadpdf', [$lead->id])}}">Gerar proposta</a>&nbsp;
         <a class="button is-success" href="">solicitar vistoria</a>
     </div>
 

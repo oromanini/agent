@@ -63,6 +63,7 @@ Route::middleware('auth')->group(function () {
             Route::get('propostas/{proposal_id}/pdf', 'generatePdf')->name('pdf');
             Route::get('propostas/{proposal_id}/{true}/pdf', 'generatePdf')->name('small-pdf');
             Route::get('propostas/{proposal_id}/aprovacao', 'approve')->name('approve');
+            Route::get('leads/generate-pdf/{id}', 'generateLeadPdf')->name('leadpdf');
         });
     });
 
@@ -127,12 +128,10 @@ Route::middleware('auth')->group(function () {
     Route::controller(HomologationController::class)->group(function () {
 
         Route::name('homologation.')->group(function () {
-
             Route::get('homologacoes', 'index')->name('index');
             Route::get('homologacoes/{id}', 'show')->name('show');
             Route::put('homologacoes/{id}/atualizar', 'update')->name('update');
             Route::get('homologacoes/{id}/inativar', 'inactive')->name('inactive');
-
         });
     });
 

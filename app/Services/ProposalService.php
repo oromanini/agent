@@ -53,7 +53,7 @@ class ProposalService
         return $this->fillCommonFields($proposal, $isManual, $incidence);
     }
 
-    public function calculateEstimatedGeneration($kwp, $incidence): array
+    public function calculateEstimatedGeneration(float $kwp, SolarIncidence $incidence): array
     {
         $generationLost = env('GENERATION_LOST');
         $ordinaryAverage = (float)str_replace(',', '.', $incidence->average);

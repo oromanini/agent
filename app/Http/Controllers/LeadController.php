@@ -93,4 +93,10 @@ class LeadController extends Controller
 
         return redirect()->route('leads.show', [$request->get('lead_id')]);
     }
+
+    public function generatePdf(int $leadId): void
+    {
+        $lead = Lead::find($leadId);
+        $this->leadService->generatePdf($lead);
+    }
 }

@@ -55,8 +55,9 @@ function setPanelBrandImage($brand): string
         'Hanersun', PanelBrands::Hanersun->value => '/img/panel_brands/hanersun.png',
         'Resun', PanelBrands::Resun->value => '/img/panel_brands/resun.png',
         'Sine', PanelBrands::Sine->value => '/img/panel_brands/sine.png',
-        'Era', PanelBrands::Era->value => '/img/panel_brands/era.png',
+        'Era', PanelBrands::Era->value, 'ERA' => '/img/panel_brands/era.png',
         'Honor', PanelBrands::Honor->value => '/img/panel_brands/honor.png',
+        default => throw new Exception('Painel não localizado.'),
     };
 }
 
@@ -86,7 +87,7 @@ function setInverterImage($brand): string
         InverterBrands::Bel->value, 'Bel' => $bel,
         InverterBrands::Sungrow->value, 'Sungrow' => $sungrow,
         InverterBrands::Canadian->value, 'Canadian' => $canadian,
-        InverterBrands::Saj->value, 'Saj' => $saj,
+        InverterBrands::Saj->value, 'Saj', 'SAJ' => $saj,
         InverterBrands::TechPowerMicro->value, 'TechPowerMicro' => $techpower,
         InverterBrands::SajMicroinverter->value, 'SajMicroinverter' => $sajMicro,
         default => throw new Exception('Inversor não localizado.'),
@@ -201,10 +202,10 @@ function calculateWithoutSolar($proposal): string
 function calculateWithSolar($proposal): string
 {
     if ($proposal->tension_pattern == 'MONO-220') {
-        return 50;
+        return 70;
     } elseif ($proposal->tension_pattern == 'BI-220') {
-        return 75;
+        return 100;
     }
 
-    return 100;
+    return 130;
 }

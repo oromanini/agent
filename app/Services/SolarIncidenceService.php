@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class SolarIncidenceService
 {
-    public function getSolarIncidence(City $city): Model|Builder|null
+    public function getSolarIncidence(City $city): SolarIncidence|null
     {
         return SolarIncidence::query()
             ->where('latitude', '>=', $city->latitude)
