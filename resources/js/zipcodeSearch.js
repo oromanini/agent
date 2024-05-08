@@ -98,11 +98,16 @@ $(function () {
                 $('#city').empty();
 
                 $.each(msg, function (i, item) {
-                    $('#city').append($('<option ' + item.name === 'MARINGÁ' ? 'selected ' : '' + '>', {
-                            value: item.id,
-                            text: item.name,
-                        })
-                    );
+                    var option = $('<option>', {
+                        value: item.id,
+                        text: item.name,
+                    });
+
+                    if (item.name === 'MARINGA') {
+                        option.attr('selected', true);
+                    }
+
+                    $('#city').append(option);
                 });
 
                 city_id = (city_id == null && city_id_saved !== null) ? city_id_saved : city_id;
