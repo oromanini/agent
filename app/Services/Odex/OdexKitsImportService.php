@@ -6,6 +6,7 @@ use App\Enums\DistributorsEnum;
 use App\Enums\PanelBrands;
 use App\Enums\RoofStructure;
 use App\Enums\TensionPattern;
+use App\Models\ActiveKit;
 use App\Models\Kit;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -15,7 +16,9 @@ class OdexKitsImportService
 {
     public function importMicroInverterKits(int $limit): void
     {
+        $this->inactiveAllMicroInverterKits();
         $this->mountMicroInverterKits($limit);
+
         Log::info('ODEX kits import finished!');
     }
 
@@ -162,7 +165,7 @@ class OdexKitsImportService
                     'cost' => $cost,
                     'roof_structure' => $structure->value,
                     'tension_pattern' => TensionPattern::MONOFASICO_220V->value,
-                    'components' => json_encode($this->setComponents($panelCount, $structure->value)),
+                    'components' => json_encode($this->setComponents($panelCount, $structure->name)),
                     'panel_specs' => json_encode($microInverterConfigs['panel_specs']),
                     'inverter_specs' => json_encode($microInverterConfigs['inverter_specs']),
                     'distributor_name' => DistributorsEnum::ODEX->value,
@@ -367,5 +370,27 @@ class OdexKitsImportService
         $panelPowerInWatts = $panelPower / 1000;
 
         return ceil($inverterMaximumPower / $panelPowerInWatts);
+    }
+
+    private function inactiveAllMicroInverterKits(): void
+    {
+        $kits = Kit::query()
+            ->where('distributor_name', DistributorsEnum::ODEX->name)
+            ->where('description', 'like', "%microinversor%")
+            ->get();
+
+        $kits->each(function ($kit) {
+            $kit->is_active = false;
+            $kit->update();
+        });
+
+        $activeKit = ActiveKit::query()
+            ->where('', 'SAJ Microinverter')
+            ->where('', 'ERA')
+            ->first();
+
+        $activeKit->is_active = false;
+        $activeKit->update();
+
     }
 }
