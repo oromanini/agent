@@ -385,12 +385,10 @@ class OdexKitsImportService
         });
 
         $activeKit = ActiveKit::query()
-            ->where('', 'SAJ Microinverter')
-            ->where('', 'ERA')
+            ->where('inverter_brand', 'SAJ Microinverter')
             ->first();
 
         $activeKit->is_active = false;
         $activeKit->update();
-
     }
 }
