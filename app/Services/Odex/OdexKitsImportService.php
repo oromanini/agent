@@ -331,6 +331,10 @@ class OdexKitsImportService
             $kit->distributor_code = Uuid::uuid4();
             $kit->save();
         } else {
+            $search->distributor_code = $search->distributor_code === 'N/A'
+                ? Uuid::uuid4()
+                : $search->distributor_code;
+
             $search->update($kitParams);
         }
     }
