@@ -169,7 +169,6 @@ class OdexKitsImportService
                     'panel_specs' => json_encode($microInverterConfigs['panel_specs']),
                     'inverter_specs' => json_encode($microInverterConfigs['inverter_specs']),
                     'distributor_name' => DistributorsEnum::ODEX->value,
-                    'distributor_code' => 'N/A',
                     'availability' => (new Carbon('2024-04-24'))->toDateTimeString(),
                     'is_active' => true,
                 ];
@@ -238,7 +237,6 @@ class OdexKitsImportService
             'panel_specs' => json_encode($specs['panel_specs']),
             'inverter_specs' => json_encode($specs['inverter_specs']),
             'distributor_name' => DistributorsEnum::ODEX->value,
-            'distributor_code' => 'N/A',
             'availability' => (new Carbon('2024-04-24'))->toDateTimeString(),
             'is_active' => true,
         ];
@@ -321,21 +319,20 @@ class OdexKitsImportService
             ->where('kwp', $kit->kwp)
             ->where('roof_structure', $kit->roof_structure)
             ->where('tension_pattern', $kit->tension_pattern)
-            ->where('tension_pattern', $kit->tension_pattern)
             ->where('distributor_name', $kit->distributor_name)
             ->where('description', "Kit gerador {$kit->kwp} kWP microinversor SAJ/ Era 555W")
             ->first();
 
-
         if (is_null($search)) {
-            $kit->distributor_code = Uuid::uuid4();
+            $kit->distributor_code = Uuid::uuid4()->toString();
             $kit->save();
         } else {
-            $search->distributor_code = $search->distributor_code === 'N/A'
-                ? Uuid::uuid4()
+            $kitParams['distributor_code'] = $search->distributor_code === 'N/A'
+                ? Uuid::uuid4()->toString()
                 : $search->distributor_code;
 
             $search->update($kitParams);
+
         }
     }
 
