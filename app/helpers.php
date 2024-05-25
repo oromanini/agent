@@ -53,10 +53,10 @@ function setPanelBrandImage($brand): string
         'Astroenergy', PanelBrands::Astronergy->value => '/img/panel_brands/astronergy.png',
         'Pulling', PanelBrands::Pulling->value => '/img/panel_brands/pulling.png',
         'Hanersun', PanelBrands::Hanersun->value => '/img/panel_brands/hanersun.png',
-        'Resun', PanelBrands::Resun->value => '/img/panel_brands/resun.png',
-        'Sine', PanelBrands::Sine->value => '/img/panel_brands/sine.png',
+        'Resun', 'RESUN', PanelBrands::Resun->value => '/img/panel_brands/resun.png',
+        'Sine', 'SINE', PanelBrands::Sine->value => '/img/panel_brands/sine.png',
         'Era', PanelBrands::Era->value, 'ERA' => '/img/panel_brands/era.png',
-        'Honor', PanelBrands::Honor->value => '/img/panel_brands/honor.png',
+        'Honor', 'HONOR', PanelBrands::Honor->value => '/img/panel_brands/honor.png',
         default => throw new Exception('Painel não localizado.'),
     };
 }
