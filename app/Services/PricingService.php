@@ -10,7 +10,7 @@ use App\Models\PromotionalKit;
 class PricingService
 {
     const SOLO_PLUS = 1.35;
-    const LIQUID_PROFIT_PERCENTAGE = 0.13;
+    const LIQUID_PROFIT_PERCENTAGE = 0.2;
     const PLUS_TO_ADJUST_MARGIN = 250;
 
     private float $netProfit;
