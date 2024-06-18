@@ -145,6 +145,7 @@ class EdeltecApiService
             : 0;
 
         if (!is_null($kit)) {
+            $kit->update($this->setKitParams($item));
             $kit->cost = $item['precoDoIntegrador'];
             $kit->availability = $item['dataPrevistaParaDisponibilidade'] ?? now()->toDateString();
             $kit->is_active = true;
