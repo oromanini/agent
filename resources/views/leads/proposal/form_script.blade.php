@@ -233,6 +233,10 @@
                 panelImage = '/img/panel_brands/honor.png'
             }
 
+            if (brand == 'Runergy') {
+                panelImage = '/img/panel_brands/runergy.png'
+            }
+
             return panelImage
         }
 

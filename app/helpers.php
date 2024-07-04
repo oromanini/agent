@@ -57,6 +57,7 @@ function setPanelBrandImage($brand): string
         'Sine', 'SINE', PanelBrands::Sine->value => '/img/panel_brands/sine.png',
         'Era', PanelBrands::Era->value, 'ERA' => '/img/panel_brands/era.png',
         'Honor', 'HONOR', PanelBrands::Honor->value => '/img/panel_brands/honor.png',
+        'Runergy', PanelBrands::Honor->value => '/img/panel_brands/runergy.png',
         default => throw new Exception('Painel não localizado.'),
     };
 }
