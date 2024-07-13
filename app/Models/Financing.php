@@ -24,4 +24,9 @@ class Financing extends Model
     {
         return $this->belongsTo(Status::class);
     }
+
+    public function owner(): HasOne
+    {
+        return $this->hasOne(User::class);
+    }
 }

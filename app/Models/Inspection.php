@@ -25,4 +25,8 @@ class Inspection extends Model
         return $this->belongsTo(Status::class);
     }
 
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }
