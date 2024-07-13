@@ -10,13 +10,17 @@ class AddOwnerToFinancings extends Migration
     {
         Schema::table('financings', function (Blueprint $table) {
             $table->unsignedBigInteger('owner_id')->nullable();
-            $table->foreign('owner_id')->references('id')->on('users');        });
+            $table->unsignedBigInteger('secondary_owner_id')->nullable();
+            $table->foreign('owner_id')->references('id')->on('users');
+            $table->foreign('secondary_owner_id')->references('id')->on('users');
+        });
     }
 
     public function down(): void
     {
         Schema::table('financings', function (Blueprint $table) {
             $table->dropColumn('owner_id');
+            $table->dropColumn('secondary_owner_id');
         });
     }
 }
