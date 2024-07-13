@@ -20,9 +20,13 @@ use App\Services\ProposalValueHistoryService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ApprovalController extends Controller
 {
+    private const TECHNICAL = 'technical';
+    private const FINANCING = 'financial';
+
     public function __construct(
         private readonly ApprovalRepository          $approvalRepository,
         private readonly ProposalValueHistoryService $valueHistoryService,
@@ -58,6 +62,15 @@ class ApprovalController extends Controller
 
         $financingStatuses = Status::query()->where('department', DepartmentsEnum::FINANCING)
             ->orWhere('department', DepartmentsEnum::GENERAL)->get();
+
+        $owners = Auth::user()->permission == self::TECHNICAL
+            ? Auth::user()
+            : User::query()->where('permission', self::TECHNICAL)->get();
+
+        $financingOwners = Auth::user()->permission == self::FINANCING
+            ? Auth::user()
+            : User::query()->where('permission', 'financial')->get();
+        $financingOwners->add(User::find(2));
 
         $inspection = $proposal->inspection ?: null;
         $financing = $proposal->financing ?: null;
@@ -134,7 +147,9 @@ class ApprovalController extends Controller
             'financing',
             'contract',
             'client',
-            'valueHistoryInfo'
+            'valueHistoryInfo',
+            'owners',
+            'financingOwners',
         ];
     }
 

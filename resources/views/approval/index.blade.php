@@ -66,8 +66,18 @@
                 </tr>
                 </thead>
                 <tbody>
-                @forelse(auth()->user()->id == 20 ? $approvals->where('created_at', '<=', '2022-10-01') : $approvals as $approval)
-                    @if($approval->client)
+                @php
+                    $authUser = \Illuminate\Support\Facades\Auth::user();
+                @endphp
+                @forelse($approvals as $approval)
+                    @if(
+                        $approval->client
+                        && (
+                                $authUser->permission == 'admin'
+                                || $approval->inspection->owner = $authUser
+                                || $approval->financing->owner = $authUser
+                            )
+                        )
                         <tr class="lh-40">
                         <th>{{$approval->id}}</th>
                         <td>{{ $approval->client->name }}</td>

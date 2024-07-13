@@ -6,6 +6,25 @@
     @method('PUT')
     @csrf
 
+    <div class="columns">
+        <div id="owner_select" class="column is-3 mr-3">
+            <div class="field">
+                <label for="status" class="label">
+                    <ion-icon name="person-outline"></ion-icon>
+                    Responsável</label>
+                <div class="select is-multiline is-rounded  @error('owner') is-danger @enderror">
+                    <select @if(\Illuminate\Support\Facades\Auth::user()->permission != 'admin') disabled @endif id="owner" name="owner_id">
+                        @foreach($financingOwners as $owner)
+                            <option
+                                value="{{ $owner->id }}" {{ !is_null($financing) && $financing->owner->id == $owner->id ? 'selected' : '' }}>{{ $owner->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('status')<span class="error-message">{{ $message }}</span>@enderror
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
     <div class="columns is-flex is-flex-wrap-wrap">
         <div class="column">
             <div class="field">
