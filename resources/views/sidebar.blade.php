@@ -9,9 +9,10 @@ $permissionToApproval = $permission == 'admin'
 
 $permissionToInstallation = $permission == 'admin'
     || $permission == 'technical'
-    || $permission == 'installation' ;
+    || $permission == 'installer' ;
 
-$permissionToHomologation = $permission == 'admin' || $permission == 'technical';
+$permissionToHomologation = $permission == 'admin'
+    || $permission == 'technical';
 
 @endphp
 
