@@ -70,14 +70,18 @@
                     $authUser = \Illuminate\Support\Facades\Auth::user();
                 @endphp
                 @forelse($approvals as $approval)
-                    @if(
-                        $approval->client
-                        && (
-                                $authUser->permission == 'admin'
-                                || $approval->inspection->owner = $authUser
-                                || $approval->financing->owner = $authUser
-                            )
-                        )
+                    @php
+                    $hasFinancing = !is_null($approval->financing);
+                    $hasInspection = !is_null($approval->inspection);
+
+                    $financingHasOwner = $hasFinancing && !is_null($approval->financing->owner);
+                    $inspectionHasOwner = $hasInspection && !is_null($approval->inspection->owner);
+
+                    $enabledForShow = $authUser->permission == 'admin'
+                            || ($inspectionHasOwner && $approval->inspection->owner = $authUser)
+                            || ($financingHasOwner && $approval->financing->owner = $authUser);
+                    @endphp
+                    @if($enabledForShow)
                         <tr class="lh-40">
                         <th>{{$approval->id}}</th>
                         <td>{{ $approval->client->name }}</td>

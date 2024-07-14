@@ -13,10 +13,12 @@
                     <ion-icon name="person-outline"></ion-icon>
                     Responsável</label>
                 <div class="select is-multiline is-rounded  @error('owner') is-danger @enderror">
-                    <select @if(\Illuminate\Support\Facades\Auth::user()->permission != 'admin') disabled @endif id="owner" name="owner_id">
+                    <select @if(auth()->user()->permission != 'admin') disabled @endif id="owner" name="owner_id">
                         @foreach($owners as $owner)
                             <option
-                                value="{{ $owner->id }}" {{ !is_null($inspection) && $inspection->owner->id == $owner->id ? 'selected' : '' }}>{{ $owner->name }}</option>
+                                value="{{ $owner->id }}"
+                                {{ !is_null($inspection) && $inspection->owner->id == $owner->id ? 'selected' : '' }}>
+                                {{ $owner->name }}</option>
                         @endforeach
                     </select>
                     @error('status')<span class="error-message">{{ $message }}</span>@enderror
@@ -166,7 +168,12 @@
         </div>
     </div>
 
-    <div class="columns">
+    @php
+    $canSave = auth()->user()->permission == 'admin'
+    || auth()->user()->permission == 'technical';
+    @endphp
+
+    <div class="columns" @if(!$canSave) style="display: none" @endif>
         <div class="column is-flex is-justify-content-center">
             <button type="submit" class="button is-large is-info">
                 <ion-icon name="save-outline"></ion-icon> &nbsp; Salvar

@@ -63,12 +63,12 @@ class ApprovalController extends Controller
         $financingStatuses = Status::query()->where('department', DepartmentsEnum::FINANCING)
             ->orWhere('department', DepartmentsEnum::GENERAL)->get();
 
-        $owners = Auth::user()->permission == self::TECHNICAL
-            ? Auth::user()
+        $owners = (Auth::user()->permission == self::TECHNICAL)
+            ? User::query()->where('id', auth()->id())->get()
             : User::query()->where('permission', self::TECHNICAL)->get();
 
         $financingOwners = Auth::user()->permission == self::FINANCING
-            ? Auth::user()
+            ? User::query()->where('id', auth()->id())->get()
             : User::query()->where('permission', 'financial')->get();
         $financingOwners->add(User::find(2));
 
