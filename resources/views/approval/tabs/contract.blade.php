@@ -62,9 +62,15 @@
                 </div>
             </div>
         </div>
-        <div class="columns">
+        @php
+            $canSave = auth()->user()->permission == 'admin'
+            || auth()->user()->permission == 'contract';
+        @endphp
+        <div class="columns" @if(!$canSave) style="display: none" @endif>
             <div class="column">
-                <button type="submit" class="button is-primary is-large"><ion-icon name="save-outline"></ion-icon> &nbsp;Salvar</button>
+                <button type="submit" class="button is-primary is-large"><ion-icon name="save-outline">
+
+                    </ion-icon> &nbsp;Salvar</button>
             </div>
         </div>
     </form>

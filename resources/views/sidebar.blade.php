@@ -1,3 +1,21 @@
+@php
+$user = auth()->user();
+$permission = $user->permission;
+
+$permissionToApproval = $permission == 'admin'
+    || $permission == 'financial'
+    || $permission == 'technical'
+    || $permission == 'contract';
+
+$permissionToInstallation = $permission == 'admin'
+    || $permission == 'technical'
+    || $permission == 'installer' ;
+
+$permissionToHomologation = $permission == 'admin'
+    || $permission == 'technical';
+
+@endphp
+
 <div class="side-navigation">
 
     <div class="side-logo">
@@ -42,7 +60,7 @@
             </a>
         </li>
 
-        @if(auth()->user()->is_admin)
+        @if($permission == 'admin')
         <li class="side-list">
             <a href="{{ route('leads.index') }}">
                 <span class="side-icon">
@@ -71,7 +89,7 @@
             </a>
         </li>
 
-        @if(!is_null(auth()->user()) && auth()->user()->is_admin)
+        @if($permissionToApproval)
             <hr style="margin-bottom: 2px !important;">
             <li class="side-list">
                 <a href="{{ route('approval.index') }}">
@@ -81,7 +99,8 @@
                     <span class="side-title">Aprovações</span>
                 </a>
             </li>
-
+        @endif
+        @if($permissionToHomologation)
             <li class="side-list">
                 <a href="{{ route('homologation.index') }}">
                 <span class="side-icon">
@@ -90,6 +109,8 @@
                     <span class="side-title">Homologação</span>
                 </a>
             </li>
+        @endif
+        @if($permissionToInstallation)
             <li class="side-list">
                 <a href="{{ route('installation.index') }}">
                 <span class="side-icon">
@@ -98,9 +119,10 @@
                     <span class="side-title">Instalação</span>
                 </a>
             </li>
-
             <hr style="margin-bottom: 2px !important;">
+        @endif
 
+        @if($user->isAdmin)
             <li class="side-list">
                 <a href="{{ route('proposal.manual.create') }}">
                 <span class="side-icon">
@@ -109,7 +131,6 @@
                     <span class="side-title">Proposta Manual</span>
                 </a>
             </li>
-
             <li class="side-list">
                 <a href="{{ route('user.index') }}">
                 <span class="side-icon">

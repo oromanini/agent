@@ -19,7 +19,6 @@ class ApprovalRepository implements Filter
                 filterDocument($data, $query);
                 filterInitialDate($data, $query);
                 filterFinalDate($data, $query);
-                filterPermission($data, $query);
             })
             ->whereNotNull('send_date')
             ->orderBy('proposals.send_date', 'desc')

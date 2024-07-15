@@ -24,4 +24,14 @@ class Financing extends Model
     {
         return $this->belongsTo(Status::class);
     }
+
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function secondaryOwner(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }

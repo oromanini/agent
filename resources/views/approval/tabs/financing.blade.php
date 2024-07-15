@@ -6,6 +6,41 @@
     @method('PUT')
     @csrf
 
+    <div class="columns">
+        <div id="owner_select" class="column is-3 mr-3">
+            <div class="field">
+                <label for="status" class="label">
+                    <ion-icon name="person-outline"></ion-icon>
+                    Responsável</label>
+                <div class="select is-multiline is-rounded  @error('owner') is-danger @enderror">
+                    <select @if(\Illuminate\Support\Facades\Auth::user()->permission != 'admin') disabled @endif id="owner" name="owner_id">
+                        @foreach($financingOwners as $owner)
+                            <option
+                                value="{{ $owner->id }}" {{ !is_null($financing) && $financing->owner->id == $owner->id ? 'selected' : '' }}>{{ $owner->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('status')<span class="error-message">{{ $message }}</span>@enderror
+                </div>
+            </div>
+        </div>
+        <div id="status_select" class="column is-3 mr-3">
+            <div class="field">
+                <label for="status" class="label">
+                    <ion-icon name="information-circle-outline"></ion-icon>
+                    Status</label>
+                <div class="select is-multiline is-rounded  @error('status') is-danger @enderror">
+                    <select id="status" name="status_id">
+                        @foreach($financingStatuses as $status)
+                            <option
+                                value="{{ $status->id }}" {{ isset($financing) && $status->id == $financing->status->id ? 'selected' : '' }}>{{ $status->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('status')<span class="error-message">{{ $message }}</span>@enderror
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
     <div class="columns is-flex is-flex-wrap-wrap">
         <div class="column">
             <div class="field">
@@ -287,24 +322,14 @@
             <textarea id="note" name="note" class="textarea">{{ isset($financing) ? $financing->note : ''  }}</textarea>
         </div>
     </div>
-    <div class="columns">
-        <div class="column">
-            <div class="field">
-                <label for="status" class="label">Status</label>
-                <div
-                    class="select is-multiline is-fullwidth is-rounded  @error('status') is-danger @enderror">
-                    <select id="status" name="status_id">
-                        @foreach($financingStatuses as $status)
-                            <option
-                                value="{{ $status->id }}" {{ isset($financing) && $status->id == $financing->status->id ? 'selected' : '' }}>{{ $status->name }}</option>
-                        @endforeach
-                    </select>
-                    @error('status')<span class="error-message">{{ $message }}</span>@enderror
 
-                </div>
-            </div>
-        </div>
-        <div class="column">
+
+        @php
+            $canSave = auth()->user()->permission == 'admin'
+            || auth()->user()->permission == 'financial';
+        @endphp
+
+        <div class="column" @if(!$canSave) style="display: none" @endif>
             <label for="" class="label">Ações</label>
             <button type="submit" class="button is-primary is-large">
                 <ion-icon name="save-outline"></ion-icon> &nbsp;Salvar

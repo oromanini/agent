@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Homologation extends Model
 {
     use SoftDeletes;
+    use HasFactory;
 
     protected $guarded = [];
     protected $dates = ['protocol_approval_date'];
@@ -23,5 +24,15 @@ class Homologation extends Model
     public function status(): BelongsTo
     {
         return $this->belongsTo(Status::class);
+    }
+
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function secondaryOwner(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

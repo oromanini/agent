@@ -31,6 +31,14 @@ Route::middleware('auth')->group(function () {
         return view('home');
     })->name('home');
 
+    Route::get('/login', function () {
+        return view('home');
+    });
+
+    Route::get('/dashboard', function () {
+        return view('home');
+    });
+
     Route::get('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
     Route::controller(ClientController::class)->group(function () {

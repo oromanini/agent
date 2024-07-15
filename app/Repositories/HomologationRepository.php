@@ -20,7 +20,12 @@ class HomologationRepository
                 filterDocument($data, $query);
                 filterInitialDate($data, $query);
                 filterFinalDate($data, $query);
-                filterPermission($data, $query);
+            })
+            ->where(function ($query) use($data) {
+                if (!auth()->user()->isAdmin) {
+                    $query->where('owner_id',auth()->id());
+                    $query->orWhere('secondary_owner_id',auth()->id());
+                }
             })
             ->orderBy('created_at', 'desc')
             ->paginate(20);

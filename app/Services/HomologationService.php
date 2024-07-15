@@ -21,7 +21,8 @@ class HomologationService extends AfterSalesProcessService
         Homologation::create([
             'proposal_id' => $proposal->id,
             'status_id' => $generalStatus,
-            'checklist' => self::getChecklist()
+            'checklist' => self::getChecklist(),
+            'owner_id' => $proposal->inspection->owner->id,
         ]);
     }
 

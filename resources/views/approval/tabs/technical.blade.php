@@ -7,9 +7,29 @@
     @csrf
 
     <div class="columns">
-        <div class="column mr-3">
+        <div id="owner_select" class="column is-3 mr-3">
             <div class="field">
-                <label for="status" class="label">Status</label>
+                <label for="status" class="label">
+                    <ion-icon name="person-outline"></ion-icon>
+                    Responsável</label>
+                <div class="select is-multiline is-rounded  @error('owner') is-danger @enderror">
+                    <select @if(auth()->user()->permission != 'admin') disabled @endif id="owner" name="owner_id">
+                        @foreach($owners as $owner)
+                            <option
+                                value="{{ $owner->id }}"
+                                {{ !is_null($inspection) && $inspection->owner->id == $owner->id ? 'selected' : '' }}>
+                                {{ $owner->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('status')<span class="error-message">{{ $message }}</span>@enderror
+                </div>
+            </div>
+        </div>
+        <div id="status_select" class="column is-3 mr-3">
+            <div class="field">
+                <label for="status" class="label">
+                    <ion-icon name="information-circle-outline"></ion-icon>
+                    Status</label>
                 <div class="select is-multiline is-rounded  @error('status') is-danger @enderror">
                     <select id="status" name="status_id">
                         @foreach($inspectionStatuses as $status)
@@ -22,7 +42,7 @@
             </div>
         </div>
     </div>
-
+    <hr>
     <div class="columns is-justify-content-left is-flex-wrap-wrap">
 
         @if(isset($inspection->proposal->client) && !is_null($inspection->proposal->client->account_owner_document))
@@ -148,7 +168,12 @@
         </div>
     </div>
 
-    <div class="columns">
+    @php
+    $canSave = auth()->user()->permission == 'admin'
+    || auth()->user()->permission == 'technical';
+    @endphp
+
+    <div class="columns" @if(!$canSave) style="display: none" @endif>
         <div class="column is-flex is-justify-content-center">
             <button type="submit" class="button is-large is-info">
                 <ion-icon name="save-outline"></ion-icon> &nbsp; Salvar
@@ -176,6 +201,16 @@
     .oranged {
         color: #ff6200;
         font-weight: 800;
+    }
+
+    #owner_select {
+        background-color: #FFBC2B;
+        border-radius: 10px;
+    }
+
+    #status_select {
+        background-color: #FFBC2B;
+        border-radius: 10px;
     }
 
 </style>

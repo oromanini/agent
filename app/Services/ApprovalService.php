@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Proposal;
+use App\Models\User;
 use App\Services\Contracts\ApprovalInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -26,9 +27,9 @@ abstract class ApprovalService implements ApprovalInterface
 
         $savedModel = (new $modelPath)::create($request->all());
         $proposal->$lowerModel()->associate($savedModel);
+        $model == self::FINANCING && $savedModel->owner_id = User::find(2)->id;
         $proposal->update();
         ApprovalService::sendToHomologation($proposal);
-
     }
 
     public function update(string $model, int $proposalId, Request $request): void

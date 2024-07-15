@@ -1,6 +1,13 @@
 @extends('base')
 
 @section('content')
+    @if(auth()->user()->permission == 'installer' && is_null($proposal->technical))
+        <div class="container is-fluid overflow-auto">
+            <div class="box overflow-auto">
+                <h1 class="title">Solicite à diretoria a atribuição de responsável à vistoria.</h1>
+            </div>
+        </div>
+        @else
         <div class="container is-fluid overflow-auto">
             <nav class="tabs is-boxed is-fullwidth is-large" style="margin-bottom: 0">
                 <div class="container">
@@ -81,4 +88,5 @@
                 checkHash(path)
             })
         </script>
+    @endif
 @endsection
