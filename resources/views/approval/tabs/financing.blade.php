@@ -17,7 +17,7 @@
                         <option>Selecione...</option>
                         @foreach($financingOwners as $owner)
                             <option value="{{ $owner->id }}"
-                                @if(!is_null($financing->owner))
+                                @if(!is_null($financing) && !is_null($financing->owner))
                                     {{ $financing->owner->id == $owner->id ? 'selected' : '' }}
                                 @endif
                                 >{{ $owner->name }}</option>
