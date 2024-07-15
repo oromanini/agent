@@ -30,7 +30,6 @@ abstract class ApprovalService implements ApprovalInterface
         $model == self::FINANCING && $savedModel->owner_id = User::find(2)->id;
         $proposal->update();
         ApprovalService::sendToHomologation($proposal);
-
     }
 
     public function update(string $model, int $proposalId, Request $request): void

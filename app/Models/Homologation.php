@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Homologation extends Model
 {
     use SoftDeletes;
+    use HasFactory;
 
     protected $guarded = [];
     protected $dates = ['protocol_approval_date'];

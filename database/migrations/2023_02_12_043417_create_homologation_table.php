@@ -17,7 +17,7 @@ class CreateHomologationTable extends Migration
             $table->string('access_opinion_form')->nullable();
             $table->string('signed_access_opinion_form')->nullable();
             $table->text('notes')->nullable();
-            $table->string('single-line-project')->nullable();
+            $table->string('single_line_project')->nullable();
             $table->json('checklist');
 
             $table->foreign('proposal_id')->references('id')->on('proposals');

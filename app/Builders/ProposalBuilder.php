@@ -30,43 +30,43 @@ class ProposalBuilder implements Builder
         return $this;
     }
 
-    public function withEstimatedGeneration(float $estimatedGeneration): static
+    public function withEstimatedGeneration(?float $estimatedGeneration = 1000): static
     {
         $this->proposal->estimated_generation = $estimatedGeneration;
         return $this;
     }
 
-    public function withAverageConsumption(float $averageConsumption): static
+    public function withAverageConsumption(?float $averageConsumption = 950): static
     {
         $this->proposal->average_consumption = $averageConsumption;
         return $this;
     }
 
-    public function withTensionPattern(string $tensionPattern): static
+    public function withTensionPattern(?string $tensionPattern = 'MONO-220V'): static
     {
         $this->proposal->tension_pattern = $tensionPattern;
         return $this;
     }
 
-    public function withRoofStructure(int $roofStructure): static
+    public function withRoofStructure(?int $roofStructure = 1): static
     {
         $this->proposal->roof_structure = $roofStructure;
         return $this;
     }
 
-    public function withPanelQuantity(int $panelQuantity): static
+    public function withPanelQuantity(?int $panelQuantity = 12): static
     {
         $this->proposal->number_of_panels = $panelQuantity;
         return $this;
     }
 
-    public function withKwhPrice(float $kwhPrice): static
+    public function withKwhPrice(?float $kwhPrice = 0.92): static
     {
         $this->proposal->kw_price = $kwhPrice;
         return $this;
     }
 
-    public function withComponents(array $components): static
+    public function withComponents(?array $components = []): static
     {
         $this->proposal->components = json_encode($components);
         return $this;
@@ -84,7 +84,7 @@ class ProposalBuilder implements Builder
         return $this;
     }
 
-    public function withKitUuid(string $kitUuid): static
+    public function withKitUuid(?string $kitUuid = Uuid::MAX): static
     {
         $this->proposal->kit_uuid = $kitUuid;
         return $this;
@@ -124,6 +124,24 @@ class ProposalBuilder implements Builder
     public function withRoofOrientation(?array $roofOrientation = ['norte']): static
     {
         $this->proposal->roof_orientation = json_encode($roofOrientation);
+        return $this;
+    }
+
+    public function withInspection(?int $inspection_id = null): static
+    {
+        $this->proposal->inspection_id = $inspection_id;
+        return $this;
+    }
+
+    public function withFinancing(?int $financing_id = null): static
+    {
+        $this->proposal->financing_id = $financing_id;
+        return $this;
+    }
+
+    public function withContract(?int $contract_id = null): static
+    {
+        $this->proposal->contract_id = $contract_id;
         return $this;
     }
 

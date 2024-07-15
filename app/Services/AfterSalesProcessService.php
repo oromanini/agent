@@ -6,6 +6,7 @@ use App\Events\AfterSaleProcessDepartmentChanged;
 use App\Helpers\HomologationHelper;
 use App\Listeners\AfterSaleProcessBase;
 use App\Models\Homologation;
+use App\Models\Installation;
 use App\Models\Proposal;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -84,6 +85,8 @@ abstract class AfterSalesProcessService
 
             DB::transaction(function () use ($nextDepartmentInstance) {
                 $nextDepartmentInstance->save();
+                ($nextDepartmentInstance instanceof Installation)
+                && $this->setInstallationOwners($nextDepartmentInstance);
             });
         }
     }
@@ -105,5 +108,12 @@ abstract class AfterSalesProcessService
         }
 
         return $data;
+    }
+
+    private function setInstallationOwners(Installation $nextDepartmentInstance): void
+    {
+        $nextDepartmentInstance->secondary_owner_id = 1;
+        $nextDepartmentInstance->owner_id = $nextDepartmentInstance->proposal->homologation->owner_id;
+        $nextDepartmentInstance->update();
     }
 }

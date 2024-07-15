@@ -65,7 +65,7 @@ class InstallationService extends AfterSalesProcessService
         return $costsSum;
     }
 
-    public function updatePictures(Installation $installation, Request $request)
+    public function updatePictures(Installation $installation, Request $request): void
     {
         $pictures = jsonToArray($installation->installation_images);
 
