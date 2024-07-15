@@ -14,11 +14,13 @@
                     Responsável</label>
                 <div class="select is-multiline is-rounded  @error('owner') is-danger @enderror">
                     <select @if(auth()->user()->permission != 'admin') disabled @endif id="owner" name="owner_id">
+                        <option>selecione...</option>
                         @foreach($owners as $owner)
-                            <option
-                                value="{{ $owner->id }}"
-                                {{ !is_null($inspection) && $inspection->owner->id == $owner->id ? 'selected' : '' }}>
-                                {{ $owner->name }}</option>
+                            <option value="{{ $owner->id }}"
+                                @if(!is_null($inspection->owner))
+                                    {{ $inspection->owner->id == $owner->id ? 'selected' : ''}}
+                                @endif
+                            >{{ $owner->name }}</option>
                         @endforeach
                     </select>
                     @error('status')<span class="error-message">{{ $message }}</span>@enderror
