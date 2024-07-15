@@ -341,7 +341,6 @@
             {{--            <a href="#" class="button is-danger is-large">--}}
             {{--                <ion-icon name="save-outline"></ion-icon> &nbsp;Gerar resumo</a>--}}
         </div>
-    </div>
 </form>
 
 <script>
