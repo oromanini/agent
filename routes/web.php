@@ -7,7 +7,10 @@ use App\Http\Controllers\CityController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\FinancingController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\HomologationController;
+use App\Http\Controllers\InstallationController;
 use App\Http\Controllers\KitSearchController;
+use App\Http\Controllers\LeadController;
 use App\Http\Controllers\PreInspectionController;
 use App\Http\Controllers\ProposalController;
 use App\Http\Controllers\UserController;
@@ -15,7 +18,7 @@ use App\Http\Controllers\ValueHistoryController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Route::controller(FinancingController::class)->group(function (){
+Route::controller(FinancingController::class)->group(function () {
     Route::name('simulator.')->group(function () {
         Route::get('financing-simulator', 'show')->name('index');
         Route::get('financing-simulator/mfs', 'getMfs')->name('mfs');
@@ -27,6 +30,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/', function () {
         return view('home');
     })->name('home');
+
+    Route::get('/login', function () {
+        return view('home');
+    });
+
+    Route::get('/dashboard', function () {
+        return view('home');
+    });
 
     Route::get('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
@@ -60,6 +71,19 @@ Route::middleware('auth')->group(function () {
             Route::get('propostas/{proposal_id}/pdf', 'generatePdf')->name('pdf');
             Route::get('propostas/{proposal_id}/{true}/pdf', 'generatePdf')->name('small-pdf');
             Route::get('propostas/{proposal_id}/aprovacao', 'approve')->name('approve');
+            Route::get('leads/generate-pdf/{id}', 'generateLeadPdf')->name('leadpdf');
+        });
+    });
+
+    Route::controller(LeadController::class)->group(function () {
+        Route::name('leads.')->group(function () {
+            Route::get('leads/propostas', 'index')->name('index');
+            Route::get('leads/nova-proposta', 'create')->name('create');
+            Route::post('leads/nova-proposta', 'store')->name('store');
+            Route::get('leads/{id}', 'show')->name('show');
+            Route::delete('leads/{id}', 'delete')->name('delete');
+            Route::get('incidenceFromCity/{id}', 'incidenceFromCity')->name('incidenceFromCity');
+            Route::put('update-lead-status', 'updateLeadStatus')->name('status');
         });
     });
 
@@ -69,6 +93,7 @@ Route::middleware('auth')->group(function () {
             Route::post('propostas/{id}/comissao', 'applyCommissionOrDiscount')->name('updatePrice');
         });
     });
+
 
     Route::controller(PreInspectionController::class)->group(function () {
 
@@ -90,8 +115,8 @@ Route::middleware('auth')->group(function () {
             Route::get('usuarios/novo', 'create')->name('create');
             Route::post('usuarios/novo', 'store')->name('store');
             Route::get('usuarios/{id}', 'edit')->name('edit');
-            Route::put('usuarios/{id}', 'edit')->name('update');
-            Route::post('usuarios/{id}/inativar', 'inactive')->name('inactive');
+            Route::put('usuarios/{id}', 'update')->name('update');
+            Route::get('usuarios/{id}/inativar', 'inactive')->name('inactive');
         });
     });
 
@@ -104,6 +129,32 @@ Route::middleware('auth')->group(function () {
             Route::put('aprovacoes/{id}/vistoria', 'updateInspection')->name('update.inspection');
             Route::put('aprovacoes/{id}/financiamento', 'updateFinancing')->name('update.financing');
             Route::put('aprovacoes/{id}/contrato', 'updateContract')->name('update.contract');
+            Route::get('aprovacoes/{id}/inativar', 'inactive')->name('inactive');
+        });
+    });
+
+    Route::controller(HomologationController::class)->group(function () {
+
+        Route::name('homologation.')->group(function () {
+            Route::get('homologacoes', 'index')->name('index');
+            Route::get('homologacoes/{id}', 'show')->name('show');
+            Route::put('homologacoes/{id}/atualizar', 'update')->name('update');
+            Route::get('homologacoes/{id}/inativar', 'inactive')->name('inactive');
+        });
+    });
+
+    Route::controller(InstallationController::class)->group(function () {
+
+        Route::name('installation.')->group(function () {
+
+            Route::get('instalacoes', 'index')->name('index');
+            Route::get('instalacoes/{id}', 'show')->name('show');
+            Route::put('instalacoes/{id}/atualizar', 'update')->name('update');
+            Route::get('instalacoes/{id}/inativar', 'inactive')->name('inactive');
+            Route::post('instalacoes/{id}/novoCustoAdicional', 'addPlusCosts')->name('addPlusCosts');
+            Route::get('instalacoes/{id}/deletarCustoAdicional', 'deletePlusCost')->name('deletePlusCost');
+            Route::post('instalacoes/{id}/fotos', 'updatePictures')->name('updatePictures');
+
         });
     });
 
@@ -116,8 +167,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/kitSearch/{kwp}/{roof}/{tension}', [KitSearchController::class, 'kitsSearch']);
     Route::post('/setFinalValue', [ProposalController::class, 'setFinalValue']);
     Route::post('/setAverageProduction', [ProposalController::class, 'setAverageProduction']);
-
+    Route::post('/setAverageProductionByCity', [LeadController::class, 'setAverageProductionByCity']);
+    Route::post('/get-tension-by-value', [ProposalController::class, 'setTensionByValue']);
 
 });
+
+Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
 
 require __DIR__ . '/auth.php';

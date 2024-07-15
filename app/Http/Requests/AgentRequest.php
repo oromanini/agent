@@ -29,7 +29,7 @@ class AgentRequest extends FormRequest
             'phone_number' => 'required',
             'ascendant' => 'required',
             'cpf' => 'required',
-            'cnpj' => 'required',
+//            'cnpj' => 'required',
             'city' => 'required',
             'password' => 'required',
         ];

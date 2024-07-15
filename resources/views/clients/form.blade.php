@@ -24,6 +24,8 @@
 
                 @include('clients.form_inputs')
 
+                    <input type="hidden" id="city_id_saved" value="{{ isset($client) ? $client->addresses->first()->city->id : null }}">
+
                 <div class="is-flex is-justify-content-center">
                     <button type="submit" class="button is-primary is-large">
                         <ion-icon name="save-outline"></ion-icon> &nbsp;{{ isset($client) ? 'Atualizar' : 'Salvar' }}
@@ -46,11 +48,19 @@
         $(function () {
             const owner_document = document.querySelector('#owner_document input[type=file]');
             const electricity_bill = document.querySelector('#electricity_bill input[type=file]');
+            const account_owner_document = document.querySelector('#account_owner_document input[type=file]');
 
             owner_document.onchange = () => {
                 if (owner_document.files.length > 0) {
                     const fileName = document.querySelector('#owner_document .file-name');
                     fileName.textContent = owner_document.files[0].name;
+                }
+            }
+
+            account_owner_document.onchange = () => {
+                if (account_owner_document.files.length > 0) {
+                    const fileName = document.querySelector('#account_owner_document .file-name');
+                    fileName.textContent = account_owner_document.files[0].name;
                 }
             }
 

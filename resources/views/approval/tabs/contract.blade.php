@@ -51,9 +51,9 @@
                     <label for="status" class="label">Status</label>
                     <div
                         class="select is-multiline is-fullwidth is-rounded  @error('status') is-danger @enderror">
-                        <select id="status" name="status">
+                        <select id="status" name="status_id">
                             @foreach($contractStatuses as $status)
-                                <option value="{{ $status }}" {{ isset($contract) && $status == $contract->status ? 'selected' : '' }}>{{ $status }}</option>
+                                <option value="{{ $status->id }}" {{ isset($contract) && $status->id == $contract->status->id ? 'selected' : '' }}>{{ $status->name }}</option>
                             @endforeach
                         </select>
                         @error('status')<span class="error-message">{{ $message }}</span>@enderror
@@ -62,9 +62,15 @@
                 </div>
             </div>
         </div>
-        <div class="columns">
+        @php
+            $canSave = auth()->user()->permission == 'admin'
+            || auth()->user()->permission == 'contract';
+        @endphp
+        <div class="columns" @if(!$canSave) style="display: none" @endif>
             <div class="column">
-                <button type="submit" class="button is-primary is-large"><ion-icon name="save-outline"></ion-icon> &nbsp;Salvar</button>
+                <button type="submit" class="button is-primary is-large"><ion-icon name="save-outline">
+
+                    </ion-icon> &nbsp;Salvar</button>
             </div>
         </div>
     </form>

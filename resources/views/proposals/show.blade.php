@@ -29,9 +29,12 @@
                 @include('proposals.show.kit_data')
                 <br>
                 @include('proposals.show.staff')
-                <br>@include('proposals.show.discount')
+                <br>
+                @include('proposals.show.discount')
                 <br><br>
                 @include('proposals.show.commission')
+                <br><br>
+                @include('proposals.show.card_commission')
             </div>
             <div id="previstoria" class="content-tab" style="display:none">
                 @include('pre_inspection.index')

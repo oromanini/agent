@@ -2,18 +2,26 @@
 
 namespace App\Enums;
 
-use BenSampo\Enum\Enum;
-
-final class PanelBrands extends Enum
+enum PanelBrands: int
 {
-    const Jinko =   1;
-    const Sunket =   2;
-    const Trina = 3;
-    const DAH = 4;
-    const Astronergy = 5;
-    const Ja = 6;
-    const Phono = 7;
-    const Longi = 8;
-    const Bel = 9;
-    const Sunova = 10;
+    case Jinko = 1;
+    case Sunket = 2;
+    case Trina = 3;
+    case DAH = 4;
+    case Astronergy = 5;
+    case Ja = 6;
+    case Phono = 7;
+    case Longi = 8;
+    case Bel = 9;
+    case Sunova = 10;
+    case Osda = 11;
+    case Ae_Solar = 12;
+    case ZNShine = 13;
+    case Pulling = 14;
+    case Hanersun = 15;
+    case Resun = 16;
+    case Sine = 17;
+    case Era = 18;
+    case Honor = 19;
+    case Runergy = 20;
 }

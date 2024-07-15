@@ -15,7 +15,7 @@ class CreateFinancingsTable extends Migration
     {
         Schema::create('financings', function (Blueprint $table) {
             $table->id();
-            $table->enum('type', ['À vista', 'Financiamento', '40+60', 'Cartão', 'Personalizado']);
+            $table->enum('type', ['person', 'company']);
             $table->string('full_name')->nullable();
             $table->string('owner_document')->nullable();
             $table->string('birthdate')->nullable();

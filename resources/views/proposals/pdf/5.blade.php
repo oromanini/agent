@@ -3,11 +3,12 @@
         <img src="{{ public_path($panelBrandImage) }}" alt="" width="240">
     </div>
     <div id="panelQuantity">{{ $proposal->number_of_panels }} módulos</div>
+
     <div id="panelBrand">
         @if($proposal->is_manual)
-        {{ \App\Enums\PanelBrands::fromValue((int)$manualData['panel_brand'])->description }}
+        {{ \App\Enums\PanelBrands::from((int)$manualData['panel_brand'])->name }}
         @else
-            {{ $firstKit['technical_description']['panel_specs']['panel_brand'] }}
+            {{ jsonToArray($firstKit['panel_specs'])['brand'] }}
         @endif
         {{--        <span class="minifiedText">New Energy Tec. Co.</span>--}}
     </div>
@@ -15,7 +16,7 @@
         @if($proposal->is_manual)
             {{ $manualData['panel_power'] }}W
         @else
-            {{ $firstKit['technical_description']['panel_specs']['panel_power'] }} W
+            {{ jsonToArray($firstKit['panel_specs'])['power'] }}W
         @endif
         <span class="minifiedText">Mono Half-Cell</span>
     </div>
@@ -23,7 +24,7 @@
         @if($proposal->is_manual)
             {{ $manualData['panel_warranty'] }} anos
         @else
-            12 anos
+        {{jsonToArray($firstKit['panel_specs'])['warranty']}} anos
         @endif
     </div>
     <div id="inverterImage">
@@ -38,27 +39,23 @@
     </div>
     <div id="inverterBrand">
         @if($proposal->is_manual)
-            {{ \App\Enums\InverterBrands::fromValue((int)$manualData['inverter_brand'])->description }}
+            {{ \App\Enums\InverterBrands::from((int)$manualData['inverter_brand'])->name }}
         @else
-            {{ $firstKit['technical_description']['inverter_brand'] }}
+            {{ jsonToArray($firstKit['inverter_specs'])['brand'] }}
         @endif
     </div>
     <div id="inverterModel">
         @if($proposal->is_manual)
             {{ $manualData['inverter_power'] }}KW <span class="minified-text">{{ $manualData['inverter_model'] }} </span>
         @else
-            {{ $inverterModels }}
+            {{ jsonToArray($firstKit['inverter_specs'])['model'] }}
         @endif
     </div>
     <div id="inverterWarranty">
         @if($proposal->is_manual)
            {{ $manualData['inverter_warranty'] }} anos
         @else
-            @if($firstKit['technical_description']['inverter_brand'] == 'Growatt')
-                10 anos
-            @else
-                7 anos
-            @endif
+            {{ jsonToArray($firstKit['inverter_specs'])['warranty'] }} anos
         @endif
     </div>
     <div id="invertersOverload">

@@ -2,25 +2,63 @@
     <h3 class="title"><img src="/img/logo/alluz-icon.png" width="30" alt=".."> Vistoria</h3>
 </div>
 <br>
-
 <form action="{{ route('approval.update.inspection', [$proposal->id]) }}" method="post" enctype="multipart/form-data">
     @method('PUT')
     @csrf
-    <div class="columns is-justify-content-left is-flex-wrap-wrap">
-        <div class="column mr-3">
+
+    <div class="columns">
+        <div id="owner_select" class="column is-3 mr-3">
             <div class="field">
-                <label for="status" class="label">Status</label>
-                <div class="select is-multiline is-rounded  @error('status') is-danger @enderror">
-                    <select id="status" name="status">
-                        @foreach($inspectionStatuses as $status)
+                <label for="status" class="label">
+                    <ion-icon name="person-outline"></ion-icon>
+                    Responsável</label>
+                <div class="select is-multiline is-rounded  @error('owner') is-danger @enderror">
+                    <select @if(auth()->user()->permission != 'admin') disabled @endif id="owner" name="owner_id">
+                        @foreach($owners as $owner)
                             <option
-                                value="{{ $status }}" {{ !is_null($inspection) && $inspection->status == $status ? 'selected' : '' }}>{{ $status }}</option>
+                                value="{{ $owner->id }}"
+                                {{ !is_null($inspection) && $inspection->owner->id == $owner->id ? 'selected' : '' }}>
+                                {{ $owner->name }}</option>
                         @endforeach
                     </select>
                     @error('status')<span class="error-message">{{ $message }}</span>@enderror
                 </div>
             </div>
         </div>
+        <div id="status_select" class="column is-3 mr-3">
+            <div class="field">
+                <label for="status" class="label">
+                    <ion-icon name="information-circle-outline"></ion-icon>
+                    Status</label>
+                <div class="select is-multiline is-rounded  @error('status') is-danger @enderror">
+                    <select id="status" name="status_id">
+                        @foreach($inspectionStatuses as $status)
+                            <option
+                                value="{{ $status->id }}" {{ !is_null($inspection) && $inspection->status->id == $status->id ? 'selected' : '' }}>{{ $status->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('status')<span class="error-message">{{ $message }}</span>@enderror
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="columns is-justify-content-left is-flex-wrap-wrap">
+
+        @if(isset($inspection->proposal->client) && !is_null($inspection->proposal->client->account_owner_document))
+            <div class="column is-3">
+                <label for="account_owner_document" class="label">CNH/RG do Titular da conta</label>
+                <a href="/storage/{{ str_replace('public/', '', $client->account_owner_document) }}"
+                   class="button is-danger" target="_blank">
+                    <ion-icon name="eye-outline"></ion-icon>
+                    Visualizar Documento</a>
+            </div>
+        @else
+            <div class="column is-3">
+                <label for="account_owner_document" class="label">CNH/RG do Titular da conta</label>
+                Não anexada!
+            </div>
+        @endif
 
         <div class="column">
             <label class="label" for="tension_pattern">Tensão</label>
@@ -83,7 +121,45 @@
     </div>
 
     <hr>
-
+    <div class="columns">
+        <div class="column is-3">
+            <label for="three_dimensional" class="label">
+                <span class="icon"><ion-icon name="image-outline"></ion-icon></span>
+                3D dos módulos</label>
+            @if(isset($proposal->inspection->three_dimensional))
+                <a href="/storage/{{ str_replace('public/', '', $proposal->inspection->three_dimensional) }}"
+                   class="button is-danger" target="_blank">
+                    <ion-icon name="eye-outline"></ion-icon>
+                    Visualizar 3D</a>
+            @else
+                <div class="file has-name">
+                    <label class="file-label">
+                        <input class="file-input" type="file" name="three_dimensional" id="three_dimensional">
+                        <span class="file-cta">
+                                  <span class="file-icon">
+                                    <ion-icon name="folder-outline"></ion-icon>
+                                  </span>
+                                  <span class="file-label">
+                                    Escolher arquivo…
+                                  </span>
+                                </span>
+                        <span class="file-name">
+                                    Nenhum arquivo selecionado
+                                </span>
+                    </label>
+                </div>
+            @endif
+        </div>
+        @if(isset($proposal->homologation))
+            <div class="column is-3">
+                <label class="label" for="observations">Homologação</label>
+                <a class="button is-primary" href="{{ route('homologation.show', [$proposal->homologation->id]) }}">
+                    <ion-icon name="ribbon-outline"></ion-icon> Ir para homologação
+                </a>
+            </div>
+        @endif
+    </div>
+    <hr>
     <div class="columns">
         <div class="column">
             <label class="label" for="observations">Observações da vistoria e/ou medidas necessárias</label>
@@ -92,7 +168,12 @@
         </div>
     </div>
 
-    <div class="columns">
+    @php
+    $canSave = auth()->user()->permission == 'admin'
+    || auth()->user()->permission == 'technical';
+    @endphp
+
+    <div class="columns" @if(!$canSave) style="display: none" @endif>
         <div class="column is-flex is-justify-content-center">
             <button type="submit" class="button is-large is-info">
                 <ion-icon name="save-outline"></ion-icon> &nbsp; Salvar
@@ -100,7 +181,6 @@
         </div>
     </div>
 </form>
-
 <hr>
 
 <hr>
@@ -121,6 +201,16 @@
     .oranged {
         color: #ff6200;
         font-weight: 800;
+    }
+
+    #owner_select {
+        background-color: #FFBC2B;
+        border-radius: 10px;
+    }
+
+    #status_select {
+        background-color: #FFBC2B;
+        border-radius: 10px;
     }
 
 </style>

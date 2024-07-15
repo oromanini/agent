@@ -34,11 +34,11 @@
                 </div>
             </div>
         </div>
-        <div class="column is-3">
+        <div class="column is-2">
             <div class="field">
-                <label id="documentLabel" for="document" class="label">{{ isset($client) ? $client->type == 'person' ? 'CPF*' : 'CNPJ*' : 'CPF' }}</label>
+                <label id="documentLabel" for="document" class="label">{{ isset($client) ? $client->type == 'person' ? 'CPF*' : 'CNPJ*' : 'CPF*' }}</label>
                 <div class="control">
-                    <input name="document" id="{{ isset($client) && $client->type == 'company' ? 'cnpj' : 'cpf' }}"
+                    <input required name="document" id="{{ isset($client) && $client->type == 'company' ? 'cnpj' : 'cpf' }}"
                            class="input is-rounded @error('document') is-danger @enderror" type="text"
                            placeholder="Digite o documento"
                            value="{{ isset($client) ? $client->document : '' }}">
@@ -47,13 +47,22 @@
                 </div>
             </div>
         </div>
-        <div class="column is-3">
+        <div class="column is-2">
             <div class="field">
                 <label id="aliasLabel" for="alias" class="label">{{ isset($client) ? $client->type == 'person' ? 'Apelido' : 'Nome Fantasia*' : 'Apelido' }}</label>
                 <div class="control">
                     <input name="alias" id="alias" class="input is-rounded" type="text"
                            placeholder="Digite o apelido/nome fantasia"
                            value="{{ isset($client) ? $client->alias : '' }}">
+                </div>
+            </div>
+        </div>
+        <div class="column is-2">
+            <div class="field">
+                <label id="birthdate" for="alias" class="label">{{ (isset($client) && $client->type == "company") ? 'Data de fundação' : 'Data de nascimento' }}</label>
+                <div class="control">
+                    <input name="birthdate" id="birthdate" class="input is-rounded" type="date"
+                           value="{{ isset($client) ? $client->birthdate : '' }}">
                 </div>
             </div>
         </div>
@@ -76,7 +85,7 @@
             <div class="field">
                 <label for="phone_number" class="label">Telefone/Whatsapp*</label>
                 <div class="control">
-                    <input name="phone_number" id="phone_number"
+                    <input required name="phone_number" id="phone_number"
                            class="input is-rounded @error('phone_number') is-danger @enderror"
                            type="text"
                            placeholder="Digite o telefone/whatsapp"
@@ -87,12 +96,21 @@
             </div>
         </div>
 
-        <div class="column is-3">
-            <label for="owner_document" class="label">CNH/RG do {{ isset($client) ? $client->type == 'person' ? 'cliente' : 'proprietário' : '' }}</label>
-            <div class="file has-name" id="owner_document">
-                <label class="file-label">
-                    <input class="file-input" type="file" name="owner_document">
-                    <span class="file-cta">
+        @if(isset($client) && !is_null($client->owner_document))
+            <div class="column is-3">
+                <label for="owner_document" class="label">CNH/RG do {{ isset($client) ? $client->type == 'person' ? 'cliente' : 'proprietário' : '' }}</label>
+                <a href="/storage/{{ str_replace('public/', '', $client->owner_document) }}"
+                   class="button is-danger" target="_blank">
+                    <ion-icon name="eye-outline"></ion-icon>
+                    Visualizar Documento</a>
+            </div>
+        @else
+            <div class="column is-3">
+                <label for="owner_document" class="label">CNH/RG do {{ isset($client) ? $client->type == 'person' ? 'cliente' : 'proprietário' : '' }}</label>
+                <div class="file has-name" id="owner_document">
+                    <label class="file-label">
+                        <input class="file-input" type="file" name="owner_document">
+                        <span class="file-cta">
                                   <span class="file-icon">
                                     <ion-icon name="folder-outline"></ion-icon>
                                   </span>
@@ -100,23 +118,43 @@
                                     Escolher foto…
                                   </span>
                                 </span>
-                    <span class="file-name">
+                        <span class="file-name">
                                     Nenhum arquivo selecionado
                                 </span>
-                </label>
+                    </label>
+                </div>
             </div>
-        </div>
+        @endif
 
-        @if(isset($client) && !is_null($client->owner_document))
+        @if(isset($client) && !is_null($client->account_owner_document))
             <div class="column is-3">
-                <label for="" class="label">&nbsp;</label>
-                <a href="/storage/{{ str_replace('public/', '', $client->owner_document) }}"
+                <label for="account_owner_document" class="label">CNH/RG do Titular da conta</label>
+                <a href="/storage/{{ str_replace('public/', '', $client->account_owner_document) }}"
                    class="button is-danger" target="_blank">
                     <ion-icon name="eye-outline"></ion-icon>
                     Visualizar Documento</a>
             </div>
+        @else
+            <div class="column is-3">
+                <label for="account_owner_document" class="label">CNH/RG do Titular da conta</label>
+                <div class="file has-name" id="account_owner_document">
+                    <label class="file-label">
+                        <input class="file-input" type="file" name="account_owner_document">
+                        <span class="file-cta">
+                                  <span class="file-icon">
+                                    <ion-icon name="folder-outline"></ion-icon>
+                                  </span>
+                                  <span class="file-label">
+                                    Escolher foto…
+                                  </span>
+                                </span>
+                        <span class="file-name">
+                                    Nenhum arquivo selecionado
+                                </span>
+                    </label>
+                </div>
+            </div>
         @endif
-
     </div>
 </div>
 {{--            end client box--}}

@@ -1,18 +1,31 @@
 @extends('base')
 @section('content')
 
+    @php
+        $authUserPermission = \Illuminate\Support\Facades\Auth::user()->permission;
+        $permission = match ($authUserPermission) {
+          'admin' => ['Administrador', 'is-black'],
+          'agent' => ['Agente de vendas', 'is-warning'],
+          'technical' => ['Responsável Técnico(a)', 'is-link'],
+          'financial' => ['Analista de financiamento', 'is-info'],
+          'installer' => ['Coordenador de instalação', 'is-success'],
+          'contract' => ['Gestor de contratos', 'is-danger'],
+        };
+    @endphp
+
     <div class="container is-fluid">
         <div class="box">
-            @include('notices')
+{{--            @include('notices')--}}
             <div class="header">
-                <h2 class="title is-1">Bem-vindo, {{auth()->user()->name}}!</h2>
+                <h2 class="title is-1">Bem-vindo, {{auth()->user()->name}}! <br><span class="tag is-large {{ $permission[1] }}">{{ $permission[0] }}</span>
+                </h2>
                 <div class="title-bottom-line"></div>
             </div>
             <div class="body">
                 <div class="columns mt50">
                     <img src="/img/logo/alluz-icon.png" width="40" alt=""><h3 class="title">Por onde você quer começar?</h3>
                 </div>
-                <div class="columns mt50 mb50" id="home-buttons">
+                <div class="columns mt50 mb50 is-flex is-flex-wrap-wrap is-wra" id="home-buttons">
                     <div class="column is-flex is-justify-content-center">
                         <a href="https://www.youtube.com/playlist?list=PL-v9iwlHmGNKo6aKbDvzoQaycqSQlYV57" class="p-red-button">
                             <ion-icon name="logo-youtube"></ion-icon>  Treinamento

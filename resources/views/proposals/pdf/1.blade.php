@@ -11,12 +11,13 @@
 
     #clientName {
         color: #fff;
-        font-size: 28pt !important;
+        font-size: 26pt !important;
         position: absolute;
         top: 2000px;
         left: 50px;
         text-transform: uppercase;
         font-weight: 900;
+        margin-right: 40px;
     }
 
     #clientName2 {

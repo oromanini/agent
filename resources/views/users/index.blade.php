@@ -95,7 +95,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td>Não há clientes cadastrados</td>
+                        <td>Não há agentes cadastrados</td>
                     </tr>
                 @endforelse
                 </tbody>

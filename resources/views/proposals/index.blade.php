@@ -132,5 +132,4 @@
             {{ $proposals->appends(request()->all())->links() }}
         </div>
     </div>
-
 @endsection

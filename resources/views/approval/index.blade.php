@@ -57,30 +57,49 @@
                 <tr>
                     <th><abbr title="Position">ID</abbr></th>
                     <th>Cliente</th>
-                    <th>Documento</th>
-                    <th>Cidade/Estado</th>
-                    <th>Telefone</th>
+                    <th>Vistoria</th>
+                    <th>Financiamento</th>
+                    <th>Contrato</th>
                     <th>Agente</th>
                     <th>Total</th>
                     <th>Ações</th>
                 </tr>
                 </thead>
                 <tbody>
-                @forelse(auth()->user()->id == 20 ? $approvals->where('created_at', '<=', '2022-10-01') : $approvals as $approval)
-                    @if($approval->client)
-                    <tr class="lh-40">
+                @php
+                    $authUser = \Illuminate\Support\Facades\Auth::user();
+                @endphp
+                @forelse($approvals as $approval)
+                    @php
+                    $hasFinancing = !is_null($approval->financing);
+                    $hasInspection = !is_null($approval->inspection);
+
+                    $financingHasOwner = $hasFinancing && !is_null($approval->financing->owner);
+                    $inspectionHasOwner = $hasInspection && !is_null($approval->inspection->owner);
+
+                    $enabledForShow = $authUser->permission == 'admin'
+                            || ($inspectionHasOwner && $approval->inspection->owner = $authUser)
+                            || ($financingHasOwner && $approval->financing->owner = $authUser);
+                    @endphp
+                    @if($enabledForShow)
+                        <tr class="lh-40">
                         <th>{{$approval->id}}</th>
                         <td>{{ $approval->client->name }}</td>
-                        <td>{{$approval->client->document}}</td>
-                        <td>{{$approval->client->addresses->first()->city->name_and_federal_unit}}</td>
-                        <td>{{$approval->client->phone_number}}</td>
-                        <td>{{$approval->agent->name}}</td>
+                        @php
+                        $inspectionStatus = $approval->inspection ? $approval->inspection->status->name : 'Aguardando';
+                        $financingStatus = $approval->financing ? $approval->financing->status->name : 'Aguardando';
+                        $contractStatus = $approval->contract ? $approval->contract->status->name : 'Aguardando';
+                        @endphp
+                        <td><span class="tag box w100 {{ isApproved($inspectionStatus) }}">{{ $inspectionStatus }}</span></td>
+                        <td><span class="tag box w100 {{ isApproved($financingStatus) }}">{{ $financingStatus }}</span></td>
+                        <td><span class="tag  box w100 {{ isApproved($contractStatus) }}">{{ $contractStatus }}</span></td>
+                        <td>{{ $approval->agent ? $approval->agent->name : 'excluido'  }}</td>
                         <td>R$ {{ floatToMoney($approval->valueHistory->final_price) }}</td>
                         <td>
-                            <a class="button is-primary" href="{{ route('approval.show', [$approval->id]) }}">
+                            <a class="button is-primary" href="{{ route('approval.show', [$approval->id]) . '#project' }}">
                                 <ion-icon name="create-outline" class="table-icon"></ion-icon>
                             </a>
-                            <a class="button is-danger">
+                            <a class="button is-danger" href="{{ route('approval.inactive', [$approval->id]) }}">
                                 <ion-icon name="trash-outline" class="table-icon"></ion-icon>
                             </a>
                         </td>

@@ -14,7 +14,6 @@
             <div style="width:100%"><p style="text-align:center;color:#666666"> Powered by PV Operation e <a
                         href="https://meufinanciamentosolar.com.br" target="_blank" rel="noopener"
                         style="text-decoration:none;color:#666666">Meu Financiamento Solar</a></p></div>
-
             <hr>
             <a class="button is-primary" href="/">Voltar</a>
 

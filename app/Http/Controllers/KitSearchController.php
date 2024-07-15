@@ -3,21 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Services\KitSearchService;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class KitSearchController extends Controller
 {
-    private $kitSearchService;
 
-    public function __construct(KitSearchService $kitSearchService)
+    public function kitsSearch(float $kwp, int $roof, string $tension): JsonResponse
     {
-        $this->kitSearchService = $kitSearchService;
-    }
-
-    public function kitsSearch($kwp, $roof, $tension)
-    {
-        $kits = $this->kitSearchService->kitSearch($kwp, $roof, $tension);
-
-        return $kits;
+        return response()->json(
+            (new KitSearchService($kwp, $roof, $tension))->kitSearch()
+        );
     }
 }

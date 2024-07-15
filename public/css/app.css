@@ -5586,8 +5586,8 @@ body.has-spaced-navbar-fixed-bottom {
 }
 
 .pagination-link.is-current {
-  background-color: #3488CE;
-  border-color: #3488CE;
+  background-color: hsl(229deg, 53%, 53%);
+  border-color: hsl(229deg, 53%, 53%);
   color: #fff;
 }
 
@@ -12276,6 +12276,53 @@ h6 {
   margin-bottom: 50px;
 }
 
+.w100 {
+  width: 100% !important;
+}
+
+.elipse-blue {
+  color: cornflowerblue !important;
+}
+
+.elipse-yellow {
+  color: #eec125 !important;
+}
+
+.elipse-green {
+  color: #00ff22 !important;
+  font-size: 20pt;
+}
+
+.elipse-red {
+  color: #ee1742 !important;
+  font-size: 20pt;
+}
+
+.status-box {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  border: 1px solid #ffc600;
+  border-radius: 3px;
+  padding: 20px;
+}
+
+.span-status {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.is-green {
+  background: #00947e !important;
+  color: #fff !important;
+}
+
+.is-yellow {
+  background: #d4a400 !important;
+  color: #fff !important;
+}
+
 .mt50 {
   margin-top: 50px !important;
   margin-left: 20px;
@@ -12478,6 +12525,10 @@ input[name=kit_id]:checked + #all {
   border: 4px solid #f2a714;
 }
 
+hr {
+  margin: 1rem 0 !important;
+}
+
 @media (max-width: 866px) {
   #proposal-filters, #client-filters {
     display: block !important;
@@ -12524,4 +12575,8 @@ h2, title {
 
 .enable {
   display: flex;
+}
+
+.w-50 {
+  width: 50% !important;
 }

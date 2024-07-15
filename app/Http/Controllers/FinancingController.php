@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class FinancingController extends Controller
 {
-    public function show()
+    public function show(): View
     {
         return view('financing.simulator');
     }
 
-    public function getMfs()
+    public function getMfs(): View
     {
         return view('financing.mfs');
     }

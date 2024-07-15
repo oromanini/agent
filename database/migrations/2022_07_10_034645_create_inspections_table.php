@@ -15,7 +15,6 @@ class CreateInspectionsTable extends Migration
     {
         Schema::create('inspections', function (Blueprint $table) {
             $table->id();
-            $table->string('status')->default('Aguardando');
             $table->longText('note')->nullable();
             $table->json('files')->nullable();
             $table->softDeletes();

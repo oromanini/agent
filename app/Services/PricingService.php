@@ -3,118 +3,180 @@
 
 namespace App\Services;
 
-use App\Enums\NorthStates;
-use App\Models\Address;
-use App\Models\Client;
+use App\Enums\PaymentTypeEnum;
+use App\Enums\RoofStructure;
+use App\Models\PromotionalKit;
 
 class PricingService
 {
-    public function calculateFinalPrice(array $data): float
+    const SOLO_PLUS = 1.35;
+    const LIQUID_PROFIT_PERCENTAGE = 0.2;
+    const PLUS_TO_ADJUST_MARGIN = 250;
+
+    private float $netProfit;
+
+    public function calculateFinalPrice(
+        float  $cost,
+        float  $kwp,
+        int    $panelCount,
+        string $panelBrand,
+        float  $panelPower,
+        string $inverterBrand,
+        int    $roofStructure,
+        float  $finalValue,
+        int    $paymentType,
+        ?bool   $isLead = false
+    ): array {
+        $finalValue = $this->adjustMargin($cost, $kwp, $panelCount, $finalValue, $paymentType, $isLead);
+
+        if ($roofStructure == RoofStructure::SOLO) {
+            return $this->priceWithSolo($finalValue);
+        }
+        return $this->findOrFailPromotionalKits($kwp, $panelBrand, $panelPower, $inverterBrand, $finalValue);
+    }
+
+    private function adjustMargin(
+        float $cost,
+        float $kwp,
+        int   $panelCount,
+        float $finalValue,
+        int   $paymentType,
+        ?bool $isLead = false
+    ): float
     {
-        $cost = isset($data['sumKits']) ? (float)$data['sumKits']['cost'] : (float)$data['cost'];
-        $kwp = isset($data['sumKits']) ? $data['sumKits']['kwp'] : (float)$data['kwp'];
-        $panelCount = isset($data['sumKits']) ? $data['sumKits']['panel_count'] : (int)$data['panel_count'];
-        $finalValue = $cost * 1.45;
-        $stateId = $this->setStateId($data);
+        $this->netProfit =
+            $this->calculateNetProfit(
+                cost: $cost,
+                kwp: $kwp,
+                panelCount: $panelCount,
+                finalValue: $finalValue,
+                paymentType: $paymentType,
+                isLead: $isLead
+            )['netProfitPercent'];
 
-        $finalValue = $this->adjustMargin($cost, $kwp, $panelCount, $finalValue, $stateId);
-
-        if ($data['roof_structure'] == 6) {
-            return $finalValue * 1.3;
+        if ($this->netProfit < self::LIQUID_PROFIT_PERCENTAGE) {
+            $finalValue += self::PLUS_TO_ADJUST_MARGIN;
+            $finalValue = $this->adjustMargin(
+                $cost,
+                $kwp,
+                $panelCount,
+                $finalValue,
+                $paymentType,
+                $isLead
+            );
         }
-
-        if ($kwp == 2.77) {
-            return 13000;
-        }
-        if ($kwp == 3.88) {
-            return 16900;
-            }
-        if ($kwp == 6.66) {
-            return 23450;
-            }
-        if ($kwp == 7.77) {
-            return 26900    ;
-            }
 
         return $finalValue;
     }
 
-    private function adjustMargin(float $cost, float $kwp, int $panelCount, float $finalValue, int $stateId): float
-    {
-        while ($this->calculateNetProfit($cost, $kwp, $panelCount, $finalValue, $stateId)['netProfitPercent'] < 0.14) {
-            $finalValue += 250;
-        }
+    private function calculateNetProfit(
+        float $cost,
+        float $kwp,
+        int   $panelCount,
+        float $finalValue,
+        int   $paymentType,
+        ?bool $isLead = false
+    ): array {
 
-        return $finalValue;
-    }
+        $paymentTypeTotalCost = $this->getPaymentTypeTotalCost($paymentType);
 
-    function calculateHomologation(float $kwp, float $finalValue)
-    {
-        $homologation = 0;
+        $totalCost = (new $paymentTypeTotalCost(
+            cost: $cost,
+            panelCount: $panelCount,
+            kwp: $kwp,
+            finalValue: $finalValue,
+            paymentType: $paymentType,
+            isLead: $isLead
+        ))->cost();
 
-        if ($kwp <= 15) {
-            $homologation = 600;
-        } elseif ($kwp <= 30) {
-            $homologation = 900;
-        } elseif ($kwp <= 45) {
-            $homologation = 1200;
-        } elseif ($kwp <= 60) {
-            $homologation = 1500;
-        } elseif ($kwp <= 75) {
-            $homologation = 2000;
-        } elseif ($kwp <= 90) {
-            $homologation = 2500;
-        } else {
-            $homologation = $finalValue * 0.025;
-        }
-
-        return $homologation;
-    }
-
-    private function calculateNetProfit(float $cost, float $kwp, int $panelCount, float $finalValue, int $stateId): array
-    {
-        $installation = $panelCount * env('INSTALLATION_PANEL_PRICE');
-        $delivery = $this->calculateDelivery($finalValue, $stateId);
-        $homologation = $this->calculateHomologation($kwp, $finalValue);
-        $ca = $this->calculateCa($finalValue, $kwp);
-        $tax = $finalValue * env('TAX_PERCENT');
-        $commission = $finalValue * env('COMMISSION_PERCENT');
-
-        $totalCost = $cost + $installation + $homologation + $ca + $tax + $commission + $delivery;
-        $netProfit = $finalValue - $totalCost;
+        $netProfitValue = $finalValue - $totalCost;
         $netProfitPercent = ($finalValue / $totalCost) - 1;
 
-        return ['netProfit' => $netProfit, 'netProfitPercent' => $netProfitPercent, 'totalCost' => $totalCost];
+        return $this->format(
+            $netProfitValue,
+            $netProfitPercent,
+        );
     }
 
-    public function calculateCa(float $finalValue, float $kwp): float
+    private function priceWithSolo(float $finalValue): array
     {
-        if ($kwp <= 4) {
-            return $finalValue * 0.04;
-        } elseif ($kwp <= 10) {
-            return $finalValue * 0.035;
-        } else {
-            return $finalValue * 0.03;
-        }
+        return [
+            'finalPrice' => $finalValue * self::SOLO_PLUS,
+            'isPromotional' => false
+        ];
     }
 
-    private function calculateDelivery(float $finalValue, int $stateId): float
+    private function findOrFailPromotionalKits(
+        float  $kwp,
+        string $panelBrand,
+        string $panelPower,
+        string $inverterBrand,
+        float  $finalPrice
+    ): array
     {
-        $isExpensiveState = NorthStates::hasValue($stateId);
+        $promotionalKits = PromotionalKit::where('is_active', true)->get();
+        $isPromotional = false;
 
-        if ($isExpensiveState) {
-            return $finalValue * 0.06;
-        }
+        $promotionalKits->each(function ($promotion) use (
+            $kwp,
+            $panelPower,
+            $panelBrand,
+            $inverterBrand,
+            &$finalPrice,
+            &$isPromotional
+        ) {
+            $kitMatchPromotion = $this->kitMatchPromotion(
+                $promotion,
+                $kwp,
+                $panelBrand,
+                $panelPower,
+                $inverterBrand
+            );
 
-        return $finalValue * env('DELIVERY_PERCENT');
+            if ($kitMatchPromotion) {
+                $finalPrice = $promotion->final_value;
+                $isPromotional = true;
+            }
+        });
+
+        return ['finalPrice' => $finalPrice, 'isPromotional' => $isPromotional];
     }
 
-    private function setStateId(array $data)
+    private function kitMatchPromotion(
+        PromotionalKit $promotion,
+        float          $kwp,
+        string         $panelBrand,
+        string         $panelPower,
+        string         $inverterBrand
+    ): bool
     {
-        if (isset($data['client'])) {
-            return Client::find((int)$data['client'])->addresses->first()->city->state->id;
+        if (
+            $kwp == $promotion->kwp
+            && strtolower($panelBrand == $promotion->panel_brand)
+            && strtolower($panelPower == $promotion->panel_power)
+            && strtolower($inverterBrand == $promotion->inverter_brand)
+        ) {
+            return true;
         }
 
-        return Address::find((int)$data['address_id'])->city->state->id;
+        return false;
+    }
+
+    private function format($netProfitValue, $netProfitPercent): array
+    {
+        return [
+            'netProfitValue' => $netProfitValue,
+            'netProfitPercent' => $netProfitPercent,
+        ];
+    }
+
+    private function getPaymentTypeTotalCost(int $paymentType): string
+    {
+        return match ($paymentType) {
+            PaymentTypeEnum::CASH_PAYMENT => TotalCostForCash::class,
+            PaymentTypeEnum::CREDIT_CARD => TotalCostForCreditCard::class,
+            PaymentTypeEnum::FINANCING => TotalCostForFinancing::class,
+            default => throw new \Exception('payment type not exists.')
+        };
     }
 }

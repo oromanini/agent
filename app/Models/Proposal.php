@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -14,7 +15,7 @@ class Proposal extends Model
     use SoftDeletes;
 
     protected $guarded = [];
-    protected $data = [
+    protected array $data = [
         'created_at',
         'updated_at',
         'deleted_at',
@@ -51,8 +52,20 @@ class Proposal extends Model
         return $this->belongsTo(Financing::class);
     }
 
+
+
     public function contract(): BelongsTo
     {
         return $this->belongsTo(Contract::class);
+    }
+
+    public function homologation(): HasOne
+    {
+        return $this->hasOne(Homologation::class);
+    }
+
+    public function installation(): HasOne
+    {
+        return $this->hasOne(Installation::class);
     }
 }

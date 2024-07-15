@@ -9485,11 +9485,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var alpinejs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! alpinejs */ "./node_modules/alpinejs/dist/module.esm.js");
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
+__webpack_require__(/*! ./masks */ "./resources/js/masks.js");
+
 __webpack_require__(/*! ./sidebar */ "./resources/js/sidebar.js");
 
 __webpack_require__(/*! ./whatsapp */ "./resources/js/whatsapp.js");
-
-__webpack_require__(/*! ./masks */ "./resources/js/masks.js");
 
 __webpack_require__(/*! ./zipcodeSearch */ "./resources/js/zipcodeSearch.js");
 
@@ -9563,6 +9563,15 @@ $(function () {
   $('#final_value').mask('000.000.000.000.000,00', {
     reverse: true
   });
+  $('#ca_cost').mask('000.000.000.000.000,00', {
+    reverse: true
+  });
+  $('#installation_cost').mask('000.000.000.000.000,00', {
+    reverse: true
+  });
+  $('#plus_cost_value').mask('000.000.000.000.000,00', {
+    reverse: true
+  });
   $('#cpf').mask('000.000.000-00', {
     reverse: true
   });
@@ -9576,16 +9585,18 @@ $(function () {
         reverse: true
       });
       $('#nameLabel').text('Razão Social*');
-      $('#documentLabel').text('CNPJ*');
-      $('#aliasLabel').text('Nome Fantasia*');
+      $('#documentLabel').text('CNPJ');
+      $('#aliasLabel').text('Nome Fantasia');
+      $('#birthdate').text('Data de fundação');
     } else {
       $('#cnpj').attr("id", "cpf");
       $('#cpf').mask('000.000.000-00', {
         reverse: true
       });
       $('#nameLabel').text('Nome*');
-      $('#documentLabel').text('CPF*');
-      $('#aliasLabel').text('Apelido*');
+      $('#documentLabel').text('CPF');
+      $('#aliasLabel').text('Apelido');
+      $('#birthdate').text('Data de nascimento');
     }
   });
 });
@@ -9813,6 +9824,7 @@ $(function () {
 
   function setCities(city_id) {
     var id = $('#state').find(":selected").val();
+    var city_id_saved = $('#city_id_saved').val();
     $.ajax({
       url: "/citiesByState/" + id,
       type: 'get',
@@ -9822,12 +9834,19 @@ $(function () {
     }).done(function (msg) {
       $('#city').empty();
       $.each(msg, function (i, item) {
-        $('#city').append($('<option>', {
+        var option = $('<option>', {
           value: item.id,
           text: item.name
-        }));
-        $('#city option[value="' + city_id + '"]').prop("selected", "selected");
+        });
+
+        if (item.name === 'MARINGA') {
+          option.attr('selected', true);
+        }
+
+        $('#city').append(option);
       });
+      city_id = city_id == null && city_id_saved !== null ? city_id_saved : city_id;
+      $('#city option[value="' + city_id + '"]').attr("selected", "selected");
     }).fail(function (jqXHR, textStatus, msg) {
       console.log(msg);
     });
@@ -9844,6 +9863,7 @@ $(function () {
     }).done(function (msg) {
       $('#city2').empty();
       $.each(msg, function (i, item) {
+        console.log(city_id);
         $('#city2').append($('<option>', {
           value: item.id,
           text: item.name

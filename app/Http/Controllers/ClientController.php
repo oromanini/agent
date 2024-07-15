@@ -111,9 +111,9 @@ class ClientController extends Controller
     public function incidenceFromAddress($id): float
     {
         $city = Address::find($id)->city;
-        $average =  str_replace(',', '.', $this->solarIncidenceService->getSolarIncidence($city)->average);
+        $incidence = $this->solarIncidenceService->getSolarIncidence($city);
 
-        return (float)$average;
+        return (float) str_replace(',', '.', $incidence->average);
     }
 
     public function IncidenceByClientId(int $id): float

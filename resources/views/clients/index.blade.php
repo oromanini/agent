@@ -89,7 +89,7 @@
                             <td>{{$client->document}}</td>
                             <td>{{$client->addresses->first()->city->name_and_federal_unit}}</td>
                             <td>{{$client->phone_number}}</td>
-                            <td>{{$client->agent->name}}</td>
+                            <td>{{$client->agent ? $client->agent->name : 'Agente inativo' }}</td>
                             <td>
                                 <a class="button is-primary" href="{{ route('client.edit', [$client->id]) }}">
                                     <ion-icon name="create-outline" class="table-icon"></ion-icon>

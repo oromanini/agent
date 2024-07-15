@@ -21,14 +21,22 @@ services:
     networks:
         - alluz-network
 
-  site:
-      volumes:
-          - ../site-alluz:/var/www/html
-      build: ../site-alluz
+  redis:
+      image: redis:latest
+      container_name: redis
       ports:
-          - "8000:80"
+        - "6379:6379"
       networks:
-          - alluz-network
+        - alluz-network
+
+#  site:
+#      volumes:
+#          - ../site-alluz:/var/www/html
+#      build: ../site-alluz
+#      ports:
+#          - "8000:80"
+#      networks:
+#          - alluz-network
 
   warehouse:
       volumes:
@@ -39,23 +47,23 @@ services:
       networks:
           - alluz-network
 
-  simulator:
-      volumes:
-          - ../simulator:/var/www/html
-      build: ../simulator
-      ports:
-          - "8003:80"
-      networks:
-          - alluz-network
-          
-  landing-page:
-      volumes:
-          - ../landing-page:/var/www/html
-      build: ../landing-page
-      ports:
-          - "8004:80"
-      networks:
-          - alluz-network
+#  simulator:
+#      volumes:
+#          - ../simulator:/var/www/html
+#      build: ../simulator
+#      ports:
+#          - "8003:80"
+#      networks:
+#          - alluz-network
+#
+#  landing-page:
+#      volumes:
+#          - ../landing-page:/var/www/html
+#      build: ../landing-page
+#      ports:
+#          - "8004:80"
+#      networks:
+#          - alluz-network
 
 networks:
   alluz-network:

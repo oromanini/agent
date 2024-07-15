@@ -9,6 +9,9 @@ $(function () {
     $('#income').mask('000.000.000.000.000,00', {reverse: true});
     $('#patrimony').mask('000.000.000.000.000,00', {reverse: true});
     $('#final_value').mask('000.000.000.000.000,00', {reverse: true});
+    $('#ca_cost').mask('000.000.000.000.000,00', {reverse: true});
+    $('#installation_cost').mask('000.000.000.000.000,00', {reverse: true});
+    $('#plus_cost_value').mask('000.000.000.000.000,00', {reverse: true});
     $('#cpf').mask('000.000.000-00', {reverse: true});
     $('#cnpj').mask('00.000.000/0000-00', {reverse: true});
 
@@ -19,16 +22,19 @@ $(function () {
 
             $('#cnpj').mask('00.000.000/0000-00', {reverse: true});
             $('#nameLabel').text('Razão Social*')
-            $('#documentLabel').text('CNPJ*')
-            $('#aliasLabel').text('Nome Fantasia*')
+            $('#documentLabel').text('CNPJ')
+            $('#aliasLabel').text('Nome Fantasia')
+            $('#birthdate').text('Data de fundação')
         } else {
 
             $('#cnpj').attr("id", "cpf")
 
             $('#cpf').mask('000.000.000-00', {reverse: true});
             $('#nameLabel').text('Nome*')
-            $('#documentLabel').text('CPF*')
-            $('#aliasLabel').text('Apelido*')
+            $('#documentLabel').text('CPF')
+            $('#aliasLabel').text('Apelido')
+            $('#birthdate').text('Data de nascimento')
+
         }
     })
 

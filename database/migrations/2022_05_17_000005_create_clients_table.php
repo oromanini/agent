@@ -6,12 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateClientsTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
+    public function up(): void
     {
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
@@ -19,6 +14,9 @@ class CreateClientsTable extends Migration
             $table->text('name');
             $table->enum('type', ['person', 'company']);
             $table->string('document');
+            $table->string('owner_document')->nullable();
+            $table->string('account_owner_document')->nullable();
+            $table->string('birthdate')->nullable();
             $table->string('alias')->nullable();
             $table->string('email')->nullable();
             $table->string('phone_number');
@@ -30,12 +28,7 @@ class CreateClientsTable extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('clients');
     }

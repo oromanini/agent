@@ -2,21 +2,32 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\DistributorsEnum;
 use App\Enums\InverterBrands;
 use App\Enums\PanelBrands;
+use App\Enums\PaymentTypeEnum;
+use App\Enums\RoofStructure;
 use App\Enums\TensionPattern;
 use App\Http\Requests\ProposalRequest;
-use App\Models\Address;
+use App\Models\City;
 use App\Models\Client;
+use App\Models\Kit;
+use App\Models\Lead;
+use App\Models\PromotionalKit;
 use App\Models\Proposal;
 use App\Models\User;
+use App\Models\ValueHistoryInfo;
 use App\Repositories\ProposalRepository;
+use App\Services\KitSpecService;
+use App\Services\LeadService;
 use App\Services\PaybackService;
 use App\Services\PricingService;
 use App\Services\ProposalService;
 use App\Services\ProposalValueHistoryService;
 use App\Services\SolarIncidenceService;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -24,29 +35,15 @@ use Illuminate\Http\Response;
 
 class ProposalController extends Controller
 {
-    private ProposalService $proposalService;
-    private ProposalRepository $proposalRepository;
-    private ProposalValueHistoryService $proposalValueHistoryService;
-    private SolarIncidenceService $solarIncidenceService;
-    private PaybackService $paybackService;
-    private PricingService $pricingService;
-
     public function __construct(
-        ProposalService             $proposalService,
-        ProposalRepository          $proposalRepository,
-        ProposalValueHistoryService $proposalValueHistoryService,
-        PaybackService              $paybackService,
-        SolarIncidenceService       $solarIncidenceService,
-        PricingService              $pricingService
+        private readonly ProposalService             $proposalService,
+        private readonly ProposalRepository          $proposalRepository,
+        private readonly ProposalValueHistoryService $proposalValueHistoryService,
+        private readonly PaybackService              $paybackService,
+        private readonly PricingService              $pricingService,
+        private readonly KitSpecService              $kitSpecService,
     )
-    {
-        $this->proposalService = $proposalService;
-        $this->proposalRepository = $proposalRepository;
-        $this->proposalValueHistoryService = $proposalValueHistoryService;
-        $this->solarIncidenceService = $solarIncidenceService;
-        $this->paybackService = $paybackService;
-        $this->pricingService = $pricingService;
-    }
+    {}
 
     public function index(Request $request): View
     {
@@ -58,22 +55,10 @@ class ProposalController extends Controller
 
     public function create(): View
     {
-        $clients = null;
+        $clients = $this->setClients();
 
-        if (auth()->user()->is_admin) {
-            $clients = Client::query()
-                ->orderBy('id', 'desc')
-                ->get();
-
-        } else {
-            $clients = Client::query()
-                ->where('agent_id', auth()->user()->id)
-                ->orderBy('id', 'desc')
-                ->get();
-        }
-
-        $tensions = $this->setTensions();
-        $roofs = setRoofs();
+        $tensions = TensionPattern::cases();
+        $roofs = RoofStructure::setRoofsToScreen();
         $agents = User::query()->orderBy('name')->get();
 
         return view('proposals.form', compact('clients', 'tensions', 'roofs', 'agents'));
@@ -90,11 +75,11 @@ class ProposalController extends Controller
     public function manual(): View
     {
         $clients = Client::all();
-        $agents = User::all();
-        $tensions = TensionPattern::asSelectArray();
-        $roofs = setRoofs();
-        $panels = PanelBrands::asSelectArray();
-        $inverters = InverterBrands::asSelectArray();
+        $agents = User::query()->whereNull('deleted_at')->get();
+        $tensions = TensionPattern::cases();
+        $roofs = RoofStructure::setRoofsToScreen();
+        $panels = PanelBrands::cases();
+        $inverters = InverterBrands::cases();
 
         return view('proposals.manual', compact($this->setManualParams()));
     }
@@ -111,34 +96,33 @@ class ProposalController extends Controller
     {
         $proposal = Proposal::find($id);
         $valueHistoryData = $this->proposalValueHistoryService->setValueHistoryData($proposal);
-        $isPromotional = false;
 
-        if ($proposal->kwp == 3.82 || $proposal->kwp == 4.91 || $proposal->kwp == 6 || $proposal->kwp == 7.08) {
-            $isPromotional = true;
-        }
+        $valueHistoryInfo = (new ValueHistoryInfo($proposal))->pricingInfo();
 
-        $kits = $proposal->is_manual
-            ? json_decode($proposal->components, true)
-            : getKitCodesFromProposal($proposal);
+        $kits = $proposal->components
+            ? jsonToArray($proposal->components)
+            : (new KitSpecService())->getKitFromProposal($proposal)->components;
 
-        $fields = [
-            ['id' => 'croqui', 'name' => 'inspection[croqui]', 'label' => 'Croqui'],
-            ['id' => 'roof', 'name' => 'inspection[roof][]', 'label' => 'Telhado'],
-            ['id' => 'roof_structure', 'name' => 'inspection[roof_structure]', 'label' => 'Estrutura do Telhado'],
-            ['id' => 'pattern', 'name' => 'inspection[pattern]', 'label' => 'Padrão (tampa FECHADA) '],
-            ['id' => 'open_pattern', 'name' => 'inspection[open_pattern]', 'label' => 'Padrão (tampa ABERTA)'],
-            ['id' => 'pattern_circuit_break', 'name' => 'inspection[circuit_breaker]', 'label' => 'Disjuntor do padrão'],
-            ['id' => 'meter', 'name' => 'inspection[meter]', 'label' => 'Medidor'],
-            ['id' => 'switchboard', 'name' => 'inspection[switchboard]', 'label' => 'Quadro de distrib.'],
-            ['id' => 'inverter_local', 'name' => 'inspection[inverter_local]', 'label' => 'Local do inversor'],
-            ['id' => 'post', 'name' => 'inspection[post]', 'label' => 'Poste'],
-            ['id' => 'compass', 'name' => 'inspection[compass]', 'label' => '/Print Bússola'],
-            ['id' => 'property_fax', 'name' => 'inspection[property_fax]', 'label' => 'Faxada do imóvel'],
-        ];
+        $kit = Kit::query()
+            ->where('distributor_code', $proposal->kit_uuid)
+            ->first();
 
-        return view('proposals.show', compact(
+        list($panelSpecs, $inverterSpecs) = $this->getComponentsSpec($proposal, $kit);
+
+        $isPromotional = PromotionalKit::query()
+            ->where('kwp', $kit->kwp ?? $proposal->kwp)
+            ->where('panel_brand', $panelSpecs['brand'])
+            ->where('panel_power', $panelSpecs['power'])
+            ->where('inverter_brand', $inverterSpecs['brand'])
+            ->exists();
+
+        $fields = $this->setEditFields();
+
+        return view('proposals.show',
+            compact(
                 'proposal',
                 'valueHistoryData',
+                'valueHistoryInfo',
                 'kits',
                 'isPromotional',
                 'fields')
@@ -167,7 +151,7 @@ class ProposalController extends Controller
         $data = $request->all();
 
         try {
-            $message = $this->proposalService->store($data, true);
+            $message = $this->proposalService->store(data: $data, isManual: true);
 
         } catch (\Exception $e) {
             throw new \Exception($e);
@@ -178,49 +162,46 @@ class ProposalController extends Controller
         return redirect()->route('proposal.index');
     }
 
-    public function generatePdf(int $proposal_id, ?bool $isSample = false): Response
+    public function generatePdf(int $proposalId, ?bool $isSample = false): Response
     {
-        $proposal = Proposal::find($proposal_id);
-        $pdfParams = $this->setPdfParams(proposal: $proposal);
+        $proposal = Proposal::find($proposalId);
+        $pdfParams = $this->setPdfParams($proposal);
         $city = $proposal->client->addresses->first()->city;
-        $components = json_decode($proposal->components, true);
+        $components = jsonToArray($proposal->components);
+        $finalValue = $proposal->valueHistory->final_price;
 
-        $firstKit = $proposal->is_manual
-            ? null
-            : kitByUuid(getKitCodesFromProposal($proposal)[0]);
+        if (!$proposal->is_manual) {
+
+            $kit = $this->kitSpecService->getKitFromProposal($proposal);
+            $inverterBrand = jsonToArray($kit->inverter_specs)['brand'];
+            $panelBrand = jsonToArray($kit->panel_specs)['logo'];
+        }
 
         $manualData = $proposal->is_manual
-            ? json_decode($proposal->manual_data, true)
+            ? jsonToArray($proposal->manual_data)
             : null;
 
         $inverterImage = $proposal->is_manual
             ? setInverterImage((int)$manualData['inverter_brand'])
-            : setInverterImage($firstKit['technical_description']['inverter_brand']);
+            : $this->setInverterImageByDistributor($inverterBrand, $kit->distributor_name);
 
         $panelBrandImage = $proposal->is_manual
             ? setPanelBrandImage((int)$manualData['panel_brand'])
-            : setPanelBrandImage($firstKit['technical_description']['panel_specs']['panel_brand']);
+            : jsonToArray($kit->panel_specs)['logo'];
 
-        $withoutSolar = calculateWithoutSolar(proposal: $proposal);
-        $withSolar = floatToMoney(calculateWithSolar(proposal: $proposal));
-
-        $incidence = $this->solarIncidenceService->getSolarIncidence(city: $city)->average;
+        $incidence = (new SolarIncidenceService())->getSolarIncidence(city: $city)->average;
         $payback = $this->paybackService->setPaybackData(proposal: $proposal);
         $generationData = $this->paybackService->setGenerationData(proposal: $proposal);
 
-        $floatOverload = $proposal->is_manual
-            ? (stringInverterPowerToFloat($manualData['inverter_power']) * 1.35) / ((int)$manualData['panel_power'] / 1000)
-            : 0;
-
-        $overload = $proposal->is_manual
-            ? 'Até ' . floor($floatOverload) . ' módulos'
-            : 'Até ' . $this->getKitOverload(codes: getKitCodesFromProposal($proposal)) . ' módulos';
+        $overload = 'Até ' . $this->kitSpecService->getKitOverload($kit ?? null, $manualData) . ' módulos';
 
         $invertersCount = $proposal->is_manual
             ? ($manualData['inverter_quantity'] ?? 1)
-            : $this->setInvertersCount($components);
+            : $this->kitSpecService->setInvertersCount(is_array($components) ? $components : jsonToArray($components));
 
-        $inverterModels = $this->setInverterModels($components);
+        $inverterModels = $this->kitSpecService->setInverterModels(is_array($components) ? $components : jsonToArray($components));
+
+        $firstKit = $kit ?? null;
 
         $pdf = $isSample
             ? PDF::loadView('proposals.small_pdf', compact($pdfParams))
@@ -230,28 +211,80 @@ class ProposalController extends Controller
             ->stream('#' . $proposal->id . ' ' . $proposal->client->name . '.pdf');
     }
 
-    public function setFinalValue(Request $request): float
+    public function generateLeadPdf(int $id): Response
     {
-        $data = $request->all();
-        return $this->pricingService
-            ->calculateFinalPrice($data);
+        $lead = Lead::find($id);
+        $city = City::find($lead->city_id);
+        $kitData = $lead->kit();
+        $components = $lead->components();
+
+        $inverterSpecs = jsonToArray($kitData['inverter_specs']);
+        $panelSpecs = jsonToArray($kitData['panel_specs']);
+        $inverterImage = setInverterImage($inverterSpecs['brand']);
+        $panelBrandImage = setPanelBrandImage($panelSpecs['brand']);
+        $incidence = (new SolarIncidenceService())->getSolarIncidence(city: $city)->average;
+        $panelQuantity = (new LeadService($this))->getLeadPanelQuantity($lead);
+
+        $payback = $this->paybackService->setLeadPaybackData(lead: $lead);
+        $overload =
+            "Até " .
+            ceil(($inverterSpecs['power'] * 1.4) / ($panelSpecs['power'] / 1000)) .
+            " módulos";
+
+        $pdfParams = [
+            'lead',
+            'city',
+            'payback',
+            'panelQuantity',
+            'panelBrandImage',
+            'inverterImage',
+            'inverterSpecs',
+            'panelSpecs',
+            'overload'
+        ];
+
+        $pdf = PDF::loadView('leads.base', compact($pdfParams));
+        return $pdf->stream("#L{$lead->id} {$lead->name}.pdf");
+    }
+
+    public function setFinalValue(Request $request): JsonResponse
+    {
+        $cost = $request->get('cost');
+        $kwp = $request->get('kwp');
+        $panelCount = $request->get('panelCount');
+        $panelBrand = $request->get('panelBrand');
+        $panelPower = $request->get('panelPower');
+        $inverterBrand = $request->get('inverterBrand');
+        $roofStructure = $request->get('roofStructure');
+
+        $finalPriceAndDetail = $this->pricingService
+            ->calculateFinalPrice(
+                cost: $cost,
+                kwp: $kwp,
+                panelCount: $panelCount,
+                panelBrand: $panelBrand,
+                panelPower: $panelPower,
+                inverterBrand: $inverterBrand,
+                roofStructure: $roofStructure,
+                finalValue: $cost * ProposalValueHistoryService::BASE_GROSS_PROFIT,
+                paymentType: PaymentTypeEnum::FINANCING,
+                isLead: $request->get('isLead') == true
+            );
+
+        return response()->json($finalPriceAndDetail);
     }
 
     public function setAverageProduction(Request $request): float
     {
-        $data = $request->all();
-        $city = Address::find((int)$data['addressId'])->city;
+        return $this->kitSpecService
+            ->setAverageProduction($request->all());
+    }
 
-        $incidence = (float)str_replace(
-            search: ',',
-            replace: '.',
-            subject: $this->solarIncidenceService->getSolarIncidence($city)->average
-        );
-
-        return ceil(
-            ((float) $data['kwp']) / ((1 + (float)env('GENERATION_LOST')))
-            * 30 * $incidence
-        );
+    public function setTensionByValue(Request $request): string
+    {
+        return response()->json(
+            $this->kitSpecService->setTensionByValue($request->all())
+        )->getContent();
     }
 
     private function setManualParams(): array
@@ -266,7 +299,7 @@ class ProposalController extends Controller
         ];
     }
 
-    private function setPdfParams($proposal): array
+    private function setPdfParams(): array
     {
         return [
             'proposal',
@@ -274,69 +307,81 @@ class ProposalController extends Controller
             'manualData',
             'inverterImage',
             'panelBrandImage',
-            'withoutSolar',
-            'withSolar',
+//            'withoutSolar',
+//            'withSolar',
             'incidence',
             'payback',
             'generationData',
             'firstKit',
             'invertersCount',
             'overload',
-            'inverterModels'
+            'inverterModels',
+            'finalValue'
         ];
     }
 
-    private function setTensions(): array
+    private function setEditFields(): array
     {
         return [
-            'MONOFASICO-220V' => 'Monofásico 220V',
-            'BIFASICO-220V' => 'Bifásico 220V',
-            'TRIFASICO-220V' => 'Trifásico 220V',
-            'TRIFASICO-380V' => 'Trifásico 380V',
+            ['id' => 'croqui', 'name' => 'inspection[croqui]', 'label' => 'Croqui'],
+            ['id' => 'roof', 'name' => 'inspection[roof][]', 'label' => 'Telhado'],
+            ['id' => 'roof_structure', 'name' => 'inspection[roof_structure]', 'label' => 'Estrutura do Telhado'],
+            ['id' => 'pattern', 'name' => 'inspection[pattern]', 'label' => 'Padrão (tampa FECHADA) '],
+            ['id' => 'open_pattern', 'name' => 'inspection[open_pattern]', 'label' => 'Padrão (tampa ABERTA)'],
+            ['id' => 'pattern_circuit_break', 'name' => 'inspection[circuit_breaker]', 'label' => 'Disjuntor do padrão'],
+            ['id' => 'meter', 'name' => 'inspection[meter]', 'label' => 'Medidor'],
+            ['id' => 'switchboard', 'name' => 'inspection[switchboard]', 'label' => 'Quadro de distrib.'],
+            ['id' => 'inverter_local', 'name' => 'inspection[inverter_local]', 'label' => 'Local do inversor'],
+            ['id' => 'post', 'name' => 'inspection[post]', 'label' => 'Poste'],
+            ['id' => 'compass', 'name' => 'inspection[compass]', 'label' => '/Print Bússola'],
+            ['id' => 'property_fax', 'name' => 'inspection[property_fax]', 'label' => 'Faxada do imóvel'],
         ];
     }
 
-    private function setInvertersCount(array $components): string
+    private function setClients(): array|Collection
     {
-        $inverter_count = 0;
-
-        array_map(function ($item) use (&$inverter_count) {
-            (str_contains($item, 'Inversor')) && $inverter_count++;
-        }, $components);
-
-        return $inverter_count;
+        return Client::query()
+            ->when(!auth()->user()->is_admin, function ($query) {
+                return $query->where('agent_id', auth()->user()->id);
+            })
+            ->orderBy('id', 'desc')
+            ->get();
     }
 
-    private function getKitOverload(array $codes): int
+    private function setInverterImageByDistributor(string $inverterBrand, string $distributor)
     {
-        return array_map(function ($code) {
-            $kit = kitByUuid($code);
-
-            return floor(
-                $kit['technical_description']['inverter_overload']
-                / ($kit['technical_description']['panel_specs']['panel_power'] / 1000)
-            );
-
-        }, $codes)[0];
-    }
-
-    private function setInverterModels(array $components): string
-    {
-        $inverter_models = [];
-
-        array_map(function ($item) use (&$inverter_models) {
-            (str_contains($item, 'Inversor')) && $inverter_models[] = $item;
-        }, $components);
-
-        $string = '';
-
-        foreach ($inverter_models as $key => $inverter_model) {
-            $string .= $key == 0
-                ? explode(' ', $inverter_model)[3]
-                : ' + ' . explode(' ', $inverter_model)[3];
+        if ($distributor === DistributorsEnum::EDELTEC->value) {
+            return \App\Packages\EdeltecApiPackage\Enums\InverterImage::getByCase($inverterBrand);
         }
+        if ($distributor === DistributorsEnum::ODEX->value) {
+            return strtolower($inverterBrand) == 'saj'
+                ? '/img/inverters/saj.png'
+                : '/img/inverters/saj_micro.png';
+        }
+    }
 
-        return $string;
+    public function getComponentsSpec(Proposal $proposal, ?Kit $kit = null): array
+    {
+        if ($proposal->is_manual) {
+            $manualData = jsonToArray($proposal->manual_data);
+            $panelSpecs = [
+                "brand" => $manualData['panel_brand'],
+                "model" => $manualData['panel_model'],
+                "power" => $manualData['panel_power'],
+                "warranty" => $manualData['panel_warranty'],
+            ];
+            $inverterSpecs = [
+                "brand" => $manualData['inverter_brand'],
+                "model" => $manualData['inverter_model'],
+                "power" => $manualData['inverter_power'],
+                "warranty" => $manualData['inverter_warranty'],
+                "quantity" => $manualData['inverter_quantity']
+            ];
+        } else {
+            $panelSpecs = jsonToArray($kit->panel_specs);
+            $inverterSpecs = jsonToArray($kit->inverter_specs);
+        }
+        return array($panelSpecs, $inverterSpecs);
     }
 
 }

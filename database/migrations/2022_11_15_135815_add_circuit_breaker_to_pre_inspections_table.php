@@ -8,8 +8,8 @@ class AddCircuitBreakerToPreInspectionsTable extends Migration
 {
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('circuit_breaker_amperage');
+        Schema::table('pre_inspections', function (Blueprint $table) {
+            $table->string('circuit_breaker_amperage')->nullable();
         });
     }
 
