@@ -10,7 +10,6 @@ use App\Models\PromotionalKit;
 class PricingService
 {
     const SOLO_PLUS = 1.35;
-    const LIQUID_PROFIT_PERCENTAGE = 0.2;
     const PLUS_TO_ADJUST_MARGIN = 250;
 
     private float $netProfit;
@@ -54,7 +53,7 @@ class PricingService
                 isLead: $isLead
             )['netProfitPercent'];
 
-        if ($this->netProfit < self::LIQUID_PROFIT_PERCENTAGE) {
+        if ($this->netProfit < env('PROFIT')) {
             $finalValue += self::PLUS_TO_ADJUST_MARGIN;
             $finalValue = $this->adjustMargin(
                 $cost,
@@ -80,7 +79,7 @@ class PricingService
 
         $paymentTypeTotalCost = $this->getPaymentTypeTotalCost($paymentType);
 
-        $totalCost = (new $paymentTypeTotalCost(
+            $totalCost = (new $paymentTypeTotalCost(
             cost: $cost,
             panelCount: $panelCount,
             kwp: $kwp,
@@ -90,7 +89,7 @@ class PricingService
         ))->cost();
 
         $netProfitValue = $finalValue - $totalCost;
-        $netProfitPercent = ($finalValue / $totalCost) - 1;
+        $netProfitPercent = ($netProfitValue / $finalValue);
 
         return $this->format(
             $netProfitValue,

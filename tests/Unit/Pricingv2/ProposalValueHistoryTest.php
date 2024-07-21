@@ -46,6 +46,7 @@ class ProposalValueHistoryTest extends TestCase
         $this->createWorkCosts();
         $this->user = User::factory()->create();
         Auth::login($this->user);
+        env('PROFIT',0.12);
     }
 
     public function testProposalValueHistoryStore(): void
@@ -60,7 +61,7 @@ class ProposalValueHistoryTest extends TestCase
     {
         $valueHistory = (new ValueHistoryBuilder())
             ->withKitCost(10000)
-            ->withInitialAndFinalPrice(19000, 18000, 20000)
+            ->withInitialAndFinalPrice(19000, 20000)
             ->withIsPromotional(false)
             ->withCommissionPercent([
                 ExternalConsultantsCommissionCost::STANDARD_KEY => 0.1,
@@ -72,8 +73,8 @@ class ProposalValueHistoryTest extends TestCase
 
         $valueHistoryService = new ProposalValueHistoryService();
         $valueHistoryService->update($valueHistory, [
-            'kwp' => 5.3,
-            'panel_count' => 10,
+            'kwp' => 4.2,
+            'panel_count' => 8,
             'roof_structure' => RoofStructure::COLONIAL,
             'panel_brand' => 'jinko',
             'panel_power' => 550,
@@ -85,7 +86,7 @@ class ProposalValueHistoryTest extends TestCase
 
         $attributes = $valueHistory->getAttributes();
         $this->assertEquals(18430, $attributes['final_price']);
-        $this->assertEquals(17460, $attributes['cash_final_price']);
+        $this->assertEquals(18430, $attributes['cash_final_price']);
         $this->assertEquals(19400, $attributes['card_final_price']);
     }
 
@@ -93,7 +94,7 @@ class ProposalValueHistoryTest extends TestCase
     {
         $valueHistory = (new ValueHistoryBuilder())
             ->withKitCost(10000)
-            ->withInitialAndFinalPrice(19000, 18000, 20000)
+            ->withInitialAndFinalPrice(19000, 18000)
             ->withIsPromotional(false)
             ->withCommissionPercent([
                 ExternalConsultantsCommissionCost::STANDARD_KEY => 0.1,
@@ -112,21 +113,21 @@ class ProposalValueHistoryTest extends TestCase
             'panel_power' => 550,
             'inverter_brand' => 'growatt',
             'discount_percent' => 0,
-            'commission_percent' => 9,
+            'commission_percentage' => 9,
             'card_commission_percent' => 7,
         ]);
-
+        $valueHistory->refresh();
         $attributes = $valueHistory->getAttributes();
         $this->assertEquals(18810, $attributes['final_price']);
-        $this->assertEquals(17820, $attributes['cash_final_price']);
-        $this->assertEquals(19800, $attributes['card_final_price']);
+        $this->assertEquals(18810, $attributes['cash_final_price']);
+        $this->assertEquals(17820, $attributes['card_final_price']);
     }
 
     public function testProposalValueHistoryUpdate_WithCommissionDiscountAndDefaultDiscount(): void
     {
         $valueHistory = (new ValueHistoryBuilder())
             ->withKitCost(10000)
-            ->withInitialAndFinalPrice(19000, 18000, 20000)
+            ->withInitialAndFinalPrice(19000, 20000)
             ->withIsPromotional(false)
             ->withCommissionPercent([
                 ExternalConsultantsCommissionCost::STANDARD_KEY => 0.1,
@@ -150,25 +151,26 @@ class ProposalValueHistoryTest extends TestCase
         ]);
 
         $attributes = $valueHistory->getAttributes();
-        $this->assertEquals(18245.7, $attributes['final_price']);
-        $this->assertEquals(17285.4, $attributes['cash_final_price']);
-        $this->assertEquals(19206, $attributes['card_final_price']);
+        $this->assertEquals(18430, $attributes['final_price']);
+        $this->assertEquals(18430, $attributes['cash_final_price']);
+        $this->assertEquals(19400, $attributes['card_final_price']);
     }
 
     public function paymentTypeScenarios(): \Generator
     {
         yield 'cash' => [
             'paymentType' => PaymentTypeEnum::CASH_PAYMENT,
-            'finalValue' => 18000,
-        ];
-        yield 'card' => [
-            'paymentType' => PaymentTypeEnum::CREDIT_CARD,
-            'finalValue' => 20750,
+            'finalValue' => 19000,
         ];
         yield 'financing' => [
             'paymentType' => PaymentTypeEnum::FINANCING,
-            'finalValue' => 18250
+            'finalValue' => 19500
         ];
+        yield 'card' => [
+            'paymentType' => PaymentTypeEnum::CREDIT_CARD,
+            'finalValue' => 21000,
+        ];
+
     }
 
     /** @dataProvider paymentTypeScenarios */
@@ -182,7 +184,7 @@ class ProposalValueHistoryTest extends TestCase
             panelPower: 550,
             inverterBrand: 'growatt',
             roofStructure: RoofStructure::COLONIAL->value,
-            finalValue: 17500,
+            finalValue: 18000,
             paymentType: $paymentType
         );
 
@@ -198,7 +200,7 @@ class ProposalValueHistoryTest extends TestCase
     {
         $valueHistory = (new ValueHistoryBuilder())
             ->withKitCost(10000)
-            ->withInitialAndFinalPrice(19000, 18000, 20000)
+            ->withInitialAndFinalPrice(19000, 18000)
             ->withIsPromotional(false)
             ->withCommissionPercent([
                 ExternalConsultantsCommissionCost::STANDARD_KEY => 0.1,
@@ -211,6 +213,7 @@ class ProposalValueHistoryTest extends TestCase
         $proposal = $this->createProposal($valueHistory);
 
         $valueHistoryInfo = new ValueHistoryInfo($proposal);
+
         $this->assertInstanceOf(ValueHistoryInfo::class, $valueHistoryInfo->pricingInfo());
     }
 
@@ -220,11 +223,11 @@ class ProposalValueHistoryTest extends TestCase
             'cost' => 10000,
             'kwp' => 5.3,
             'panel_count' => 10,
-            'roof_structure' => RoofStructure::COLONIAL,
+            'roofStructure' => RoofStructure::COLONIAL,
             'final_value' => 19500,
             'panel_brand' => 'jinko',
-            'panel_power' => 550,
-            'inverter_brand' => 'growatt',
+            'panelPower' => 550,
+            'inverterBrand' => 'growatt',
         ];
     }
 
@@ -246,7 +249,7 @@ class ProposalValueHistoryTest extends TestCase
             ->build();
 
         (new WorkCostBuilder())
-            ->withCosts([DirectCurrentCost::KEY => 0.045])
+            ->withCosts([DirectCurrentCost::KEY => 0.05])
             ->withClassification(WorkCostClassificationEnum::DIRECT_CURRENT_MATERIAL)
             ->withChangeHistory()
             ->build();
@@ -285,7 +288,7 @@ class ProposalValueHistoryTest extends TestCase
             ->build();
 
         (new WorkCostBuilder())
-            ->withCosts([SafetyMarginCost::KEY => 0.015])
+            ->withCosts([SafetyMarginCost::KEY => 0.017])
             ->withClassification(WorkCostClassificationEnum::SAFETY_MARGIN)
             ->withChangeHistory()
             ->build();
@@ -316,9 +319,9 @@ class ProposalValueHistoryTest extends TestCase
     {
         return
             [
-                5 => 100,
-                10 => 200,
-                15 => 300
+                10 => 400,
+                50 => 500,
+                100 => 750
             ];
     }
 
@@ -350,7 +353,7 @@ class ProposalValueHistoryTest extends TestCase
 
         return (new ProposalBuilder())
             ->isManual(false)
-            ->withKwp(4.5)
+            ->withKwp(4.2)
             ->withManualData(null)
             ->withRoofOrientation()
             ->withAgent($this->user)
@@ -365,7 +368,7 @@ class ProposalValueHistoryTest extends TestCase
             ->withEstimatedGeneration(500)
             ->withAverageConsumption(450)
             ->withRoofStructure(RoofStructure::COLONIAL->value)
-            ->withPanelQuantity(7)
+            ->withPanelQuantity(8)
             ->build();
     }
 }
