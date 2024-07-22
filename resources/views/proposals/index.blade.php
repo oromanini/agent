@@ -15,7 +15,6 @@
                     </a>
                 </div>
             </div>
-
             <form action="{{ route('proposal.index') }}" method="get">
                 @csrf
                 <div id="proposal-filters" class="columns is-flex is-flex-direction-row mt-4 mb-4">
@@ -23,8 +22,7 @@
                         <div class="field">
                             <label for="name-filter" class="label">Nome</label>
                             <div class="control">
-                                <input name="name_filter" id="name-filter" class="input is-rounded" type="text"
-                                       placeholder="Digite o nome">
+                                <input name="name_filter" id="name-filter" class="input is-rounded" type="text" placeholder="Digite o nome">
                             </div>
                         </div>
                     </div>

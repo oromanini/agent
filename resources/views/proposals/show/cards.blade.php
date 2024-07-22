@@ -18,7 +18,7 @@
                     Cartão de crédito
                 </h5>
                 <p class="title">
-                <span style="font-size: 14pt">10x de R$ </span>{{ floatToMoney($valueHistoryInfo->card['finalPriceWithFee'] / 10) }}
+                <span style="font-size: 14pt">12x de R$ </span>{{ floatToMoney($valueHistoryInfo->card['finalPriceWithFee'] / 12) }}
                 </p>
             </article>
         </div>

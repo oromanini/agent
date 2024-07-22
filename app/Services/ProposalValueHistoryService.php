@@ -27,7 +27,6 @@ class ProposalValueHistoryService
     {
         $cost = $this->getKitCost(cost: $data['cost'], isManual: $isManual);
         $financingInitialPrice = $this->getFinalPrice(data: $data, isManual: $isManual, paymentType: PaymentTypeEnum::FINANCING);
-        $cashInitialPrice = $this->getFinalPrice(data: $data, isManual: $isManual, paymentType: PaymentTypeEnum::CASH_PAYMENT);
         $cardInitialPrice = $this->getFinalPrice(data: $data, isManual: $isManual, paymentType: PaymentTypeEnum::CREDIT_CARD);
 
         $commissionPercent = $this->commissionPercent();
@@ -36,7 +35,7 @@ class ProposalValueHistoryService
 
         $this->valueHistory = (new ValueHistoryBuilder())
             ->withKitCost($cost)
-            ->withInitialAndFinalPrice($financingInitialPrice, $cashInitialPrice, $cardInitialPrice)
+            ->withInitialAndFinalPrice($financingInitialPrice, $cardInitialPrice)
             ->withIsPromotional(false)
             ->withCommissionPercent($commissionPercent)
             ->withDiscountPercent(0)

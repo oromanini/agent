@@ -78,8 +78,7 @@ class PricingService
     ): array {
 
         $paymentTypeTotalCost = $this->getPaymentTypeTotalCost($paymentType);
-
-            $totalCost = (new $paymentTypeTotalCost(
+        $totalCost = (new $paymentTypeTotalCost(
             cost: $cost,
             panelCount: $panelCount,
             kwp: $kwp,

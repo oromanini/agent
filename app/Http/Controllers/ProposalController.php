@@ -96,7 +96,6 @@ class ProposalController extends Controller
     {
         $proposal = Proposal::find($id);
         $valueHistoryData = $this->proposalValueHistoryService->setValueHistoryData($proposal);
-
         $valueHistoryInfo = (new ValueHistoryInfo($proposal))->pricingInfo();
 
         $kits = $proposal->components
@@ -384,5 +383,5 @@ class ProposalController extends Controller
         return array($panelSpecs, $inverterSpecs);
     }
 
-}
+} 
 
