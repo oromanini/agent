@@ -84,7 +84,7 @@
                     @if($enabledForShow && !is_null($approval))
                         <tr class="lh-40">
                         <th>{{$approval->id}}</th>
-                        <td>{{ !is_null($approval->client) && $approval->client->name }}</td>
+                        <td>{{ $approval->client->name }}</td>
                         @php
                         $inspectionStatus = $approval->inspection ? $approval->inspection->status->name : 'Aguardando';
                         $financingStatus = $approval->financing ? $approval->financing->status->name : 'Aguardando';
