@@ -183,7 +183,10 @@ class ProposalController extends Controller
             ? (new ImageHelper())->setImageByBrand(type: 'panel', brand: $manualData['panel_brand'])
             : (new ImageHelper())->setImageByBrand(type: 'panel', brand: jsonToArray($kit->panel_specs)['brand']);
 
-        $inverterImage = (new ImageHelper())->setImageByBrand(type: 'inverter', brand: $manualData['inverter_brand']);
+        $inverterImage = $proposal->is_manual
+        ? (new ImageHelper())->setImageByBrand(type: 'inverter', brand: $manualData['inverter_brand'])
+        : (new ImageHelper())->setImageByBrand(type: 'inverter', brand: $inverterBrand)
+        ;
 
         $incidence = (new SolarIncidenceService())->getSolarIncidence(city: $city)->average;
         $payback = $this->paybackService->setPaybackData(proposal: $proposal);
