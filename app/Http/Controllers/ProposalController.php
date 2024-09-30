@@ -8,6 +8,7 @@ use App\Enums\PanelBrands;
 use App\Enums\PaymentTypeEnum;
 use App\Enums\RoofStructure;
 use App\Enums\TensionPattern;
+use App\Helpers\ImageHelper;
 use App\Http\Requests\ProposalRequest;
 use App\Models\City;
 use App\Models\Client;
@@ -180,13 +181,11 @@ class ProposalController extends Controller
             ? jsonToArray($proposal->manual_data)
             : null;
 
-        $inverterImage = $proposal->is_manual
-            ? setInverterImage((int)$manualData['inverter_brand'])
-            : $this->setInverterImageByDistributor($inverterBrand, $kit->distributor_name);
+        $panelImage = $proposal->is_manual
+            ? (new ImageHelper())->setImageByBrand(type: 'panel', brand: $manualData['panel_brand'])
+            : (new ImageHelper())->setImageByBrand(type: 'panel', brand: jsonToArray($kit->panel_specs)['brand']);
 
-        $panelBrandImage = $proposal->is_manual
-            ? setPanelBrandImage((int)$manualData['panel_brand'])
-            : jsonToArray($kit->panel_specs)['logo'];
+        $inverterImage = (new ImageHelper())->setImageByBrand(type: 'inverter', brand: 'solis');
 
         $incidence = (new SolarIncidenceService())->getSolarIncidence(city: $city)->average;
         $payback = $this->paybackService->setPaybackData(proposal: $proposal);
@@ -305,9 +304,7 @@ class ProposalController extends Controller
             'components',
             'manualData',
             'inverterImage',
-            'panelBrandImage',
-//            'withoutSolar',
-//            'withSolar',
+            'panelImage',
             'incidence',
             'payback',
             'generationData',
@@ -383,5 +380,5 @@ class ProposalController extends Controller
         return array($panelSpecs, $inverterSpecs);
     }
 
-} 
+}
 
