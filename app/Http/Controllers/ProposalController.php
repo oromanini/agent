@@ -171,7 +171,6 @@ class ProposalController extends Controller
         $finalValue = $proposal->valueHistory->final_price;
 
         if (!$proposal->is_manual) {
-
             $kit = $this->kitSpecService->getKitFromProposal($proposal);
             $inverterBrand = jsonToArray($kit->inverter_specs)['brand'];
             $panelBrand = jsonToArray($kit->panel_specs)['logo'];
@@ -180,12 +179,11 @@ class ProposalController extends Controller
         $manualData = $proposal->is_manual
             ? jsonToArray($proposal->manual_data)
             : null;
-
         $panelImage = $proposal->is_manual
             ? (new ImageHelper())->setImageByBrand(type: 'panel', brand: $manualData['panel_brand'])
             : (new ImageHelper())->setImageByBrand(type: 'panel', brand: jsonToArray($kit->panel_specs)['brand']);
 
-        $inverterImage = (new ImageHelper())->setImageByBrand(type: 'inverter', brand: 'solis');
+        $inverterImage = (new ImageHelper())->setImageByBrand(type: 'inverter', brand: $manualData['inverter_brand']);
 
         $incidence = (new SolarIncidenceService())->getSolarIncidence(city: $city)->average;
         $payback = $this->paybackService->setPaybackData(proposal: $proposal);

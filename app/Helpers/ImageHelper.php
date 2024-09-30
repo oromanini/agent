@@ -2,13 +2,18 @@
 
 namespace App\Helpers;
 
+use App\Enums\InverterBrands;
+use App\Enums\PanelBrands;
 use Illuminate\Support\Facades\Storage;
 
 class ImageHelper
 {
-    public function setImageByBrand(string $type, string $brand): string
+    const PANEL = "panel";
+
+    public function setImageByBrand(string $type, string|int $brand): string
     {
-        $brand = strtolower($brand);
+        $brand = $this->setBrandString($type, $brand);
+
         $validExtensions = ['png'];
         $imagesList = [];
         $directory = $this->getDirectory($type);
@@ -34,12 +39,23 @@ class ImageHelper
         return $imagesList[$brand];
     }
 
-    private function getDirectory(string $type)
+    private function getDirectory(string $type): string
     {
         return match ($type) {
             'panel' => public_path('EdeltecApiPackage/img/panels'),
             'inverter' => public_path('EdeltecApiPackage/img/inverter_picture'),
             default => throw new \Exception('brand not found')
         };
+    }
+
+    private function setBrandString(string $type, int|string $brand)
+    {
+        if (!is_numeric($brand)) {
+            return strtolower($brand);
+        }
+
+        return $type == self::PANEL
+            ? strtolower(PanelBrands::tryFrom($brand)->name)
+            : strtolower(InverterBrands::tryFrom($brand)->name);
     }
 }
