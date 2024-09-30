@@ -1,21 +1,21 @@
 .p-yellow-button {
-    background-color: $alluz-yellow;
-    text-decoration: none;
-    width: 240px;
-    border-radius: 10px;
-    color: #fff;
-    padding: 10px 15px;
-    font-size: 16pt;
+    border-radius: 50px;
+    color: #ffb800;
+    border: 3px solid #ffb800;
+    background: #fff;
+    padding: 5px 15px;
+    font-size: 14pt;
     display: flex;
     justify-content: center;
     align-items: center;
+    min-width: 180px;
 }
 
 .p-red-button {
-    background-color: #FF2B2BFF;
+    background-color: #ffb800;
     text-decoration: none;
     width: 240px;
-    border-radius: 10px;
+    border-radius: 3px;
     color: #fff;
     padding: 5px 5px;
     font-size: 16pt;
@@ -30,6 +30,7 @@ a ion-icon {
 
 .p-yellow-button:hover {
     color: #fff;
+    background: #ffcb4b;
     transform: scale(1.1);
     transition: width 0.3s;
 }
