@@ -17,4 +17,5 @@ enum InverterBrands: int
     case TechPowerMicro = 11;
     case SajMicroinverter = 12;
     case Solplanet = 13;
+    case Tsuness = 14;
 }
