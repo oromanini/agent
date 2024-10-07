@@ -19,9 +19,11 @@ class ApprovalRepository implements Filter
                 filterInitialDate($data, $query);
                 filterFinalDate($data, $query);
             })
-            ->whereHas('inspection', function ($query) {
+            ->where(function ($query) {
                 if (Auth::user()->permission == 'technical') {
-                    $query->where('owner_id', Auth::user()->id);
+                    $query->whereHas('inspection', function ($query) {
+                        $query->where('owner_id', Auth::user()->id);
+                    });
                 }
             })
             ->whereNotNull('send_date')
