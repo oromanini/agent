@@ -227,7 +227,7 @@ class ProposalController extends Controller
         $payback = $this->paybackService->setLeadPaybackData(lead: $lead);
         $overload =
             "Até " .
-            ceil(($inverterSpecs['power'] * 1.4) / ($panelSpecs['power'] / 1000)) .
+            ceil(($inverterSpecs['power'] * 1.5) / ($panelSpecs['power'] / 1000)) .
             " módulos";
 
         $pdfParams = [
@@ -353,7 +353,7 @@ class ProposalController extends Controller
         if ($distributor === DistributorsEnum::ODEX->value) {
             return strtolower($inverterBrand) == 'saj'
                 ? '/img/inverters/saj.png'
-                : '/img/inverters/saj_micro.png';
+                : '/img/inverters/sajmicroinverter.png';
         }
     }
 
