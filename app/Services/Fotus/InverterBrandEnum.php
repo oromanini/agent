@@ -16,7 +16,7 @@ enum InverterBrandEnum: string
             'Sofar' => self::SOFAR,
             'Solplanet' => self::SOLPLANET,
             'Solis' => self::SOLIS,
-            default => Log::alert("inversor {$inverter} não encontrado!")
+            default => Log::info("inversor {$inverter} não encontrado!")
         };
     }
 }

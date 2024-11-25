@@ -16,7 +16,7 @@ enum PanelBrandEnum: string
             'ZNSHINE' => self::ZNSHINE,
             'SUNOVA' => self::SUNOVA,
             'PULLING' => self::PULLING,
-            default => Log::alert("Padrão {$panel} não encontrado!")
+            default => Log::info("Padrão {$panel} não encontrado!")
         };
     }
 }
