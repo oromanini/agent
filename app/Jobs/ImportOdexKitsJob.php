@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Services\Odex\OdexKitsImportService;
+use App\Services\Odex\FotusKitsImportService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -22,8 +22,8 @@ class ImportOdexKitsJob implements ShouldQueue
     public function handle(): void
     {
         $this->type == 'microinverter'
-            ? (new OdexKitsImportService())->importMicroInverterKits(limit: $this->limit)
-            : (new OdexKitsImportService())->importStringMono220InverterKits()
+            ? (new FotusKitsImportService())->importMicroInverterKits(limit: $this->limit)
+            : (new FotusKitsImportService())->importStringMono220InverterKits()
         ;
     }
 }
