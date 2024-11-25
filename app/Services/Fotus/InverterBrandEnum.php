@@ -6,16 +6,12 @@ use Illuminate\Support\Facades\Log;
 
 enum InverterBrandEnum: string
 {
-    case SOFAR = 'Sofar';
-    case SOLPLANET = 'Solplanet';
-    case SOLIS = 'Solis';
+    case SOLPLANET = 'SOLPLANET';
 
     public static function matchCases(string $inverter): self
     {
         return match (strtoupper($inverter)) {
-            'Sofar' => self::SOFAR,
             'Solplanet' => self::SOLPLANET,
-            'Solis' => self::SOLIS,
             default => Log::info("inversor {$inverter} não encontrado!")
         };
     }

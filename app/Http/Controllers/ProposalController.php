@@ -172,8 +172,8 @@ class ProposalController extends Controller
 
         if (!$proposal->is_manual) {
             $kit = $this->kitSpecService->getKitFromProposal($proposal);
-            $inverterBrand = jsonToArray($kit->inverter_specs)['brand'];
-            $panelBrand = jsonToArray($kit->panel_specs)['logo'];
+            $inverterBrand = jsonToArray($kit->inverter_specs)['brand'] ?? null;
+            $panelBrand = jsonToArray($kit->panel_specs)['logo'] ?? null;
         }
 
         $manualData = $proposal->is_manual

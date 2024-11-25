@@ -32,6 +32,7 @@ class ImageHelper
                 }
             }
         }
+
         if (!array_key_exists($brand, $imagesList)) {
             throw new \Exception("image {$brand} not found!");
         }
@@ -42,8 +43,8 @@ class ImageHelper
     private function getDirectory(string $type): string
     {
         return match ($type) {
-            'panel' => public_path('EdeltecApiPackage/img/panels'),
-            'inverter' => public_path('EdeltecApiPackage/img/inverter_picture'),
+            'panel' => public_path('img/panels'),
+            'inverter' => public_path('img/inverters'),
             default => throw new \Exception('brand not found')
         };
     }

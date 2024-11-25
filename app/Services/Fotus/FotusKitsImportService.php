@@ -57,7 +57,6 @@ class FotusKitsImportService
             while (($row = fgetcsv($file)) !== false) {
                 $rowData = array_combine($kitsHeader, $row);
                 $kitsData[] = $rowData;
-                $this->count++;
             }
 
             fclose($file);
@@ -74,13 +73,13 @@ class FotusKitsImportService
         return [
             'panel_specs' => [
                 'power' => $kit["painel_potencia"],
-                'brand' => $kit["painel_marca"],
+                'brand' => strtoupper($kit["painel_marca"]),
                 'model' => $kit["painel_modelo"],
                 'warranty' => $kit["painel_garantia"],
             ],
             'inverter_specs' => [
                 'power' => (float) $kit['inversor_potencia'],
-                'brand' => $kit["inversor_marca"],
+                'brand' => strtoupper($kit["inversor_marca"]),
                 'model' => $kit['inversor_modelo'],
                 'warranty' => $kit["inversor_garantia"]
             ],
@@ -103,9 +102,8 @@ class FotusKitsImportService
                     $kwp = $this->getKwp($kit['painel_potencia'], $kit['painel_quantidade']);
                     $kitParams = $this->setKitParams($kit, $kwp, $structure, $specs);
                     $newKit = new Kit($kitParams);
-
                     $this->saveOrUpdateStringInverterKit($newKit);
-                    Log::info("Fotus Kits: $key de $this->count.");
+                    $this->count++;
                 }
             }
     }
