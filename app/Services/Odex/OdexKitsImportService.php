@@ -3,7 +3,6 @@
 namespace App\Services\Odex;
 
 use App\Enums\DistributorsEnum;
-use App\Enums\PanelBrands;
 use App\Enums\RoofStructure;
 use App\Enums\TensionPattern;
 use App\Models\ActiveKit;
