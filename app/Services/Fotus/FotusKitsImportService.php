@@ -13,9 +13,11 @@ use Illuminate\Support\Facades\File;
 class FotusKitsImportService
 {
     private string $kitsCsvFilePath;
+    private int $count;
+
     public function __construct(?string $path = null)
     {
-
+        $this->count = 0;
         $this->kitsCsvFilePath =  is_null($path)
             ? 'resources/kits/fotus/string_inverter/kits.csv'
             : $path;
@@ -55,6 +57,7 @@ class FotusKitsImportService
             while (($row = fgetcsv($file)) !== false) {
                 $rowData = array_combine($kitsHeader, $row);
                 $kitsData[] = $rowData;
+                $this->count++;
             }
 
             fclose($file);
@@ -88,7 +91,7 @@ class FotusKitsImportService
     private function storeStringMono220InverterKits(array $kits): void
     {
 
-        foreach ($kits as $kit) {
+        foreach ($kits as $key => $kit) {
             $specs = $this->setStringInverterConfigs($kit);
 
             foreach (RoofStructure::cases() as $structure) {
@@ -101,15 +104,15 @@ class FotusKitsImportService
                     $kitParams = $this->setKitParams($kit, $kwp, $structure, $specs);
                     $newKit = new Kit($kitParams);
 
-                    $this->saveOrUpdateStringInverterKit($newKit, $kwp);
+                    $this->saveOrUpdateStringInverterKit($newKit);
+                    Log::info("Fotus Kits: $key de $this->count.");
                 }
             }
     }
 
     private function setKitParams(array $kit, float $kwp, RoofStructure $structure, array $specs): array
     {
-        $description = "Kit gerador {$kwp} kWP inversor {$kit['inversor_potencia']}kW"
-        . "/ Painel {$kit['painel_marca']} {$kit['painel_potencia']}}W";
+        $description = "Kit gerador {$kwp} kWP inversor {$kit['inversor_marca']} {$kit['inversor_potencia']}kW / Painel {$kit['painel_marca']} {$kit['painel_potencia']}W";
 
         $components = json_encode(
             $this->setComponents($kit, $structure->value)
@@ -151,17 +154,15 @@ class FotusKitsImportService
         ];
     }
 
-    private function saveOrUpdateStringInverterKit(Kit $kit, float $kwp): void
+    private function saveOrUpdateStringInverterKit(Kit $kit): void
     {
-        $description = "Kit gerador {$kwp} kWP inversor {$kit['inversor_potencia']}kW"
-            . "/ Painel {$kit['painel_marca']} {$kit['painel_potencia']}}W";
 
         $search = Kit::query()
             ->where('kwp', $kit->kwp)
             ->where('roof_structure', $kit->roof_structure)
             ->where('tension_pattern', $kit->tension_pattern)
             ->where('distributor_name', $kit->distributor_name)
-            ->where('description', $description)
+            ->where('description', $kit->description)
             ->first();
 
 
