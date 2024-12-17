@@ -75,6 +75,7 @@ class KitSearchService
         return match ($distributor) {
             'EDELTEC' => \App\Packages\EdeltecApiPackage\Enums\PanelBrand::cases(),
             'ODEX' => \App\Services\Odex\PanelBrandEnum::cases(),
+            'FOTUS' => \App\Services\Fotus\PanelBrandEnum::cases(),
             default => throw new DistributorNotFoundException('Distribuidor não encontrado!')
         };
     }
@@ -84,6 +85,7 @@ class KitSearchService
         return match ($distributor) {
             'EDELTEC' => \App\Packages\EdeltecApiPackage\Enums\InverterBrand::cases(),
             'ODEX' => \App\Services\Odex\InverterBrandEnum::cases(),
+            'FOTUS' => \App\Services\Fotus\InverterBrandEnum::cases(),
             default => throw new DistributorNotFoundException('Distribuidor não encontrado!')
         };
     }

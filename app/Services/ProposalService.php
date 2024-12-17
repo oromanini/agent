@@ -24,7 +24,6 @@ class ProposalService
     {
         $this->data = $data;
         $incidence = $this->getIncidence($this->data['client']);
-
         $proposal = $this->fillObject(
             isManual: $isManual,
             incidence: $incidence,

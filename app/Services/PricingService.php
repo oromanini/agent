@@ -10,7 +10,6 @@ use App\Models\PromotionalKit;
 class PricingService
 {
     const SOLO_PLUS = 1.35;
-    const LIQUID_PROFIT_PERCENTAGE = 0.2;
     const PLUS_TO_ADJUST_MARGIN = 250;
 
     private float $netProfit;
@@ -25,9 +24,10 @@ class PricingService
         int    $roofStructure,
         float  $finalValue,
         int    $paymentType,
+        string $state,
         ?bool   $isLead = false
     ): array {
-        $finalValue = $this->adjustMargin($cost, $kwp, $panelCount, $finalValue, $paymentType, $isLead);
+        $finalValue = $this->adjustMargin($cost, $kwp, $panelCount, $finalValue, $paymentType, $state, $isLead);
 
         if ($roofStructure == RoofStructure::SOLO) {
             return $this->priceWithSolo($finalValue);
@@ -41,9 +41,9 @@ class PricingService
         int   $panelCount,
         float $finalValue,
         int   $paymentType,
-        ?bool $isLead = false
-    ): float
-    {
+        string $state,
+        ?bool $isLead = false,
+    ): float {
         $this->netProfit =
             $this->calculateNetProfit(
                 cost: $cost,
@@ -51,10 +51,11 @@ class PricingService
                 panelCount: $panelCount,
                 finalValue: $finalValue,
                 paymentType: $paymentType,
-                isLead: $isLead
+                state: $state,
+                isLead: $isLead,
             )['netProfitPercent'];
 
-        if ($this->netProfit < self::LIQUID_PROFIT_PERCENTAGE) {
+        if ($this->netProfit < env('PROFIT')) {
             $finalValue += self::PLUS_TO_ADJUST_MARGIN;
             $finalValue = $this->adjustMargin(
                 $cost,
@@ -62,7 +63,8 @@ class PricingService
                 $panelCount,
                 $finalValue,
                 $paymentType,
-                $isLead
+                $isLead,
+                $state
             );
         }
 
@@ -75,22 +77,23 @@ class PricingService
         int   $panelCount,
         float $finalValue,
         int   $paymentType,
-        ?bool $isLead = false
+        string $state,
+        ?bool $isLead = false,
     ): array {
 
         $paymentTypeTotalCost = $this->getPaymentTypeTotalCost($paymentType);
-
         $totalCost = (new $paymentTypeTotalCost(
             cost: $cost,
             panelCount: $panelCount,
             kwp: $kwp,
             finalValue: $finalValue,
             paymentType: $paymentType,
-            isLead: $isLead
+            isLead: $isLead,
+            state: $state
         ))->cost();
 
         $netProfitValue = $finalValue - $totalCost;
-        $netProfitPercent = ($finalValue / $totalCost) - 1;
+        $netProfitPercent = ($netProfitValue / $finalValue);
 
         return $this->format(
             $netProfitValue,
@@ -148,8 +151,7 @@ class PricingService
         string         $panelBrand,
         string         $panelPower,
         string         $inverterBrand
-    ): bool
-    {
+    ): bool {
         if (
             $kwp == $promotion->kwp
             && strtolower($panelBrand == $promotion->panel_brand)

@@ -1,15 +1,16 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-@include('proposals.pdf.1')
-<div class="page page-break" style="background-image: url({{public_path('/img/proposal/2.jpg')}})"></div>
-<div class="page page-break" style="background-image: url({{public_path('/img/proposal/3.jpg')}})"></div>
-@include('proposals.pdf.5')
-@include('proposals.pdf.7')
-@include('proposals.pdf.6')
-@include('proposals.pdf.8')
-@include('proposals.pdf.9')
-<div class="page page-break" style="background-image: url({{public_path('/img/proposal/7.jpg')}})"></div>
-@include('proposals.pdf.11')
+@include('proposals.pdf_v2.1')
+<div class="page page-break" style="background-image: url({{public_path('/img/proposal_v2/2.jpg')}})"></div>
+@include('proposals.pdf_v2.3')
+@include('proposals.pdf_v2.4')
+@include('proposals.pdf_v2.5')
+@include('proposals.pdf_v2.6')
+@include('proposals.pdf_v2.7')
+<div class="page page-break" style="background-image: url({{public_path('/img/proposal_v2/8.jpg')}})"></div>
+<div class="page page-break" style="background-image: url({{public_path('/img/proposal_v2/9.jpg')}})"></div>
+@include('proposals.pdf_v2.10')
+
 <style>
     html {
         margin: 0;

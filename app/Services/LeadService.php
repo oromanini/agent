@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Enums\PaymentTypeEnum;
 use App\Http\Controllers\ProposalController;
+use App\Models\City;
 use App\Models\Kit;
 use App\Models\Lead;
 use Illuminate\Support\Facades\DB;
@@ -11,18 +12,7 @@ use Ramsey\Uuid\Uuid;
 
 class LeadService implements BaseService
 {
-    public function __construct(private readonly ProposalController $proposalController)
-    {}
-
     private const INITIAL_STATUS = 'Tratativa inicial';
-
-    public function delete(int $id): array
-    {
-        $lead = Lead::find($id);
-        $lead->delete();
-
-        return ['success' => 'deletado com sucesso!'];
-    }
 
     public function store(array $data): array
     {
@@ -38,6 +28,14 @@ class LeadService implements BaseService
     public function update($id, $data): array
     {
         // TODO: Implement update() method.
+    }
+
+    public function delete(int $id): array
+    {
+        $lead = Lead::find($id);
+        $lead->delete();
+
+        return ['success' => 'deletado com sucesso!'];
     }
 
     public function fillObject(array $data, ?object $incidence = null): object
@@ -62,7 +60,6 @@ class LeadService implements BaseService
         $lead->discount_data = json_encode([]);
         $lead->manual_data = json_encode([]);
         $lead->user_id = auth()->user()->id;
-
         $lead->pricing_data = $this->fillKitPricing($lead);
 
         return $lead;
@@ -75,6 +72,7 @@ class LeadService implements BaseService
         $kit = Kit::query()->where('distributor_code', $leadKitData['distributor_code'])->first();
         $kitSpecs = $kit->kitSpecs();
         $panelCount = $kit->kwp / ($kitSpecs['panel']['power'] / 1000);
+        $state = $lead->city()->state->name;
 
         $finalPrice = (new PricingService())
             ->calculateFinalPrice(
@@ -87,6 +85,7 @@ class LeadService implements BaseService
                 roofStructure: $lead->roof_structure,
                 finalValue: $kit->cost * 1.6,
                 paymentType: PaymentTypeEnum::FINANCING,
+                state: $state,
                 isLead: true
             );
 

@@ -69,11 +69,3 @@ function filterFinalDate($data, $query)
         $query->where('created_at', '<=', new \DateTime($data['final_date_filter']));
     }
 }
-
-function filterPermission($data, $query)
-{
-    if (!\auth()->user()->is_admin) {
-        $query->where('agent_id', \auth()->user()->id);
-    }
-}
-

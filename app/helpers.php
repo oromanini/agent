@@ -46,12 +46,12 @@ function setPanelBrandImage($brand): string
         'Ja', PanelBrands::Ja->value => '/img/panel_brands/ja.png',
         'Phono', PanelBrands::Phono->value => '/img/panel_brands/phono.png',
         'Longi', PanelBrands::Longi->value => '/img/panel_brands/longi.png',
-        'Sunova', PanelBrands::Sunova->value => '/img/panel_brands/sunova.png',
+        'Sunova', 'SUNOVA', PanelBrands::Sunova->value => '/img/panel_brands/sunova.png',
         'Osda', PanelBrands::Osda->value => '/img/panel_brands/osda.png',
         'Ae_solar', PanelBrands::Ae_Solar->value => '/img/panel_brands/ae_solar.png',
         'Znshine', PanelBrands::ZNShine->value => '/img/panel_brands/znshine.png',
         'Astroenergy', PanelBrands::Astronergy->value => '/img/panel_brands/astronergy.png',
-        'Pulling', PanelBrands::Pulling->value => '/img/panel_brands/pulling.png',
+        'Pulling', 'PULLING', PanelBrands::Pulling->value => '/img/panel_brands/pulling.png',
         'Hanersun', PanelBrands::Hanersun->value => '/img/panel_brands/hanersun.png',
         'Resun', 'RESUN', PanelBrands::Resun->value => '/img/panel_brands/resun.png',
         'Sine', 'SINE', PanelBrands::Sine->value => '/img/panel_brands/sine.png',
@@ -71,6 +71,7 @@ function setInverterImage($brand): string
     $deyeString = '/img/inverters/deye-string.png';
     $sofar = '/img/inverters/sofar.png';
     $solis = '/img/inverters/solis.png';
+    $solplanet = '/img/inverters/solplanet.png';
     $bel = '/img/inverters/bel.png';
     $sungrow = '/img/inverters/sungrow.png';
     $canadian = '/img/inverters/canadian.png';
@@ -88,6 +89,7 @@ function setInverterImage($brand): string
         InverterBrands::Bel->value, 'Bel', 'BEL' => $bel,
         InverterBrands::Sungrow->value, 'Sungrow', 'SUNGROW' => $sungrow,
         InverterBrands::Canadian->value, 'Canadian', 'CANADIAN' => $canadian,
+        InverterBrands::Solplanet->value, 'Solplanet', 'SOLPLANET' => $solplanet,
         InverterBrands::Saj->value, 'Saj', 'SAJ' => $saj,
         InverterBrands::TechPowerMicro->value, 'TechPowerMicro' => $techpower,
         InverterBrands::SajMicroinverter->value, 'SajMicroinverter' => $sajMicro,

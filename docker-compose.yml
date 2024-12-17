@@ -38,14 +38,14 @@ services:
 #      networks:
 #          - alluz-network
 
-  warehouse:
-      volumes:
-          - ../warehouse:/var/www/html
-      build: ../warehouse
-      ports:
-          - "8002:80"
-      networks:
-          - alluz-network
+#  warehouse:
+#      volumes:
+#          - ../warehouse:/var/www/html
+#      build: ../warehouse
+#      ports:
+#          - "8002:80"
+#      networks:
+#          - alluz-network
 
 #  simulator:
 #      volumes:

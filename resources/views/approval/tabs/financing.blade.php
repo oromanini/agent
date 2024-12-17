@@ -14,9 +14,13 @@
                     Responsável</label>
                 <div class="select is-multiline is-rounded  @error('owner') is-danger @enderror">
                     <select @if(\Illuminate\Support\Facades\Auth::user()->permission != 'admin') disabled @endif id="owner" name="owner_id">
+                        <option>Selecione...</option>
                         @foreach($financingOwners as $owner)
-                            <option
-                                value="{{ $owner->id }}" {{ !is_null($financing) && $financing->owner->id == $owner->id ? 'selected' : '' }}>{{ $owner->name }}</option>
+                            <option value="{{ $owner->id }}"
+                                @if(!is_null($financing) && !is_null($financing->owner))
+                                    {{ $financing->owner->id == $owner->id ? 'selected' : '' }}
+                                @endif
+                                >{{ $owner->name }}</option>
                         @endforeach
                     </select>
                     @error('status')<span class="error-message">{{ $message }}</span>@enderror
@@ -337,7 +341,6 @@
             {{--            <a href="#" class="button is-danger is-large">--}}
             {{--                <ion-icon name="save-outline"></ion-icon> &nbsp;Gerar resumo</a>--}}
         </div>
-    </div>
 </form>
 
 <script>

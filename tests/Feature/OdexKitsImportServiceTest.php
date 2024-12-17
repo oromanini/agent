@@ -4,17 +4,17 @@ namespace Tests\Feature;
 
 use App\Jobs\ImportOdexKitsJob;
 use App\Models\Kit;
-use App\Services\Odex\OdexKitsImportService;
+use App\Services\Odex\FotusKitsImportService;
 use Tests\TestCase;
 
 class OdexKitsImportServiceTest extends TestCase
 {
-    private OdexKitsImportService $service;
+    private FotusKitsImportService $service;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new OdexKitsImportService();
+        $this->service = new FotusKitsImportService();
     }
 
     public function testOdexMicroinverterKitsImport(): void
