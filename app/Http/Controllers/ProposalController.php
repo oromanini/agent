@@ -10,10 +10,12 @@ use App\Enums\RoofStructure;
 use App\Enums\TensionPattern;
 use App\Helpers\ImageHelper;
 use App\Http\Requests\ProposalRequest;
+use App\Models\Address;
 use App\Models\City;
 use App\Models\Client;
 use App\Models\Kit;
 use App\Models\Lead;
+use App\Models\Pricing\Enums\CardTaxEnum;
 use App\Models\PromotionalKit;
 use App\Models\Proposal;
 use App\Models\User;
@@ -219,16 +221,23 @@ class ProposalController extends Controller
 
         $inverterSpecs = jsonToArray($kitData['inverter_specs']);
         $panelSpecs = jsonToArray($kitData['panel_specs']);
-        $inverterImage = setInverterImage($inverterSpecs['brand']);
-        $panelBrandImage = setPanelBrandImage($panelSpecs['brand']);
+        $inverterImage = (new ImageHelper())->setImageByBrand(type: 'inverter', brand: $inverterSpecs['brand']);
+        $panelBrandImage = (new ImageHelper())->setImageByBrand(type: 'panel', brand: $panelSpecs['brand']);
+
         $incidence = (new SolarIncidenceService())->getSolarIncidence(city: $city)->average;
         $panelQuantity = (new LeadService($this))->getLeadPanelQuantity($lead);
 
         $payback = $this->paybackService->setLeadPaybackData(lead: $lead);
-        $overload =
-            "Até " .
-            ceil(($inverterSpecs['power'] * 1.5) / ($panelSpecs['power'] / 1000)) .
-            " módulos";
+
+        $overload_calc = $inverterSpecs == 'SOLIS' || $inverterSpecs == 'SOFAR'
+            ? ceil(($inverterSpecs['power'] * 1.7) / ($panelSpecs['power'] / 1000))
+            : ceil(($inverterSpecs['power'] * 1.5) / ($panelSpecs['power'] / 1000));
+
+        $overload = "Até " . $overload_calc . " módulos";
+
+        $cardInstallment = CardTaxEnum::calculateInstallments(
+            baseValue: (float) $lead->pricing()['final_price']['finalPrice']
+        );
 
         $pdfParams = [
             'lead',
@@ -239,7 +248,8 @@ class ProposalController extends Controller
             'inverterImage',
             'inverterSpecs',
             'panelSpecs',
-            'overload'
+            'overload',
+            'cardInstallment',
         ];
 
         $pdf = PDF::loadView('leads.base', compact($pdfParams));
@@ -256,6 +266,10 @@ class ProposalController extends Controller
         $inverterBrand = $request->get('inverterBrand');
         $roofStructure = $request->get('roofStructure');
 
+        $request->has('addressId')
+            ? $state = Address::find($request->get('addressId'))->city->state->name
+            : $state = City::find($request->get('cityId'))->state->name;
+
         $finalPriceAndDetail = $this->pricingService
             ->calculateFinalPrice(
                 cost: $cost,
@@ -267,6 +281,7 @@ class ProposalController extends Controller
                 roofStructure: $roofStructure,
                 finalValue: $cost * ProposalValueHistoryService::BASE_GROSS_PROFIT,
                 paymentType: PaymentTypeEnum::FINANCING,
+                state: $state,
                 isLead: $request->get('isLead') == true
             );
 

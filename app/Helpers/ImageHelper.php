@@ -37,7 +37,7 @@ class ImageHelper
             throw new \Exception("image {$brand} not found!");
         }
 
-        return $imagesList[$brand];
+        return $imagesList[strtolower($brand)];
     }
 
     private function getDirectory(string $type): string
