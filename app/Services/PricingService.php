@@ -63,8 +63,8 @@ class PricingService
                 $panelCount,
                 $finalValue,
                 $paymentType,
+                $state,
                 $isLead,
-                $state
             );
         }
 
@@ -88,8 +88,8 @@ class PricingService
             kwp: $kwp,
             finalValue: $finalValue,
             paymentType: $paymentType,
+            state: $state,
             isLead: $isLead,
-            state: $state
         ))->cost();
 
         $netProfitValue = $finalValue - $totalCost;

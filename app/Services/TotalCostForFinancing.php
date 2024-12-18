@@ -24,8 +24,8 @@ class TotalCostForFinancing implements Cost
         private readonly float $kwp,
         private readonly float $finalValue,
         private readonly int $paymentType,
-        private readonly bool $isLead,
         private readonly string $state,
+        private readonly bool $isLead,
     ) {
     }
 

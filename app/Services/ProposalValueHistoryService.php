@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Builders\ValueHistoryBuilder;
 use App\Enums\PaymentTypeEnum;
 use App\Enums\WorkCostClassificationEnum;
+use App\Models\Address;
 use App\Models\Pricing\ExternalConsultantsCommissionCost;
 use App\Models\Proposal;
 use App\Models\ProposalValueHistory;
@@ -12,7 +13,7 @@ use App\Repositories\WorkCostRepository;
 
 class ProposalValueHistoryService
 {
-    public const BASE_GROSS_PROFIT = 1.7;
+    public const BASE_GROSS_PROFIT = 1.6;
 
     private readonly PricingService $pricingService;
     private ProposalValueHistory $valueHistory;
@@ -28,7 +29,6 @@ class ProposalValueHistoryService
         $cost = $this->getKitCost(cost: $data['cost'], isManual: $isManual);
         $financingInitialPrice = $this->getFinalPrice(data: $data, isManual: $isManual, paymentType: PaymentTypeEnum::FINANCING);
         $cardInitialPrice = $this->getFinalPrice(data: $data, isManual: $isManual, paymentType: PaymentTypeEnum::CREDIT_CARD);
-
         $commissionPercent = $this->commissionPercent();
 
         $userId = auth()->user()->id;
@@ -163,7 +163,7 @@ class ProposalValueHistoryService
         $cashGrossProfit = ($valueHistory->cash_final_price / $proposal->valueHistory->kit_cost) - 1;
         $cardGrossProfit = ($valueHistory->card_final_price / $proposal->valueHistory->kit_cost) - 1;
 
-        dd($proposal->client);
+        $state = $proposal->client->addresses->first()->city->state->name;
 
         $financingTotalCost = new TotalCostForFinancing(
             cost: $proposal->valueHistory->kit_cost,
@@ -171,8 +171,8 @@ class ProposalValueHistoryService
             kwp: $proposal->kwp,
             finalValue: $proposal->valueHistory->final_price,
             paymentType: PaymentTypeEnum::FINANCING,
-            isLead:$isLead,
-            state: $proposal->client->addresses->first()
+            state: $state,
+            isLead: $isLead
         );
         $cashTotalCost = new TotalCostForCash(
             cost: $proposal->valueHistory->kit_cost,
@@ -180,8 +180,8 @@ class ProposalValueHistoryService
             kwp: $proposal->kwp,
             finalValue: $proposal->valueHistory->final_price,
             paymentType: PaymentTypeEnum::CASH_PAYMENT,
-            isLead:$isLead,
-            state: ''
+            state: $state,
+            isLead: $isLead
         );
         $cardTotalCost = new TotalCostForCreditCard(
             cost: $proposal->valueHistory->kit_cost,
@@ -189,8 +189,8 @@ class ProposalValueHistoryService
             kwp: $proposal->kwp,
             finalValue: $proposal->valueHistory->final_price,
             paymentType: PaymentTypeEnum::CREDIT_CARD,
-            isLead:$isLead,
-            state: ''
+            state: $state,
+            isLead: $isLead
         );
 
         return [
@@ -233,6 +233,8 @@ class ProposalValueHistoryService
             return stringMoneyToFloat($data['final_value']);
         }
 
+        $state = Address::find($data['installation_address'])->city->state->name;
+
         return $this->pricingService->calculateFinalPrice(
             cost: $data['cost'],
             kwp: (float)$data['kwp'],
@@ -242,7 +244,8 @@ class ProposalValueHistoryService
             inverterBrand: $data['inverterBrand'],
             roofStructure: $data['roofStructure']->value,
             finalValue: $data['cost'] * self::BASE_GROSS_PROFIT,
-            paymentType: $paymentType
+            paymentType: $paymentType,
+            state: $state
         )['finalPrice'];
     }
 

@@ -113,6 +113,7 @@ class ValueHistoryInfo
                 kwp: $this->proposal->kwp,
                 finalValue: $this->proposal->valueHistory->final_price,
                 paymentType: PaymentTypeEnum::FINANCING,
+                state: $this->proposal->client->addresses->first()->city->state->name,
                 isLead: false
             ))->cost();
     }
@@ -126,6 +127,7 @@ class ValueHistoryInfo
                 kwp: $this->proposal->kwp,
                 finalValue: $this->proposal->valueHistory->final_price,
                 paymentType: PaymentTypeEnum::CASH_PAYMENT,
+                state: $this->proposal->client->addresses->first()->city->state->name,
                 isLead: false
             ))->cost();
     }
@@ -139,6 +141,7 @@ class ValueHistoryInfo
                 kwp: $this->proposal->kwp,
                 finalValue: $this->proposal->valueHistory->final_price,
                 paymentType: PaymentTypeEnum::CREDIT_CARD,
+                state: $this->proposal->client->addresses->first()->city->state->name,
                 isLead: false
             ))->cost();
     }
@@ -147,7 +150,11 @@ class ValueHistoryInfo
     {
         $attribute = $this->getAttributeByPaymentType($paymentType);
 
-        $cost = (new InstallationCost($this->proposal->number_of_panels))->cost();
+        $cost = (new InstallationCost(
+            panelQuantity: $this->proposal->number_of_panels,
+            isLead: false,
+            state: $this->proposal->client->addresses->first()->city->state->name
+        ))->cost();
         $this->{$attribute}["installation"] = $cost;
     }
 
@@ -165,7 +172,7 @@ class ValueHistoryInfo
         $attribute = $this->getAttributeByPaymentType($paymentType);
         $finalPriceAttribute = $this->getFinalPriceAttributeByPaymentType($paymentType);
         $finalPrice = (float)$this->proposal->valueHistory->{$finalPriceAttribute};
-        $cost = (new DirectCurrentCost($finalPrice))->cost();
+        $cost = (new DirectCurrentCost($finalPrice, false))->cost();
         $this->{$attribute}["directCurrent"] = $cost;
     }
 
@@ -229,7 +236,8 @@ class ValueHistoryInfo
         ))->cost();
 
         $commercial = (new InternalCommercialCommissionCost(
-            finalValue: $this->proposal->valueHistory->{$this->getFinalPriceAttributeByPaymentType($paymentType)}
+            finalValue: $this->proposal->valueHistory->{$this->getFinalPriceAttributeByPaymentType($paymentType)},
+            isLead: false,
         ))->cost();
 
         $this->{$attribute}["financialInternalCommission"] = $financial;
