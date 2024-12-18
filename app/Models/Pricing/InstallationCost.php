@@ -7,12 +7,9 @@ use App\Enums\WorkCostClassificationEnum;
 class InstallationCost extends BaseCost implements Cost
 {
     public const KEY = 'panel_price';
-    public const LEAD_KEY = 'lead_panel_price';
 
     public function __construct(
-        private readonly int $panelQuantity,
-        private readonly bool $isLead,
-        private readonly string $state
+        private readonly int $panelQuantity
     ) {
         parent::__construct();
     }
@@ -24,14 +21,6 @@ class InstallationCost extends BaseCost implements Cost
 
     private function panelPrice(): float
     {
-        if ($this->isLead) {
-            return $this->workCostInfo()['costs'][self::LEAD_KEY];
-        }
-
-        if ($this->state == 'SÃO PAULO') {
-            return 150;
-        }
-
         return $this->workCostInfo()['costs'][self::KEY];
     }
 

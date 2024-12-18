@@ -81,7 +81,7 @@
                             || ($inspectionHasOwner && $approval->inspection->owner = $authUser)
                             || ($financingHasOwner && $approval->financing->owner = $authUser);
                     @endphp
-                    @if($enabledForShow && !is_null($approval))
+                    @if($enabledForShow)
                         <tr class="lh-40">
                         <th>{{$approval->id}}</th>
                         <td>{{ $approval->client->name }}</td>

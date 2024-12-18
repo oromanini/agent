@@ -13,7 +13,7 @@ class InstallationCostTest extends TestCase
     {
         parent::setUp();
         $panelQuantity = 10;
-        $this->installationCost = new InstallationCost($panelQuantity, false);
+        $this->installationCost = new InstallationCost($panelQuantity);
         $this->costs = [
             'panel_price' => 120,
             'displacement' => 10,

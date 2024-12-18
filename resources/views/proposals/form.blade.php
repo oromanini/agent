@@ -282,8 +282,8 @@
                                     isPromotionalText +
                                     '</span>' +
                                     '<div class="is-flex is-justify-content-center">' +
-                                    '<img src="' + ScreenHelper.getPanelImage(panelSpecs.brand) + '" alt="" width="135">' +
-                                    '<img src="' + ScreenHelper.getInverterImage(inverterSpecs.brand) + '" alt="" width="135">' +
+                                    '<img src="' + panelSpecs.logo + '" alt="" width="135">' +
+                                    '<img src="' + inverterSpecs.logo + '" alt="" width="135">' +
                                     '</div>' +
                                     '<div style="display:flex; justify-content: center; text-align: center; font-size: 14pt; color: #6b7280; font-weight: 900; margin: 20px 0px">' +
                                     item.kwp + ' kWp' +
@@ -453,10 +453,10 @@
                 if (brand == 'Astronergy Chint') {
                     panelImage = '/img/panel_brands/astronergy.png'
                 }
-                if (brand == 'SUNOVA') {
+                if (brand == 'Sunova') {
                     panelImage = '/img/panel_brands/sunova.png'
                 }
-                if (brand == 'OSDA') {
+                if (brand == 'Osda') {
                     panelImage = '/img/panel_brands/osda.png'
                 }
 
@@ -472,11 +472,11 @@
                     panelImage = '/img/panel_brands/hanersun.png'
                 }
 
-                if (brand == 'RESUN') {
+                if (brand == 'Resun') {
                     panelImage = '/img/panel_brands/resun.png'
                 }
 
-                if (brand == 'SINE') {
+                if (brand == 'Sine') {
                     panelImage = '/img/panel_brands/sine.png'
                 }
 
@@ -484,7 +484,7 @@
                     panelImage = '/img/panel_brands/era.png'
                 }
 
-                if (brand == 'HONOR') {
+                if (brand == 'Honor') {
                     panelImage = '/img/panel_brands/honor.png'
                 }
 
@@ -502,10 +502,10 @@
                 if (brand == 'Growatt') {
                     inverterImage = '/img/inverter_brands/growatt.png'
                 }
-                if (brand == 'SOFAR') {
+                if (brand == 'Sofar') {
                     inverterImage = '/img/inverter_brands/sofar.png'
                 }
-                if (brand == 'SOLIS') {
+                if (brand == 'Solis') {
                     inverterImage = '/img/inverter_brands/solis.png'
                 }
                 if (brand == 'Bel') {
@@ -515,7 +515,7 @@
                     inverterImage = '/img/inverter_brands/sungrow.png'
                 }
 
-                if (brand == 'SAJ') {
+                if (brand == 'Saj') {
                     inverterImage = '/img/inverter_brands/saj.png'
                 }
 
@@ -525,10 +525,6 @@
 
                 if (brand == 'SAJ Microinverter' || brand == 'SajMicroinverter') {
                     inverterImage = '/img/inverter_brands/saj_micro.png'
-                }
-
-                if (brand == 'SOLPLANET') {
-                    inverterImage = '/img/inverter_brands/solplanet.png'
                 }
 
                 return inverterImage

@@ -8,14 +8,11 @@ use App\Enums\PanelBrands;
 use App\Enums\PaymentTypeEnum;
 use App\Enums\RoofStructure;
 use App\Enums\TensionPattern;
-use App\Helpers\ImageHelper;
 use App\Http\Requests\ProposalRequest;
-use App\Models\Address;
 use App\Models\City;
 use App\Models\Client;
 use App\Models\Kit;
 use App\Models\Lead;
-use App\Models\Pricing\Enums\CardTaxEnum;
 use App\Models\PromotionalKit;
 use App\Models\Proposal;
 use App\Models\User;
@@ -99,6 +96,7 @@ class ProposalController extends Controller
     {
         $proposal = Proposal::find($id);
         $valueHistoryData = $this->proposalValueHistoryService->setValueHistoryData($proposal);
+
         $valueHistoryInfo = (new ValueHistoryInfo($proposal))->pricingInfo();
 
         $kits = $proposal->components
@@ -173,22 +171,23 @@ class ProposalController extends Controller
         $finalValue = $proposal->valueHistory->final_price;
 
         if (!$proposal->is_manual) {
+
             $kit = $this->kitSpecService->getKitFromProposal($proposal);
-            $inverterBrand = jsonToArray($kit->inverter_specs)['brand'] ?? null;
-            $panelBrand = jsonToArray($kit->panel_specs)['logo'] ?? null;
+            $inverterBrand = jsonToArray($kit->inverter_specs)['brand'];
+            $panelBrand = jsonToArray($kit->panel_specs)['logo'];
         }
 
         $manualData = $proposal->is_manual
             ? jsonToArray($proposal->manual_data)
             : null;
-        $panelImage = $proposal->is_manual
-            ? (new ImageHelper())->setImageByBrand(type: 'panel', brand: $manualData['panel_brand'])
-            : (new ImageHelper())->setImageByBrand(type: 'panel', brand: jsonToArray($kit->panel_specs)['brand']);
 
         $inverterImage = $proposal->is_manual
-        ? (new ImageHelper())->setImageByBrand(type: 'inverter', brand: $manualData['inverter_brand'])
-        : (new ImageHelper())->setImageByBrand(type: 'inverter', brand: $inverterBrand)
-        ;
+            ? setInverterImage((int)$manualData['inverter_brand'])
+            : $this->setInverterImageByDistributor($inverterBrand, $kit->distributor_name);
+
+        $panelBrandImage = $proposal->is_manual
+            ? setPanelBrandImage((int)$manualData['panel_brand'])
+            : jsonToArray($kit->panel_specs)['logo'];
 
         $incidence = (new SolarIncidenceService())->getSolarIncidence(city: $city)->average;
         $payback = $this->paybackService->setPaybackData(proposal: $proposal);
@@ -221,23 +220,16 @@ class ProposalController extends Controller
 
         $inverterSpecs = jsonToArray($kitData['inverter_specs']);
         $panelSpecs = jsonToArray($kitData['panel_specs']);
-        $inverterImage = (new ImageHelper())->setImageByBrand(type: 'inverter', brand: $inverterSpecs['brand']);
-        $panelBrandImage = (new ImageHelper())->setImageByBrand(type: 'panel', brand: $panelSpecs['brand']);
-
+        $inverterImage = setInverterImage($inverterSpecs['brand']);
+        $panelBrandImage = setPanelBrandImage($panelSpecs['brand']);
         $incidence = (new SolarIncidenceService())->getSolarIncidence(city: $city)->average;
         $panelQuantity = (new LeadService($this))->getLeadPanelQuantity($lead);
 
         $payback = $this->paybackService->setLeadPaybackData(lead: $lead);
-
-        $overload_calc = $inverterSpecs == 'SOLIS' || $inverterSpecs == 'SOFAR'
-            ? ceil(($inverterSpecs['power'] * 1.7) / ($panelSpecs['power'] / 1000))
-            : ceil(($inverterSpecs['power'] * 1.5) / ($panelSpecs['power'] / 1000));
-
-        $overload = "Até " . $overload_calc . " módulos";
-
-        $cardInstallment = CardTaxEnum::calculateInstallments(
-            baseValue: (float) $lead->pricing()['final_price']['finalPrice']
-        );
+        $overload =
+            "Até " .
+            ceil(($inverterSpecs['power'] * 1.4) / ($panelSpecs['power'] / 1000)) .
+            " módulos";
 
         $pdfParams = [
             'lead',
@@ -248,8 +240,7 @@ class ProposalController extends Controller
             'inverterImage',
             'inverterSpecs',
             'panelSpecs',
-            'overload',
-            'cardInstallment',
+            'overload'
         ];
 
         $pdf = PDF::loadView('leads.base', compact($pdfParams));
@@ -266,10 +257,6 @@ class ProposalController extends Controller
         $inverterBrand = $request->get('inverterBrand');
         $roofStructure = $request->get('roofStructure');
 
-        $request->has('addressId')
-            ? $state = Address::find($request->get('addressId'))->city->state->name
-            : $state = City::find($request->get('cityId'))->state->name;
-
         $finalPriceAndDetail = $this->pricingService
             ->calculateFinalPrice(
                 cost: $cost,
@@ -281,7 +268,6 @@ class ProposalController extends Controller
                 roofStructure: $roofStructure,
                 finalValue: $cost * ProposalValueHistoryService::BASE_GROSS_PROFIT,
                 paymentType: PaymentTypeEnum::FINANCING,
-                state: $state,
                 isLead: $request->get('isLead') == true
             );
 
@@ -320,7 +306,9 @@ class ProposalController extends Controller
             'components',
             'manualData',
             'inverterImage',
-            'panelImage',
+            'panelBrandImage',
+//            'withoutSolar',
+//            'withSolar',
             'incidence',
             'payback',
             'generationData',
@@ -368,7 +356,7 @@ class ProposalController extends Controller
         if ($distributor === DistributorsEnum::ODEX->value) {
             return strtolower($inverterBrand) == 'saj'
                 ? '/img/inverters/saj.png'
-                : '/img/inverters/sajmicroinverter.png';
+                : '/img/inverters/saj_micro.png';
         }
     }
 
