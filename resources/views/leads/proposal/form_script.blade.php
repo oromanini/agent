@@ -208,7 +208,7 @@
             if (brand == 'SUNOVA') {
                 panelImage = '/img/panel_brands/sunova.png'
             }
-            if (brand == 'Osda') {
+            if (brand == 'Osda' || brand == 'OSDA') {
                 panelImage = '/img/panel_brands/osda.png'
             }
 
@@ -228,7 +228,7 @@
                 panelImage = '/img/panel_brands/resun.png'
             }
 
-            if (brand == 'Sine') {
+            if (brand == 'Sine' || brand == 'SINE') {
                 panelImage = '/img/panel_brands/sine.png'
             }
 
