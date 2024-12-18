@@ -163,13 +163,16 @@ class ProposalValueHistoryService
         $cashGrossProfit = ($valueHistory->cash_final_price / $proposal->valueHistory->kit_cost) - 1;
         $cardGrossProfit = ($valueHistory->card_final_price / $proposal->valueHistory->kit_cost) - 1;
 
+        dd($proposal->client);
+
         $financingTotalCost = new TotalCostForFinancing(
             cost: $proposal->valueHistory->kit_cost,
             panelCount: $proposal->number_of_panels,
             kwp: $proposal->kwp,
             finalValue: $proposal->valueHistory->final_price,
             paymentType: PaymentTypeEnum::FINANCING,
-            isLead:$isLead
+            isLead:$isLead,
+            state: $proposal->client->addresses->first()
         );
         $cashTotalCost = new TotalCostForCash(
             cost: $proposal->valueHistory->kit_cost,
@@ -177,7 +180,8 @@ class ProposalValueHistoryService
             kwp: $proposal->kwp,
             finalValue: $proposal->valueHistory->final_price,
             paymentType: PaymentTypeEnum::CASH_PAYMENT,
-            isLead:$isLead
+            isLead:$isLead,
+            state: ''
         );
         $cardTotalCost = new TotalCostForCreditCard(
             cost: $proposal->valueHistory->kit_cost,
@@ -185,7 +189,8 @@ class ProposalValueHistoryService
             kwp: $proposal->kwp,
             finalValue: $proposal->valueHistory->final_price,
             paymentType: PaymentTypeEnum::CREDIT_CARD,
-            isLead:$isLead
+            isLead:$isLead,
+            state: ''
         );
 
         return [

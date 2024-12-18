@@ -54,7 +54,7 @@ class PricingService
                 state: $state,
                 isLead: $isLead,
             )['netProfitPercent'];
-
+        dump($finalValue);
         if ($this->netProfit < env('PROFIT')) {
             $finalValue += self::PLUS_TO_ADJUST_MARGIN;
             $finalValue = $this->adjustMargin(
