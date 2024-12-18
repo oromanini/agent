@@ -83,7 +83,7 @@ class LeadService implements BaseService
                 panelPower: $kitSpecs['panel']['power'],
                 inverterBrand: $kitSpecs['inverter']['brand'],
                 roofStructure: $lead->roof_structure,
-                finalValue: $kit->cost * 1.6,
+                finalValue: $kit->cost * ProposalValueHistoryService::BASE_GROSS_PROFIT,
                 paymentType: PaymentTypeEnum::FINANCING,
                 state: $state,
                 isLead: true
