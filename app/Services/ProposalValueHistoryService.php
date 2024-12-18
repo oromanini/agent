@@ -12,7 +12,7 @@ use App\Repositories\WorkCostRepository;
 
 class ProposalValueHistoryService
 {
-    public const BASE_GROSS_PROFIT = 1.65;
+    public const BASE_GROSS_PROFIT = 1.7;
 
     private readonly PricingService $pricingService;
     private ProposalValueHistory $valueHistory;
