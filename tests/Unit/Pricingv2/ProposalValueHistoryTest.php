@@ -185,7 +185,8 @@ class ProposalValueHistoryTest extends TestCase
             inverterBrand: 'growatt',
             roofStructure: RoofStructure::COLONIAL->value,
             finalValue: 18000,
-            paymentType: $paymentType
+            paymentType: $paymentType,
+            state: 'PARANÁ'
         );
 
         $expected = [

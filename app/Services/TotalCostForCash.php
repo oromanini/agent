@@ -25,19 +25,20 @@ class TotalCostForCash implements Cost
         private readonly float $finalValue,
         private readonly int $paymentType,
         private readonly bool $isLead,
+        private readonly string $state,
     ) {
     }
 
     public function cost(?float $getPercent = null): float
     {
         return $this->cost
-            + (new InstallationCost($this->panelCount))->cost()
+            + (new InstallationCost($this->panelCount, $this->isLead, $this->state))->cost()
             + (new HomologationCost($this->kwp))->cost()
             + (new WorkMonitoringCost($this->kwp))->cost()
-            + (new DirectCurrentCost($this->finalValue))->cost()
-            + (new DeliveryCost($this->cost))->cost()
+            + (new DirectCurrentCost($this->finalValue, $this->isLead))->cost()
+            + (new DeliveryCost($this->cost, $this->state))->cost()
             + (new ExternalConsultantsCommissionCost($this->finalValue, $this->paymentType, $this->isLead))->cost()
-            + (new InternalCommercialCommissionCost($this->finalValue))->cost()
+            + (new InternalCommercialCommissionCost($this->finalValue, $this->isLead))->cost()
             + (new SafetyMarginCost($this->finalValue))->cost()
             + (new RoyaltyCost($this->finalValue))->cost()
             + (new TaxCost($this->cost, $this->finalValue, $this->paymentType))->cost()

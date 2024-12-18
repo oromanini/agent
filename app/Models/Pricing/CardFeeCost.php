@@ -4,6 +4,7 @@ namespace App\Models\Pricing;
 
 use App\Enums\PaymentTypeEnum;
 use App\Enums\WorkCostClassificationEnum;
+use App\Models\Pricing\Enums\CardTaxEnum;
 
 class CardFeeCost extends BaseCost implements Cost
 {
@@ -22,12 +23,7 @@ class CardFeeCost extends BaseCost implements Cost
             return 0;
         }
 
-        return $this->finalValue * $this->estimatedCardFee();
-    }
-
-    private function estimatedCardFee(): float
-    {
-        return $this->workCostInfo()['costs'][self::KEY];
+        return CardTaxEnum::calculateInstallments($this->finalValue)[18];
     }
 
     protected function classification(): int

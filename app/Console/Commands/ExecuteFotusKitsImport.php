@@ -19,6 +19,6 @@ class ExecuteFotusKitsImport extends Command
     public function handle(): void
     {
         (new ImportFotusKitsJob())->handle();
-        $this->info('ODEX kits import started!');
+        $this->info('FOTUS kits import started!');
     }
 }

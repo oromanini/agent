@@ -36,8 +36,6 @@ class PricingTest extends TestCase
 
     public function testPricing_WithCashPayment_ShouldReturnFinalValueCorrectly(): void
     {
-
-
         $finalPrice = $this->pricingService->calculateFinalPrice(
             cost: 10000,
             kwp: 5.56,
@@ -47,7 +45,8 @@ class PricingTest extends TestCase
             inverterBrand: InverterBrands::Saj->name,
             roofStructure: RoofStructure::COLONIAL->value,
             finalValue: 16500,
-            paymentType: PaymentTypeEnum::CASH_PAYMENT
+            paymentType: PaymentTypeEnum::CASH_PAYMENT,
+            state: 'PARANÁ'
         );
 
         dd($finalPrice);
