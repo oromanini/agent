@@ -10,7 +10,7 @@ use App\Models\Proposal;
 
 class KitSpecService
 {
-    const INVERTER_OVERLOAD = 1.5;
+    const INVERTER_OVERLOAD = 1.35;
 
     public function setAverageProduction(array $data): float
     {

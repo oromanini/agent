@@ -27,7 +27,7 @@
     </div>
 </section>
 @include('footer')
-{{--@include('whatsapp')--}}
+@include('whatsapp')
 
 <script>
     $(window).on('load', function () {

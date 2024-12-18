@@ -24,20 +24,20 @@ class TotalCostForFinancing implements Cost
         private readonly float $kwp,
         private readonly float $finalValue,
         private readonly int $paymentType,
-        private readonly bool $isLead,
-        private readonly string $state,
+        private readonly bool $isLead
     ) {
     }
 
     public function cost(?float $getPercent = null): float
     {
         return $this->cost
-            + (new InstallationCost($this->panelCount, $this->isLead, $this->state))->cost()
+            + (new InstallationCost($this->panelCount))->cost()
             + (new HomologationCost($this->kwp))->cost()
-            + (new DirectCurrentCost($this->finalValue, $this->isLead))->cost()
-            + (new DeliveryCost($this->cost, $this->state))->cost()
+            + (new WorkMonitoringCost($this->kwp))->cost()
+            + (new DirectCurrentCost($this->finalValue))->cost()
+            + (new DeliveryCost($this->cost))->cost()
             + (new ExternalConsultantsCommissionCost($this->finalValue, $this->paymentType, $this->isLead))->cost()
-            + (new InternalCommercialCommissionCost($this->finalValue, $this->isLead))->cost()
+            + (new InternalCommercialCommissionCost($this->finalValue))->cost()
             + (new SafetyMarginCost($this->finalValue))->cost()
             + (new RoyaltyCost($this->finalValue))->cost()
             + (new TaxCost($this->cost, $this->finalValue, $this->paymentType))->cost()

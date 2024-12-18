@@ -28,7 +28,7 @@
         <div class="card-footer is-flex is-justify-content-center">
             <span id="footer-title">
                 <ion-icon name="cash-outline"></ion-icon>
-                Financiado/ À vista
+                Financiamento/ À vista
             </span>
         </div>
     </div>
@@ -46,7 +46,7 @@
         <div class="card-footer is-flex is-justify-content-center">
             <span id="footer-title">
                 <ion-icon name="sunny-outline"></ion-icon>
-                Geração mês/ano</span>
+                Média mês/ano</span>
         </div>
     </div>
 </div>

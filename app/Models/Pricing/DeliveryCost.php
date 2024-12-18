@@ -7,11 +7,9 @@ use App\Enums\WorkCostClassificationEnum;
 class DeliveryCost extends BaseCost implements Cost
 {
     public const KEY = 'estimated_delivery_percentage';
-    public const DELIVER_FREE_STATES = ['SÃO PAULO', 'PARANÁ'];
 
     public function __construct(
-        private readonly float $kitCost,
-        private readonly string $state
+        private readonly float $kitCost
     ) {
         parent::__construct();
     }
@@ -23,11 +21,13 @@ class DeliveryCost extends BaseCost implements Cost
 
     private function estimatedDeliveryPercent(): float
     {
-        if (!in_array($this->state, self::DELIVER_FREE_STATES)) {
-            return 300;
+        return 0;
+
+        if (!$this->workCostInfo()['costs']['enabled']) {
+            return 0;
         }
 
-        return 0;
+        return $this->workCostInfo()['costs'][self::KEY];
     }
 
     protected function classification(): int

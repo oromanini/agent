@@ -9,18 +9,13 @@ class InternalCommercialCommissionCost extends BaseCost implements Cost
     public const KEY = 'commission_percentage';
 
     public function __construct(
-        private readonly float $finalValue,
-        private readonly bool $isLead
+        private readonly float $finalValue
     ) {
         parent::__construct();
     }
 
     public function cost(?float $getPercent = null): float
     {
-        if ($this->isLead) {
-            return 0;
-        }
-
         return $this->finalValue * $this->commissionPercentage();
     }
 

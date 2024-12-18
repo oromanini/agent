@@ -1,6 +1,6 @@
 <div class="page page-break" style="background-image: url({{public_path('/img/leads/5.jpg')}})">
     <div id="panelImage">
-        <img src="{{ $panelBrandImage }}" alt="" width="500">
+        <img src="{{ public_path($panelBrandImage) }}" alt="" width="240">
     </div>
     <div id="panelQuantity">{{ $panelQuantity }} módulos</div>
 
@@ -15,7 +15,7 @@
         {{ $panelSpecs['warranty'] }} anos (fábrica) / 25 anos (linear)
     </div>
     <div id="inverterImage">
-        <img src="{{ $inverterImage }}" alt="" width="550">
+        <img src="{{ public_path($inverterImage) }}" alt="" width="550">
     </div>
     <div id="inverterQuantity">
         1
@@ -38,7 +38,7 @@
 <style>
     #panelImage {
         position: absolute;
-        top: 300px;
+        top: 600px;
         left: 65px;
     }
 
@@ -67,7 +67,7 @@
 
     #inverterImage {
         position: absolute;
-        top: 1350px;
+        top: 1250px;
         left: 50px;
     }
 

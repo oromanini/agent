@@ -15,16 +15,16 @@
             ScreenHelper.disableSubmitIfConsumptionIsNull()
         });
 
-
         $('#city').on('change', function () {
             city = $('#city').val();
+            console.log(city)
         })
 
         $('#kitSearchSubmit').on('click', function () {
             $('#loader').show()
 
             let consumption = $('#average_consumption').val();
-            let incidence = Address.setIncidence($('#city').val())
+            let incidence = Address.setIncidence(city)
             let kwp = Kit.setKwp(consumption, incidence);
             let roof = $("input[name=roof_structure]:checked").val();
             let tension = $('select[name=tension_pattern] option').filter(':selected').val()
@@ -56,8 +56,6 @@
 
                             let panelCount = Kit.setPanelCount(item);
 
-                            city = city !== "Selecione..." ? city : 4931;
-
                             let finalValue = Kit.calculateFinalValue(
                                 item.cost,
                                 item.kwp,
@@ -85,9 +83,9 @@
                                 '<span class="tag ' + isPromotionalColor + '">' +
                                 isPromotionalText +
                                 '</span>' +
-                                '<div class="is-flex is-justify-content-center is-flex-direction-column is-align-items-center">' +
-                                '<img src="' + ScreenHelper.getPanelImage(panelSpecs.brand) + '" alt="" width="135">' +
-                                '<img src="' + ScreenHelper.getInverterImage(inverterSpecs.brand) + '" alt="" width="135">' +
+                                '<div class="is-flex is-justify-content-center">' +
+                                '<img src="' + panelSpecs.logo + '" alt="" width="135">' +
+                                '<img src="' + inverterSpecs.logo + '" alt="" width="135">' +
                                 '</div>' +
                                 '<div style="display:flex; justify-content: center; text-align: center; font-size: 14pt; color: #6b7280; font-weight: 900; margin: 20px 0px">' +
                                 item.kwp + ' kWp' +
@@ -179,17 +177,12 @@
         }
 
         static getPanelImage(brand) {
-            console.log(brand)
+
             let panelImage = null;
 
             if (brand == 'Jinko') {
                 panelImage = '/img/panel_brands/jinko.png'
             }
-
-            if (brand == 'PULLING' ) {
-                panelImage = '/img/panel_brands/pulling.png'
-            }
-
             if (brand == 'DAH Solar') {
                 panelImage = '/img/panel_brands/dah.png'
             }
@@ -205,7 +198,7 @@
             if (brand == 'Astronergy Chint') {
                 panelImage = '/img/panel_brands/astronergy.png'
             }
-            if (brand == 'SUNOVA') {
+            if (brand == 'Sunova') {
                 panelImage = '/img/panel_brands/sunova.png'
             }
             if (brand == 'Osda') {
@@ -224,7 +217,7 @@
                 panelImage = '/img/panel_brands/hanersun.png'
             }
 
-            if (brand == 'RESUN') {
+            if (brand == 'Resun') {
                 panelImage = '/img/panel_brands/resun.png'
             }
 
@@ -243,39 +236,32 @@
             if (brand == 'Runergy') {
                 panelImage = '/img/panel_brands/runergy.png'
             }
-            console.log(brand)
+
             return panelImage
         }
 
         static getInverterImage(brand) {
-            console.log(brand)
+
             let inverterImage = null;
 
-            if (brand == 'GROWATT') {
+            if (brand == 'Growatt') {
                 inverterImage = '/img/inverter_brands/growatt.png'
             }
-            if (brand == 'DEYE') {
-                inverterImage = '/img/inverter_brands/deye.png'
-            }
-            if (brand == 'SOFAR') {
+            if (brand == 'Sofar') {
                 inverterImage = '/img/inverter_brands/sofar.png'
             }
-            if (brand == 'SOLIS') {
+            if (brand == 'Solis') {
                 inverterImage = '/img/inverter_brands/solis.png'
             }
-            if (brand == 'BEL') {
+            if (brand == 'Bel') {
                 inverterImage = '/img/inverter_brands/bel.png'
             }
-            if (brand == 'SUNGROW') {
+            if (brand == 'Sungrow') {
                 inverterImage = '/img/inverter_brands/sungrow.png'
             }
 
-            if (brand == 'SAJ') {
+            if (brand == 'Saj') {
                 inverterImage = '/img/inverter_brands/saj.png'
-            }
-
-            if (brand == 'SOLPLANET') {
-                inverterImage = '/img/inverter_brands/solplanet.png'
             }
 
             if (brand == 'TechPowerMicro') {
