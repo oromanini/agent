@@ -28,6 +28,7 @@ use App\Services\PricingService;
 use App\Services\ProposalService;
 use App\Services\ProposalValueHistoryService;
 use App\Services\SolarIncidenceService;
+use Dflydev\DotAccessData\Data;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
@@ -226,7 +227,6 @@ class ProposalController extends Controller
 
         $incidence = (new SolarIncidenceService())->getSolarIncidence(city: $city)->average;
         $panelQuantity = (new LeadService($this))->getLeadPanelQuantity($lead);
-
         $payback = $this->paybackService->setLeadPaybackData(lead: $lead);
 
         $overload_calc = $inverterSpecs == 'SOLIS' || $inverterSpecs == 'SOFAR'
@@ -272,14 +272,14 @@ class ProposalController extends Controller
 
         $finalPriceAndDetail = $this->pricingService
             ->calculateFinalPrice(
-                cost: $cost,
-                kwp: $kwp,
+                cost: (float) $cost,
+                kwp: (float) $kwp,
                 panelCount: $panelCount,
                 panelBrand: $panelBrand,
-                panelPower: $panelPower,
+                panelPower: (float) $panelPower,
                 inverterBrand: $inverterBrand,
-                roofStructure: $roofStructure,
-                finalValue: $cost * ProposalValueHistoryService::BASE_GROSS_PROFIT,
+                roofStructure: (int) $roofStructure,
+                finalValue: (float)$cost * ProposalValueHistoryService::BASE_GROSS_PROFIT,
                 paymentType: PaymentTypeEnum::FINANCING,
                 state: $state,
                 isLead: $request->get('isLead') == true

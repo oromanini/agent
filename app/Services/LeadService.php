@@ -59,7 +59,7 @@ class LeadService implements BaseService
         $lead->kit_data = json_encode($kit->attributesToArray());
         $lead->discount_data = json_encode([]);
         $lead->manual_data = json_encode([]);
-        $lead->user_id = auth()->user()->id;
+        $lead->user_id = auth()->user()->id ?? 1;
         $lead->pricing_data = $this->fillKitPricing($lead);
 
         return $lead;
@@ -68,22 +68,22 @@ class LeadService implements BaseService
     private function fillKitPricing(Lead $lead): string
     {
         $leadKitData = $lead->kit();
-
         $kit = Kit::query()->where('distributor_code', $leadKitData['distributor_code'])->first();
         $kitSpecs = $kit->kitSpecs();
         $panelCount = $kit->kwp / ($kitSpecs['panel']['power'] / 1000);
+
         $state = $lead->city()->state->name;
 
         $finalPrice = (new PricingService())
             ->calculateFinalPrice(
-                cost: $kit->cost,
-                kwp: $kit->kwp,
-                panelCount: $panelCount,
+                cost: (float) $kit->cost,
+                kwp: (float) $kit->kwp,
+                panelCount: (float) $panelCount,
                 panelBrand: $kitSpecs['panel']['brand'],
-                panelPower: $kitSpecs['panel']['power'],
+                panelPower: (float) $kitSpecs['panel']['power'],
                 inverterBrand: $kitSpecs['inverter']['brand'],
-                roofStructure: $lead->roof_structure,
-                finalValue: $kit->cost * ProposalValueHistoryService::BASE_GROSS_PROFIT,
+                roofStructure: (int) $lead->roof_structure,
+                finalValue: (float) $kit->cost * ProposalValueHistoryService::BASE_GROSS_PROFIT,
                 paymentType: PaymentTypeEnum::FINANCING,
                 state: $state,
                 isLead: true
@@ -101,12 +101,12 @@ class LeadService implements BaseService
         return ['success' => 'Status atualizado com sucesso!'];
     }
 
-    public function getLeadPanelQuantity(Lead $lead): int
+    public function getLeadPanelQuantity(Lead $lead): float
     {
         $kit = $lead->kit();
         $power = jsonToArray($kit['panel_specs'])['power'] / 1000;
         $kwp = $kit['kwp'];
 
-        return $kwp / $power;
+        return (float) ($kwp / $power);
     }
 }

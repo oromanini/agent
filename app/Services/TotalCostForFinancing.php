@@ -20,7 +20,7 @@ class TotalCostForFinancing implements Cost
 {
     public function __construct(
         private readonly float $cost,
-        private readonly int $panelCount,
+        private readonly float $panelCount,
         private readonly float $kwp,
         private readonly float $finalValue,
         private readonly int $paymentType,

@@ -17,7 +17,7 @@ class PricingService
     public function calculateFinalPrice(
         float  $cost,
         float  $kwp,
-        int    $panelCount,
+        float  $panelCount,
         string $panelBrand,
         float  $panelPower,
         string $inverterBrand,
@@ -38,7 +38,7 @@ class PricingService
     private function adjustMargin(
         float $cost,
         float $kwp,
-        int   $panelCount,
+        float $panelCount,
         float $finalValue,
         int   $paymentType,
         string $state,
@@ -74,7 +74,7 @@ class PricingService
     private function calculateNetProfit(
         float $cost,
         float $kwp,
-        int   $panelCount,
+        float $panelCount,
         float $finalValue,
         int   $paymentType,
         string $state,
@@ -141,7 +141,6 @@ class PricingService
                 $isPromotional = true;
             }
         });
-
         return ['finalPrice' => $finalPrice, 'isPromotional' => $isPromotional];
     }
 

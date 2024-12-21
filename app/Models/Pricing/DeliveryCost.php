@@ -26,7 +26,6 @@ class DeliveryCost extends BaseCost implements Cost
         if (!in_array($this->state, self::DELIVER_FREE_STATES)) {
             return 300;
         }
-
         return 0;
     }
 

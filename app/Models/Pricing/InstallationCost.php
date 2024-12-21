@@ -10,7 +10,7 @@ class InstallationCost extends BaseCost implements Cost
     public const LEAD_KEY = 'lead_panel_price';
 
     public function __construct(
-        private readonly int $panelQuantity,
+        private readonly float $panelQuantity,
         private readonly bool $isLead,
         private readonly string $state
     ) {
