@@ -14,7 +14,7 @@ class KitSearchService
 {
     public function __construct(
         private readonly float  $kwp,
-        private string $roof,
+        private int $roof,
         private readonly int $tension
     ) {
         is_string($this->roof) && $this->roof = (int) $this->roof;

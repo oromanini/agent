@@ -332,7 +332,7 @@
                     })
 
                     .fail(function (jqXHR, textStatus, msg) {
-                        console.log('FALHA: ' + msg);
+                        console.log('FALHA AO TRAZER KITS: ' + msg);
                     });
             });
         });
@@ -359,11 +359,10 @@
                                 text: item.street + ' ' + item.number
                             }));
                         });
-
-                        $('#installation_address_text').attr('data-tooltip', 'Incidência: ' + Address.setIncidence())
+                        $('#installation_address_text').attr('data-tooltip', 'Incidência: ' + Address.setIncidence(msg[0].id))
                     })
                     .fail(function (jqXHR, textStatus, msg) {
-                        console.log('FALHA: ' + msg);
+                        console.log('FALHA AO CALCULAR INCIDENCIA: ' + msg);
                     });
             }
 
@@ -392,12 +391,11 @@
                         }
                     })
                     .fail(function (jqXHR, textStatus, msg) {
-                        console.log('FALHA: ' + msg);
+                        console.log('FALHA AO SETAR UC: ' + msg);
                     });
             }
 
             static setIncidence(addressId) {
-
                 let url = '/incidenceFromAddressId/';
                 let incidence = 1;
 
@@ -413,7 +411,7 @@
                         incidence = msg;
                     })
                     .fail(function (jqXHR, textStatus, msg) {
-                        console.log('FALHA: ' + msg);
+                        console.log('FALHA AO SETAR INCIDENCIA: ' + msg);
                     });
 
                 return incidence;
@@ -598,7 +596,7 @@
                         result = msg
                     })
                     .fail(function (jqXHR, textStatus, msg) {
-                        console.log('FALHA: ' + msg);
+                        console.log('FALHA AO CALCULAR GERACAO: ' + msg);
                     });
 
                 return result;
@@ -631,7 +629,7 @@
                         result = msg
                     })
                     .fail(function (jqXHR, textStatus, msg) {
-                        console.log('FALHA: ' + msg);
+                        console.log('FALHA AO CALCULAR VALOR FINAL: ' + msg);
                     });
 
                 return result;

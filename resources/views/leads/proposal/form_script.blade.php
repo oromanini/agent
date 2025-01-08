@@ -136,7 +136,7 @@
                 })
 
                 .fail(function (jqXHR, textStatus, msg) {
-                    console.log('FALHA: ' + msg);
+                    console.log('FALHA AO BUSCAR KITS: ' + msg + " " + textStatus);
                 });
         });
     });
@@ -160,7 +160,7 @@
                     incidence = msg;
                 })
                 .fail(function (jqXHR, textStatus, msg) {
-                    console.log('FALHA: ' + msg);
+                    console.log('FALHA AO CALCULAR INCIDENCIA: ' + msg + " " + textStatus);
                 });
 
             return incidence;
@@ -353,7 +353,7 @@
                     result = msg
                 })
                 .fail(function (jqXHR, textStatus, msg) {
-                    console.log('FALHA: ' + msg);
+                    console.log('FALHA AO CALCULAR GERACAO: ' + msg + " " + textStatus);
                 });
 
             return result;
@@ -387,7 +387,7 @@
                     result = msg
                 })
                 .fail(function (jqXHR, textStatus, msg) {
-                    console.log('FALHA: ' + msg);
+                    console.log('FALHA AO CALCULAR PRECO: ' + msg + " " + textStatus);
                 });
 
             return result;

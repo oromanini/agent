@@ -18,11 +18,6 @@ class DeliveryCost extends BaseCost implements Cost
 
     public function cost(?float $getPercent = null): float
     {
-        return $this->kitCost * $this->estimatedDeliveryPercent();
-    }
-
-    private function estimatedDeliveryPercent(): float
-    {
         if (!in_array($this->state, self::DELIVER_FREE_STATES)) {
             return 300;
         }
