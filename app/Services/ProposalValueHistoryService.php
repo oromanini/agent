@@ -56,9 +56,8 @@ class ProposalValueHistoryService
             $this->valueHistory->update();
             return ['success', 'Alteração de valor aplicada!'];
         }
-
-        $commissionPercent = $this->canApplyDiscount(data: $data, key: 'commission_percentage')
-            ? $this->toDecimal($data['commission_percentage'])
+        $commissionPercent = $this->canApplyCommissionDiscount(data: $data, key: 'commission_percent')
+            ? $this->toDecimal($data['commission_percent'])
             : $this->valueHistory->commissionPercentage()['commission_percentage'];
 
         $cardCommissionPercent = $this->canApplyDiscount(data: $data, key: 'card_commission_percent')
@@ -293,5 +292,11 @@ class ProposalValueHistoryService
     {
         return isset($data[$key])
         && $this->valueHistory->discount_percent !== ($this->toDecimal($data[$key]));
+    }
+
+    private function canApplyCommissionDiscount(array $data, string $key): bool
+    {
+        return isset($data[$key])
+            && $this->valueHistory->commission_discount_percent !== ($this->toDecimal($data[$key]));
     }
 }

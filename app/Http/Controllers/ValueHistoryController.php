@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 class ValueHistoryController extends Controller
 {
     const MAX_DISCOUNT_PERCENT = 3;
+    const MAX_COMMISSION_PERCENT = 12;
+    const MAX_CARD_COMMISSION_PERCENT = 10;
 
     public function __construct(private readonly ProposalValueHistoryService $valueHistoryService)
     {
@@ -30,6 +32,16 @@ class ValueHistoryController extends Controller
             return redirect()->back();
         }
 
+        if (isset($data["commission_percent"]) && $this->isValidCommission($data)) {
+            session()->flash('message', ['error', 'A comissão ultrapassou o limite de 12%']);
+            return redirect()->back();
+        }
+
+        if (isset($data["card_commission_percent"]) && $this->isValidCardCommission($data)) {
+            session()->flash('message', ['error', 'A comissão ultrapassou o limite de 10%']);
+            return redirect()->back();
+        }
+
         $valueHistory = $proposal->valueHistory;
         $message = $this->valueHistoryService->update($valueHistory, $request->all());
 
@@ -44,4 +56,15 @@ class ValueHistoryController extends Controller
             || $data['discount_percent'] < 0;
     }
 
+    private function isValidCommission(array $data): bool
+    {
+        return $data['commission_percent'] > self::MAX_COMMISSION_PERCENT
+            || $data['commission_percent'] < 0;
+    }
+
+    private function isValidCardCommission(array $data): bool
+    {
+        return $data['card_commission_percent'] > self::MAX_CARD_COMMISSION_PERCENT
+            || $data['card_commission_percent'] < 0;
+    }
 }

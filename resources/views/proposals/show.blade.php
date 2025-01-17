@@ -30,11 +30,13 @@
                 <br>
                 @include('proposals.show.staff')
                 <br>
-                @include('proposals.show.discount')
-                <br><br>
-                @include('proposals.show.commission')
-                <br><br>
-                @include('proposals.show.card_commission')
+                @if($proposal->created_at >= "2025-01-17")
+                    @include('proposals.show.discount')
+                    <br><br>
+                    @include('proposals.show.commission')
+                    <br><br>
+                    @include('proposals.show.card_commission')
+                @endif
             </div>
             <div id="previstoria" class="content-tab" style="display:none">
                 @include('pre_inspection.index')

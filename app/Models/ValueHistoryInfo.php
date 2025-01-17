@@ -358,7 +358,9 @@ class ValueHistoryInfo
         $initialCommission = $this->{$attribute}["InitialExternalCommission"];
         $finalCommission = $this->{$attribute}["externalCommission"];
 
-        $this->{$attribute}["commissionDiscount"] = $initialCommission - $finalCommission;
+        $this->{$attribute}["commissionDiscount"] = ($initialCommission - $finalCommission) >= 0
+            ? $initialCommission - $finalCommission
+            : 0;
     }
 
     private function setDiscount(int $paymentType): void
