@@ -25,4 +25,5 @@ enum PanelBrands: int
     case Honor = 19;
     case Runergy = 20;
     case Ronma = 21;
+    case Leapton = 22;
 }
