@@ -7,7 +7,7 @@ enum PanelBrands: int
     case Jinko = 1;
     case Sunket = 2;
     case Trina = 3;
-    case DAH = 4;
+    case Dah = 4;
     case Astronergy = 5;
     case Ja = 6;
     case Phono = 7;
