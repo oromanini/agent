@@ -18,4 +18,5 @@ enum InverterBrands: int
     case SajMicroinverter = 12;
     case Solplanet = 13;
     case Tsuness = 14;
+    case Huawei = 15;
 }
