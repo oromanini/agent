@@ -2,68 +2,64 @@
 
 namespace App\Services;
 
-use App\Models\City;
 use App\Models\Lead;
 use App\Models\Proposal;
 
 class PaybackService
 {
-    private $solarIncidenceService;
+    const YEAR_LOST_GENERATION = 0.008;
+    const YEAR_KWH_INCREASE = 1.03;
+    /** @var Proposal */
+    private Proposal $proposal;
 
-    public function __construct(SolarIncidenceService $solarIncidenceService)
+    public function __construct(private readonly SolarIncidenceService $solarIncidenceService, Proposal $proposal)
     {
-        $this->solarIncidenceService = $solarIncidenceService;
+        $this->proposal = $proposal;
     }
 
-    public function setPaybackData(Proposal $proposal): array
+    public function setPaybackData(): array
     {
-        $generation = $proposal->estimated_generation;
-        $minTax = calculateWithSolar($proposal);
-        $kwValue = $proposal->kw_price;
-        $solarSystemPrice = $proposal->valueHistory->final_price;
-        $balance = $proposal->valueHistory->final_price;
+        $kwhPrice = $this->proposal->kw_price;
+        $averageConsumption = $this->proposal->average_consumption;
+        $estimatedBillValue = $averageConsumption * $kwhPrice;
+        $valueHistory = $this->proposal->valueHistory;
+        $estimatedGeneration = $this->proposal->estimated_generation;
+        $balance = 0;
         $totalEconomy = 0;
-        $tusd = 0;
-
-        $payback = [
-            'years' => paybackToString(round($solarSystemPrice / ((($generation * $kwValue) - $minTax) * 12), 1)),
-        ];
 
         for ($count = 1; $count <= 25; $count++) {
             if ($count == 1) {
 
-                $tusd = (formatFloat($generation) - $proposal->average_consumption) * 0.09;
+                $economy = $estimatedBillValue * $this->setTusd(1) * 12;
 
-                $payback['data'][$count] = [
-                    'economy' => formatFloat(((($generation * $kwValue) - $minTax - $tusd) * 12)),
-                    'balance' => formatFloat(((($generation * $kwValue) - $minTax - $tusd) * 12) - $solarSystemPrice),
-                    'kw_value' => formatFloat($kwValue),
-                    'generation' => formatFloat($generation),
+                $payback['data'][1] = [
+                    'economy' => formatFloat($economy),
+                    'balance' => formatFloat($economy - $valueHistory->final_price),
+                    'kw_value' => formatFloat($kwhPrice),
+                    'generation' => formatFloat($estimatedGeneration),
                 ];
 
-                $balance = formatFloat($payback['data'][$count]['economy'] - $solarSystemPrice);
+                $balance = formatFloat($payback['data'][$count]['economy'] - $valueHistory->final_price);
 
             } else {
 
-                $generation -= $generation * 0.008;
-                $kwValue *= 1.03;
-                $economy = ((($generation * $kwValue) - $minTax) * 12);
+                $estimatedGeneration -= $estimatedGeneration * self::YEAR_LOST_GENERATION;
+                $kwhPrice *= self::YEAR_KWH_INCREASE;
+                $economy = $averageConsumption * $kwhPrice * $this->setTusd($count) * 12;
                 $balance += $economy;
 
                 $payback['data'][$count] = [
                     'economy' => formatFloat($economy),
                     'balance' => formatFloat($balance),
-                    'kw_value' => formatFloat($kwValue),
-                    'generation' => formatFloat($generation),
+                    'kw_value' => formatFloat($kwhPrice),
+                    'generation' => formatFloat($estimatedGeneration),
                 ];
-
             }
 
             $totalEconomy += $payback['data'][$count]['economy'];
         }
 
-        $payback['totalEconomy'] = $totalEconomy;
-
+        $payback += ['totalEconomy' => $totalEconomy, 'years' => $this->paybackToString($payback)];
         return $payback;
     }
 
@@ -227,5 +223,28 @@ class PaybackService
         return $payback;
     }
 
+    private function paybackToString(array $payback): string
+    {
+        $paybackYears = 0;
 
+        foreach ($payback['data'] as $key => $value) {
+            if ($value['balance'] > 0) {
+                $paybackYears = $key;
+                break;
+            }
+        }
+
+        return $paybackYears . ' anos';
+    }
+
+    private function setTusd(int $count): float
+    {
+        return 1 - match ($count) {
+            1 => 0.28 * 0.45,
+            2 => 0.28 * 0.60,
+            3 => 0.28 * 0.75,
+            4 => 0.28 * 0.90,
+            default => 0.28,
+        };
+    }
 }

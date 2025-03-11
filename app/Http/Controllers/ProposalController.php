@@ -40,14 +40,13 @@ use Illuminate\Http\Response;
 class ProposalController extends Controller
 {
     public function __construct(
-        private readonly ProposalService             $proposalService,
-        private readonly ProposalRepository          $proposalRepository,
+        private readonly ProposalService $proposalService,
+        private readonly ProposalRepository $proposalRepository,
         private readonly ProposalValueHistoryService $proposalValueHistoryService,
-        private readonly PaybackService              $paybackService,
-        private readonly PricingService              $pricingService,
-        private readonly KitSpecService              $kitSpecService,
-    )
-    {}
+        private readonly PricingService $pricingService,
+        private readonly KitSpecService $kitSpecService,
+        private readonly SolarIncidenceService $solarIncidenceService
+    ) {}
 
     public function index(Request $request): View
     {
@@ -191,9 +190,11 @@ class ProposalController extends Controller
         : (new ImageHelper())->setImageByBrand(type: 'inverter', brand: $inverterBrand)
         ;
 
-        $incidence = (new SolarIncidenceService())->getSolarIncidence(city: $city)->average;
-        $payback = $this->paybackService->setPaybackData(proposal: $proposal);
-        $generationData = $this->paybackService->setGenerationData(proposal: $proposal);
+        $incidence = $this->solarIncidenceService->getSolarIncidence(city: $city)->average;
+        $paybackService = new PaybackService(solarIncidenceService:$this->solarIncidenceService, proposal: $proposal);
+
+        $payback = $paybackService->setPaybackData();
+        $generationData = $paybackService->setGenerationData(proposal: $proposal);
 
         $overload = 'Até ' . $this->kitSpecService->getKitOverload($kit ?? null, $manualData) . ' módulos';
 

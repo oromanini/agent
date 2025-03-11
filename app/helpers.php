@@ -103,14 +103,6 @@ function formatFloat($float): float
     return round($float, 2);
 }
 
-function paybackToString(float $float): string
-{
-    $whole = intval($float);
-    $decimal = $float - $whole;
-
-    return $whole . ' anos e ' . $decimal * 10 . ' mes(es)';
-}
-
 function jsonToArray($json)
 {
     return json_decode($json, true);
