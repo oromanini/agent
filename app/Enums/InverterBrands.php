@@ -19,4 +19,5 @@ enum InverterBrands: int
     case Solplanet = 13;
     case Tsuness = 14;
     case Huawei = 15;
+    case Goodwe = 16;
 }
