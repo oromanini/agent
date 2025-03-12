@@ -3,7 +3,7 @@
 @include('proposals.pdf_v2.1')
 <div class="page page-break" style="background-image: url({{public_path('/img/proposal_v2/2.jpg')}})"></div>
 @include('proposals.pdf_v2.3')
-{{--@include('proposals.pdf_v2.4')--}}
+@include('proposals.pdf_v2.4')
 @include('proposals.pdf_v2.5')
 @include('proposals.pdf_v2.6')
 @include('proposals.pdf_v2.7')
@@ -16,7 +16,7 @@
         margin: 0;
     }
 
-    .page-break {
+
         page-break-after: always;
     }
 
