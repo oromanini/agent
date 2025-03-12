@@ -16,7 +16,7 @@
         margin: 0;
     }
 
-
+    .page-break {
         page-break-after: always;
     }
 
