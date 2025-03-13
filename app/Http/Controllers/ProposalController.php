@@ -164,6 +164,44 @@ class ProposalController extends Controller
         return redirect()->route('proposal.index');
     }
 
+    public function editExistentProposal(int $id): View
+    {
+        $proposal = Proposal::find($id);
+        $valueHistory = $proposal->valueHistory;
+        $clients = Client::all();
+        $agents = User::query()->whereNull('deleted_at')->get();
+        $tensions = TensionPattern::cases();
+        $roofs = RoofStructure::setRoofsToScreen();
+        $panels = PanelBrands::cases();
+        $inverters = InverterBrands::cases();
+        $kitInfo = $proposal->kit();
+
+        $proposal_tension =  match ($proposal->tension_pattern) {
+                'BI-220' => 'BIFASICO_220V',
+                'TRI-220' => 'TRIFASICO_220V',
+                'TRI-380' => 'TRIFASICO_380V',
+                default => 'MONOFASICO_220V',
+            };
+
+        return view('proposals.update', compact($this->setUpdateParams()));
+    }
+
+    public function update(int $id, Request $request): RedirectResponse
+    {
+        $data = $request->all();
+        $proposal = Proposal::find($id);
+
+        try {
+            $this->proposalService->update($proposal, $data);
+        } catch (\Exception $e) {
+            throw new \Exception($e);
+        }
+
+        session()->flash('message', 'Proposta atualizada!');
+
+        return redirect()->route('proposal.index');
+    }
+
     public function generatePdf(int $proposalId, ?bool $isSample = false): Response
     {
         $proposal = Proposal::find($proposalId);
@@ -311,6 +349,22 @@ class ProposalController extends Controller
             'roofs',
             'panels',
             'inverters',
+        ];
+    }
+
+    private function setUpdateParams(): array
+    {
+        return [
+            'clients',
+            'agents',
+            'tensions',
+            'roofs',
+            'panels',
+            'inverters',
+            'proposal',
+            'proposal_tension',
+            'valueHistory',
+            'kitInfo',
         ];
     }
 

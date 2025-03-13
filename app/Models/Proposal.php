@@ -68,4 +68,36 @@ class Proposal extends Model
     {
         return $this->hasOne(Installation::class);
     }
+
+    public function kit(): array
+    {
+        $kit = Kit::where('distributor_code', $this->kit_uuid)->first();
+
+        if ($this->is_manual) {
+            $params = json_decode($this->manual_data, true);
+
+            return [
+                'inverter_specs' => [
+                    'brand' => $params['inverter_brand'],
+                    'model' => $params['inverter_model'],
+                    'power' => $params['inverter_power'],
+                    'warranty' => $params['inverter_warranty'],
+                    'quantity' => $params['inverter_quantity'],
+                ],
+                'panel_specs' => [
+                    'brand' => $params['panel_brand'],
+                    'model' => $params['panel_model'],
+                    'power' => $params['panel_power'],
+                    'warranty' => $params['panel_warranty'],
+                ],
+                'components' => jsonToArray($this->components),
+            ];
+        }
+
+        return [
+            'inverter_specs' => jsonToArray($kit->inverter_specs),
+            'panel_specs' => jsonToArray($kit->panel_specs),
+            'components' => jsonToArray($kit->components),
+        ];
+    }
 }

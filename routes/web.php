@@ -62,8 +62,10 @@ Route::middleware('auth')->group(function () {
             Route::get('/propostas/nova', 'create')->name('create');
             Route::post('/propostas/nova', 'store')->name('store');
             Route::get('/propostas/visualizar/{id}', 'edit')->name('edit');
-            Route::put('/propostas/editar/{id}', 'update')->name('update');
             Route::get('/propostas/inativar/{id}', 'delete')->name('delete');
+
+            Route::get('/propostas/atualizar/{id}', 'editExistentProposal')->name('editExistentProposal');
+            Route::post('/propostas/atualizar/{id}', 'update')->name('updateExistentProposal');
 
             Route::get('/propostas/manual/nova', 'manual')->name('manual.create');
             Route::post('/propostas/manual/nova', 'manualStore')->name('manual.store');
@@ -93,7 +95,6 @@ Route::middleware('auth')->group(function () {
             Route::post('propostas/{id}/comissao', 'applyCommissionOrDiscount')->name('updatePrice');
         });
     });
-
 
     Route::controller(PreInspectionController::class)->group(function () {
 

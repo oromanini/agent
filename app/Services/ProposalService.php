@@ -9,6 +9,7 @@ use App\Models\PreInspection;
 use App\Models\Proposal;
 use App\Models\SolarIncidence;
 use Illuminate\Support\Facades\DB;
+use JetBrains\PhpStorm\NoReturn;
 use Ramsey\Uuid\Uuid;
 
 class ProposalService
@@ -37,6 +38,52 @@ class ProposalService
         });
 
         return $proposal;
+    }
+
+    public function update(Proposal $proposal, array $data): void
+    {
+
+        $proposal->client_id = (int) $data['client'];
+        $proposal->average_consumption = (int) $data['average_consumption'];
+        $proposal->kw_price = stringMoneyToFloat($data['kw_price']);
+
+        $proposal->tension_pattern = match ($data['tension_pattern']) {
+            2 => 'BI-220',
+            3 => 'TRI-220',
+            4 => 'TRI-380',
+            default => 'MONO-220',
+        };
+
+        $proposal->roof_structure = (int) $data['roof_structure'];
+        $proposal->agent_id  = (int) $data['agent'];
+        $proposal->kwp = (float) $data['kwp'];
+        $proposal->number_of_panels =  (int) $data['panel_quantity'];
+        $proposal->components = json_encode(explode(PHP_EOL, $data['components']));
+
+        $manual_data = [
+            "panel_brand" => $data['panel_brand'],
+            "panel_model" => $data['panel_model'],
+            "panel_power" => $data['panel_power'],
+            "panel_warranty" => $data['panel_warranty'],
+            "inverter_brand" => $data['inverter_brand'],
+            "inverter_model" => $data['inverter_model'],
+            "inverter_power" => $data['inverter_power'],
+            "inverter_warranty" => $data['inverter_warranty'],
+            "inverter_quantity" => $data['inverter_quantity'],
+        ];
+
+        $proposal->is_manual = true;
+        $proposal->manual_data = json_encode($manual_data);
+
+        $valueHistory = $proposal->valueHistory;
+
+        $valueHistory->kit_cost = stringMoneyToFloat($data['cost']);
+        $valueHistory->final_price = stringMoneyToFloat($data['final_value']);
+        $valueHistory->card_final_price = stringMoneyToFloat($data['card_final_value']);
+        $valueHistory->cash_final_price = stringMoneyToFloat($data['cash_final_value']);
+
+        $valueHistory->update();
+        $proposal->update();
     }
 
     public function fillObject(

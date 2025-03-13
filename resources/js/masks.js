@@ -9,6 +9,8 @@ $(function () {
     $('#income').mask('000.000.000.000.000,00', {reverse: true});
     $('#patrimony').mask('000.000.000.000.000,00', {reverse: true});
     $('#final_value').mask('000.000.000.000.000,00', {reverse: true});
+    $('#card_final_value').mask('000.000.000.000.000,00', {reverse: true});
+    $('#cash_final_value').mask('000.000.000.000.000,00', {reverse: true});
     $('#ca_cost').mask('000.000.000.000.000,00', {reverse: true});
     $('#installation_cost').mask('000.000.000.000.000,00', {reverse: true});
     $('#plus_cost_value').mask('000.000.000.000.000,00', {reverse: true});
