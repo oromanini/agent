@@ -44,7 +44,11 @@ class KitSpecService
     public function getKitOverload(Kit $kit = null, array $manualData = null): int
     {
         if (!is_null($manualData)) {
-            return (stringInverterPowerToFloat($manualData['inverter_power']) * 1.5) / ((int)$manualData['panel_power'] / 1000);
+            return (stringInverterPowerToFloat(
+                $manualData['inverter_power'])
+                * (($manualData['inverter_overload'] / 100) + 1)
+                / ((int)$manualData['panel_power'] / 1000)
+            );
         }
 
         $panelPower = jsonToArray($kit->panel_specs)['power'] / 1000;

@@ -83,6 +83,7 @@ class Proposal extends Model
                     'power' => $params['inverter_power'],
                     'warranty' => $params['inverter_warranty'],
                     'quantity' => $params['inverter_quantity'],
+                    'overload' => $params['inverter_overload'] ?? 50,
                 ],
                 'panel_specs' => [
                     'brand' => $params['panel_brand'],

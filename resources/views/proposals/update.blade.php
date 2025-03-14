@@ -249,9 +249,24 @@
                             <div class="control">
                                 <input name="inverter_quantity" id="inverter_quantity"
                                        class="input  @error('inverter_quantity') is-danger @enderror"
-                                       type="number"
-                                       placeholder="1" value="1" required>
+                                       type="number" value="{{ $kitInfo['inverter_specs']['quantity'] ?? 1 }}"
+                                       placeholder="1" required>
                                 @error('inverter_quantity')<span class="error-message">{{ $message }}</span>@enderror
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-2">
+                        <div class="field">
+                            <label for="inverter_overload" class="label">Overload</label>
+                            <div class="control has-icons-left">
+                                <input name="inverter_overload" id="inverter_overload"
+                                       class="input  @error('inverter_overload') is-danger @enderror"
+                                       type="number" value="{{ $kitInfo['inverter_specs']['overload'] ?? 50 }}"
+                                       placeholder="50" required>
+                                @error('inverter_overload')<span class="error-message">{{ $message }}</span>@enderror
+                                <span class="icon is-small is-left">
+                                    <i>%</i>
+                                </span>
                             </div>
                         </div>
                     </div>

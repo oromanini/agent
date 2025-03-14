@@ -300,6 +300,21 @@
                             </div>
                         </div>
                     </div>
+                    <div class="column is-2">
+                        <div class="field">
+                            <label for="inverter_overload" class="label">Overload</label>
+                            <div class="control has-icons-left">
+                                <input name="inverter_overload" id="inverter_overload"
+                                       class="input  @error('inverter_overload') is-danger @enderror"
+                                       type="number" value="50"
+                                       placeholder="50" required>
+                                @error('inverter_overload')<span class="error-message">{{ $message }}</span>@enderror
+                                <span class="icon is-small is-left">
+                                    <i>%</i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="columns">

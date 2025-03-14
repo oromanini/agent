@@ -101,9 +101,19 @@
                                 <span class="tag is-success">Enviada</span>
                             @else
                                 <span class="tag is-danger">
-                                Não formalizada
-                            </span>
+                                    Não formalizada
+                                </span>
                             @endif
+                            @if(isset(json_decode($proposal->manual_data, true)['is_edited']) && json_decode($proposal->manual_data, true)['is_edited'] == true)
+                                <span class="tag is-info is-hoverable" title="Editado por {{ json_decode($proposal->manual_data, true)['updated_by'] }}">
+                                    E
+                                </span>
+                            @endif
+                                @if(!isset(json_decode($proposal->manual_data, true)['is_edited']) && $proposal->is_manual == true)
+                                <span class="tag is-warning is-hoverable" title="Feito por {{ json_decode($proposal->manual_data, true)['created_by'] ?? 'Sistema' }}">
+                                    M
+                                </span>
+                                @endif
                         </td>
                         <td>{{ $proposal->kwp }} kWp</td>
                         <td>R$ {{ floatToMoney($proposal->valueHistory->final_price) }}</td>

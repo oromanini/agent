@@ -70,6 +70,9 @@ class ProposalService
             "inverter_power" => $data['inverter_power'],
             "inverter_warranty" => $data['inverter_warranty'],
             "inverter_quantity" => $data['inverter_quantity'],
+            "inverter_overload" => (int) $data['inverter_overload'],
+            "is_edited" => true,
+            "updated_by" => auth()->user()->name . " em " . now()->format('d/m/Y h:i:s'),
         ];
 
         $proposal->is_manual = true;
@@ -186,7 +189,9 @@ class ProposalService
             'inverter_model' => $this->data['inverter_model'],
             'inverter_power' => $this->data['inverter_power'],
             'inverter_warranty' => $this->data['inverter_warranty'],
-            'inverter_quantity' => $this->data['inverter_quantity']
+            'inverter_quantity' => $this->data['inverter_quantity'],
+            'inverter_overload' => $this->data['inverter_overload'],
+            "created_by" => auth()->user()->name . " em " . now()->format('d/m/Y h:i:s'),
         ]);
 
         return $proposal;
