@@ -57,7 +57,8 @@ class EdeltecApiHelper
             InverterBrand::SAJ,
             InverterBrand::GROWATT,
             InverterBrand::DEYE,
-            InverterBrand::SUNGROW => 10,
+            InverterBrand::SUNGROW,
+            InverterBrand::SOLIS => 10,
             default => 10
         };
     }
@@ -69,6 +70,8 @@ class EdeltecApiHelper
             PanelBrand::HONOR->value => '/EdeltecApiPackage/img/panels/honor.png',
             PanelBrand::OSDA->value => '/EdeltecApiPackage/img/panels/osda.png',
             PanelBrand::RESUN->value => '/EdeltecApiPackage/img/panels/resun.png',
+            PanelBrand::RONMA->value => '/EdeltecApiPackage/img/panels/ronma.png',
+            PanelBrand::HANERSUN->value => '/EdeltecApiPackage/img/panels/ronma.png',
         };
     }
 

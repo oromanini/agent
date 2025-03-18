@@ -22,10 +22,8 @@ use Psr\Http\Message\ResponseInterface;
 class EdeltecApiService
 {
     const KITS_URI = "/produtos/integration?";
-    const DAYS_FOR_INACTIVE = 25;
     const UNAUTHORIZED = 401;
     const ITEMS_LIMIT = 30;
-    const MAX_UPDATE_DAYS = 1;
     private Client $client;
     private EdeltecCredentials $credentials;
 
@@ -44,6 +42,10 @@ class EdeltecApiService
             foreach (PanelBrand::cases() as $panelBrand) {
 
                 $combination = $this->searchCombination($panelBrand, $inverterBrand);
+
+                if (!$combination->is_active) {
+                   continue;
+                }
 
                 $page = 1;
                 $finished = false;
