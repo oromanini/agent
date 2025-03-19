@@ -38,7 +38,7 @@ class EdeltecApiHelper
     public static function getPanelWarranty(PanelBrand $panelBrand): int
     {
         return match ($panelBrand) {
-            PanelBrand::OSDA, PanelBrand::HONOR, PanelBrand::RESUN => 15,
+            PanelBrand::OSDA, PanelBrand::RESUN => 15,
             default => 12,
         };
     }
@@ -47,7 +47,6 @@ class EdeltecApiHelper
     {
         return match ($panelBrand) {
             PanelBrand::OSDA,
-            PanelBrand::HONOR,
             PanelBrand::RESUN,
             PanelBrand::HANERSUN => 30,
             default => 25
@@ -64,11 +63,11 @@ class EdeltecApiHelper
     public static function getPanelLogo(string $brand): string
     {
         return match ($brand) {
-            PanelBrand::SINE->value => '/EdeltecApiPackage/img/panels/sine.png',
-            PanelBrand::HONOR->value => '/EdeltecApiPackage/img/panels/honor.png',
+//            PanelBrand::SINE->value => '/EdeltecApiPackage/img/panels/sine.png',
+//            PanelBrand::HONOR->value => '/EdeltecApiPackage/img/panels/honor.png',
             PanelBrand::OSDA->value => '/EdeltecApiPackage/img/panels/osda.png',
             PanelBrand::RESUN->value => '/EdeltecApiPackage/img/panels/resun.png',
-            PanelBrand::RONMA->value => '/EdeltecApiPackage/img/panels/ronma.png',
+//            PanelBrand::RONMA->value => '/EdeltecApiPackage/img/panels/ronma.png',
             PanelBrand::HANERSUN->value => '/EdeltecApiPackage/img/panels/hanersun.png',
         };
     }
@@ -77,9 +76,9 @@ class EdeltecApiHelper
     {
         return match ($brand) {
             InverterBrand::SAJ->value => '/EdeltecApiPackage/img/inverters/saj.png',
-            InverterBrand::DEYE->value => '/EdeltecApiPackage/img/inverters/deye.png',
-            InverterBrand::SUNGROW->value => '/EdeltecApiPackage/img/inverters/sungrow.png',
-            InverterBrand::GROWATT->value => '/EdeltecApiPackage/img/inverters/growatt.png',
+//            InverterBrand::DEYE->value => '/EdeltecApiPackage/img/inverters/deye.png',
+//            InverterBrand::SUNGROW->value => '/EdeltecApiPackage/img/inverters/sungrow.png',
+//            InverterBrand::GROWATT->value => '/EdeltecApiPackage/img/inverters/growatt.png',
             InverterBrand::SOLIS->value => '/EdeltecApiPackage/img/inverters/solis.png',
         };
     }
