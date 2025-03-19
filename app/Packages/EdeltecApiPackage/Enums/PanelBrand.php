@@ -6,23 +6,23 @@ use Illuminate\Support\Facades\Log;
 
 enum PanelBrand: string
 {
+    case HANERSUN = 'HANERSUN TOPCON BIFACIAL';
     case HONOR = 'HONOR';
     case OSDA = 'OSDA TOPCON BIFACIAL';
     case SINE = 'SINE';
     case RESUN = 'RESUN TOPCON';
     case RONMA = 'RONMA';
-    case HANERSUN = 'HANERSUN TOPCON BIFACIAL';
 
-    public static function matchCases(string $panel): self
+    public static function matchCases(string $panel): PanelBrand
     {
         return match (strtoupper($panel)) {
             'HONOR' => self::HONOR,
-            'OSDA' => self::OSDA,
+            'OSDA TOPCON BIFACIAL' => self::OSDA,
             'SINE' => self::SINE,
-            'RESUN' => self::RESUN,
+            'RESUN TOPCON' => self::RESUN,
             'RONMA' => self::RONMA,
-            'HANERSUN' => self::HANERSUN,
-            default => Log::alert("Padrão {$panel} não encontrado!")
+            'HANERSUN TOPCON BIFACIAL' => self::HANERSUN,
+            default => throw new \InvalidArgumentException("Panel brand '$panel' is not recognized."),
         };
     }
 }

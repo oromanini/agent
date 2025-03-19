@@ -43,10 +43,6 @@ class EdeltecApiService
 
                 $combination = $this->searchCombination($panelBrand, $inverterBrand);
 
-                if (!$combination->is_active) {
-                   continue;
-                }
-
                 $page = 1;
                 $finished = false;
 
@@ -127,7 +123,6 @@ class EdeltecApiService
         } catch (\Throwable $e) {
             $message = 'Erro ao buscar kit Edeltec: ';
             Log::warning($message . $e);
-
         }
     }
 
@@ -156,7 +151,7 @@ class EdeltecApiService
             try {
                 Kit::create($this->setKitParams($item));
             } catch (\Throwable $e) {
-                throw new \Exception('Erro ao criar novo kit: ' . $e->getMessage());
+                throw new \Exception('Erro ao criar novo kit: ' . $e->getMessage() . " - TRACE: " . $e->getTraceAsString());
             }
         }
     }

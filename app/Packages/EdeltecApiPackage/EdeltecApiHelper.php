@@ -38,7 +38,7 @@ class EdeltecApiHelper
     public static function getPanelWarranty(PanelBrand $panelBrand): int
     {
         return match ($panelBrand) {
-            PanelBrand::OSDA, PanelBrand::HONOR => 15,
+            PanelBrand::OSDA, PanelBrand::HONOR, PanelBrand::RESUN => 15,
             default => 12,
         };
     }
@@ -46,19 +46,17 @@ class EdeltecApiHelper
     public static function getPanelLinearWarranty(PanelBrand $panelBrand): int
     {
         return match ($panelBrand) {
-            PanelBrand::SINE, PanelBrand::RESUN => 25,
-            PanelBrand::OSDA, PanelBrand::HONOR => 30,
+            PanelBrand::OSDA,
+            PanelBrand::HONOR,
+            PanelBrand::RESUN,
+            PanelBrand::HANERSUN => 30,
+            default => 25
         };
     }
 
     public static function getInverterWarranty(InverterBrand $inverterBrand): int
     {
         return match ($inverterBrand) {
-            InverterBrand::SAJ,
-            InverterBrand::GROWATT,
-            InverterBrand::DEYE,
-            InverterBrand::SUNGROW,
-            InverterBrand::SOLIS => 10,
             default => 10
         };
     }
@@ -71,7 +69,7 @@ class EdeltecApiHelper
             PanelBrand::OSDA->value => '/EdeltecApiPackage/img/panels/osda.png',
             PanelBrand::RESUN->value => '/EdeltecApiPackage/img/panels/resun.png',
             PanelBrand::RONMA->value => '/EdeltecApiPackage/img/panels/ronma.png',
-            PanelBrand::HANERSUN->value => '/EdeltecApiPackage/img/panels/ronma.png',
+            PanelBrand::HANERSUN->value => '/EdeltecApiPackage/img/panels/hanersun.png',
         };
     }
 
@@ -126,7 +124,7 @@ class EdeltecApiHelper
         $panel = PanelBrand::matchCases($item['marca']);
 
         return json_encode([
-            'brand' => $item['marca'],
+            'brand' => PanelBrand::matchCases($item['marca'])->name,
             'power' => $item['potenciaModulo'],
             'model' => self::getPanelModel($item['caracteristicasModulo']),
             'logo' => self::getPanelLogo($item['marca']),
