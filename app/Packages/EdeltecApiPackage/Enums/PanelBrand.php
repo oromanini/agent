@@ -7,11 +7,11 @@ use Illuminate\Support\Facades\Log;
 enum PanelBrand: string
 {
     case HANERSUN = 'HANERSUN TOPCON BIFACIAL';
-    case HONOR = 'HONOR';
+//    case HONOR = 'HONOR';
     case OSDA = 'OSDA TOPCON BIFACIAL';
-    case SINE = 'SINE';
+//    case SINE = 'SINE';
     case RESUN = 'RESUN TOPCON';
-    case RONMA = 'RONMA';
+//    case RONMA = 'RONMA';
 
     public static function matchCases(string $panel): PanelBrand
     {
