@@ -16,11 +16,11 @@ enum PanelBrand: string
     public static function matchCases(string $panel): PanelBrand
     {
         return match (strtoupper($panel)) {
-            'HONOR' => self::HONOR,
+//            'HONOR' => self::HONOR,
             'OSDA TOPCON BIFACIAL' => self::OSDA,
-            'SINE' => self::SINE,
+//            'SINE' => self::SINE,
             'RESUN TOPCON' => self::RESUN,
-            'RONMA' => self::RONMA,
+//            'RONMA' => self::RONMA,
             'HANERSUN TOPCON BIFACIAL' => self::HANERSUN,
             default => throw new \InvalidArgumentException("Panel brand '$panel' is not recognized."),
         };
