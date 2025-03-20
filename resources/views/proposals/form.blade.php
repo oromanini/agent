@@ -466,7 +466,7 @@
                     panelImage = '/img/panel_brands/pulling.png'
                 }
 
-                if (brand == 'Hanersun') {
+                if (brand == 'Hanersun' || brand == 'HANERSUN') {
                     panelImage = '/img/panel_brands/hanersun.png'
                 }
 

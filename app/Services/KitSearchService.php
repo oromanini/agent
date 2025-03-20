@@ -43,8 +43,8 @@ class KitSearchService
             foreach ($panels as $panel) {
 
                 $combination = ActiveKit::query()
-                    ->where('panel_brand', $panel->value)
-                    ->where('inverter_brand', $inverter->value)
+                    ->where('panel_brand', $panel->name)
+                    ->where('inverter_brand', $inverter->name)
                     ->where('distributor', $distributor)
                     ->where('is_active', '=', 1)
                     ->first();
@@ -58,8 +58,8 @@ class KitSearchService
                         ->where('distributor_name', $distributor)
                         ->where('roof_structure', $this->roof)
                         ->whereIn('tension_pattern', $tensionPossibilities)
-                        ->whereJsonContains('panel_specs->brand', $panel->value)
-                        ->whereJsonContains('inverter_specs->brand', $inverter->value)
+                        ->whereJsonContains('panel_specs->brand', $panel->name)
+                        ->whereJsonContains('inverter_specs->brand', $inverter->name)
                         ->orderBy('kwp')
                         ->first();
 
@@ -74,8 +74,8 @@ class KitSearchService
     {
         return match ($distributor) {
             'EDELTEC' => \App\Packages\EdeltecApiPackage\Enums\PanelBrand::cases(),
-            'ODEX' => \App\Services\Odex\PanelBrandEnum::cases(),
-            'FOTUS' => \App\Services\Fotus\PanelBrandEnum::cases(),
+//            'ODEX' => \App\Services\Odex\PanelBrandEnum::cases(),
+//            'FOTUS' => \App\Services\Fotus\PanelBrandEnum::cases(),
             default => throw new DistributorNotFoundException('Distribuidor não encontrado!')
         };
     }

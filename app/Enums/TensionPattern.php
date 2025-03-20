@@ -8,6 +8,7 @@ enum TensionPattern: int
     case BIFASICO_220V = 2;
     case TRIFASICO_220V = 3;
     case TRIFASICO_380V = 4;
+    case MONOFASICO_380V = 5;
 
     public static function setTensionPossibilities(int $tension): array
     {
@@ -30,6 +31,7 @@ enum TensionPattern: int
             'Monofásico 220', 'MONO-220', 'MONOFÁSICO-220v', 'MONOFASICO-220V', 'BIF-220', 'BIFÁSICO-220v' => self::MONOFASICO_220V->value,
             'Trifásico 220', 'TRI-220', 'TRIFASICO-220v', 'TRIFASICO-220V' => self::TRIFASICO_220V->value,
             'Trifásico 380', 'TRI-380', 'TRIFASICO-380v', 'TRIFASICO-380V' => self::TRIFASICO_380V->value,
+            'Monofásico 380'=> self::MONOFASICO_380V->value,
             default => 0
         };
     }
