@@ -8,6 +8,7 @@ use App\Models\Kit;
 use App\Models\PreInspection;
 use App\Models\Proposal;
 use App\Models\SolarIncidence;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\NoReturn;
 use Ramsey\Uuid\Uuid;
@@ -72,7 +73,7 @@ class ProposalService
             "inverter_quantity" => $data['inverter_quantity'],
             "inverter_overload" => (int) $data['inverter_overload'],
             "is_edited" => true,
-            "updated_by" => auth()->user()->name . " em " . now()->format('d/m/Y h:i:s'),
+            "updated_by" => auth()->user()->name . " em " . Carbon::now('America/Sao_Paulo')->format('d/m/Y H:i:s'),
         ];
 
         $proposal->is_manual = true;
@@ -191,7 +192,7 @@ class ProposalService
             'inverter_warranty' => $this->data['inverter_warranty'],
             'inverter_quantity' => $this->data['inverter_quantity'],
             'inverter_overload' => $this->data['inverter_overload'],
-            "created_by" => auth()->user()->name . " em " . now()->format('d/m/Y h:i:s'),
+            "created_by" => auth()->user()->name . " em " . Carbon::now('America/Sao_Paulo')->format('d/m/Y H:i:s'),
         ]);
 
         return $proposal;
