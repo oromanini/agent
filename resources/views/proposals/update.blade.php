@@ -146,7 +146,15 @@
                                 class="select is-multiline is-fullwidth  @error('panel_brand') is-danger @enderror">
                                 <select id="panel_brand" name="panel_brand">
                                     @forelse($panels as $panel)
-                                        <option {{ strtolower($kitInfo['panel_specs']['brand']) == strtolower($panel->name) ? 'selected' : '' }} value="{{ $panel->value }}">{{$panel->name}}</option>
+                                        <option
+                                            {{
+                                                strtolower($kitInfo['panel_specs']['brand']) == strtolower($panel->name)
+                                                || (int) $kitInfo['panel_specs']['brand'] == $panel->value
+                                                ? ' selected '
+                                                : ''
+                                            }}
+                                        value="{{ $panel->value }}">{{$panel->name}}
+                                        </option>
                                     @empty
                                         <option value="">Não há painéis cadastrados</option>
                                     @endforelse
@@ -199,7 +207,14 @@
                                 class="select is-multiline is-fullwidth  @error('inverter_brand') is-danger @enderror">
                                 <select id="inverter_brand" name="inverter_brand">
                                     @forelse($inverters as $inverter)
-                                        <option {{ strtolower($kitInfo['inverter_specs']['brand']) == strtolower($inverter->name) ? 'selected' : '' }} value="{{ $inverter->value }}">{{$inverter->name}}</option>
+                                        <option
+                                            {{
+                                                strtolower($kitInfo['inverter_specs']['brand']) == strtolower($inverter->name)
+                                                || (int) $kitInfo['inverter_specs']['brand'] == $inverter->value
+                                                ? ' selected '
+                                                : ''
+                                            }} value="{{ $inverter->value }}">{{$inverter->name}}
+                                        </option>
                                     @empty
                                         <option value="">Não há inversores cadastrados</option>
                                     @endforelse
