@@ -11,6 +11,7 @@ class UserRepository implements Filter
     public function filter($data): LengthAwarePaginator
     {
         return User::query()
+            ->withTrashed()
             ->where(function ($query) use($data) {
                 filterName($data, $query);
                 filterCnpj($data, $query);
