@@ -82,7 +82,7 @@
                         <td>{{ getNameAndFederalUnit($agent->city)}}</td>
                         <td>{{ getAscendantName($agent->ascendant) }}</td>
                         <td>
-                            <span class="tag @if($agent->trashed()) is-success @else is-danger @endif"> @if($agent->trashed()) Inativo @else Ativo @endif</span>
+                            <span class="tag @if($agent->trashed()) is-danger @else is-success @endif"> @if($agent->trashed()) Inativo @else Ativo @endif</span>
                         </td>
                         <td>
                             <a class="button is-primary" href="{{ route('user.edit', [$agent->id]) }}">
