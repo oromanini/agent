@@ -14,6 +14,11 @@
                     @method('POST')
                 @endif
                 @csrf
+                <div class="columns">
+                    <div class="column">
+                    @include('users.fields.active')
+                    </div>
+                </div>
                 <div class="columns" style="margin-top: 50px">
                     @include('users.fields.name')
                     @include('users.fields.cpf')

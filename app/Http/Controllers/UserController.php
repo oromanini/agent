@@ -71,7 +71,7 @@ class UserController extends Controller
     public function update($id, AgentRequest $request): RedirectResponse
     {
         $data = $request->all();
-        $user = User::find($id);
+        $user = User::withTrashed()->find($id);
 
         DB::transaction(function () use ($data, $user) {
             $user = $this->fillUser($user, $data);
@@ -82,6 +82,12 @@ class UserController extends Controller
                 $user->update();
             }
         });
+
+        (isset($data['active']) && $data['active'] == 'on' && $user->trashed())
+        && $user->restore();
+
+        (!isset($data['active']) && !$user->trashed())
+        && $user->delete();
 
         session()->flash('message', ['success', 'Agente atualizado com sucesso!']);
 
