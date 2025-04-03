@@ -1,4 +1,6 @@
 <div class="page page-break" style="background-image: url({{public_path('/img/proposal_v2/7.jpg')}})"><div id="components">
+        @include('proposals.pdf_v2.number')
+
         <ul>
             @foreach($components as $component)
                 <li>{{ $component }}</li>

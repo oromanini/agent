@@ -1,4 +1,5 @@
 <div class="page page-break" style="background-image: url({{public_path('/img/proposal_v2/1.jpg')}})">
+    @include('proposals.pdf_v2.number')
     <div @if(strlen($proposal->client->name) > 25) id="clientName" @else id="clientName2" @endif >
         {{$proposal->client->name}}
     </div>

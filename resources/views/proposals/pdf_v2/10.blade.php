@@ -1,4 +1,6 @@
 <div class="page" style="background-image: url({{public_path('/img/proposal_v2/10.jpg')}})">
+    @include('proposals.pdf_v2.number')
+
     <div id="agent_name">
         {{ $proposal->agent->name }}
     </div>

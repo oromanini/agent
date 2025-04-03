@@ -1,4 +1,6 @@
 <div class="page page-break" style="background-image: url({{public_path('/img/proposal_v2/6.jpg')}})">
+    @include('proposals.pdf_v2.number')
+
     <div id="panelImage">
         <img src="{{ $panelImage }}" alt="" width="400">
     </div>

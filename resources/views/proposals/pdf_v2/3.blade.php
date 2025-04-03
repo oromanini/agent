@@ -13,6 +13,8 @@
 @endphp
 
 <div class="page page-break" style="background-image: url({{public_path('/img/proposal_v2/3.jpg')}})">
+    @include('proposals.pdf_v2.number')
+
     <div id="finalValue">R$ {{ floatToMoney($proposal->valueHistory->final_price) }} <span class="minifiedText">à vista</span></div>
     <div id="3yearseconomy">R$ {{ floatToMoney($three_years_economy) }}</div>
     <div id="25yearseconomy">R$ {{ floatToMoney($twenty_five_years_economy) }}</div>

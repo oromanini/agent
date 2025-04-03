@@ -1,4 +1,6 @@
 <div class="page page-break" style="background-image: url({{public_path('/img/proposal_v2/5.jpg')}})">
+    @include('proposals.pdf_v2.number')
+
     <div id="systemPower">{{ $proposal->kwp }} <span class="minifiedTextForGeneration">kWp de potência total</span></div>
     <div id="estimatedGeneration">{{ ceil($proposal->estimated_generation) }} <span class="minifiedTextForGeneration">kWh/mês (média estimada ano)</span>
     </div>

@@ -1,4 +1,6 @@
 <div class="page page-break" style="background-image: url({{public_path('/img/proposal_v2/4.jpg')}})">
+    @include('proposals.pdf_v2.number')
+
     <div id="table">
         <table style="text-align: center">
             <thead>
