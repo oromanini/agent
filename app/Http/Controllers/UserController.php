@@ -39,7 +39,7 @@ class UserController extends Controller
     public function edit($id)
     {
         $states = State::all();
-        $agent = User::find($id);
+        $agent = User::withTrashed()->find($id);
         $agents = User::all();
 
         return view('users.form', compact('states', 'agent', 'agents'));
