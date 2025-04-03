@@ -95,7 +95,7 @@
                     <tr class="lh-40">
                         <th>{{$proposal->id}}</th>
                         <td>{{ $proposal->client->name }}</td>
-                        <td>{{ $proposal->agent->name }}</td>
+                        <td>{{ $proposal->agent ? $proposal->agent->name : 'Inativo'  }}</td>
                         <td>
                             @if(!is_null($proposal->send_date))
                                 <span class="tag is-success">Enviada</span>
