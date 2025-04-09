@@ -49,7 +49,12 @@ class ProposalService
 
         $incidence = $this->getIncidence($data['client']);
 
-        $proposal->estimated_generation = $this->calculateEstimatedGeneration((float) $data['kwp'], $incidence);
+        $proposal->estimated_generation = $this->calculateEstimatedGeneration(
+            (float) $data['kwp'],
+            $incidence
+        )['average'];
+
+
         $proposal->kw_price = stringMoneyToFloat($data['kw_price']);
 
         $proposal->tension_pattern = match ($data['tension_pattern']) {
