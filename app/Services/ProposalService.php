@@ -47,7 +47,7 @@ class ProposalService
         $proposal->client_id = (int) $data['client'];
         $proposal->average_consumption = (int) $data['average_consumption'];
 
-        $incidence = $this->getIncidence($this->data['client']);
+        $incidence = $this->getIncidence($data['client']);
 
         $proposal->estimated_generation = $this->calculateEstimatedGeneration((float) $data['kwp'], $incidence);
         $proposal->kw_price = stringMoneyToFloat($data['kw_price']);
