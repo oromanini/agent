@@ -21,4 +21,5 @@ enum InverterBrands: int
     case Huawei = 15;
     case Goodwe = 16;
     case Hoymiles = 17;
+    case MicroGrowatt = 18;
 }
