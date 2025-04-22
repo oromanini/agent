@@ -22,7 +22,7 @@ class HomologationController extends Controller
     public function index(Request $request): View
     {
         $homologations = $this->homologationRepository->filter($request->all());
-        $agents = User::all();
+        $agents = User::withTrashed();
 
         return view('homologation.index', compact('homologations', 'agents'));
     }
