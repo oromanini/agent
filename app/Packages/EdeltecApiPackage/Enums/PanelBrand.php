@@ -17,7 +17,7 @@ enum PanelBrand: string
     public static function matchCases(string $panel): PanelBrand
     {
         return match (strtoupper($panel)) {
-            'LONGI' => self::LONGI,
+            'LONGI HPBC' => self::LONGI,
 //            'HONOR' => self::HONOR,
 //            'OSDA TOPCON BIFACIAL' => self::OSDA,
 //            'SINE' => self::SINE,
