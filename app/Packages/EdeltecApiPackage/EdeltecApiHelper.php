@@ -38,7 +38,6 @@ class EdeltecApiHelper
     public static function getPanelWarranty(PanelBrand $panelBrand): int
     {
         return match ($panelBrand) {
-            PanelBrand::OSDA, PanelBrand::RESUN => 15,
             default => 12,
         };
     }
@@ -46,9 +45,6 @@ class EdeltecApiHelper
     public static function getPanelLinearWarranty(PanelBrand $panelBrand): int
     {
         return match ($panelBrand) {
-            PanelBrand::OSDA,
-            PanelBrand::RESUN,
-            PanelBrand::HANERSUN => 30,
             default => 25
         };
     }
@@ -65,10 +61,11 @@ class EdeltecApiHelper
         return match ($brand) {
 //            PanelBrand::SINE->value => '/EdeltecApiPackage/img/panels/sine.png',
 //            PanelBrand::HONOR->value => '/EdeltecApiPackage/img/panels/honor.png',
-            PanelBrand::OSDA->value => '/EdeltecApiPackage/img/panels/osda.png',
-            PanelBrand::RESUN->value => '/EdeltecApiPackage/img/panels/resun.png',
-//            PanelBrand::RONMA->value => '/EdeltecApiPackage/img/panels/ronma.png',
-            PanelBrand::HANERSUN->value => '/EdeltecApiPackage/img/panels/hanersun.png',
+//            PanelBrand::OSDA->value => '/EdeltecApiPackage/img/panels/osda.png',
+//            PanelBrand::RESUN->value => '/EdeltecApiPackage/img/panels/resun.png',
+////            PanelBrand::RONMA->value => '/EdeltecApiPackage/img/panels/ronma.png',
+//            PanelBrand::HANERSUN->value => '/EdeltecApiPackage/img/panels/hanersun.png',
+        default => '',
         };
     }
 
