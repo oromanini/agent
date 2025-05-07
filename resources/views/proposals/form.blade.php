@@ -445,7 +445,8 @@
                 if (brand == 'Phono') {
                     panelImage = '/img/panel_brands/phono.png'
                 }
-                if (brand == 'Longi') {
+                console.log(brand)
+                if (brand == 'Longi' || brand == 'LONGI') {
                     panelImage = '/img/panel_brands/longi.png'
                 }
                 if (brand == 'Astronergy Chint') {
