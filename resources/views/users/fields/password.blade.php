@@ -11,14 +11,14 @@
             <span class="icon is-small is-left">
                 <ion-icon name="key-outline"></ion-icon>
             </span>
-            <span class="icon is-small is-right">
-                <button type="button"
-                        onclick="togglePasswordVisibility()"
-                        style="all: unset; cursor: pointer; display: flex; align-items: center;"
-                        aria-label="Mostrar ou ocultar senha">
-                    <ion-icon id="toggleIcon" name="eye-outline"></ion-icon>
-                </button>
-            </span>
+
+            <!-- O botão "olhinho" -->
+            <button type="button"
+                    onclick="togglePasswordVisibility()"
+                    style="all: unset; cursor: pointer; position: absolute; right: 1rem; top: 50%; transform: translateY(-50%);">
+                <ion-icon id="toggleIcon" name="eye-outline"></ion-icon>
+            </button>
+
             @error('password')<span class="error-message">{{ $message }}</span>@enderror
         </div>
     </div>
