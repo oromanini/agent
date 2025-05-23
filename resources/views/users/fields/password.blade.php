@@ -1,13 +1,30 @@
 <div class="column is-2">
     <div class="field">
         <label for="password" class="label">Senha*</label>
-        <div class="control has-icons-left">
+        <div class="control has-icons-left has-icons-right">
             <input class="input is-rounded" name="password" id="password" type="password"
                    @if(isset($agent)) value="{{ $agent->password }}" @endif>
             <span class="icon is-small is-left">
-                                <ion-icon name="key-outline"></ion-icon>
-                            </span>
+                <ion-icon name="key-outline"></ion-icon>
+            </span>
+            <span class="icon is-small is-right" style="cursor: pointer;" onclick="togglePasswordVisibility()">
+                <ion-icon id="toggleIcon" name="eye-outline"></ion-icon>
+            </span>
             @error('password')<span class="error-message">{{ $message }}</span>@enderror
         </div>
     </div>
 </div>
+
+<script>
+    function togglePasswordVisibility() {
+        const passwordInput = document.getElementById("password");
+        const icon = document.getElementById("toggleIcon");
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            icon.setAttribute("name", "eye-off-outline");
+        } else {
+            passwordInput.type = "password";
+            icon.setAttribute("name", "eye-outline");
+        }
+    }
+</script>
