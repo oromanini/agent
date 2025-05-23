@@ -1,3 +1,7 @@
+<!-- Ionicons (adicione no <head> ou antes do fechamento do <body>) -->
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
 <div class="column is-2">
     <div class="field">
         <label for="password" class="label">Senha*</label>
@@ -19,12 +23,9 @@
     function togglePasswordVisibility() {
         const passwordInput = document.getElementById("password");
         const icon = document.getElementById("toggleIcon");
-        if (passwordInput.type === "password") {
-            passwordInput.type = "text";
-            icon.setAttribute("name", "eye-off-outline");
-        } else {
-            passwordInput.type = "password";
-            icon.setAttribute("name", "eye-outline");
-        }
+        const isPassword = passwordInput.type === "password";
+
+        passwordInput.type = isPassword ? "text" : "password";
+        icon.setAttribute("name", isPassword ? "eye-off-outline" : "eye-outline");
     }
 </script>
