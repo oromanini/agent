@@ -12,25 +12,7 @@
                 <ion-icon name="key-outline"></ion-icon>
             </span>
 
-            <!-- O botão "olhinho" -->
-            <button type="button"
-                    onclick="togglePasswordVisibility()"
-                    style="all: unset; cursor: pointer; position: absolute; right: 1rem; top: 50%; transform: translateY(-50%);">
-                <ion-icon id="toggleIcon" name="eye-outline"></ion-icon>
-            </button>
-
             @error('password')<span class="error-message">{{ $message }}</span>@enderror
         </div>
     </div>
 </div>
-
-<script>
-    function togglePasswordVisibility() {
-        const passwordInput = document.getElementById("password");
-        const icon = document.getElementById("toggleIcon");
-        const isPassword = passwordInput.type === "password";
-
-        passwordInput.type = isPassword ? "text" : "password";
-        icon.setAttribute("name", isPassword ? "eye-off-outline" : "eye-outline");
-    }
-</script>

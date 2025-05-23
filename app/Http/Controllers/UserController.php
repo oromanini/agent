@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Repositories\UserRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Throwable;
@@ -42,8 +43,6 @@ class UserController extends Controller
         $agent = User::withTrashed()->find($id);
         $agents = User::all();
 
-        $agent->password = bcrypt($agent->password);
-
         return view('users.form', compact('states', 'agent', 'agents'));
     }
 
@@ -77,6 +76,9 @@ class UserController extends Controller
 
         DB::transaction(function () use ($data, $user) {
             $user = $this->fillUser($user, $data);
+
+            $user->password = bcrypt($data['password']);
+
             $user->update();
 
             if (isset($data['contract'])) {
