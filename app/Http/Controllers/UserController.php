@@ -42,6 +42,8 @@ class UserController extends Controller
         $agent = User::withTrashed()->find($id);
         $agents = User::all();
 
+        $agent->password = bcrypt($agent->password);
+
         return view('users.form', compact('states', 'agent', 'agents'));
     }
 
