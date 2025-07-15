@@ -26,7 +26,7 @@
                     @include('users.fields.cpf')
                     @include('users.fields.cnpj')
                     @include('users.fields.email')
-                    @include('users.fields.pa ssword')
+                    @include('users.fields.password')
                 </div>
                 <div class="columns">
                     @include('users.fields.phone_number')
