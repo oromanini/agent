@@ -14,17 +14,19 @@
                     @method('POST')
                 @endif
                 @csrf
-                <div class="columns">
-                    <div class="column">
-                    @include('users.fields.active')
+                @if(isset($agent))
+                    <div class="columns">
+                        <div class="column">
+                        @include('users.fields.active')
+                        </div>
                     </div>
-                </div>
+                @endif
                 <div class="columns" style="margin-top: 50px">
                     @include('users.fields.name')
                     @include('users.fields.cpf')
                     @include('users.fields.cnpj')
                     @include('users.fields.email')
-                    @include('users.fields.password')
+                    @include('users.fields.pa ssword')
                 </div>
                 <div class="columns">
                     @include('users.fields.phone_number')
