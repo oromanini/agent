@@ -27,4 +27,5 @@ enum PanelBrands: int
     case Ronma = 21;
     case Leapton = 22;
     case Risen = 23;
+    case RenePV = 24;
 }
