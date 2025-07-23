@@ -23,4 +23,5 @@ enum InverterBrands: int
     case Hoymiles = 17;
     case MicroGrowatt = 18;
     case Auxsol = 19;
+    case Foxess_micro = 20;
 }
