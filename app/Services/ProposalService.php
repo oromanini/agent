@@ -255,7 +255,7 @@ class ProposalService
         $proposal->roof_structure = (int) $this->data['roof_structure'];
         $proposal->kw_price = commaFloatToDotFloat($this->data['kw_price']);
         $proposal->client_id = (int) $this->data['client'];
-        $proposal->roof_orientation = json_encode($this->setRoofOrientations($this->data));
+        $proposal->roof_orientation = $this->data["orientation"];
 
         !$isManual && $this->setKitSpecs($this->data['kit_id']);
         $proposal->value_history_id = $this->valueHistoryService->store($this->data, $isManual);
