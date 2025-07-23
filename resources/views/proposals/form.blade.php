@@ -148,26 +148,21 @@
                     @endforeach
                 </div>
                 <div class="columns is-flex is-justify-content-center"
-                     style="display:none !important; margin-top: 15px; margin-bottom: 30px">
+                     style="margin-top: 15px; margin-bottom: 30px">
                     <div class="column is-6 is-flex is-justify-content-space-around is-align-items-center is-warning"
                          style="border: 2px solid #f2a714; border-radius: 100px;">
                         <label class="checkbox">
-                            <input name="orientation[norte]" type="checkbox" value="norte" checked>
+                            <input name="orientation" type="radio" value="norte" checked>
                             Norte
                         </label>
                         <label class="checkbox">
-                            <input name="orientation[leste]" value="leste" type="checkbox">
-                            Leste
+                            <input name="orientation" value="leste/oeste" type="radio">
+                            Leste/Oeste
                         </label>
                         <label class="checkbox">
-                            <input name="orientation[oeste]" value="oeste" type="checkbox">
-                            Oeste
-                        </label>
-                        <label class="checkbox">
-                            <input name="orientation[sul]" value="sul" type="checkbox">
+                            <input name="orientation" value="sul" type="radio">
                             Sul
                         </label>
-
                     </div>
                 </div>
                 <div class="column is-flex is-justify-content-center">
@@ -177,7 +172,7 @@
                 </div>
                 <hr style="margin: 10px">
 
-                {{--        KITS--}}
+
                 <div id="kits" class="columns is-flex is-justify-content-center is-flex-wrap-wrap"
                      style="padding: 25px 10px"></div>
                 <hr>
