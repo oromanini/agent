@@ -204,3 +204,12 @@ function calculateWithSolar($proposal): string
 
     return 130;
 }
+
+function setRoofPlusLost(string $roof_orientation): string
+{
+    return match ($roof_orientation) {
+        '["sul"]' => "S 50%",
+        '["leste/oeste"]' => "L/O 30%",
+        default => "N 20%"
+    };
+}

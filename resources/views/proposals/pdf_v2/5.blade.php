@@ -48,7 +48,7 @@
 
 
 
-    <div id="incidence"><span class="minifiedTextForGeneration">Incidência solar</span> <br>{{ $incidence }} /m2</div>
+    <div id="incidence"><span class="minifiedTextForGeneration">Incidência solar</span> <br>{{ $incidence }} /m2 ({{ setRoofPlusLost($proposal->roof_orientation) }})</div>
     <div id="local"><span class="minifiedTextForGeneration">Resultado para </span><br>{{PHP_EOL . $proposal->client->addresses->first()->city->name_and_federal_unit}}</div>
 
 </div>
@@ -156,7 +156,6 @@
 
     .minifiedTextForGeneration {
         font-size: 8pt !important;
-
     }
 
 </style>

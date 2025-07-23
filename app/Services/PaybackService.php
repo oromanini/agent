@@ -69,68 +69,69 @@ class PaybackService
         $city = $proposal->client->addresses->first()->city;
         $incidence = $this->solarIncidenceService->getSolarIncidence($city);
         $kwp = $proposal->kwp;
+        $roof_orientation = $proposal->roof_orientation;
 
         $generationData = [
             'months' => [
                 'janeiro' => [
                     'consumo' => $consumption,
-                    'geracao' => $this->setGeneration(month: 'jan', kwp: $kwp, incidence: $incidence),
-                    'excedente' => $this->setGeneration(month: 'jan', kwp: $kwp, incidence: $incidence) - $consumption,
+                    'geracao' => $this->setGeneration(month: 'jan', kwp: $kwp, incidence: $incidence, roof: $roof_orientation),
+                    'excedente' => $this->setGeneration(month: 'jan', kwp: $kwp, incidence: $incidence, roof: $roof_orientation) - $consumption,
                 ],
                 'fevereiro' => [
                     'consumo' => $consumption,
-                    'geracao' => $this->setGeneration(month: 'feb', kwp: $kwp, incidence: $incidence),
-                    'excedente' => $this->setGeneration(month: 'feb', kwp: $kwp, incidence: $incidence) - $consumption,
+                    'geracao' => $this->setGeneration(month: 'feb', kwp: $kwp, incidence: $incidence, roof: $roof_orientation),
+                    'excedente' => $this->setGeneration(month: 'feb', kwp: $kwp, incidence: $incidence, roof: $roof_orientation) - $consumption,
                 ],
                 'março' => [
                     'consumo' => $consumption,
-                    'geracao' => $this->setGeneration(month: 'mar', kwp: $kwp, incidence: $incidence),
-                    'excedente' => $this->setGeneration(month: 'mar', kwp: $kwp, incidence: $incidence) - $consumption,
+                    'geracao' => $this->setGeneration(month: 'mar', kwp: $kwp, incidence: $incidence, roof: $roof_orientation),
+                    'excedente' => $this->setGeneration(month: 'mar', kwp: $kwp, incidence: $incidence, roof: $roof_orientation) - $consumption,
                 ],
                 'abril' => [
                     'consumo' => $consumption,
-                    'geracao' => $this->setGeneration(month: 'apr', kwp: $kwp, incidence: $incidence),
-                    'excedente' => $this->setGeneration(month: 'apr', kwp: $kwp, incidence: $incidence) - $consumption,
+                    'geracao' => $this->setGeneration(month: 'apr', kwp: $kwp, incidence: $incidence, roof: $roof_orientation),
+                    'excedente' => $this->setGeneration(month: 'apr', kwp: $kwp, incidence: $incidence, roof: $roof_orientation) - $consumption,
                 ],
                 'maio' => [
                     'consumo' => $consumption,
-                    'geracao' => $this->setGeneration(month: 'may', kwp: $kwp, incidence: $incidence),
-                    'excedente' => $this->setGeneration(month: 'may', kwp: $kwp, incidence: $incidence) - $consumption,
+                    'geracao' => $this->setGeneration(month: 'may', kwp: $kwp, incidence: $incidence, roof: $roof_orientation),
+                    'excedente' => $this->setGeneration(month: 'may', kwp: $kwp, incidence: $incidence, roof: $roof_orientation) - $consumption,
                 ],
                 'junho' => [
                     'consumo' => $consumption,
-                    'geracao' => $this->setGeneration(month: 'jun', kwp: $kwp, incidence: $incidence),
-                    'excedente' => $this->setGeneration(month: 'jun', kwp: $kwp, incidence: $incidence) - $consumption,
+                    'geracao' => $this->setGeneration(month: 'jun', kwp: $kwp, incidence: $incidence, roof: $roof_orientation),
+                    'excedente' => $this->setGeneration(month: 'jun', kwp: $kwp, incidence: $incidence, roof: $roof_orientation) - $consumption,
                 ],
                 'julho' => [
                     'consumo' => $consumption,
-                    'geracao' => $this->setGeneration(month: 'jul', kwp: $kwp, incidence: $incidence),
-                    'excedente' => $this->setGeneration(month: 'jul', kwp: $kwp, incidence: $incidence) - $consumption,
+                    'geracao' => $this->setGeneration(month: 'jul', kwp: $kwp, incidence: $incidence, roof: $roof_orientation),
+                    'excedente' => $this->setGeneration(month: 'jul', kwp: $kwp, incidence: $incidence, roof: $roof_orientation) - $consumption,
                 ],
                 'agosto' => [
                     'consumo' => $consumption,
-                    'geracao' => $this->setGeneration(month: 'aug', kwp: $kwp, incidence: $incidence),
-                    'excedente' => $this->setGeneration(month: 'aug', kwp: $kwp, incidence: $incidence) - $consumption,
+                    'geracao' => $this->setGeneration(month: 'aug', kwp: $kwp, incidence: $incidence, roof: $roof_orientation),
+                    'excedente' => $this->setGeneration(month: 'aug', kwp: $kwp, incidence: $incidence, roof: $roof_orientation) - $consumption,
                 ],
                 'setembro' => [
                     'consumo' => $consumption,
-                    'geracao' => $this->setGeneration(month: 'sep', kwp: $kwp, incidence: $incidence),
-                    'excedente' => $this->setGeneration(month: 'sep', kwp: $kwp, incidence: $incidence) - $consumption,
+                    'geracao' => $this->setGeneration(month: 'sep', kwp: $kwp, incidence: $incidence, roof: $roof_orientation),
+                    'excedente' => $this->setGeneration(month: 'sep', kwp: $kwp, incidence: $incidence, roof: $roof_orientation) - $consumption,
                 ],
                 'outubro' => [
                     'consumo' => $consumption,
-                    'geracao' => $this->setGeneration(month: 'oct', kwp: $kwp, incidence: $incidence),
-                    'excedente' => $this->setGeneration(month: 'oct', kwp: $kwp, incidence: $incidence) - $consumption,
+                    'geracao' => $this->setGeneration(month: 'oct', kwp: $kwp, incidence: $incidence, roof: $roof_orientation),
+                    'excedente' => $this->setGeneration(month: 'oct', kwp: $kwp, incidence: $incidence, roof: $roof_orientation) - $consumption,
                 ],
                 'novembro' => [
                     'consumo' => $consumption,
-                    'geracao' => $this->setGeneration(month: 'nov', kwp: $kwp, incidence: $incidence),
-                    'excedente' => $this->setGeneration(month: 'nov', kwp: $kwp, incidence: $incidence) - $consumption,
+                    'geracao' => $this->setGeneration(month: 'nov', kwp: $kwp, incidence: $incidence, roof: $roof_orientation),
+                    'excedente' => $this->setGeneration(month: 'nov', kwp: $kwp, incidence: $incidence, roof: $roof_orientation) - $consumption,
                 ],
                 'dezembro' => [
                     'consumo' => $consumption,
-                    'geracao' => $this->setGeneration(month: 'dec', kwp: $kwp, incidence: $incidence),
-                    'excedente' => $this->setGeneration(month: 'dec', kwp: $kwp, incidence: $incidence) - $consumption,
+                    'geracao' => $this->setGeneration(month: 'dec', kwp: $kwp, incidence: $incidence, roof: $roof_orientation),
+                    'excedente' => $this->setGeneration(month: 'dec', kwp: $kwp, incidence: $incidence, roof: $roof_orientation) - $consumption,
                 ],
             ]
         ];
@@ -154,10 +155,12 @@ class PaybackService
         return $generationData;
     }
 
-    private function setGeneration(string $month, float $kwp, object $incidence): float
+    private function setGeneration(string $month, float $kwp, object $incidence, string $roof): float
     {
+        $totalLost = (float) env('GENERATION_LOST') + $this->setRoofPlusLost($roof);
+
         return ceil(
-            ($kwp * 30 * ((float)$incidence->{$month} / 1000)) / (1 + (float) env('GENERATION_LOST'))
+            ($kwp * 30 * ((float) $incidence->{$month} / 1000)) / (1 + $totalLost)
         );
     }
 
@@ -245,6 +248,15 @@ class PaybackService
             3 => 0.28 * 0.75,
             4 => 0.28 * 0.90,
             default => 0.28,
+        };
+    }
+
+    private function setRoofPlusLost(string $roof_orientation): float
+    {
+        return match ($roof_orientation) {
+            '["sul"]' => 0.30,
+            '["leste/oeste"]' => 0.1,
+            default => 0
         };
     }
 }
