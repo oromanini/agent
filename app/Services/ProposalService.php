@@ -107,7 +107,6 @@ class ProposalService
     ): object {
         $proposal = new Proposal();
         $proposal->uuid = Uuid::uuid6();
-
         $isManual
             ? $proposal = $this->fillManualProposal($proposal)
             : $proposal = $this->fillDefaultProposal($proposal);
@@ -250,7 +249,7 @@ class ProposalService
         bool $isManual,
         SolarIncidence $incidence
     ): Proposal {
-        $proposal->estimated_generation = $this->calculateEstimatedGeneration($proposal->kwp, $incidence, $proposal->roof_orientation)['average'];
+        $proposal->estimated_generation = $this->calculateEstimatedGeneration($proposal->kwp, $incidence, $proposal->roof_orientation ?? $this->data["orientation"])['average'];
         $proposal->average_consumption = (float) $this->data['average_consumption'];
         $proposal->tension_pattern = (int) $this->data['tension_pattern'];
         $proposal->roof_structure = (int) $this->data['roof_structure'];
