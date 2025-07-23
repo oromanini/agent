@@ -100,17 +100,14 @@
                          style="border: 2px solid #f2a714; border-radius: 100px;">
                         <label class="checkbox">
                             <input name="orientation" type="radio" value="norte"
-                                   @if($proposal->roof_orientation == '["norte"]') checked @endif
                             > Norte
                         </label>
                         <label class="checkbox">
                             <input name="orientation" value="leste/oeste" type="radio"
-                                   @if($proposal->roof_orientation == '["leste/oeste"]') checked @endif
                             > Leste/Oeste
                         </label>
                         <label class="checkbox">
                             <input name="orientation" value="sul" type="radio"
-                                   @if($proposal->roof_orientation == '["sul"]') checked @endif
                             > Sul
                         </label>
                     </div>
