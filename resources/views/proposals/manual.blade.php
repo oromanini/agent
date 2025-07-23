@@ -94,25 +94,25 @@
                     @endforeach
                 </div>
 
-                <div class="columns is-flex is-justify-content-center" style="margin-top: 15px; margin-bottom: 70px">
-                    <div class="column is-6 is-flex is-justify-content-space-around is-align-items-center is-warning" style="border: 2px solid #f2a714; border-radius: 100px;">
+                <div class="columns is-flex is-justify-content-center"
+                     style="margin-top: 15px; margin-bottom: 30px">
+                    <div class="column is-6 is-flex is-justify-content-space-around is-align-items-center is-warning"
+                         style="border: 2px solid #f2a714; border-radius: 100px;">
                         <label class="checkbox">
-                            <input name="orientation[norte]" type="checkbox" value="norte" checked>
-                            Norte
+                            <input name="orientation" type="radio" value="norte"
+                                   @if($proposal->roof_orientation == '["norte"]') checked @endif
+                            > Norte
                         </label>
                         <label class="checkbox">
-                            <input name="orientation[leste]" value="leste" type="checkbox">
-                            Leste
+                            <input name="orientation" value="leste/oeste" type="radio"
+                                   @if($proposal->roof_orientation == '["leste/oeste"]') checked @endif
+                            > Leste/Oeste
                         </label>
                         <label class="checkbox">
-                            <input name="orientation[oeste]" value="oeste" type="checkbox">
-                            Oeste
+                            <input name="orientation" value="sul" type="radio"
+                                   @if($proposal->roof_orientation == '["sul"]') checked @endif
+                            > Sul
                         </label>
-                        <label class="checkbox">
-                            <input name="orientation[sul]" value="sul" type="checkbox">
-                            Sul
-                        </label>
-
                     </div>
                 </div>
 
