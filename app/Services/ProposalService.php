@@ -32,6 +32,8 @@ class ProposalService
             incidence: $incidence,
         );
 
+        $proposal->roof_orientation = '["' . $data['orientation'] . '"]';
+
         $proposal->pre_inspection_id = $this->createPreInspection()->id;
 
         DB::transaction(function () use ($proposal) {
@@ -43,15 +45,15 @@ class ProposalService
 
     public function update(Proposal $proposal, array $data): void
     {
-
         $proposal->client_id = (int) $data['client'];
         $proposal->average_consumption = (int) $data['average_consumption'];
-
+        $proposal->roof_orientation = '["' . $data['orientation'] . '"]';
         $incidence = $this->getIncidence($data['client']);
 
         $proposal->estimated_generation = $this->calculateEstimatedGeneration(
             (float) $data['kwp'],
-            $incidence
+            $incidence,
+            $proposal->roof_orientation
         )['average'];
 
 
@@ -113,10 +115,13 @@ class ProposalService
         return $this->fillCommonFields($proposal, $isManual, $incidence);
     }
 
-    public function calculateEstimatedGeneration(float $kwp, SolarIncidence $incidence): array
+    public function calculateEstimatedGeneration(float $kwp, SolarIncidence $incidence, string $roof_orientation): array
     {
-        $generationLost = env('GENERATION_LOST');
-        $ordinaryAverage = (float)str_replace(',', '.', $incidence->average);
+        $roof_plus_lost = $this->setRoofPlusLost($roof_orientation);
+
+        $generationLost = (float) env('GENERATION_LOST') + $roof_plus_lost;
+
+        $ordinaryAverage = (float) str_replace(',', '.', $incidence->average);
 
         $months = [
             'jan' => $this->setGeneration(month: 'jan', kwp: $kwp, incidence: $incidence, generationLost: $generationLost),
@@ -245,7 +250,7 @@ class ProposalService
         bool $isManual,
         SolarIncidence $incidence
     ): Proposal {
-        $proposal->estimated_generation = $this->calculateEstimatedGeneration($proposal->kwp, $incidence)['average'];
+        $proposal->estimated_generation = $this->calculateEstimatedGeneration($proposal->kwp, $incidence, $proposal->roof_orientation)['average'];
         $proposal->average_consumption = (float) $this->data['average_consumption'];
         $proposal->tension_pattern = (int) $this->data['tension_pattern'];
         $proposal->roof_structure = (int) $this->data['roof_structure'];
@@ -271,5 +276,14 @@ class ProposalService
         $this->data['panelPower'] = $specs['panel']['power'];
         $this->data['inverterBrand'] = $specs['inverter']['brand'];
         $this->data['roofStructure'] = RoofStructure::from($kit->roof_structure);
+    }
+
+    private function setRoofPlusLost(string $roof_orientation): float
+    {
+        return match ($roof_orientation) {
+            '["sul"]' => 0.30,
+            '["leste/oeste"]' => 0.1,
+            default => 0
+        };
     }
 }
