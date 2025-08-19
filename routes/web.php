@@ -4,6 +4,7 @@ use App\Http\Controllers\ActiveKitController;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\FinancingController;
@@ -177,6 +178,8 @@ Route::middleware('auth')->group(function () {
         Route::get('work-costs/{work_cost}/edit', [WorkCostController::class, 'edit'])->name('edit');
         Route::put('work-costs/{work_cost}', [WorkCostController::class, 'update'])->name('update');
     });
+
+    Route::get('/brands', [BrandController::class, 'index'])->name('brands.index');
 
     Route::get('/citiesByState/{id}', [CityController::class, 'citiesByState']);
     Route::get('/getCityAndStateByNameAndUf/{name}/{uf}', [CityController::class, 'citiesByNameAndUf']);
