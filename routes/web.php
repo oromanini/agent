@@ -17,6 +17,7 @@ use App\Http\Controllers\ProductsUpdateController;
 use App\Http\Controllers\ProposalController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ValueHistoryController;
+use App\Http\Controllers\WorkCostController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -170,6 +171,12 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('active-kits', ActiveKitController::class);
     Route::put('active-kits/{activeKit}/toggle-active', [ActiveKitController::class, 'toggleActive'])->name('active-kits.toggleActive');
+
+    Route::name('work_costs.')->group(function () {
+        Route::get('work-costs', [WorkCostController::class, 'index'])->name('index');
+        Route::get('work-costs/{work_cost}/edit', [WorkCostController::class, 'edit'])->name('edit');
+        Route::put('work-costs/{work_cost}', [WorkCostController::class, 'update'])->name('update');
+    });
 
     Route::get('/citiesByState/{id}', [CityController::class, 'citiesByState']);
     Route::get('/getCityAndStateByNameAndUf/{name}/{uf}', [CityController::class, 'citiesByNameAndUf']);

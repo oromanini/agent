@@ -155,6 +155,15 @@ $permissionToHomologation = $permission == 'admin'
                     <span class="side-title">Atualizar combinações</span>
                 </a>
             </li>
+            <li class="side-list">
+                <a href="{{ route('work_costs.index') }}">
+                <span class="side-icon">
+                    <ion-icon name="cash-outline"></ion-icon>
+                </span>
+                <span class="side-title">Atualizar Custos</span>
+                </a>
+            </li>
+
         @endif
         <hr style="margin-top: 2px !important;">
         <li class="side-list">
