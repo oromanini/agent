@@ -45,9 +45,10 @@ class WorkCostController extends Controller
             return back()->withErrors(['costs' => 'O formato do JSON de custos é inválido.'])->withInput();
         }
 
+        // A função parseCostsForStorage agora espera um array
         $costsToStore = $this->parseCostsForStorage($costsArrayFromRequest);
 
-        $currentHistory = $workCost->change_history ?? [];
+        $currentHistory = $this->getChangeHistoryAsArray($workCost);
         $newHistoryEntry = [
             'user_id' => auth()->id() ?? 'system',
             'date' => Carbon::now()->toDateTimeString(),
@@ -65,14 +66,33 @@ class WorkCostController extends Controller
         return redirect()->route('work_costs.index')->with('success', 'Custo atualizado com sucesso!');
     }
 
+    /**
+     * Obtém os custos como um array, lidando com JSON simples ou duplo.
+     */
     private function getCostsAsArray(WorkCost $workCost): array
     {
         $costs = $workCost->costs;
-        // Se for uma string (JSON duplo), decodifica. Se já for array, usa diretamente.
         if (is_string($costs)) {
-            return json_decode($costs, true) ?? [];
+            $decoded = json_decode($costs, true);
+            // Verifica se foi duplamente codificado
+            if (is_string($decoded)) {
+                return json_decode($decoded, true) ?? [];
+            }
+            return $decoded ?? [];
         }
         return $costs ?? [];
+    }
+
+    /**
+     * Obtém o histórico de alterações como um array.
+     */
+    private function getChangeHistoryAsArray(WorkCost $workCost): array
+    {
+        $history = $workCost->change_history;
+        if (is_string($history)) {
+            return json_decode($history, true) ?? [];
+        }
+        return $history ?? [];
     }
 
     private function formatCostsForDisplay(array $costs): array
@@ -88,6 +108,7 @@ class WorkCostController extends Controller
         return $formattedCosts;
     }
 
+    // A função agora espera um array e retorna um array para o update.
     private function parseCostsForStorage(array $costsArray): array
     {
         $parsedCosts = [];
