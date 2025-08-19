@@ -3,6 +3,7 @@
 namespace App\Packages\SoolarApiPackage\Repositories;
 
 use App\Packages\SoolarApiPackage\Enums\ProductCategoriesEnum;
+use App\Packages\SoolarApiPackage\Enums\WarehouseEnum;
 use App\Packages\SoolarApiPackage\Models\Cable;
 use App\Packages\SoolarApiPackage\Models\Connector;
 use App\Packages\SoolarApiPackage\Models\Inverter;

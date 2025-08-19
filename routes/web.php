@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActiveKitController;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\InstallationController;
 use App\Http\Controllers\KitSearchController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\PreInspectionController;
+use App\Http\Controllers\ProductsUpdateController;
 use App\Http\Controllers\ProposalController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ValueHistoryController;
@@ -158,6 +160,16 @@ Route::middleware('auth')->group(function () {
 
         });
     });
+
+    Route::controller(ProductsUpdateController::class)->group(function () {
+
+        Route::name('update_products.')->group(function () {
+            Route::get('/atualizar_kits', 'index')->name('index');
+        });
+    });
+
+    Route::resource('active-kits', ActiveKitController::class);
+    Route::put('active-kits/{activeKit}/toggle-active', [ActiveKitController::class, 'toggleActive'])->name('active-kits.toggleActive');
 
     Route::get('/citiesByState/{id}', [CityController::class, 'citiesByState']);
     Route::get('/getCityAndStateByNameAndUf/{name}/{uf}', [CityController::class, 'citiesByNameAndUf']);

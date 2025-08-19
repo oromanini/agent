@@ -4,6 +4,7 @@ namespace App\Packages\SoolarApiPackage;
 
 use App\Packages\SoolarApiPackage\Enums\ProductCategoriesEnum;
 use App\Packages\SoolarApiPackage\Enums\WarehouseEnum;
+use App\Packages\SoolarApiPackage\Repositories\SoollarApiRepository;
 use DOMDocument;
 use DOMXPath;
 use GuzzleHttp\Client;
@@ -18,17 +19,19 @@ class SoolarApiService
     private const LOGIN_PAGE_URI = 'customer/login';
     private Client $client;
 
-    public function __construct()
+    public function __construct(private readonly SoollarApiRepository $soollarApiRepository)
     {
         $this->client = $this->getClient();
     }
 
-    public function listProducts(ProductCategoriesEnum $category, WarehouseEnum $warehouse): array
+    public function handle(ProductCategoriesEnum $category, WarehouseEnum $warehouse): void
     {
         try {
-            return $this->getProduct($category, $warehouse);
+            $products = $this->getProduct($category, $warehouse);
+            // CORREÇÃO: Acessar a chave 'products' do array retornado
+            $this->soollarApiRepository->syncProducts($category, $products['products']);
         } catch (\Exception $e) {
-            return ['error' => $e->getMessage()];
+            throw new \Exception('Erro ao importar produtos: ' . $e->getMessage());
         }
     }
 

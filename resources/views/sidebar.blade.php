@@ -139,6 +139,22 @@ $permissionToHomologation = $permission == 'admin'
                     <span class="side-title">Agentes</span>
                 </a>
             </li>
+            <li class="side-list">
+                <a href="{{ route('update_products.index') }}">
+                <span class="side-icon">
+                    <ion-icon name="server-outline"></ion-icon>
+                </span>
+                    <span class="side-title">Atualizar produtos</span>
+                </a>
+            </li>
+            <li class="side-list">
+                <a href="{{ route('active-kits.index') }}">
+                <span class="side-icon">
+                    <ion-icon name="git-compare-outline"></ion-icon>
+                </span>
+                    <span class="side-title">Atualizar combinações</span>
+                </a>
+            </li>
         @endif
         <hr style="margin-top: 2px !important;">
         <li class="side-list">
