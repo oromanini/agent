@@ -2,328 +2,167 @@
 
 @section('content')
     <div class="container is-fluid overflow-auto">
-        {{-- 1. Navegação das abas, exatamente como no seu exemplo --}}
-        <nav class="tabs is-boxed is-fullwidth is-large" style="margin-bottom: 0">
-            <div class="container">
-                <ul>
-                    <li id="modules-li" class="mytab is-active" onclick="openTab(event,'modules')">
-                        <a style="color: #6b7280; font-size: 12pt">
-                            <ion-icon name="flash-outline"></ion-icon>
-                            Marcas de Módulos
-                        </a>
-                    </li>
-                    <li id="inverters-li" class="mytab" onclick="openTab(event,'inverters')">
-                        <a style="color: #6b7280; font-size: 12pt">
-                            <ion-icon name="camera-outline"></ion-icon>
-                            Marcas de Inversores
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-
-        {{-- 2. Box que contém o conteúdo que será trocado --}}
         <div class="box overflow-auto">
-            {{-- Conteúdo da Aba de Módulos --}}
-            <div id="modules" class="content-tab">
-                <h4 class="title is-5">Adicionar Nova Marca de Módulo</h4>
-                <form class="add-brand-form" data-type="module">
-                    <div class="columns is-vcentered">
-                        <div class="column is-7">
-                            <div class="control">
-                                <input class="input" type="text" name="brand" placeholder="Nome da Marca" required>
-                            </div>
+            <div class="columns mt-2 mb-5 ml-1">
+                <h3 class="title"><img src="/img/logo/alluz-icon.png" width="30" alt="..">
+                    Atualização de kits
+                </h3>
+            </div>
+            <div class="columns">
+                <div class="column is-6">
+                    <div class="box is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
+                        <h3 class="is-size-4 has-text-centered mb-4">Distribuidora Soollar</h3>
+                        <div class="image-wrapper">
+                            <img src="{{ asset('img/update_products/soollar.png') }}" alt="no-image">
                         </div>
-                        <div class="column is-3">
-                            <div class="control">
-                                <input class="input" type="number" name="warranty" placeholder="Garantia (anos)" required>
-                            </div>
-                        </div>
-                        <div class="column is-2">
-                            <div class="control">
-                                <button class="button is-success is-fullwidth" type="submit">Adicionar</button>
-                            </div>
-                        </div>
+                        <a id="btn-soollar" class="button is-primary mt-4">Atualizar kits</a>
                     </div>
-                </form>
-                <hr>
-                <h4 class="title is-5">Marcas de Módulo Cadastradas</h4>
-                <table class="table is-striped is-fullwidth" id="module-brands-table">
-                    <thead>
-                    <tr>
-                        <th>Marca</th>
-                        <th>Garantia (anos)</th>
-                        <th class="has-text-right">Ações</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @forelse($moduleBrands as $brand)
-                        <tr data-id="{{ $brand->id }}" data-type="module" data-brand="{{ $brand->brand }}" data-warranty="{{ $brand->warranty }}">
-                            <td class="brand-name">{{ $brand->brand }}</td>
-                            <td class="brand-warranty">{{ $brand->warranty }}</td>
-                            <td>
-                                <div class="buttons is-justify-content-flex-end">
-                                    <button class="button is-info is-small edit-btn">Editar</button>
-                                    <button class="button is-danger is-small delete-btn">Excluir</button>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="3" class="has-text-centered">Nenhum registro encontrado.</td>
-                        </tr>
-                    @endforelse
-                    </tbody>
-                </table>
+                </div>
+                <div class="column is-6">
+                    <div class="box is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
+                        <h3 class="is-size-4 has-text-centered mb-4">Distribuidora Edeltec</h3>
+                        <div class="image-wrapper">
+                            <img src="{{ asset('img/update_products/edeltec.png') }}" alt="no-image">
+                        </div>
+                        <a id="btn-edeltec" class="button is-primary mt-4">Atualizar kits</a>
+                    </div>
+                </div>
             </div>
 
-            {{-- Conteúdo da Aba de Inversores --}}
-            <div id="inverters" class="content-tab" style="display:none">
-                <h4 class="title is-5">Adicionar Nova Marca de Inversor</h4>
-                <form class="add-brand-form" data-type="inverter">
-                    <div class="columns is-vcentered">
-                        <div class="column is-7">
-                            <div class="control">
-                                <input class="input" type="text" name="brand" placeholder="Nome da Marca" required>
-                            </div>
-                        </div>
-                        <div class="column is-3">
-                            <div class="control">
-                                <input class="input" type="number" name="warranty" placeholder="Garantia (anos)" required>
-                            </div>
-                        </div>
-                        <div class="column is-2">
-                            <div class="control">
-                                <button class="button is-success is-fullwidth" type="submit">Adicionar</button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-                <hr>
-                <h4 class="title is-5">Marcas de Inversor Cadastradas</h4>
-                <table class="table is-striped is-fullwidth" id="inverter-brands-table">
-                    <thead>
-                    <tr>
-                        <th>Marca</th>
-                        <th>Garantia (anos)</th>
-                        <th class="has-text-right">Ações</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @forelse($inverterBrands as $brand)
-                        <tr data-id="{{ $brand->id }}" data-type="inverter" data-brand="{{ $brand->brand }}" data-warranty="{{ $brand->warranty }}">
-                            <td class="brand-name">{{ $brand->brand }}</td>
-                            <td class="brand-warranty">{{ $brand->warranty }}</td>
-                            <td>
-                                <div class="buttons is-justify-content-flex-end">
-                                    <button class="button is-info is-small edit-btn">Editar</button>
-                                    <button class="button is-danger is-small delete-btn">Excluir</button>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="3" class="has-text-centered">Nenhum registro encontrado.</td>
-                        </tr>
-                    @endforelse
-                    </tbody>
-                </table>
+            <div class="box mt-5">
+                <div class="is-flex is-justify-content-space-between is-align-items-center">
+                    <h4 class="title is-4">Log de Atualização</h4>
+                    <a id="btn-clear-terminal" class="button is-danger is-small">Limpar Log</a>
+                </div>
+                <div id="terminal-log" style="white-space: pre-wrap; background-color: #333; color: #00ff00; padding: 15px; border-radius: 5px;">
+                    Alluz Energia® 2025 - Todos os direitos reservados
+                    ----------------
+                </div>
             </div>
+
         </div>
     </div>
-
-    {{-- MODAL DE EDIÇÃO --}}
-    <div class="modal" id="edit-modal">
-        <div class="modal-background"></div>
-        <div class="modal-card">
-            <header class="modal-card-head">
-                <p class="modal-card-title" id="edit-modal-title">Editar Marca</p>
-                <button class="delete" aria-label="close"></button>
-            </header>
-            <section class="modal-card-body">
-                <form id="edit-form">
-                    <div class="field">
-                        <label class="label">Nome da Marca</label>
-                        <div class="control">
-                            <input class="input" type="text" id="edit-brand-name" required>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <label class="label">Garantia (anos)</label>
-                        <div class="control">
-                            <input class="input" type="number" id="edit-brand-warranty" required>
-                        </div>
-                    </div>
-                </form>
-            </section>
-            <footer class="modal-card-foot">
-                <button class="button is-success" id="save-changes-btn">Salvar</button>
-                <button class="button" id="cancel-edit-btn">Cancelar</button>
-            </footer>
-        </div>
-    </div>
-
-    <script>
-        // --- Lógica das Abas (adaptada do seu exemplo) ---
-        function openTab(event, tabName) {
-            let i, x, tablinks;
-            x = document.getElementsByClassName("content-tab");
-            for (i = 0; i < x.length; i++) {
-                x[i].style.display = "none";
-            }
-            tablinks = document.getElementsByClassName("mytab");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].classList.remove("is-active");
-            }
-            document.getElementById(tabName).style.display = "block";
-            event.currentTarget.classList.add("is-active");
+    <style>
+        .image-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100px;
+            width: 100%;
         }
 
-        // --- Lógica do CRUD AJAX ---
-        document.addEventListener('DOMContentLoaded', function () {
-            const editModal = document.getElementById('edit-modal');
-            const saveChangesBtn = document.getElementById('save-changes-btn');
-            let currentEditData = {};
+        .image-wrapper img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+    </style>
 
-            // CORREÇÃO: Função para obter os headers de autenticação
-            function getAuthHeaders() {
-                const token = localStorage.getItem('auth_token');
-                return {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Authorization': `Bearer ${token}` // Adiciona o token aqui
-                };
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const terminal = document.getElementById('terminal-log');
+            const soollarBtn = document.getElementById('btn-soollar');
+            const edeltecBtn = document.getElementById('btn-edeltec');
+            const clearBtn = document.getElementById('btn-clear-terminal');
+
+            const updateButtons = [soollarBtn, edeltecBtn];
+
+            function updateTerminal(message) {
+                terminal.innerHTML += '\n' + message;
+                terminal.scrollTop = terminal.scrollHeight;
             }
 
-            function openModal() { editModal.classList.add('is-active'); }
-            function closeModal() { editModal.classList.remove('is-active'); }
-            editModal.querySelector('.modal-background').addEventListener('click', closeModal);
-            editModal.querySelector('.delete').addEventListener('click', closeModal);
-            document.getElementById('cancel-edit-btn').addEventListener('click', closeModal);
+            function clearTerminal() {
+                terminal.innerHTML = 'Alluz Energia® 2025 - Todos os direitos reservados\n----------------';
+            }
 
-            async function handleFetchError(response) {
-                const errorData = await response.json();
-                let errorMessage = 'Ocorreu um erro:\n';
-                if (errorData.errors) {
-                    for (const field in errorData.errors) {
-                        errorMessage += `- ${errorData.errors[field].join(', ')}\n`;
+            function toggleButtons(disabled) {
+                updateButtons.forEach(button => {
+                    if (disabled) {
+                        button.classList.add('is-loading');
+                    } else {
+                        button.classList.remove('is-loading');
                     }
-                } else {
-                    errorMessage += errorData.message || 'Erro desconhecido no servidor.';
-                }
-                alert(errorMessage);
+                    button.disabled = disabled;
+                });
             }
 
-            document.body.addEventListener('submit', async function(e) {
-                if (e.target && e.target.classList.contains('add-brand-form')) {
-                    e.preventDefault();
-                    const form = e.target;
-                    const type = form.dataset.type;
-                    const brandInput = form.querySelector('input[name="brand"]');
-                    const warrantyInput = form.querySelector('input[name="warranty"]');
+            async function handleUpdate(endpoint) {
+                toggleButtons(true);
 
-                    const response = await fetch(`/api/brands/${type}`, {
+                const token = localStorage.getItem('auth_token');
+
+                if (!token) {
+                    updateTerminal('\nErro: Token de autenticação não encontrado. Tentando realizar login...');
+                    await loginAndRunUpdate(endpoint);
+                    return;
+                }
+
+                terminal.innerHTML = 'Iniciando atualização...';
+                updateTerminal('Atualizando produtos. Por favor, aguarde...');
+
+                try {
+                    const response = await fetch(endpoint, {
                         method: 'POST',
-                        headers: getAuthHeaders(), // CORREÇÃO: Usa os headers de autenticação
-                        body: JSON.stringify({ brand: brandInput.value, warranty: warrantyInput.value })
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        }
                     });
 
-                    if (response.ok) {
-                        const newBrand = await response.json();
-                        const newRow = createTableRow(newBrand, type);
-                        const emptyRow = document.querySelector(`#${type}-brands-table tbody tr td[colspan='3']`);
-                        if (emptyRow) {
-                            emptyRow.parentElement.remove();
-                        }
-                        document.querySelector(`#${type}-brands-table tbody`).appendChild(newRow);
-                        form.reset();
-                    } else {
-                        await handleFetchError(response);
-                    }
-                }
-            });
-
-            document.body.addEventListener('click', async function(e) {
-                if (e.target && e.target.classList.contains('edit-btn')) {
-                    e.preventDefault();
-                    const row = e.target.closest('tr');
-                    currentEditData = { id: row.dataset.id, type: row.dataset.type };
-                    document.getElementById('edit-modal-title').textContent = `Editar Marca (${row.dataset.type})`;
-                    document.getElementById('edit-brand-name').value = row.dataset.brand;
-                    document.getElementById('edit-brand-warranty').value = row.dataset.warranty;
-                    openModal();
-                }
-                if (e.target && e.target.classList.contains('delete-btn')) {
-                    e.preventDefault();
-                    if (confirm('Tem certeza que deseja excluir esta marca?')) {
-                        const row = e.target.closest('tr');
-                        const { id, type } = row.dataset;
-
-                        const response = await fetch(`/api/brands/${type}/${id}`, {
-                            method: 'DELETE',
-                            headers: getAuthHeaders() // CORREÇÃO: Usa os headers de autenticação
-                        });
-
-                        if (response.ok) {
-                            row.remove();
-                            const tbody = document.querySelector(`#${type}-brands-table tbody`);
-                            if (tbody.children.length === 0) {
-                                const emptyRow = document.createElement('tr');
-                                emptyRow.innerHTML = `<td colspan="3" class="has-text-centered">Nenhum registro encontrado.</td>`;
-                                tbody.appendChild(emptyRow);
-                            }
-                        } else {
-                            await handleFetchError(response);
-                        }
-                    }
-                }
-            });
-
-            saveChangesBtn.addEventListener('click', async () => {
-                const { id, type } = currentEditData;
-                const updatedBrand = document.getElementById('edit-brand-name').value;
-                const updatedWarranty = document.getElementById('edit-brand-warranty').value;
-
-                const response = await fetch(`/api/brands/${type}/${id}`, {
-                    method: 'PUT',
-                    headers: getAuthHeaders(), // CORREÇÃO: Usa os headers de autenticação
-                    body: JSON.stringify({ brand: updatedBrand, warranty: updatedWarranty })
-                });
-
-                if (response.ok) {
                     const data = await response.json();
-                    const rowToUpdate = document.querySelector(`tr[data-id='${id}'][data-type='${type}']`);
-                    if (rowToUpdate) {
-                        rowToUpdate.querySelector('.brand-name').textContent = data.brand;
-                        rowToUpdate.querySelector('.brand-warranty').textContent = data.warranty;
-                        rowToUpdate.dataset.brand = data.brand;
-                        rowToUpdate.dataset.warranty = data.warranty;
-                    }
-                    closeModal();
-                } else {
-                    await handleFetchError(response);
+
+                    updateTerminal(`\nResposta do servidor (Status: ${response.status}):`);
+                    updateTerminal(JSON.stringify(data, null, 2));
+
+                } catch (error) {
+                    updateTerminal(`\nOcorreu um erro: ${error.message}`);
+                } finally {
+                    toggleButtons(false);
                 }
+            }
+
+            async function loginAndRunUpdate(endpoint) {
+                const loginEndpoint = 'http://localhost:8001/api/authorize';
+                const email = 'oscar.romanini@alluzenergia.com.br';
+                const password = 'Neia@vida.2022!';
+
+                try {
+                    const response = await fetch(loginEndpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                        },
+                        body: JSON.stringify({ email, password })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        localStorage.setItem('auth_token', data.access_token);
+                        updateTerminal('Login bem-sucedido! Token salvo.');
+                        await handleUpdate(endpoint);
+                    } else {
+                        updateTerminal(`\nErro no login: ${data.message || 'Credenciais inválidas.'}`);
+                    }
+
+                } catch (error) {
+                    updateTerminal(`\nOcorreu um erro na requisição de login: ${error.message}`);
+                }
+            }
+
+            clearBtn.addEventListener('click', clearTerminal);
+
+            soollarBtn.addEventListener('click', () => {
+                handleUpdate('/api/soollar/update-products');
             });
 
-            function createTableRow(brand, type) {
-                const tr = document.createElement('tr');
-                tr.dataset.id = brand.id;
-                tr.dataset.type = type;
-                tr.dataset.brand = brand.brand;
-                tr.dataset.warranty = brand.warranty;
-                tr.innerHTML = `
-                    <td class="brand-name">${brand.brand}</td>
-                    <td class="brand-warranty">${brand.warranty}</td>
-                    <td>
-                        <div class="buttons is-justify-content-flex-end">
-                            <button class="button is-info is-small edit-btn">Editar</button>
-                            <button class="button is-danger is-small delete-btn">Excluir</button>
-                        </div>
-                    </td>
-                `;
-                return tr;
-            }
+            edeltecBtn.addEventListener('click', () => {
+                handleUpdate('/api/edeltec/update-products');
+            });
         });
     </script>
+
 @endsection

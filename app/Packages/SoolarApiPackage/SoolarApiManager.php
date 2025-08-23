@@ -156,9 +156,10 @@ class SoolarApiManager
         $brand = null;
         $model = null;
 
-        if (preg_match('/(\d+W)/i', $originalName, $powerMatch)) {
+        if (preg_match('/(\d+)\s*W/i', $originalName, $powerMatch)) {
             $power = $powerMatch[1];
-            $parts = explode($power, $originalName, 2);
+            $powerWithUnit = $powerMatch[0];
+            $parts = explode($powerWithUnit, $originalName, 2);
             $remainingName = trim($parts[1] ?? '');
 
             if (!empty($remainingName)) {
@@ -217,7 +218,7 @@ class SoolarApiManager
         }
 
         $power = null;
-        if (preg_match('/([\d\.]+k)/i', $nameWithoutStock, $powerMatch)) {
+        if (preg_match('/([\d\.]+)\s*k/i', $nameWithoutStock, $powerMatch)) {
             $power = $powerMatch[1];
         }
 
