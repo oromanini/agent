@@ -17,6 +17,7 @@ class ModuleBrand extends Model
         'logo',
         'picture',
         'warranty',
+        'linear_warranty',
         'active'
     ];
 }

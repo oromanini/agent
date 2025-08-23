@@ -34,6 +34,10 @@ class BrandController extends Controller
             'picture' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
         ];
 
+        if ($type === 'module') {
+            $rules['linear_warranty'] = 'nullable|integer|min:0';
+        }
+
         if ($type === 'inverter') {
             $rules['overload'] = 'required|numeric|min:0';
         }
@@ -68,6 +72,10 @@ class BrandController extends Controller
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
             'picture' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
         ];
+
+        if ($type === 'module') {
+            $rules['linear_warranty'] = 'nullable|integer|min:0';
+        }
 
         if ($type === 'inverter') {
             $rules['overload'] = 'required|numeric|min:0';

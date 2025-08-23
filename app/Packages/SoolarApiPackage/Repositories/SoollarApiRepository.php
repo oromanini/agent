@@ -101,4 +101,10 @@ class SoollarApiRepository
             ->where('model', $type)
             ->get();
     }
+
+    /** @noinspection PhpIncompatibleReturnTypeInspection */
+    public function getConnectors(): Connector
+    {
+        return Connector::query()->first();
+    }
 }

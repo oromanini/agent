@@ -77,7 +77,7 @@ class KitsManager implements KitsManagerInterface
             $inverterSpecs = $this->setInverterSpecs($inverter);
             $structureSpecs = $this->setStructureSpecs($roofStructure);
             $cables = $this->calculateCable($modulesQuantity);
-            $connectors = $this->calculateConnectors();
+            $connectors = $this->calculateConnectors($modulesQuantity);
 
             $kwp = $this->calculateKwp($modulesQuantity, $module->power);
             $components = $this->setComponents($module, $inverter, $structureSpecs, $modulesQuantity);
@@ -150,9 +150,9 @@ class KitsManager implements KitsManagerInterface
             "brand" => $module->brand,
             "power" => $module->power,
             "model" => $module->model,
-            "logo" => $module->getImage()['logo'],
-            "warranty" => 12, //TODO: implementar
-            "linear_warranty" => 25 //TODO: implementar
+            "logo" => $module->logo,
+            "picture" => $module->picture,
+            "linear_warranty" => $module->linear_warranty
         ];
     }
 
@@ -162,8 +162,9 @@ class KitsManager implements KitsManagerInterface
             "brand" => $inverter->brand,
             "power" => $inverter->power,
             "model" => $inverter->model,
-            "logo" => $inverter->getImage()['logo'],
-            "warranty" => 10 //TODO: implementar
+            "logo" => $inverter->logo,
+            "picture" => $inverter->picture,
+            "warranty" => $inverter->warranty
         ];
     }
 
@@ -182,7 +183,11 @@ class KitsManager implements KitsManagerInterface
         ];
     }
 
-    private function calculateConnectors(): array
+    private function calculateConnectors(int $modulesQuantity): array
     {
+        return [
+            'connectors' => $this->repository->getConnectors(),
+            'quantity' => 'a cada 5 placas, 1 '
+        ];
     }
 }

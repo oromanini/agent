@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ActiveKit;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -54,11 +55,11 @@ class ActiveKitController extends Controller
         return redirect()->route('active-kits.index')->with('success', 'Combinação excluída com sucesso!');
     }
 
-    public function toggleActive(ActiveKit $activeKit): RedirectResponse
+    public function toggleActive(ActiveKit $activeKit): JsonResponse
     {
         $activeKit->is_active = !$activeKit->is_active;
         $activeKit->save();
 
-        return redirect()->route('active-kits.index')->with('success', 'Status da combinação atualizado.');
+        return response()->json(['success' => true, 'is_active' => $activeKit->is_active]);
     }
 }

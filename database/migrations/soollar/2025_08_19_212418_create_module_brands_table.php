@@ -12,6 +12,7 @@ class CreateModuleBrandsTable extends Migration
             $table->id();
             $table->string('brand');
             $table->integer('warranty')->default(12);
+            $table->integer('linear_warranty')->default(25);
             $table->boolean('active')->default(true);
             $table->string('logo')->nullable();
             $table->string('picture')->nullable();

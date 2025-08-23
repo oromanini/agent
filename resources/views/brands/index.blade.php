@@ -43,18 +43,20 @@
                         <th>Logo</th>
                         <th>Foto</th>
                         <th>Marca</th>
-                        <th>Garantia (anos)</th>
+                        <th>Garantia</th>
+                        <th>Garantia Linear</th>
                         <th>Ativo</th>
                         <th class="has-text-right">Ações</th>
                     </tr>
                     </thead>
                     <tbody>
                     @forelse($moduleBrands as $brand)
-                        <tr data-id="{{ $brand->id }}" data-type="module" data-brand="{{ $brand->brand }}" data-warranty="{{ $brand->warranty }}">
+                        <tr data-id="{{ $brand->id }}" data-type="module" data-brand="{{ $brand->brand }}" data-warranty="{{ $brand->warranty }}" data-linear-warranty="{{ $brand->linear_warranty }}">
                             <td><img src="{{ $brand->logo ? asset('storage/' . $brand->logo) : 'https://via.placeholder.com/100x40?text=S/Logo' }}" alt="Logo" class="brand-image"></td>
                             <td><img src="{{ $brand->picture ? asset('storage/' . $brand->picture) : 'https://via.placeholder.com/100x40?text=S/Foto' }}" alt="Foto" class="brand-image"></td>
                             <td class="brand-name">{{ $brand->brand }}</td>
                             <td class="brand-warranty">{{ $brand->warranty }}</td>
+                            <td class="brand-linear-warranty">{{ $brand->linear_warranty }}</td>
                             <td>
                                 <label class="switch">
                                     <input type="checkbox" class="toggle-active-btn" {{ $brand->active ? 'checked' : '' }}>
@@ -69,7 +71,7 @@
                             </td>
                         </tr>
                     @empty
-                        <tr><td colspan="6" class="has-text-centered">Nenhuma marca encontrada.</td></tr>
+                        <tr><td colspan="7" class="has-text-centered">Nenhuma marca encontrada.</td></tr>
                     @endforelse
                     </tbody>
                 </table>
@@ -143,6 +145,10 @@
                         <label class="label">Garantia (anos)</label>
                         <div class="control"><input class="input" type="number" name="warranty" required></div>
                     </div>
+                    <div class="field" id="linear-warranty-field" style="display: none;">
+                        <label class="label">Garantia Linear (anos)</label>
+                        <div class="control"><input class="input" type="number" name="linear_warranty"></div>
+                    </div>
                     <div class="field" id="overload-field" style="display: none;">
                         <label class="label">Overload</label>
                         <div class="control"><input class="input" type="number" step="0.01" name="overload"></div>
@@ -215,6 +221,7 @@
             const form = document.getElementById('brand-form');
             const saveBtn = document.getElementById('save-btn');
             const overloadField = document.getElementById('overload-field');
+            const linearWarrantyField = document.getElementById('linear-warranty-field');
             let currentBrand = { id: null, type: null, mode: null };
 
             const deleteConfirmModal = document.getElementById('delete-confirm-modal');
@@ -261,6 +268,7 @@
                     document.querySelectorAll('.file-name').forEach(el => el.textContent = 'Nenhum arquivo');
 
                     overloadField.style.display = currentBrand.type === 'inverter' ? 'block' : 'none';
+                    linearWarrantyField.style.display = currentBrand.type === 'module' ? 'block' : 'none';
                     form.querySelector('input[name="overload"]').required = currentBrand.type === 'inverter';
 
                     if (mode === 'add') {
@@ -272,6 +280,10 @@
 
                         form.querySelector('input[name="brand"]').value = row.dataset.brand;
                         form.querySelector('input[name="warranty"]').value = row.dataset.warranty;
+
+                        if(currentBrand.type === 'module') {
+                            form.querySelector('input[name="linear_warranty"]').value = row.dataset.linearWarranty;
+                        }
                         if(currentBrand.type === 'inverter') {
                             form.querySelector('input[name="overload"]').value = row.dataset.overload;
                         }
@@ -391,8 +403,12 @@
                 const checked = brand.active ? 'checked' : '';
 
                 let overloadCell = '';
+                let linearWarrantyCell = '';
                 if (type === 'inverter') {
                     overloadCell = `<td class="brand-overload">${brand.overload}</td>`;
+                }
+                if (type === 'module') {
+                    linearWarrantyCell = `<td class="brand-linear-warranty">${brand.linear_warranty || ''}</td>`;
                 }
 
                 return `
@@ -400,7 +416,8 @@
                     <td><img src="${pictureUrl}" alt="Foto" class="brand-image"></td>
                     <td class="brand-name">${brand.brand}</td>
                     <td class="brand-warranty">${brand.warranty}</td>
-                    ${overloadCell}
+                    ${type === 'module' ? linearWarrantyCell : ''}
+                    ${type === 'inverter' ? overloadCell : ''}
                     <td>
                         <label class="switch">
                             <input type="checkbox" class="toggle-active-btn" ${checked}>
@@ -426,6 +443,9 @@
                 newRow.dataset.type = type;
                 newRow.dataset.brand = brand.brand;
                 newRow.dataset.warranty = brand.warranty;
+                if (type === 'module') {
+                    newRow.dataset.linearWarranty = brand.linear_warranty;
+                }
                 if (type === 'inverter') {
                     newRow.dataset.overload = brand.overload;
                 }
@@ -437,6 +457,9 @@
                 if (row) {
                     row.dataset.brand = brand.brand;
                     row.dataset.warranty = brand.warranty;
+                    if (type === 'module') {
+                        row.dataset.linearWarranty = brand.linear_warranty;
+                    }
                     if (type === 'inverter') {
                         row.dataset.overload = brand.overload;
                     }

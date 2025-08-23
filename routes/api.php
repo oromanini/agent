@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActiveKitController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\EdeltecController;
@@ -18,6 +19,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{type}/{id}', [BrandController::class, 'destroy'])->name('api.brands.destroy');
         Route::patch('/{type}/{id}/toggle', [BrandController::class, 'toggleActive'])->name('api.brands.toggle');
     });
+
+    Route::put('/active-kits/{activeKit}/toggle', [ActiveKitController::class, 'toggleActive']);
 });
 
 Route::post('/authorize', [AuthController::class, 'login']);
