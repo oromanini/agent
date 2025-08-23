@@ -13,4 +13,20 @@ class Module extends Model
     protected $connection = 'soollar';
 
     protected $guarded = [];
+
+    public function getImage(): ?array
+    {
+        $moduleBrand = ModuleBrand::query()
+            ->where('brand', $this->brand)
+            ->first();
+
+        if (!$moduleBrand) {
+            return null;
+        }
+
+        return [
+            "logo" => $moduleBrand->logo,
+            "picture" => $moduleBrand->picture
+        ];
+    }
 }

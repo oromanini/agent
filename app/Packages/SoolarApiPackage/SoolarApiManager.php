@@ -12,7 +12,7 @@ use GuzzleHttp\Cookie\FileCookieJar;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\File;
 
-class SoolarApiService
+class SoolarApiManager
 {
     private const BASE_URL = 'https://www.soollar.com.br/';
     private const LOGIN_URI = 'login_check';
@@ -28,7 +28,6 @@ class SoolarApiService
     {
         try {
             $products = $this->getProduct($category, $warehouse);
-            // CORREÇÃO: Acessar a chave 'products' do array retornado
             $this->soollarApiRepository->syncProducts($category, $products['products']);
         } catch (\Exception $e) {
             throw new \Exception('Erro ao importar produtos: ' . $e->getMessage());

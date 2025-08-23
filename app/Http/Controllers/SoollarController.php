@@ -4,13 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Packages\SoolarApiPackage\Enums\ProductCategoriesEnum;
 use App\Packages\SoolarApiPackage\Enums\WarehouseEnum;
-use App\Packages\SoolarApiPackage\SoolarApiService;
+use App\Packages\SoolarApiPackage\SoolarApiManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 
 class SoollarController extends Controller
 {
-    public function __construct(private readonly SoolarApiService $soolarApiService)
+    public function __construct(private readonly SoolarApiManager $soolarApiService)
     {}
 
     public function index(): JsonResponse

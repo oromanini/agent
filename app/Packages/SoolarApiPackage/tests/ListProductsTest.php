@@ -4,17 +4,17 @@ namespace App\Packages\SoolarApiPackage\tests;
 
 use App\Packages\SoolarApiPackage\Enums\ProductCategoriesEnum;
 use App\Packages\SoolarApiPackage\Enums\WarehouseEnum;
-use App\Packages\SoolarApiPackage\SoolarApiService;
+use App\Packages\SoolarApiPackage\SoolarApiManager;
 use Tests\TestCase;
 
 class ListProductsTest extends TestCase
 {
-    private SoolarApiService $service;
+    private SoolarApiManager $service;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new SoolarApiService();
+        $this->service = new SoolarApiManager();
     }
 
     /**

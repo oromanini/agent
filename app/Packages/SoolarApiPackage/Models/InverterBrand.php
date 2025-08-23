@@ -12,5 +12,12 @@ class InverterBrand extends Model
 
     protected $connection = 'soollar';
     protected $table = 'inverter_brands';
-    protected $fillable = ['brand', 'logo', 'warranty', 'active'];
+    protected $fillable = [
+        'brand',
+        'logo',
+        'picture',
+        'warranty',
+        'overload',
+        'active'
+    ];
 }

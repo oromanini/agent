@@ -11,9 +11,10 @@ class CreateModuleBrandsTable extends Migration
         Schema::connection('soollar')->create('module_brands', function (Blueprint $table) {
             $table->id();
             $table->string('brand');
-            $table->float('logo')->nullable();
             $table->integer('warranty')->default(12);
             $table->boolean('active')->default(true);
+            $table->string('logo')->nullable();
+            $table->string('picture')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

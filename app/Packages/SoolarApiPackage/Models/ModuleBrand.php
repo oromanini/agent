@@ -12,5 +12,11 @@ class ModuleBrand extends Model
 
     protected $connection = 'soollar';
     protected $table = 'module_brands';
-    protected $fillable = ['brand', 'logo', 'warranty', 'active'];
+    protected $fillable = [
+        'brand',
+        'logo',
+        'picture',
+        'warranty',
+        'active'
+    ];
 }

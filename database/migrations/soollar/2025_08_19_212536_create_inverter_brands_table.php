@@ -11,9 +11,11 @@ class CreateInverterBrandsTable extends Migration
         Schema::connection('soollar')->create('inverter_brands', function (Blueprint $table) {
             $table->id();
             $table->string('brand');
-            $table->float('logo')->nullable();
             $table->integer('warranty')->default(10);
+            $table->float('overload')->default(0.5);
             $table->boolean('active')->default(true);
+            $table->string('logo')->nullable();
+            $table->string('picture')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

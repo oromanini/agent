@@ -13,4 +13,20 @@ class Inverter extends Model
     protected $connection = 'soollar';
 
     protected $guarded = [];
+
+    public function getImage(): ?array
+    {
+        $inverterBrand = InverterBrand::query()
+            ->where('brand', $this->brand)
+            ->first();
+
+        if (!$inverterBrand) {
+            return null;
+        }
+
+        return [
+            "logo" => $inverterBrand->logo,
+            "picture" => $inverterBrand->picture
+        ];
+    }
 }
