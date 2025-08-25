@@ -14,8 +14,10 @@ class InverterBrandFactory extends Factory
         return [
             'brand' => $this->faker->company,
             'warranty' => $this->faker->numberBetween(5, 15),
-            'overload' => $this->faker->randomFloat(2, 1, 2),
+            'overload' => $this->faker->randomFloat(2, 0.5, 2.0),
             'active' => true,
+            'logo' => $this->faker->imageUrl(),
+            'picture' => $this->faker->imageUrl(),
         ];
     }
 }

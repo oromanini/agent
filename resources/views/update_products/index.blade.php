@@ -72,6 +72,23 @@
                 terminal.scrollTop = terminal.scrollHeight;
             }
 
+            function updateTerminalWithData(data) {
+                let message = `Resposta do servidor: (Status: ${data.status})`;
+
+                if (data.status >= 200 && data.status < 300) {
+                    message += `\nSucesso: ${data.message}`;
+                } else {
+                    message += `\nErro: ${data.message}`;
+                }
+
+                if (data.total !== undefined) {
+                    message += `\nTotal de kits: ${data.total}`;
+                }
+
+                terminal.innerHTML += '\n' + message;
+                terminal.scrollTop = terminal.scrollHeight;
+            }
+
             function clearTerminal() {
                 terminal.innerHTML = 'Alluz Energia® 2025 - Todos os direitos reservados\n----------------';
             }
@@ -113,8 +130,8 @@
 
                     const data = await response.json();
 
-                    updateTerminal(`\nResposta do servidor (Status: ${response.status}):`);
-                    updateTerminal(JSON.stringify(data, null, 2));
+                    // Use a nova função para exibir os dados
+                    updateTerminalWithData({ status: response.status, ...data });
 
                 } catch (error) {
                     updateTerminal(`\nOcorreu um erro: ${error.message}`);
@@ -164,5 +181,4 @@
             });
         });
     </script>
-
 @endsection

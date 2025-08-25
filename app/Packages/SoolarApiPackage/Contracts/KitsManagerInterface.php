@@ -6,5 +6,5 @@ use Illuminate\Http\JsonResponse;
 
 interface KitsManagerInterface
 {
-    function handle(): JsonResponse;
+    function handle();
 }

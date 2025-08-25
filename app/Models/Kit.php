@@ -38,7 +38,7 @@ class Kit extends Model
         $this->cost = $cost;
         $this->roof_structure = $roof_structure;
         $this->tension_pattern = $tension_pattern;
-        $this->components = $components;
+        $this->components = json_encode($components);
         $this->panel_specs = json_encode($panel_specs);
         $this->inverter_specs = json_encode($inverter_specs);
         $this->distributor_name = $distributor_name;

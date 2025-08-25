@@ -13,9 +13,11 @@ class ModuleBrandFactory extends Factory
     {
         return [
             'brand' => $this->faker->company,
-            'warranty' => $this->faker->numberBetween(10, 25),
-            'linear_warranty' => $this->faker->numberBetween(25, 30),
+            'warranty' => $this->faker->numberBetween(10, 15),
+            'linear_warranty' => $this->faker->numberBetween(20, 30),
             'active' => true,
+            'logo' => $this->faker->imageUrl(),
+            'picture' => $this->faker->imageUrl(),
         ];
     }
 }

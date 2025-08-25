@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SoollarProductsRequest;
-use App\Packages\SoolarApiPackage\SoolarApiManager;
+use App\Packages\SoolarApiPackage\SoollarApiManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;

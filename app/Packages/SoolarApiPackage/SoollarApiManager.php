@@ -2,6 +2,8 @@
 
 namespace App\Packages\SoolarApiPackage;
 
+use App\Packages\SoolarApiPackage\Enums\CommonInverterBrandsEnum;
+use App\Packages\SoolarApiPackage\Enums\CommonModuleBrandsEnum;
 use App\Packages\SoolarApiPackage\Enums\ProductCategoriesEnum;
 use App\Packages\SoolarApiPackage\Enums\WarehouseEnum;
 use App\Packages\SoolarApiPackage\Repositories\SoollarApiRepository;
@@ -9,10 +11,9 @@ use DOMDocument;
 use DOMXPath;
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\FileCookieJar;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\File;
 
-class SoolarApiManager
+class SoollarApiManager
 {
     private const BASE_URL = 'https://www.soollar.com.br/';
     private const LOGIN_URI = 'login_check';
@@ -26,12 +27,8 @@ class SoolarApiManager
 
     public function handle(ProductCategoriesEnum $category, WarehouseEnum $warehouse): void
     {
-        try {
-            $products = $this->getProduct($category, $warehouse);
-            $this->soollarApiRepository->syncProducts($category, $products['products']);
-        } catch (\Exception $e) {
-            throw new \Exception('Erro ao importar produtos: ' . $e->getMessage());
-        }
+        $products = $this->getProduct($category, $warehouse);
+        $this->soollarApiRepository->syncProducts($category, $products['products']);
     }
 
     private function getProduct(ProductCategoriesEnum $category, WarehouseEnum $warehouse): array
@@ -113,7 +110,13 @@ class SoolarApiManager
     {
         $structuredProducts = [];
         foreach ($rawProducts as $product) {
+
+            if (!$this->isReadyDelivery($product['name'])) {
+                continue;
+            }
+
             $structuredProduct = null;
+
             switch ($category) {
                 case ProductCategoriesEnum::MODULO:
                     $structuredProduct = $this->parseModuleProduct($product, $warehouse, $category);
@@ -146,35 +149,76 @@ class SoolarApiManager
         return $structuredProducts;
     }
 
+    private function isReadyDelivery(string $productName): bool
+    {
+        $cleanName = strtolower($this->removeAccents($productName));
+        $nonReadyTerms = ['previsao de entrega', 'previsao de chegada'];
+        foreach ($nonReadyTerms as $term) {
+            if (str_contains($cleanName, $term)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private function removeAccents(string $string): string
+    {
+        return str_replace(
+            ['á', 'à', 'ã', 'â', 'é', 'ê', 'í', 'ó', 'ô', 'õ', 'ú', 'ü', 'ç', 'Á', 'À', 'Ã', 'Â', 'É', 'Ê', 'Í', 'Ó', 'Ô', 'Õ', 'Ú', 'Ü', 'Ç'],
+            ['a', 'a', 'a', 'a', 'e', 'e', 'i', 'o', 'o', 'o', 'u', 'u', 'c', 'A', 'A', 'A', 'A', 'E', 'E', 'I', 'O', 'O', 'O', 'U', 'U', 'C'],
+            $string
+        );
+    }
+
+    private function getDeliveryStock(string $productName): string
+    {
+        $cleanName = strtolower($this->removeAccents($productName));
+
+        if (str_contains($cleanName, 'pronta entrega') || str_contains($cleanName, 'ready delivery')) {
+            return 'ready delivery';
+        }
+
+        if (preg_match('/(\d{2}\/\d{2})/', $cleanName, $dateMatch)) {
+            return $dateMatch[1];
+        }
+
+        return 'unknown';
+    }
+
     private function parseModuleProduct(array $product, WarehouseEnum $warehouse, ProductCategoriesEnum $category): array
     {
         $originalName = $product['name'];
         $rawPrice = $product['price'];
-        $finalPrice = $this->cleanPrice($rawPrice);
+        $cleanName = strtolower($originalName);
 
         $power = null;
         $brand = null;
         $model = null;
 
-        if (preg_match('/(\d+)\s*W/i', $originalName, $powerMatch)) {
-            $power = $powerMatch[1];
-            $powerWithUnit = $powerMatch[0];
-            $parts = explode($powerWithUnit, $originalName, 2);
-            $remainingName = trim($parts[1] ?? '');
+        $knownBrands = array_map('strtolower', array_column(CommonModuleBrandsEnum::cases(), 'value'));
 
-            if (!empty($remainingName)) {
-                $words = explode(' ', $remainingName);
-                $brand = array_shift($words);
-                $model = implode(' ', $words);
+        if (preg_match('/(\d+)\s*w/i', $cleanName, $powerMatch)) {
+            $power = (int)$powerMatch[1];
+            $remainingName = trim(str_ireplace($powerMatch[0], '', $cleanName));
+
+            foreach ($knownBrands as $knownBrand) {
+                if (str_contains($remainingName, $knownBrand)) {
+                    $brand = $knownBrand;
+                    $remainingName = trim(str_ireplace($knownBrand, '', $remainingName));
+                    break;
+                }
             }
+
+            $model = trim(preg_replace('/^(r\$|previsão de entrega|previsão de chegada|e|pronta entrega).*?-?\s*/i', '', $remainingName));
+            $model = trim(preg_replace('/\s+/', ' ', $model));
         }
 
         return [
-            'name' => strtolower($originalName),
+            'name' => $originalName,
             'power' => $power,
-            'brand' => $brand,
-            'model' => $model,
-            'price' => $finalPrice,
+            'brand' => strtoupper($brand ?? ''),
+            'model' => strtolower($model ?? ''),
+            'price' => $this->cleanPrice($rawPrice),
             'distribution_center' => $warehouse->value,
             'category' => $category->value,
         ];
@@ -205,39 +249,48 @@ class SoolarApiManager
             ];
         }
 
-        $stock = 'ready delivery';
-        if (preg_match('/(\d{2}\/\d{2})/', $cleanName, $dateMatch)) {
-            $stock = $dateMatch[1];
-        }
+        $stock = $this->getDeliveryStock($originalName);
 
         $nameWithoutStock = trim(preg_replace('/(previsão de chegada|pronta entrega).*? -/ui', '', $cleanName));
 
-        $voltage = null;
-        if (preg_match('/(\d+v)/i', $nameWithoutStock, $voltageMatch)) {
+        $voltage = '220V';
+        if (preg_match('/(\d{3,4}v)/i', $nameWithoutStock, $voltageMatch)) {
             $voltage = strtoupper($voltageMatch[1]);
         }
 
         $power = null;
-        if (preg_match('/([\d\.]+)\s*k/i', $nameWithoutStock, $powerMatch)) {
-            $power = $powerMatch[1];
+        if (preg_match('/([\d\.\,]+)\s*k/i', $nameWithoutStock, $powerMatch)) {
+            $power = (float) str_replace(',', '.', $powerMatch[1]);
         }
 
+        $knownBrands = array_map('strtolower', array_column(CommonInverterBrandsEnum::cases(), 'value'));
         $brand = null;
-        $knownBrands = ['deye', 'saj', 'sungrow', 'solis'];
         foreach ($knownBrands as $knownBrand) {
-            if (stripos($nameWithoutStock, $knownBrand) !== false) {
-                $brand = strtoupper($knownBrand);
+            if (str_contains($nameWithoutStock, $knownBrand)) {
+                $brand = $knownBrand;
                 break;
             }
         }
 
-        $model = trim(preg_replace('/^(micro-inversor|micro inversor|inversor|inv)\s*/i', '', $nameWithoutStock));
+        $modelName = $nameWithoutStock;
+        if ($brand) {
+            $modelName = str_ireplace($brand, '', $modelName);
+        }
+        if ($power) {
+            $modelName = str_ireplace((string)$power . 'k', '', $modelName);
+        }
+        if ($voltage) {
+            $modelName = str_ireplace($voltage, '', $modelName);
+        }
+
+        $model = trim(preg_replace('/^(micro-inversor|micro inversor|inversor|inv|garantia total|em estoque|no stock|\s*-\s*.*$)/i', '', $modelName));
+        $model = trim(preg_replace('/\s+/', ' ', $model));
 
         return [
             'type' => 'inverter',
             'name' => $cleanName,
             'model' => $model,
-            'brand' => $brand,
+            'brand' => $brand ? strtoupper($brand) : null,
             'price' => $this->cleanPrice($rawPrice),
             'power' => $power,
             'voltage' => $voltage,
@@ -250,12 +303,13 @@ class SoolarApiManager
     private function parseConnectorProduct(array $product, WarehouseEnum $warehouse, ProductCategoriesEnum $category): array
     {
         $originalName = $product['name'];
+        $rawPrice = $product['price'];
         $cleanName = trim(preg_replace('/^(conector)\s*/i', '', $originalName));
 
         return [
             'name' => strtolower($cleanName),
-            'price' => $this->cleanPrice($product['price']),
-            'stock' => 'pronta entrega',
+            'price' => $this->cleanPrice($rawPrice),
+            'stock' => $this->getDeliveryStock($originalName),
             'distribution_center' => $warehouse->value,
             'category' => $category->value,
         ];
@@ -264,14 +318,10 @@ class SoolarApiManager
     private function parseStructureProduct(array $product, WarehouseEnum $warehouse, ProductCategoriesEnum $category): ?array
     {
         $originalName = $product['name'];
+        $rawPrice = $product['price'];
 
         if (stripos($originalName, 'kit') === false) {
             return null;
-        }
-
-        $stock = 'ready delivery';
-        if (preg_match('/(\d{2}\/\d{2})/', $originalName, $dateMatch)) {
-            $stock = $dateMatch[1];
         }
 
         $nameWithoutStock = trim(preg_replace('/(previsão de chegada|pronta entrega).*? -/ui', '', $originalName));
@@ -280,8 +330,8 @@ class SoolarApiManager
         return [
             'name' => strtolower($originalName),
             'model' => strtolower(trim($model)),
-            'price' => $this->cleanPrice($product['price']),
-            'stock' => $stock,
+            'price' => $this->cleanPrice($rawPrice),
+            'stock' => 'unknown', // A coluna stock não existe na tabela de estruturas, mas vamos deixar um valor para evitar problemas futuros
             'distribution_center' => $warehouse->value,
             'category' => $category->value,
         ];
@@ -290,29 +340,34 @@ class SoolarApiManager
     private function parseCableProduct(array $product, WarehouseEnum $warehouse, ProductCategoriesEnum $category): array
     {
         $originalName = $product['name'];
-        $nameWithoutPrefix = trim(preg_replace('/^(cabo solar)\s*/i', '', $originalName));
+        $rawPrice = $product['price'];
+        $cleanName = strtolower($originalName);
+        $model = null;
+        $size = null;
+        $type = null;
 
-        $parts = explode('-', $nameWithoutPrefix);
-        $size = trim(end($parts));
-
-        $modelAndType = trim($parts[0]);
-        $modelAndTypeParts = explode(' ', $modelAndType);
-        $type = trim(end($modelAndTypeParts));
-
-        array_pop($modelAndTypeParts);
-        $model = trim(implode(' ', $modelAndTypeParts));
-
-        $stock = 'ready delivery';
-        if (preg_match('/(\d{2}\/\d{2})/', $originalName, $dateMatch)) {
-            $stock = $dateMatch[1];
+        if (preg_match('/(\d+mm)/', $cleanName, $modelMatch)) {
+            $model = $modelMatch[1];
         }
+
+        if (preg_match('/(\d+mt)/', $cleanName, $sizeMatch)) {
+            $size = $sizeMatch[1];
+        }
+
+        if (str_contains($cleanName, 'preto')) {
+            $type = 'PRETO';
+        } elseif (str_contains($cleanName, 'vermelho')) {
+            $type = 'VERMELHO';
+        }
+
+        $stock = $this->getDeliveryStock($originalName);
 
         return [
             'name' => strtolower($originalName),
             'model' => $model,
             'size' => $size,
             'type' => $type,
-            'price' => $this->cleanPrice($product['price']),
+            'price' => $this->cleanPrice($rawPrice),
             'stock' => $stock,
             'distribution_center' => $warehouse->value,
             'category' => $category->value,
@@ -321,12 +376,14 @@ class SoolarApiManager
 
     private function parseDefaultProduct(array $product, WarehouseEnum $warehouse, ProductCategoriesEnum $category): array
     {
+        $rawPrice = $product['price'];
+
         return [
             'name' => strtolower($product['name']),
             'power' => null,
             'brand' => null,
             'model' => null,
-            'price' => $this->cleanPrice($product['price']),
+            'price' => $this->cleanPrice($rawPrice),
             'distribution_center' => $warehouse->value,
             'category' => $category->value,
         ];

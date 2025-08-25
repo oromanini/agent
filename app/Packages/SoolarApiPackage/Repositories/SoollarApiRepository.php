@@ -5,6 +5,7 @@ namespace App\Packages\SoolarApiPackage\Repositories;
 use App\Models\Kit;
 use App\Packages\SoolarApiPackage\Enums\ProductCategoriesEnum;
 use App\Packages\SoolarApiPackage\Enums\WarehouseEnum;
+use App\Packages\SoolarApiPackage\KitsManager;
 use App\Packages\SoolarApiPackage\Models\Cable;
 use App\Packages\SoolarApiPackage\Models\Connector;
 use App\Packages\SoolarApiPackage\Models\Inverter;
@@ -12,6 +13,7 @@ use App\Packages\SoolarApiPackage\Models\InverterBrand;
 use App\Packages\SoolarApiPackage\Models\Module;
 use App\Packages\SoolarApiPackage\Models\ModuleBrand;
 use App\Packages\SoolarApiPackage\Models\Structure;
+use App\Packages\SoolarApiPackage\Services\CableService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -41,6 +43,13 @@ class SoollarApiRepository
                 );
             }
         });
+    }
+
+    public function syncKits(): void
+    {
+        (new KitsManager(
+            $this, new CableService($this)
+        ))->handle();
     }
 
     private function getModelForCategory(ProductCategoriesEnum $category): ?Model
@@ -85,7 +94,7 @@ class SoollarApiRepository
     }
 
     /** @noinspection PhpIncompatibleReturnTypeInspection */
-    public function getKitByDescription(string $description): Kit
+    public function getKitByDescription(string $description): ?Kit
     {
         return Kit::query()
             ->where('description', $description)
@@ -94,7 +103,7 @@ class SoollarApiRepository
     }
 
     /** @noinspection PhpIncompatibleReturnTypeInspection */
-    public function getCable(int $moduleQuantity, string $type, string $color): Cable
+    public function getCable(int $moduleQuantity, string $type, string $color): Collection
     {
         return Cable::query()
             ->where('type', strtoupper($color))
@@ -102,9 +111,53 @@ class SoollarApiRepository
             ->get();
     }
 
+    /**
+     * @noinspection PhpIncompatibleReturnTypeInspection
+     */
+    public function getCableByLength(string $type, string $color, int $length): ?Cable
+    {
+        return Cable::query()
+            ->where('model', strtoupper($type))
+            ->where('type', strtoupper($color))
+            ->where('size', 'LIKE', '%' . $length . 'MT%')
+            ->first();
+    }
+
     /** @noinspection PhpIncompatibleReturnTypeInspection */
     public function getConnectors(): Connector
     {
         return Connector::query()->first();
+    }
+
+    /** @noinspection PhpIncompatibleReturnTypeInspection */
+    public function getStructureByModelName(string $modelName): ?Structure
+    {
+        return Structure::query()
+            ->where('model', 'LIKE', '%' . $modelName . '%')
+            ->first();
+    }
+
+    public function deactivateAllKits(): void
+    {
+        Kit::query()->update(['is_active' => false]);
+    }
+
+    public function getRecentKits(int $limit): Collection
+    {
+        return Kit::query()
+            ->where('is_active', true)
+            ->latest()
+            ->limit($limit)
+            ->get();
+    }
+
+    /**
+     * Conta a quantidade de kits ativos.
+     */
+    public function countActiveKits(): int
+    {
+        return Kit::query()
+            ->where('is_active', true)
+            ->count();
     }
 }
