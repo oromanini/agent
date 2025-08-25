@@ -4,6 +4,7 @@ use App\Http\Controllers\ActiveKitController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\EdeltecController;
+use App\Http\Controllers\KitsController;
 use App\Http\Controllers\SoollarController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;

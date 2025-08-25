@@ -72,41 +72,51 @@ class KitsManager implements KitsManagerInterface
         Inverter $inverter
     ): void {
         foreach (RoofStructure::cases() as $roofStructure) {
-            $panelSpecs = $this->setPanelSpecs($module);
-            $inverterSpecs = $this->setInverterSpecs($inverter);
-            $structureSpecs = $this->setStructureSpecs($roofStructure, $modulesQuantity);
-            $cables = $this->calculateCable($modulesQuantity);
-            $connectors = $this->calculateConnectors($modulesQuantity);
-            $kwp = $this->calculateKwp($modulesQuantity, $module->power);
+            try {
+                $panelSpecs = $this->setPanelSpecs($module);
+                $inverterSpecs = $this->setInverterSpecs($inverter);
+                $structureSpecs = $this->setStructureSpecs($roofStructure, $modulesQuantity);
+                $cables = $this->calculateCable($modulesQuantity);
+                $connectors = $this->calculateConnectors($modulesQuantity);
+                $kwp = $this->calculateKwp($modulesQuantity, (float)$module->power);
 
-            $components = $this->setComponents(
-                $module,
-                $inverter,
-                $structureSpecs,
-                $modulesQuantity,
-                $cables,
-                $connectors
-            );
+                $components = $this->setComponents(
+                    $module,
+                    $inverter,
+                    $structureSpecs,
+                    $modulesQuantity,
+                    $cables,
+                    $connectors
+                );
 
-            $cost = $this->calculateCost($module, $modulesQuantity, $inverter, $structureSpecs, $cables, $connectors);
+                $cost = $this->calculateCost($module, $modulesQuantity, $inverter, $structureSpecs, $cables, $connectors);
 
-            $kit = new Kit();
-            $kit->fillFromAttributes(
-                description: $this->setKitDescription($kwp, $roofStructure, $inverter, $panelSpecs),
-                kwp: $kwp,
-                cost: $cost,
-                roof_structure: $roofStructure->value,
-                tension_pattern: $inverter->power >= 15 ? TensionPattern::TRIFASICO_220V->value : TensionPattern::MONOFASICO_220V->value,
-                components: $components,
-                panel_specs: $panelSpecs,
-                inverter_specs: $inverterSpecs,
-                distributor_name: "SOOLLAR",
-                distributor_code: Uuid::uuid4()->toString(),
-                availability: now()->toDateTimeString(),
-                is_active: true,
-            );
+                $tensionPattern = match ((string)$inverter->voltage) {
+                    '220V' => TensionPattern::MONOFASICO_220V->value,
+                    '380V' => TensionPattern::TRIFASICO_380V->value,
+                    default => TensionPattern::MONOFASICO_220V->value,
+                };
 
-            $this->saveOrUpdateKit($kit);
+                $kit = new Kit();
+                $kit->fillFromAttributes(
+                    description: $this->setKitDescription($kwp, $roofStructure, $inverter, $panelSpecs),
+                    kwp: $kwp,
+                    cost: $cost,
+                    roof_structure: $roofStructure->value,
+                    tension_pattern: $tensionPattern,
+                    components: $components,
+                    panel_specs: $panelSpecs,
+                    inverter_specs: $inverterSpecs,
+                    distributor_name: "SOOLLAR",
+                    distributor_code: Uuid::uuid4()->toString(),
+                    availability: now()->toDateString(),
+                    is_active: true,
+                );
+
+                $this->saveOrUpdateKit($kit);
+            } catch (\Throwable $e) {
+                Log::error('Erro ao montar kit: ' . $e->getMessage() . ' - Inversor: ' . $inverter->id . ' Módulo: ' . $module->id);
+            }
         }
     }
 
@@ -123,14 +133,10 @@ class KitsManager implements KitsManagerInterface
         $kit->save();
     }
 
-    private function getKitDescription(Kit $kit): string
+    private function setKitDescription(float $kwp, RoofStructure $roofStructure, Inverter $inverter, array $panelSpecs): string
     {
-        $roofStructure = RoofStructure::from($kit->roof_structure)->name;
-        $inverterBrand = $kit->inverter_specs['brand'] ?? 'Inversor';
-        $modulePower = $kit->panel_specs['power'] ?? 'N/A';
-        $moduleQuantity = count($kit->components); // Isso pode ser impreciso, mas vamos supor que o primeiro componente é o módulo
-
-        return "{$kit->kwp}kwp - {$moduleQuantity}x{$modulePower}w - {$inverterBrand} - Telhado {$roofStructure}";
+        $formattedKwp = number_format($kwp, 2, ',', '.');
+        return "Kit {$formattedKwp} kWP {$roofStructure->name} {$inverter->brand} {$inverter->power}KW e {$panelSpecs['brand']} {$panelSpecs['power']}W";
     }
 
     private function calculateKwp(int $modulesQuantity, float $panelPower): float
@@ -151,7 +157,7 @@ class KitsManager implements KitsManagerInterface
             "1 inversor {$inverter->brand} {$inverter->voltage}",
             $this->getStructureDescription($structureSpecs),
             $this->getStructureProfileDescription($structureSpecs),
-            ...$cables['description'], // Use o operador de 'spread' para juntar os arrays
+            ...$cables['description'],
             "{$connectors['quantity']} par - {$connectors['connectors']->name}",
         ];
     }
@@ -169,15 +175,6 @@ class KitsManager implements KitsManagerInterface
         return "{$structureSpecs['components']['profiles']['quantity']} UND - {$structureSpecs['components']['profiles']['name']} ";
     }
 
-    public function setKitDescription(
-        float $kwp,
-        RoofStructure $roofStructure,
-        Inverter $inverter,
-        $panelSpecs
-    ): string {
-        return "Kit {$kwp} kWP {$roofStructure->name} {$inverter->brand} {$inverter->power}KW e {$panelSpecs['brand']} {$panelSpecs['power']}W";
-    }
-
     private function getInverterOverload(InverterBrand $inverterBand): float
     {
         $overload = $inverterBand->overload ?? 0.50;
@@ -187,16 +184,21 @@ class KitsManager implements KitsManagerInterface
 
     private function getInverterMinimumPanels(Inverter $inverter, Module $module): int
     {
-        $inverterPower = $inverter->power * 1000;
-
-        return (int)ceil(($inverterPower * self::MINIMUM_OVERLOAD) / $module->power);
+        $inverterPower = (float) $inverter->power;
+        $moduleKw = (float) $module->power / 1000;
+        return (int) ceil(($inverterPower * self::MINIMUM_OVERLOAD) / $moduleKw);
     }
 
     private function getInverterMaximumPanels(Inverter $inverter, Module $module, float $overload): int
     {
-        $inverterPower = $inverter->power * 1000;
+        $inverterPower = (float) $inverter->power;
+        $overload = 1 + ($overload / 100);
+        $moduleKw = (float) $module->power / 1000;
 
-        return (int)floor(($inverterPower * (1 + $overload)) / $module->power);
+        return (int) floor(
+            ($inverterPower * $overload)
+            / $moduleKw
+        );
     }
 
     private function setPanelSpecs(Module $module): array
@@ -205,7 +207,7 @@ class KitsManager implements KitsManagerInterface
             'id' => $module->id,
             'name' => $module->name,
             'brand' => $module->brand,
-            'power' => $module->power,
+            'power' => (float)$module->power,
             'category' => $module->category,
             'stock' => $module->stock,
             'price' => $module->price
@@ -218,7 +220,7 @@ class KitsManager implements KitsManagerInterface
             'id' => $inverter->id,
             'name' => $inverter->name,
             'brand' => $inverter->brand,
-            'power' => $inverter->power,
+            'power' => (float)$inverter->power,
             'voltage' => $inverter->voltage,
             'category' => $inverter->category,
             'stock' => $inverter->stock,
@@ -297,9 +299,14 @@ class KitsManager implements KitsManagerInterface
         ];
     }
 
-    //TODO: implement it
-    private function calculateCost(Module $module, int $modulesQuantity, Inverter $inverter, array $structureSpecs, array $cables, array $connectors)
+    private function calculateCost(Module $module, int $modulesQuantity, Inverter $inverter, array $structureSpecs, array $cables, array $connectors): float
     {
-        return 0;
+        $moduleCost = $module->price * $modulesQuantity;
+        $inverterCost = $inverter->price;
+        $structureCost = $structureSpecs['cost'];
+        $cablesCost = $cables['cost'];
+        $connectorsCost = $connectors['connectors']->price * $connectors['quantity'];
+
+        return $moduleCost + $inverterCost + $structureCost + $cablesCost + $connectorsCost;
     }
 }

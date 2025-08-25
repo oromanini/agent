@@ -11,6 +11,7 @@ use App\Http\Controllers\FinancingController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HomologationController;
 use App\Http\Controllers\InstallationController;
+use App\Http\Controllers\KitsController;
 use App\Http\Controllers\KitSearchController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\PreInspectionController;
@@ -193,7 +194,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/setAverageProductionByCity', [LeadController::class, 'setAverageProductionByCity']);
     Route::post('/get-tension-by-value', [ProposalController::class, 'setTensionByValue']);
 
+    Route::controller(KitsController::class)->group(function () {
+        Route::name('kits.')->group(function () {
+            Route::get('/kits', 'index')->name('index');
+        });
+    });
 });
+
 
 Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
 

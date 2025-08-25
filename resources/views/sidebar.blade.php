@@ -171,6 +171,14 @@ $permissionToHomologation = $permission == 'admin'
                     <span class="side-title">Gestão de Marcas</span>
                 </a>
             </li>
+            <li class="side-list">
+                <a href="{{ route('kits.index') }}">
+                <span class="side-icon">
+                    <ion-icon name="sunny-outline"></ion-icon>
+                </span>
+                    <span class="side-title">Gestão de Kits</span>
+                </a>
+            </li>
 
         @endif
         <hr style="margin-top: 2px !important;">
