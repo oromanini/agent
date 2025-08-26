@@ -141,13 +141,22 @@
                         credentials: 'omit'
                     });
 
-                    const data = await response.json();
+                    if (!response.ok) {
+                        // Se a resposta não for OK, tentamos ler como texto para ver o erro HTML
+                        const errorText = await response.text();
+                        throw new Error(errorText);
+                    }
 
-                    // Use a nova função para exibir os dados
+                    const data = await response.json();
                     updateTerminalWithData({ status: response.status, ...data });
 
                 } catch (error) {
-                    updateTerminal(`\nOcorreu um erro: ${error.message}`);
+                    // Exibe o erro capturado, que pode ser a mensagem do 'throw' ou um erro de rede
+                    const pre = document.createElement('pre');
+                    pre.style.color = '#ff6b6b'; // Vermelho para destacar o erro
+                    pre.textContent = `\nOcorreu um erro:\n${error.message}`;
+                    terminal.appendChild(pre);
+                    terminal.scrollTop = terminal.scrollHeight;
                 } finally {
                     toggleButtons(false);
                 }
@@ -169,18 +178,28 @@
                         credentials: 'omit'
                     });
 
+                    if (!response.ok) {
+                        // Se a resposta não for OK, lemos como texto para ver o erro
+                        const errorText = await response.text();
+                        // Lançamos um erro com o conteúdo da página de erro
+                        throw new Error(`Erro no login (Status: ${response.status}):\n${errorText}`);
+                    }
+
                     const data = await response.json();
 
                     if (response.ok) {
                         localStorage.setItem('auth_token', data.access_token);
                         updateTerminal('Login bem-sucedido! Token salvo.');
                         await handleUpdate(endpoint);
-                    } else {
-                        updateTerminal(`\nErro no login: ${data.message || 'Credenciais inválidas.'}`);
                     }
 
                 } catch (error) {
-                    updateTerminal(`\nOcorreu um erro na requisição de login: ${error.message}`);
+                    // O 'catch' agora vai receber o erro que lançamos acima
+                    const pre = document.createElement('pre');
+                    pre.style.color = '#ff6b6b'; // Vermelho para destacar o erro
+                    pre.textContent = `\nOcorreu um erro na requisição de login:\n${error.message}`;
+                    terminal.appendChild(pre);
+                    terminal.scrollTop = terminal.scrollHeight;
                 }
             }
 
