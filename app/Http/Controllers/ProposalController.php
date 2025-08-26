@@ -221,11 +221,11 @@ class ProposalController extends Controller
             : null;
         $panelImage = $proposal->is_manual
             ? (new ImageHelper())->setImageByBrand(type: 'panel', brand: $manualData['panel_brand'])
-            : (new ImageHelper())->setImageByBrand(type: 'panel', brand: jsonToArray($kit->panel_specs)['brand']);
+            : (new ImageHelper())->setImageByBrand(type: 'panel', brand: jsonToArray($kit->panel_specs)['brand'], distributor: $kit->distributor_name);
 
         $inverterImage = $proposal->is_manual
         ? (new ImageHelper())->setImageByBrand(type: 'inverter', brand: $manualData['inverter_brand'])
-        : (new ImageHelper())->setImageByBrand(type: 'inverter', brand: $inverterBrand)
+        : (new ImageHelper())->setImageByBrand(type: 'inverter', brand: $inverterBrand, distributor: $kit->distributor_name)
         ;
 
         $incidence = $this->solarIncidenceService->getSolarIncidence(city: $city)->average;
@@ -261,8 +261,8 @@ class ProposalController extends Controller
 
         $inverterSpecs = jsonToArray($kitData['inverter_specs']);
         $panelSpecs = jsonToArray($kitData['panel_specs']);
-        $inverterImage = (new ImageHelper())->setImageByBrand(type: 'inverter', brand: $inverterSpecs['brand']);
-        $panelBrandImage = (new ImageHelper())->setImageByBrand(type: 'panel', brand: $panelSpecs['brand']);
+        $inverterImage = (new ImageHelper())->setImageByBrand(type: 'inverter', brand: $inverterSpecs['brand'], distributor: $kitData['distributor_name']);
+        $panelBrandImage = (new ImageHelper())->setImageByBrand(type: 'panel', brand: $panelSpecs['brand'], distributor: $kitData['distributor_name']);
 
         $incidence = (new SolarIncidenceService())->getSolarIncidence(city: $city)->average;
         $panelQuantity = (new LeadService($this))->getLeadPanelQuantity($lead);

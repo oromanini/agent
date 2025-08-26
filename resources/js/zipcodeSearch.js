@@ -115,7 +115,6 @@ $(function () {
                 $('#city option[value="' + city_id + '"]').attr("selected", "selected");
             })
             .fail(function (jqXHR, textStatus, msg) {
-                console.log(msg);
             });
 
     }
@@ -135,7 +134,6 @@ $(function () {
                 $('#city2').empty();
 
                 $.each(msg, function (i, item) {
-                    console.log(city_id)
                     $('#city2').append($('<option>', {
                         value: item.id,
                         text: item.name,

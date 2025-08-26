@@ -48,8 +48,6 @@ class PricingTest extends TestCase
             paymentType: PaymentTypeEnum::CASH_PAYMENT,
             state: 'PARANÁ'
         );
-
-        dd($finalPrice);
     }
 
     private function createWorkCosts(): void
