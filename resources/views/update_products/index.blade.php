@@ -78,15 +78,27 @@
                 if (data.status >= 200 && data.status < 300) {
                     message += `\nSucesso: ${data.message}`;
                 } else {
+                    // Mostra a mensagem principal do erro
                     message += `\nErro: ${data.message}`;
+
+                    // Verifica se há um array de 'errors' e o exibe de forma detalhada
+                    if (data.errors) {
+                        const errorDetails = JSON.stringify(data.errors, null, 2); // Formata o objeto de erros
+                        message += `\n\nDetalhes:\n${errorDetails}`;
+                    }
                 }
 
                 if (data.total !== undefined) {
                     message += `\nTotal de kits: ${data.total}`;
                 }
 
-                terminal.innerHTML += '\n' + message;
+                const pre = document.createElement('pre');
+                pre.style.color = '#00ff00';
+                pre.style.backgroundColor = '#333333FF';
+                pre.textContent = '\n' + message;
+                terminal.appendChild(pre);
                 terminal.scrollTop = terminal.scrollHeight;
+//...
             }
 
             function clearTerminal() {
@@ -125,7 +137,8 @@
                             'Accept': 'application/json',
                             'Content-Type': 'application/json',
                             'Authorization': `Bearer ${token}`
-                        }
+                        },
+                        credentials: 'omit'
                     });
 
                     const data = await response.json();
@@ -141,7 +154,7 @@
             }
 
             async function loginAndRunUpdate(endpoint) {
-                const loginEndpoint = 'http://localhost:8001/api/authorize';
+                const loginEndpoint = '/api/authorize';
                 const email = 'oscar.romanini@alluzenergia.com.br';
                 const password = 'Neia@vida.2022!';
 
