@@ -9,6 +9,8 @@ class PaybackService
 {
     const YEAR_LOST_GENERATION = 0.008;
     const YEAR_KWH_INCREASE = 1.03;
+    const GENERATION_LOST = 0.2;
+
     /** @var Proposal */
     private Proposal $proposal;
 
@@ -157,7 +159,7 @@ class PaybackService
 
     private function setGeneration(string $month, float $kwp, object $incidence, string $roof): float
     {
-        $totalLost = (float) env('GENERATION_LOST') + $this->setRoofPlusLost($roof);
+        $totalLost = self::GENERATION_LOST + $this->setRoofPlusLost($roof);
 
         return ceil(
             ($kwp * 30 * ((float) $incidence->{$month} / 1000)) / (1 + $totalLost)
