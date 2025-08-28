@@ -119,7 +119,6 @@ class ProposalService
         $roof_plus_lost = $this->setRoofPlusLost($roof_orientation);
 
         $generationLost = (float) env('GENERATION_LOST') + $roof_plus_lost;
-
         $ordinaryAverage = (float) str_replace(',', '.', $incidence->average);
 
         $months = [
@@ -156,7 +155,7 @@ class ProposalService
         object $incidence,
         float $generationLost
     ): float {
-
+        dd($generationLost);
         return
             ($kwp / (1 + $generationLost))
             * 30
