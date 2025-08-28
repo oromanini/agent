@@ -15,6 +15,7 @@ use Ramsey\Uuid\Uuid;
 
 class ProposalService
 {
+    const GENERATION_LOST = 0.2;
     private array $data;
 
     public function __construct(
@@ -118,7 +119,7 @@ class ProposalService
     {
         $roof_plus_lost = $this->setRoofPlusLost($roof_orientation);
 
-        $generationLost = (float) env('GENERATION_LOST') + $roof_plus_lost;
+        $generationLost = self::GENERATION_LOST + $roof_plus_lost;
         $ordinaryAverage = (float) str_replace(',', '.', $incidence->average);
 
         $months = [
@@ -155,7 +156,6 @@ class ProposalService
         object $incidence,
         float $generationLost
     ): float {
-        dd($generationLost);
         return
             ($kwp / (1 + $generationLost))
             * 30
