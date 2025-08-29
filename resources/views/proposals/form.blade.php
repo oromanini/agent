@@ -277,8 +277,8 @@
                                     isPromotionalText +
                                     '</span>' +
                                     '<div class="is-flex is-justify-content-center">' +
-                                    '<img src="' + ScreenHelper.getPanelImage(panelSpecs.brand) + '" alt="" width="135">' +
-                                    '<img src="' + ScreenHelper.getInverterImage(inverterSpecs.brand) + '" alt="" width="135">' +
+                                    '<img src="' + ScreenHelper.getPanelImage(panelSpecs.brand) + '" alt="" width="100">' +
+                                    '<img src="' + ScreenHelper.getInverterImage(inverterSpecs.brand) + '" alt="" width="100">' +
                                     '</div>' +
                                     '<div style="display:flex; justify-content: center; text-align: center; font-size: 14pt; color: #6b7280; font-weight: 900; margin: 20px 0px">' +
                                     item.kwp + ' kWp' +

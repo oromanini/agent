@@ -24,7 +24,7 @@
         @if($proposal->is_manual)
             {{ $manualData['panel_warranty'] }} anos
         @else
-        {{jsonToArray($firstKit['panel_specs'])['warranty']}} anos
+        {{jsonToArray($firstKit['panel_specs'])['warranty'] ?? '12'}} anos
         @endif
     </div>
     <div id="inverterImage">
@@ -48,18 +48,26 @@
         @if($proposal->is_manual)
             {{ $manualData['inverter_power'] }}KW <span class="minified-text">{{ $manualData['inverter_model'] }} </span>
         @else
-            {{
-                jsonToArray($firstKit['inverter_specs'])['model'] !== 'Dados Técnicos do Inve'
-                ? jsonToArray($firstKit['inverter_specs'])['model']
-                : "On-Grid"
-            }}
+            @if(!isset(jsonToArray($firstKit['inverter_specs'])['model']))
+                {{ 'On-Grid' }}
+            @else
+                {{
+                    jsonToArray($firstKit['inverter_specs'])['model'] !== 'Dados Técnicos do Inve'
+                    ? jsonToArray($firstKit['inverter_specs'])['model']
+                    : "On-Grid"
+                }}
+            @endif
         @endif
     </div>
     <div id="inverterWarranty">
         @if($proposal->is_manual)
            {{ $manualData['inverter_warranty'] }} anos
         @else
-            {{ jsonToArray($firstKit['inverter_specs'])['warranty'] }} anos (fabricação)
+            @if(!isset(jsonToArray($firstKit['inverter_specs'])['warranty']))
+                10 anos (fabricação)
+            @else
+                {{ jsonToArray($firstKit['inverter_specs'])['warranty'] }} anos (fabricação)
+            @endif
         @endif
     </div>
     <div id="invertersOverload">
