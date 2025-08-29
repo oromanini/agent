@@ -26,6 +26,7 @@
             let consumption = $('#average_consumption').val();
             let incidence = Address.setIncidence($('#city').val())
             let orientation = $("input[name=orientation]:checked").val();
+            console.log(orientation)
             let kwp = Kit.setKwp(consumption, incidence, orientation);
             let roof = $("input[name=roof_structure]:checked").val();
             let tension = $('select[name=tension_pattern] option').filter(':selected').val()

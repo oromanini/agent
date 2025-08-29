@@ -220,6 +220,7 @@
                 let incidence = Address.setIncidence(addressId);
                 let orientation = $("input[name=orientation]:checked").val();
                 let kwp = Kit.setKwp(consumption, incidence, orientation);
+                console.log(incidence)
                 let roof = $("input[name=roof_structure]:checked").val();
                 let tension = $('select[name=tension_pattern] option').filter(':selected').val()
 
