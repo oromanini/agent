@@ -25,8 +25,13 @@ class KitSpecService
             subject: (new SolarIncidenceService())->getSolarIncidence($city)->average
         );
 
+        $generation_lost = 0.3;
+
+        $data['orientation'] == 'sul' && $generation_lost = 0.5;
+        $data['orientation'] == 'norte' && $generation_lost = 0.2;
+
         return ceil(
-            ((float) $data['kwp']) / ((1 + (float) self::GENERATION_LOST))
+            ((float) $data['kwp']) / ((1 + (float) $generation_lost))
             * 30
             * $incidence
         );
