@@ -11,6 +11,7 @@ use App\Models\Proposal;
 class KitSpecService
 {
     const INVERTER_OVERLOAD = 1.5;
+    const GENERATION_LOST = 0.2;
 
     public function setAverageProduction(array $data): float
     {
@@ -25,7 +26,7 @@ class KitSpecService
         );
 
         return ceil(
-            ((float) $data['kwp']) / ((1 + (float)env('GENERATION_LOST')))
+            ((float) $data['kwp']) / ((1 + (float) self::GENERATION_LOST))
             * 30
             * $incidence
         );

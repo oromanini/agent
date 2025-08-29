@@ -535,12 +535,15 @@
         class Kit {
 
             static setKwp(consumption, incidence) {
+
+                const GENERATION_LOST = 0.2
+
                 return (
                     parseFloat(consumption)
                     / 30
                     / incidence
                 ) * (
-                    1 + {{ (float)env('GENERATION_LOST') }});
+                    1 + GENERATION_LOST);
             }
 
             static setWarranty(brand) {
