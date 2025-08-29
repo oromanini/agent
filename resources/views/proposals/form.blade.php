@@ -217,8 +217,9 @@
                 $('#loader').show()
                 let addressId = $('select[name=installation_address] option').filter(':selected').val()
                 let consumption = $('#average_consumption').val();
-                let incidence = Address.setIncidence(addressId)
-                let kwp = Kit.setKwp(consumption, incidence);
+                let incidence = Address.setIncidence(addressId);
+                let orientation = $("input[name=orientation]:checked").val();
+                let kwp = Kit.setKwp(consumption, incidence, orientation);
                 let roof = $("input[name=roof_structure]:checked").val();
                 let tension = $('select[name=tension_pattern] option').filter(':selected').val()
 

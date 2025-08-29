@@ -25,7 +25,8 @@
 
             let consumption = $('#average_consumption').val();
             let incidence = Address.setIncidence($('#city').val())
-            let kwp = Kit.setKwp(consumption, incidence);
+            let orientation = $("input[name=orientation]:checked").val();
+            let kwp = Kit.setKwp(consumption, incidence, orientation);
             let roof = $("input[name=roof_structure]:checked").val();
             let tension = $('select[name=tension_pattern] option').filter(':selected').val()
 
@@ -292,9 +293,16 @@
 
     class Kit {
 
-        static setKwp(consumption, incidence) {
-            const GENERATION_LOST = 0.2;
-            return (
+        static setKwp(consumption, incidence, orientation) {
+            let GENERATION_LOST;
+
+            if (orientation === 'norte') {
+                GENERATION_LOST = 0.2;
+            } else if (orientation === 'sul') {
+                GENERATION_LOST = 0.5;
+            } else {
+                GENERATION_LOST = 0.3;
+            }            return (
                 parseFloat(consumption)
                 / 30
                 / incidence
