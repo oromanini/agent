@@ -5,6 +5,7 @@ namespace App\Services;
 
 use App\Enums\PaymentTypeEnum;
 use App\Enums\RoofStructure;
+use App\Models\Pricing\ProfitCost;
 use App\Models\PromotionalKit;
 
 class PricingService
@@ -55,7 +56,9 @@ class PricingService
                 isLead: $isLead,
             )['netProfitPercent'];
 
-        if ($this->netProfit < env('PROFIT')) {
+        $profitCost = new ProfitCost($finalValue);
+
+        if ($this->netProfit < $profitCost->percent()) {
             $finalValue += self::PLUS_TO_ADJUST_MARGIN;
             $finalValue = $this->adjustMargin(
                 $cost,

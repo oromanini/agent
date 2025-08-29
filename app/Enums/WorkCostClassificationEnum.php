@@ -16,7 +16,7 @@ enum WorkCostClassificationEnum
     const ROYALTY = 10;
     const TAX = 11;
     const CARD_FEE = 12;
-    const PROFIT = 12;
+    const PROFIT = 13;
 
     public static function classificateByEnum(int $enum): string
     {

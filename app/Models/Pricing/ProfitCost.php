@@ -19,9 +19,9 @@ class ProfitCost extends BaseCost implements Cost
         return $this->finalValue * $this->percent();
     }
 
-    public function percent()
+    public function percent(): float
     {
-        return $this->workCostInfo()['costs'][self::STANDARD_KEY];
+        return (float) $this->workCostInfo()['costs'][self::STANDARD_KEY];
     }
 
     protected function classification(): int
