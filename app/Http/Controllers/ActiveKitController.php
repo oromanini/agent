@@ -12,7 +12,7 @@ class ActiveKitController extends Controller
 {
     public function index(): View
     {
-        $kits = ActiveKit::all();
+        $kits = ActiveKit::query()->orderBy('is_active', 'desc')->get();
         return view('combinations.index', compact('kits'));
     }
 
@@ -21,18 +21,30 @@ class ActiveKitController extends Controller
         return view('kits.create');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
         $validatedData = $request->validate([
             'panel_brand' => 'required|string|max:255',
             'inverter_brand' => 'required|string|max:255',
             'distributor' => 'required|string|max:255',
-            'is_active' => 'required|boolean',
         ]);
 
-        ActiveKit::create($validatedData);
+        $validatedData['last_updated_time'] = now();
 
-        return redirect()->route('active-kits.index')->with('success', 'Combinação criada com sucesso!');
+        try {
+            $newKit = ActiveKit::create($validatedData);
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
+
+        return response()->json([
+            'id' => $newKit->id,
+            'panel_brand' => $newKit->panel_brand,
+            'inverter_brand' => $newKit->inverter_brand,
+            'distributor' => $newKit->distributor,
+            'is_active' => $newKit->is_active,
+            'last_updated_time' => now()->toDateString(),
+        ], 201);
     }
 
     public function update(Request $request, ActiveKit $activeKit)

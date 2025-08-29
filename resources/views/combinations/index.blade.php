@@ -21,11 +21,11 @@
             <div class="columns mt-2 mb-5 ml-1">
                 <h3 class="title">
                     <img src="/img/logo/alluz-icon.png" width="30" alt="..">
-                    Gerenciar Kits Ativos
+                    Gerenciar combinações Ativos
                 </h3>
             </div>
 
-            <a href="{{ route('active-kits.create') }}" class="button is-primary mb-4">Nova Combinação</a>
+            <button class="button is-primary mb-4" id="create-button">Nova Combinação</button>
 
             <table class="table is-fullwidth is-striped">
                 <thead>
@@ -39,7 +39,7 @@
                     <th>Ações</th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody id="kits-table-body">
                 @foreach($kits as $kit)
                     <tr data-id="{{ $kit->id }}">
                         <td>{{ $kit->id }}</td>
@@ -112,6 +112,42 @@
         </div>
     </div>
 
+    <div class="modal" id="create-kit-modal">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">Adicionar Nova Combinação</p>
+                <button class="delete" aria-label="close" id="close-create-modal"></button>
+            </header>
+            <section class="modal-card-body">
+                <form id="create-kit-form">
+                    @csrf
+                    <div class="field">
+                        <label class="label">Marca do Painel</label>
+                        <div class="control">
+                            <input class="input" type="text" name="panel_brand" required>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Marca do Inversor</label>
+                        <div class="control">
+                            <input class="input" type="text" name="inverter_brand" required>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Distribuidor</label>
+                        <div class="control">
+                            <input class="input" type="text" name="distributor" required>
+                        </div>
+                    </div>
+                </form>
+            </section>
+            <footer class="modal-card-foot is-justify-content-flex-end">
+                <button class="button is-success" id="save-new-kit-btn">Salvar</button>
+                <button class="button is-link is-light" id="cancel-new-kit-btn">Cancelar</button>
+            </footer>
+        </div>
+    </div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const csrfToken = '{{ csrf_token() }}';
@@ -122,6 +158,94 @@
                     { type: 'success', backgroundColor: '#23d160', icon: false },
                     { type: 'error', backgroundColor: '#ff3860', icon: false }
                 ]
+            });
+
+            // Gerenciamento dos Modals
+            const createKitModal = document.getElementById('create-kit-modal');
+            const createButton = document.getElementById('create-button');
+            const closeCreateModalBtn = document.getElementById('close-create-modal');
+            const cancelNewKitBtn = document.getElementById('cancel-new-kit-btn');
+            const saveNewKitBtn = document.getElementById('save-new-kit-btn');
+            const createKitForm = document.getElementById('create-kit-form');
+            const kitsTableBody = document.getElementById('kits-table-body');
+
+            const openCreateModal = () => createKitModal.classList.add('is-active');
+            const closeCreateModal = () => {
+                createKitModal.classList.remove('is-active');
+                createKitForm.reset();
+            };
+
+            createButton.addEventListener('click', openCreateModal);
+            closeCreateModalBtn.addEventListener('click', closeCreateModal);
+            cancelNewKitBtn.addEventListener('click', closeCreateModal);
+
+            // Código para a Criação de um Novo Kit (AJAX)
+            saveNewKitBtn.addEventListener('click', async function(e) {
+                e.preventDefault();
+                if (!await ensureAuthenticated()) return;
+
+                const formData = new FormData(createKitForm);
+                const data = Object.fromEntries(formData.entries());
+                const url = `{{ route('active-kits.store') }}`;
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        }
+                        throw new Error('Falha ao adicionar a nova combinação.');
+                    })
+                    .then(newKit => {
+                        // Adicionar nova linha à tabela
+                        const newRow = document.createElement('tr');
+                        newRow.dataset.id = newKit.id;
+                        newRow.innerHTML = `
+                        <td>${newKit.id}</td>
+                        <td class="view-mode panel-brand">${newKit.panel_brand}</td>
+                        <td class="view-mode inverter-brand">${newKit.inverter_brand}</td>
+                        <td class="view-mode distributor">${newKit.distributor}</td>
+                        <td class="edit-mode" style="display: none;"><input type="text" class="input" name="panel_brand" value="${newKit.panel_brand}"></td>
+                        <td class="edit-mode" style="display: none;"><input type="text" class="input" name="inverter_brand" value="${newKit.inverter_brand}"></td>
+                        <td class="edit-mode" style="display: none;"><input type="text" class="input" name="distributor" value="${newKit.distributor}"></td>
+                        <td>
+                            <label class="switch">
+                                <input type="checkbox" class="toggle-active-kit-btn" ${newKit.is_active ? 'checked' : ''}>
+                                <span class="slider round"></span>
+                            </label>
+                        </td>
+                        <td>${newKit.last_updated_time}</td>
+                        <td>
+                            <div class="is-flex is-align-items-center">
+                                <button class="button is-info is-small mr-1 edit-button">
+                                    <span class="icon is-small"><ion-icon name="create-outline"></ion-icon></span>
+                                </button>
+                                <button class="button is-success is-small mr-1 save-button" style="display: none;">
+                                    <span class="icon is-small"><ion-icon name="save-outline"></ion-icon></span>
+                                </button>
+                                <button class="button is-warning is-small mr-1 cancel-button" style="display: none;">
+                                    <span class="icon is-small"><ion-icon name="close-outline"></ion-icon></span>
+                                </button>
+                                <button class="button is-danger is-small delete-button">
+                                    <span class="icon is-small"><ion-icon name="trash-outline"></ion-icon></span>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                        kitsTableBody.appendChild(newRow);
+                        closeCreateModal();
+                        notyf.success('Combinação adicionada com sucesso!');
+                    })
+                    .catch(error => {
+                        notyf.error(error.message);
+                    });
             });
 
             const deleteConfirmModal = document.getElementById('delete-confirm-modal');
@@ -256,7 +380,7 @@
 
                     const row = e.target.closest('tr');
                     const id = row.dataset.id;
-                    const url = `/api/active-kits/${id}/toggle`;
+                    const url = `/active-kits/${id}/toggle-active`;
                     const authToken = localStorage.getItem('auth_token');
 
                     fetch(url, {

@@ -440,7 +440,7 @@
                 if (brand == 'Phono') {
                     panelImage = '/img/panel_brands/phono.png'
                 }
-                console.log(brand)
+
                 if (brand == 'Longi' || brand == 'LONGI') {
                     panelImage = '/img/panel_brands/longi.png'
                 }
@@ -484,6 +484,9 @@
 
                 if (brand == 'Runergy') {
                     panelImage = '/img/panel_brands/runergy.png'
+                }
+                if (brand == 'RENEPV' || brand == 'renepv') {
+                    panelImage = '/img/panel_brands/renepv.png'
                 }
 
                 return panelImage

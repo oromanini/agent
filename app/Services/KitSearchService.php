@@ -7,11 +7,15 @@ use App\Enums\TensionPattern;
 use App\Exceptions\DistributorNotFoundException;
 use App\Models\ActiveKit;
 use App\Models\Kit;
+use App\Packages\SoolarApiPackage\Models\InverterBrand;
+use App\Packages\SoolarApiPackage\Models\ModuleBrand;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 
 class KitSearchService
 {
+    const SOOLLAR = 'SOOLLAR';
+
     public function __construct(
         private readonly float  $kwp,
         private int $roof,
@@ -42,9 +46,11 @@ class KitSearchService
         foreach ($inverters as $inverter) {
             foreach ($panels as $panel) {
 
+                $is_soollar = $distributor == self::SOOLLAR;
+
                 $combination = ActiveKit::query()
-                    ->where('panel_brand', $panel->name)
-                    ->where('inverter_brand', $inverter->name)
+                    ->where('panel_brand', $is_soollar ? $panel['brand'] : $panel->name)
+                    ->where('inverter_brand', $is_soollar ? $inverter['brand'] : $inverter->name)
                     ->where('distributor', $distributor)
                     ->where('is_active', '=', 1)
                     ->first();
@@ -58,8 +64,8 @@ class KitSearchService
                         ->where('distributor_name', $distributor)
                         ->where('roof_structure', $this->roof)
                         ->whereIn('tension_pattern', $tensionPossibilities)
-                        ->whereJsonContains('panel_specs->brand', $panel->name)
-                        ->whereJsonContains('inverter_specs->brand', $inverter->name)
+                        ->whereJsonContains('panel_specs->brand', $is_soollar ? $panel['brand'] : $panel->name)
+                        ->whereJsonContains('inverter_specs->brand', $is_soollar ? $inverter['brand'] : $inverter->name)
                         ->orderBy('kwp')
                         ->first();
 
@@ -73,7 +79,8 @@ class KitSearchService
     private function setPanelsByDistributor(string $distributor): array
     {
         return match ($distributor) {
-            'EDELTEC' => \App\Packages\EdeltecApiPackage\Enums\PanelBrand::cases(),
+            'SOOLLAR' => ModuleBrand::all()->toArray(),
+//            'EDELTEC' => \App\Packages\EdeltecApiPackage\Enums\PanelBrand::cases(),
 //            'ODEX' => \App\Services\Odex\PanelBrandEnum::cases(),
 //            'FOTUS' => \App\Services\Fotus\PanelBrandEnum::cases(),
             default => throw new DistributorNotFoundException('Distribuidor não encontrado!')
@@ -83,9 +90,10 @@ class KitSearchService
     private function setInvertersByDistributor(string $distributor): array
     {
         return match ($distributor) {
-            'EDELTEC' => \App\Packages\EdeltecApiPackage\Enums\InverterBrand::cases(),
-            'ODEX' => \App\Services\Odex\InverterBrandEnum::cases(),
-            'FOTUS' => \App\Services\Fotus\InverterBrandEnum::cases(),
+            'SOOLLAR' => InverterBrand::all()->toArray(),
+//            'EDELTEC' => \App\Packages\EdeltecApiPackage\Enums\InverterBrand::cases(),
+//            'ODEX' => \App\Services\Odex\InverterBrandEnum::cases(),
+//            'FOTUS' => \App\Services\Fotus\InverterBrandEnum::cases(),
             default => throw new DistributorNotFoundException('Distribuidor não encontrado!')
         };
     }

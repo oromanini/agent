@@ -6,5 +6,6 @@ enum DistributorsEnum: string
 {
 //    case FOTUS = 'FOTUS';
 //    case ODEX = 'ODEX';
-    case EDELTEC = 'EDELTEC';
+    case SOOLLAR = 'SOOLLAR';
+//    case EDELTEC = 'EDELTEC';
 }
