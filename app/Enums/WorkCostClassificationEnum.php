@@ -16,6 +16,7 @@ enum WorkCostClassificationEnum
     const ROYALTY = 10;
     const TAX = 11;
     const CARD_FEE = 12;
+    const PROFIT = 12;
 
     public static function classificateByEnum(int $enum): string
     {
@@ -32,6 +33,7 @@ enum WorkCostClassificationEnum
             10 => 'Royalties',
             11 => 'Impostos',
             12 => 'Taxa da máquina de cartão',
+            13 => 'Lucro',
             default => throw new \Exception('Unexistent workcost'),
         };
     }
