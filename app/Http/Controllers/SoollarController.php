@@ -21,7 +21,7 @@ class SoollarController extends Controller
     {
         $errors = [];
         $results = [];
-
+        ini_set('max_execution_time', 300);
         foreach (ProductCategoriesEnum::cases() as $category) {
             foreach (WarehouseEnum::cases() as $warehouse) {
                 try {
