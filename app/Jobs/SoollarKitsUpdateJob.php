@@ -27,7 +27,7 @@ class SoollarKitsUpdateJob implements ShouldQueue
 
             SoollarImportHistory::finishProcess();
         } catch (\Throwable $e) {
-            Log::error('Erro ao atualizar kits SOOLLAR: ' . $e->getMessage());
+            Log::error('Erro ao atualizar kits SOOLLAR: ' . $e->getMessage() . '\n\n' . $e->getTraceAsString());
             SoollarImportHistory::updateProcess(status: SoollarImportHistory::STATUS_ERROR);
         }
     }

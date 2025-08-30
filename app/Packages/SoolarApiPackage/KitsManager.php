@@ -66,11 +66,15 @@ class KitsManager implements KitsManagerInterface
                     }
                 }
             }
+            SoollarImportHistory::updateProcess(
+                createdKits: $this->createdKitsCount,
+                updatedKits: $this->updatedKitsCount,
+            );
         }
 
         SoollarImportHistory::updateProcess(
-            created_kits: $this->createdKitsCount,
-            updated_kits: $this->updatedKitsCount,
+            createdKits: $this->createdKitsCount,
+            updatedKits: $this->updatedKitsCount,
         );
     }
 

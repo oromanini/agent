@@ -21,14 +21,6 @@ use Illuminate\Support\Facades\DB;
 class SoollarApiRepository
 {
     const INVERTER_TYPE = 'inverter';
-    private int $createdProductsCount;
-    private int $updatedProductsCount;
-
-    public function __construct()
-    {
-        $this->createdProductsCount = 0;
-        $this->updatedProductsCount = 0;
-    }
 
     public function syncProducts(ProductCategoriesEnum $category, array $products): void
     {
@@ -39,31 +31,51 @@ class SoollarApiRepository
             return;
         }
 
-        DB::connection('soollar')->transaction(function () use ($model, $products) {
+        $createdInBatch = 0;
+        $updatedInBatch = 0;
+
+        DB::connection('soollar')->transaction(function () use ($model, $products, &$createdInBatch, &$updatedInBatch) {
             foreach ($products as $productData) {
                 if (empty($productData['name'])) {
                     continue;
                 }
 
-                $this->updateOrCreate(
+                $status = $this->updateOrCreate(
                     model: $model,
                     searchAttribute: ['name' => $productData['name']],
                     data: $productData
                 );
+
+                if ($status === 'created') {
+                    $createdInBatch++;
+                } elseif ($status === 'updated') {
+                    $updatedInBatch++;
+                }
             }
         });
 
         SoollarImportHistory::updateProcess(
-            created_products: $this->createdProductsCount,
-            updated_products: $this->updatedProductsCount,
+            createdProducts: $createdInBatch,
+            updatedProducts: $updatedInBatch
         );
+    }
+
+    private function updateOrCreate(Model $model, array $searchAttribute, array $data): string
+    {
+        $object = $model->query()->where($searchAttribute)->first();
+
+        if ($object) {
+            $object->update($data);
+            return 'updated';
+        }
+
+        $model->create($data);
+        return 'created';
     }
 
     public function syncKits(): void
     {
-        (new KitsManager(
-            $this, new CableService($this)
-        ))->handle();
+        (new KitsManager($this, new CableService($this)))->handle();
     }
 
     private function getModelForCategory(ProductCategoriesEnum $category): ?Model
@@ -172,22 +184,5 @@ class SoollarApiRepository
         return Kit::query()
             ->where('is_active', true)
             ->count();
-    }
-
-    private function updateOrCreate(
-        Model $model,
-        array $searchAttribute,
-        array $data
-    ):void {
-        $object = $model->query()->where($searchAttribute);
-
-        if ($object->exists()) {
-            $object->first()->update($data);
-            $this->updatedProductsCount++;
-
-            return;
-        }
-        $model->create($data);
-        $this->createdProductsCount++;
     }
 }

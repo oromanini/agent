@@ -6,9 +6,6 @@
     <div class="progress-bar stripes animated">
         <span class="progress-bar-inner" style="width: {{ $progress }}%;"></span>
     </div>
-    <div class="progress-bar stripes animated reverse slower">
-        <span class="progress-bar-inner" style="width: {{ $progress }}%;"></span>
-    </div>
 </div>
 
 

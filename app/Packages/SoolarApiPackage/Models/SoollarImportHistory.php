@@ -52,10 +52,10 @@ class SoollarImportHistory extends Model
     }
 
     public static function updateProcess(
-        ?int $created_products = null,
-        ?int $updated_products = null,
-        ?int $created_kits = null,
-        ?int $updated_kits = null,
+        ?int $createdProducts = null,
+        ?int $updatedProducts = null,
+        ?int $createdKits = null,
+        ?int $updatedKits = null,
         ?string $status = null
     ): void {
 
@@ -65,10 +65,10 @@ class SoollarImportHistory extends Model
 
         $process = self::getProcessing()->first();
 
-        !is_null($created_products) && $process->created_products = $created_products;
-        !is_null($updated_products) && $process->updated_products = $updated_products;
-        !is_null($created_kits) && $process->created_kits = $created_kits;
-        !is_null($updated_kits) && $process->updated_kits = $updated_kits;
+        !is_null($createdProducts) && $process->created_products += $createdProducts;
+        !is_null($updatedProducts) && $process->updated_products += $updatedProducts;
+        !is_null($createdKits) && $process->created_kits += $createdKits;
+        !is_null($updatedKits) && $process->updated_kits += $updatedKits;
         !is_null($status) && $process->status = $status;
 
         $process->update();
@@ -79,7 +79,7 @@ class SoollarImportHistory extends Model
         $process = self::getProcessing()->first();
 
         $process->status = self::STATUS_SUCCESS;
-        $process->elapsed_time = now()->diffInSeconds($process->elapsed_time);
+        $process->elapsed_time = now()->diffInSeconds($process->date);
 
         $process->update();
     }

@@ -30,7 +30,6 @@
             </div>
 
             <div id="progress-container" class="mt-5" style="display: none;">
-                {{-- Integração do novo componente de progresso --}}
                 <x-progress-bar id="update-progress-bar" />
             </div>
 
@@ -76,13 +75,11 @@
             let pollingInterval = null;
 
             // --- Funções Auxiliares ---
-
             function clearTerminal() {
                 terminal.innerHTML = 'Alluz Energia® 2025 - Todos os direitos reservados\n----------------';
                 if (progressContainer) {
                     progressContainer.style.display = 'none';
                 }
-                // O reset da barra agora é feito dentro do updateProgressBar
             }
 
             function updateTerminal(message, color = '#FFFFFF') {
@@ -115,19 +112,15 @@
             }
 
             // --- Lógica Principal ---
-
             function updateProgressBar(data) {
                 const progressBarContainer = document.getElementById('update-progress-bar');
-
                 if (!progressContainer || !progressBarContainer || !data || data.status === 'IDLE') {
                     if (progressContainer) progressContainer.style.display = 'none';
                     return;
                 }
                 progressContainer.style.display = 'block';
-
                 let progress = 0;
-                let barClass = ''; // Classe de estado (is-success ou is-danger)
-
+                let barClass = '';
                 if (data.status === 'PROCESSING') {
                     progress = 25;
                     if ((data.created_products > 0 || data.updated_products > 0)) {
@@ -143,9 +136,7 @@
                     progress = 100;
                     barClass = 'is-danger';
                 }
-
                 const innerBars = progressBarContainer.querySelectorAll('.progress-bar-inner');
-
                 innerBars.forEach(bar => {
                     bar.style.width = `${progress}%`;
                     bar.classList.remove('is-success', 'is-danger');
@@ -159,7 +150,6 @@
                 if (!data || data.status === 'IDLE') {
                     return;
                 }
-
                 const elapsedTime = data.status !== 'PROCESSING' ? `\nTempo decorrido: ${data.elapsed_time} segundos` : '';
                 const message = `
 --- Status da Atualização Soollar ---
@@ -173,15 +163,16 @@ Kits Atualizados: ${data.updated_kits || 0}
 ${elapsedTime}
 -------------------------------------
                 `;
-
                 terminal.innerHTML = 'Alluz Energia® 2025 - Todos os direitos reservados\n----------------';
-
                 updateTerminal(message.trim());
             }
 
             async function checkStatus() {
                 const token = localStorage.getItem('auth_token');
-                if (!token) return;
+                if (!token) {
+                    stopPolling(); // Se o token sumir, paramos o polling.
+                    return;
+                }
 
                 try {
                     const response = await fetch('/api/soollar/update-status', {
@@ -189,26 +180,32 @@ ${elapsedTime}
                     });
 
                     if (!response.ok) {
-                        console.error('Erro ao buscar status:', response.statusText);
-                        return;
+                        // Se a resposta não for OK, apenas logamos e esperamos a próxima verificação
+                        console.error('Falha ao buscar status (não-OK):', response.statusText);
+                        updateTerminal(`Falha ao obter status (${response.status}). Tentando novamente...`, '#f39c12'); // Amarelo para alerta
+                        return; // Não para o polling
                     }
 
                     const data = await response.json();
-
                     updateProgressBar(data);
                     displayProcessStatus(data);
 
                     if (data.status === 'SUCCESS' || data.status === 'ERROR') {
-                        stopPolling();
+                        stopPolling(); // Para o polling apenas em estados FINAIS
                         toggleButtons(false);
                         updateTerminal(data.status === 'SUCCESS' ? '✅ Processo concluído com sucesso!' : '❌ Processo finalizado com erro.', data.status === 'ERROR' ? '#ff6b6b' : '#FFFFFF');
                     } else if (data.status === 'PROCESSING') {
                         toggleButtons(true);
                     }
                 } catch (error) {
-                    updateTerminal(`Erro de conexão ao verificar status: ${error.message}`, '#ff6b6b');
-                    stopPolling();
-                    toggleButtons(false);
+                    // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< INÍCIO DA CORREÇÃO <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                    // O polling NÃO SERÁ INTERROMPIDO em caso de erro de rede.
+                    // Apenas exibimos uma mensagem e a próxima verificação ocorrerá normalmente.
+                    console.error('Falha de conexão ao verificar status:', error);
+                    updateTerminal(`Falha de conexão ao verificar status. A verificação continuará...`, '#f39c12'); // Amarelo para alerta
+                    // A chamada para stopPolling() foi REMOVIDA daqui.
+                    // A chamada para toggleButtons(false) foi REMOVIDA daqui.
+                    // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< FIM DA CORREÇÃO <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
                 }
             }
 
@@ -217,44 +214,32 @@ ${elapsedTime}
                 pollingInterval = setInterval(checkStatus, 3000);
             }
 
-
-
             async function handleUpdate(endpoint) {
                 toggleButtons(true);
                 clearTerminal();
                 updateTerminal('Iniciando processo de atualização em segundo plano...');
-
-                // Força a exibição e o reset inicial da barra de progresso
                 if (progressContainer) {
                     progressContainer.style.display = 'block';
-                    updateProgressBar({ status: 'PROCESSING', created_products: 0, updated_products: 0, created_kits: 0, updated_kits: 0 }); // Zera a barra
+                    updateProgressBar({ status: 'PROCESSING', created_products: 0, updated_products: 0, created_kits: 0, updated_kits: 0 });
                 }
-
                 const token = localStorage.getItem('auth_token');
-
                 if (!token) {
                     updateTerminal('\nErro: Token de autenticação não encontrado. Realize o login novamente.', '#ff6b6b');
                     toggleButtons(false);
                     return;
                 }
-
                 try {
                     const response = await fetch(endpoint, {
                         method: 'POST',
                         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
                     });
-
                     const data = await response.json();
-
                     if (!response.ok) {
                         throw new Error(data.message || 'Erro desconhecido ao iniciar a atualização.');
                     }
-
                     updateTerminal(`✅ ${data.message}`);
                     updateTerminal('Aguardando o primeiro status...');
-
                     startPolling();
-
                 } catch (error) {
                     updateTerminal(`❌ Erro ao iniciar a atualização: ${error.message}`, '#ff6b6b');
                     toggleButtons(false);
