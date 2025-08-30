@@ -18,6 +18,8 @@ class SoollarKitsUpdateJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public int $timeout = 300; // 5 minutos
+
     public function handle(): void
     {
         $apiRepo = new SoollarApiRepository();

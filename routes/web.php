@@ -17,6 +17,7 @@ use App\Http\Controllers\LeadController;
 use App\Http\Controllers\PreInspectionController;
 use App\Http\Controllers\ProductsUpdateController;
 use App\Http\Controllers\ProposalController;
+use App\Http\Controllers\SoollarController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ValueHistoryController;
 use App\Http\Controllers\WorkCostController;
@@ -200,6 +201,8 @@ Route::middleware('auth')->group(function () {
         });
     });
 });
+
+Route::get('/soollar/update-status', [SoollarController::class, 'getUpdateStatus']);
 
 
 Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');

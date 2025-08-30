@@ -61,6 +61,7 @@ class SoollarImportHistory extends Model
 
         if (!self::isAnotherProcessRunning()) {
             Log::error('nenhum processo existente para atualizar');
+            throw new \Exception('Nenhum processo existente para atualizar');
         }
 
         $process = self::getProcessing()->first();
