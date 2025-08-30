@@ -12,6 +12,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class SoollarKitsUpdateJob implements ShouldQueue
 {
@@ -21,14 +22,14 @@ class SoollarKitsUpdateJob implements ShouldQueue
     {
         $apiRepo = new SoollarApiRepository();
         $cableService = new CableService($apiRepo);
+        (new KitsManager($apiRepo, $cableService))->handle();
 
-        try {
-            (new KitsManager($apiRepo, $cableService))->handle();
+        SoollarImportHistory::finishProcess();
+    }
 
-            SoollarImportHistory::finishProcess();
-        } catch (\Throwable $e) {
-            Log::error('Erro ao atualizar kits SOOLLAR: ' . $e->getMessage() . '\n\n' . $e->getTraceAsString());
-            SoollarImportHistory::updateProcess(status: SoollarImportHistory::STATUS_ERROR);
-        }
+    public function failed(Throwable $exception): void
+    {
+        Log::error('Falha ao executar SoollarKitsUpdateJob: ' . $exception->getMessage() . '\n \n' . $exception->getTraceAsString());
+        SoollarImportHistory::updateProcess(status: SoollarImportHistory::STATUS_ERROR);
     }
 }

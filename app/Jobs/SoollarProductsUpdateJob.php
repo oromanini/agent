@@ -12,23 +12,24 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class SoollarProductsUpdateJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public function __construct(
-        public ProductCategoriesEnum $category,
-        public WarehouseEnum $warehouse,
-    ) {}
-
     public function handle(SoollarApiManager $soollarApiManager): void
     {
-        try {
-            $soollarApiManager->handle($this->category, $this->warehouse);
-        } catch (\Throwable $e) {
-            Log::error('Falha ao atualizar equipamentos: ' . $e->getMessage());
-            SoollarImportHistory::updateProcess(status: SoollarImportHistory::STATUS_ERROR);
+        foreach (ProductCategoriesEnum::cases() as $category) {
+            foreach (WarehouseEnum::cases() as $warehouse) {
+                $soollarApiManager->handle($category, $warehouse);
+            }
         }
+    }
+
+    public function failed(Throwable $exception): void
+    {
+        Log::error('Falha ao executar SoollarProductsUpdateJob: ' . '\n \n'. $exception->getMessage());
+        SoollarImportHistory::updateProcess(status: SoollarImportHistory::STATUS_ERROR);
     }
 }

@@ -17,12 +17,8 @@ class SoollarController extends Controller
         SoollarImportHistory::initProcess();
 
         $jobsToChain = [];
-        foreach (ProductCategoriesEnum::cases() as $category) {
-            foreach (WarehouseEnum::cases() as $warehouse) {
-                $jobsToChain[] = new SoollarProductsUpdateJob($category, $warehouse);
-            }
-        }
 
+        $jobsToChain[] = new SoollarProductsUpdateJob();
         $jobsToChain[] = new SoollarKitsUpdateJob();
 
         Bus::chain($jobsToChain)->dispatch();
