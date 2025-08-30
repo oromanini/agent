@@ -9,6 +9,7 @@ use App\Packages\SoolarApiPackage\Contracts\KitsManagerInterface;
 use App\Packages\SoolarApiPackage\Models\Inverter;
 use App\Packages\SoolarApiPackage\Models\InverterBrand;
 use App\Packages\SoolarApiPackage\Models\Module;
+use App\Packages\SoolarApiPackage\Models\SoollarImportHistory;
 use App\Packages\SoolarApiPackage\Repositories\SoollarApiRepository;
 use App\Packages\SoolarApiPackage\Services\CableService;
 use Illuminate\Http\JsonResponse;
@@ -21,10 +22,16 @@ class KitsManager implements KitsManagerInterface
     const PRETO = 'PRETO';
     const VERMELHO = 'VERMELHO';
 
+    private int $createdKitsCount;
+    private int $updatedKitsCount;
+
     public function __construct(
         private readonly SoollarApiRepository $repository,
         private readonly CableService $cableService
-    ) {}
+    ) {
+        $this->createdKitsCount = 0;
+        $this->updatedKitsCount = 0;
+    }
 
     function handle(): int
     {
@@ -61,9 +68,10 @@ class KitsManager implements KitsManagerInterface
             }
         }
 
-        $total = $this->repository->countActiveKits();
-
-        return $total;
+        SoollarImportHistory::updateProcess(
+            created_kits: $this->createdKitsCount,
+            updated_kits: $this->updatedKitsCount,
+        );
     }
 
     private function mountAndSaveKit(
@@ -72,51 +80,47 @@ class KitsManager implements KitsManagerInterface
         Inverter $inverter
     ): void {
         foreach (RoofStructure::cases() as $roofStructure) {
-            try {
-                $panelSpecs = $this->setPanelSpecs($module);
-                $inverterSpecs = $this->setInverterSpecs($inverter);
-                $structureSpecs = $this->setStructureSpecs($roofStructure, $modulesQuantity);
-                $cables = $this->calculateCable($modulesQuantity);
-                $connectors = $this->calculateConnectors($modulesQuantity);
-                $kwp = $this->calculateKwp($modulesQuantity, (float)$module->power);
+            $panelSpecs = $this->setPanelSpecs($module);
+            $inverterSpecs = $this->setInverterSpecs($inverter);
+            $structureSpecs = $this->setStructureSpecs($roofStructure, $modulesQuantity);
+            $cables = $this->calculateCable($modulesQuantity);
+            $connectors = $this->calculateConnectors($modulesQuantity);
+            $kwp = $this->calculateKwp($modulesQuantity, (float)$module->power);
 
-                $components = $this->setComponents(
-                    $module,
-                    $inverter,
-                    $structureSpecs,
-                    $modulesQuantity,
-                    $cables,
-                    $connectors
-                );
+            $components = $this->setComponents(
+                $module,
+                $inverter,
+                $structureSpecs,
+                $modulesQuantity,
+                $cables,
+                $connectors
+            );
 
-                $cost = $this->calculateCost($module, $modulesQuantity, $inverter, $structureSpecs, $cables, $connectors);
+            $cost = $this->calculateCost($module, $modulesQuantity, $inverter, $structureSpecs, $cables, $connectors);
 
-                $tensionPattern = match ((string)$inverter->voltage) {
-                    '220V' => TensionPattern::MONOFASICO_220V->value,
-                    '380V' => TensionPattern::TRIFASICO_380V->value,
-                    default => TensionPattern::MONOFASICO_220V->value,
-                };
+            $tensionPattern = match ((string)$inverter->voltage) {
+                '220V' => TensionPattern::MONOFASICO_220V->value,
+                '380V' => TensionPattern::TRIFASICO_380V->value,
+                default => TensionPattern::MONOFASICO_220V->value,
+            };
 
-                $kit = new Kit();
-                $kit->fillFromAttributes(
-                    description: $this->setKitDescription($kwp, $roofStructure, $inverter, $panelSpecs),
-                    kwp: $kwp,
-                    cost: $cost,
-                    roof_structure: $roofStructure->value,
-                    tension_pattern: $tensionPattern,
-                    components: $components,
-                    panel_specs: $panelSpecs,
-                    inverter_specs: $inverterSpecs,
-                    distributor_name: "SOOLLAR",
-                    distributor_code: Uuid::uuid4()->toString(),
-                    availability: now()->toDateString(),
-                    is_active: true,
-                );
+            $kit = new Kit();
+            $kit->fillFromAttributes(
+                description: $this->setKitDescription($kwp, $roofStructure, $inverter, $panelSpecs),
+                kwp: $kwp,
+                cost: $cost,
+                roof_structure: $roofStructure->value,
+                tension_pattern: $tensionPattern,
+                components: $components,
+                panel_specs: $panelSpecs,
+                inverter_specs: $inverterSpecs,
+                distributor_name: "SOOLLAR",
+                distributor_code: Uuid::uuid4()->toString(),
+                availability: now()->toDateString(),
+                is_active: true,
+            );
 
-                $this->saveOrUpdateKit($kit);
-            } catch (\Throwable $e) {
-                Log::error('Erro ao montar kit: ' . $e->getMessage() . ' - Inversor: ' . $inverter->id . ' Módulo: ' . $module->id);
-            }
+            $this->saveOrUpdateKit($kit);
         }
     }
 
@@ -127,10 +131,12 @@ class KitsManager implements KitsManagerInterface
         if ($existingKit) {
             $existingKit->update($kit->toArray());
             $existingKit->update(['is_active' => true]);
+            $this->updatedKitsCount++;
             return;
         }
 
         $kit->save();
+        $this->createdKitsCount++;
     }
 
     private function setKitDescription(float $kwp, RoofStructure $roofStructure, Inverter $inverter, array $panelSpecs): string

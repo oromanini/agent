@@ -14,7 +14,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 });
 
-Route::post('/soollar/update-products', [SoollarController::class, 'index']);
+Route::post('/soollar/update-products', [SoollarController::class, 'index'])->name('soollar.update');
 Route::post('/edeltec/update-products', [EdeltecController::class, 'index']);
 
 Route::prefix('brands')->group(function () {

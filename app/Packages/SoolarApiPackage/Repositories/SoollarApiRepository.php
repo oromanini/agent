@@ -4,7 +4,6 @@ namespace App\Packages\SoolarApiPackage\Repositories;
 
 use App\Models\Kit;
 use App\Packages\SoolarApiPackage\Enums\ProductCategoriesEnum;
-use App\Packages\SoolarApiPackage\Enums\WarehouseEnum;
 use App\Packages\SoolarApiPackage\KitsManager;
 use App\Packages\SoolarApiPackage\Models\Cable;
 use App\Packages\SoolarApiPackage\Models\Connector;
@@ -12,6 +11,7 @@ use App\Packages\SoolarApiPackage\Models\Inverter;
 use App\Packages\SoolarApiPackage\Models\InverterBrand;
 use App\Packages\SoolarApiPackage\Models\Module;
 use App\Packages\SoolarApiPackage\Models\ModuleBrand;
+use App\Packages\SoolarApiPackage\Models\SoollarImportHistory;
 use App\Packages\SoolarApiPackage\Models\Structure;
 use App\Packages\SoolarApiPackage\Services\CableService;
 use Illuminate\Database\Eloquent\Model;
@@ -21,6 +21,14 @@ use Illuminate\Support\Facades\DB;
 class SoollarApiRepository
 {
     const INVERTER_TYPE = 'inverter';
+    private int $createdProductsCount;
+    private int $updatedProductsCount;
+
+    public function __construct()
+    {
+        $this->createdProductsCount = 0;
+        $this->updatedProductsCount = 0;
+    }
 
     public function syncProducts(ProductCategoriesEnum $category, array $products): void
     {
@@ -37,12 +45,18 @@ class SoollarApiRepository
                     continue;
                 }
 
-                $model->updateOrCreate(
-                    ['name' => $productData['name']],
-                    $productData
+                $this->updateOrCreate(
+                    model: $model,
+                    searchAttribute: ['name' => $productData['name']],
+                    data: $productData
                 );
             }
         });
+
+        SoollarImportHistory::updateProcess(
+            created_products: $this->createdProductsCount,
+            updated_products: $this->updatedProductsCount,
+        );
     }
 
     public function syncKits(): void
@@ -139,7 +153,9 @@ class SoollarApiRepository
 
     public function deactivateAllKits(): void
     {
-        Kit::query()->update(['is_active' => false]);
+        Kit::query()
+            ->where('distributor', 'SOOLLAR')
+            ->update(['is_active' => false]);
     }
 
     public function getRecentKits(int $limit): Collection
@@ -151,13 +167,28 @@ class SoollarApiRepository
             ->get();
     }
 
-    /**
-     * Conta a quantidade de kits ativos.
-     */
     public function countActiveKits(): int
     {
         return Kit::query()
             ->where('is_active', true)
             ->count();
+    }
+
+    private function updateOrCreate(
+        Model $model,
+        array $searchAttribute,
+        array $data
+    ):void {
+        $object = $model->query()->where($searchAttribute);
+
+        if ($object->exists()) {
+            $object->first()->update($data);
+            $this->updatedProductsCount++;
+
+            return;
+        }
+
+        $model->save($data);
+        $this->createdProductsCount++;
     }
 }
