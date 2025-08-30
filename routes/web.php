@@ -202,9 +202,6 @@ Route::middleware('auth')->group(function () {
     });
 });
 
-Route::get('/soollar/update-status', [SoollarController::class, 'getUpdateStatus']);
-
-
 Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
 
 require __DIR__ . '/auth.php';

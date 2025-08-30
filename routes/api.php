@@ -25,5 +25,6 @@ Route::prefix('brands')->group(function () {
 });
 
 Route::put('/active-kits/{activeKit}/toggle', [ActiveKitController::class, 'toggleActive']);
+Route::get('/soollar/update-status', [SoollarController::class, 'getUpdateStatus']);
 
 Route::post('/authorize', [AuthController::class, 'login']);
