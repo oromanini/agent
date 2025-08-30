@@ -32,6 +32,5 @@ class SoollarKitsUpdateJob implements ShouldQueue
     public function failed(Throwable $exception): void
     {
         Log::error('Falha ao executar SoollarKitsUpdateJob: ' . $exception->getMessage() . '\n \n' . $exception->getTraceAsString());
-        SoollarImportHistory::updateProcess(status: SoollarImportHistory::STATUS_ERROR);
     }
 }

@@ -32,6 +32,5 @@ class SoollarProductsUpdateJob implements ShouldQueue
     public function failed(Throwable $exception): void
     {
         Log::error('Falha ao executar SoollarProductsUpdateJob: ' . '\n \n'. $exception->getMessage());
-        SoollarImportHistory::updateProcess(status: SoollarImportHistory::STATUS_ERROR);
     }
 }
