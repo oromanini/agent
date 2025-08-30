@@ -2,26 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Jobs\SoollarKitsUpdateJob;
-use App\Jobs\SoollarProductsUpdateJob;
-use App\Packages\SoolarApiPackage\Enums\ProductCategoriesEnum;
-use App\Packages\SoolarApiPackage\Enums\WarehouseEnum;
+use App\Jobs\StartSoollarUpdateJob;
 use App\Packages\SoolarApiPackage\Models\SoollarImportHistory;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Bus;
 
 class SoollarController extends Controller
 {
     public function index(): JsonResponse
     {
-        SoollarImportHistory::initProcess();
-
-        $jobsToChain = [];
-
-        $jobsToChain[] = new SoollarProductsUpdateJob();
-        $jobsToChain[] = new SoollarKitsUpdateJob();
-
-        Bus::chain($jobsToChain)->dispatch();
+        StartSoollarUpdateJob::dispatch();
 
         return response()->json([
             'status' => 200,

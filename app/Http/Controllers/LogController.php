@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Packages\SoolarApiPackage\Models\SoollarImportHistory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -19,6 +20,12 @@ class LogController extends Controller
         $context = $request->input('context', 'Nenhum contexto adicional.');
 
         Log::error($logMessage, ['details' => $context]);
+
+        $hasProcessingImportRunning = SoollarImportHistory::query()
+            ->where('status', SoollarImportHistory::STATUS_PROCESSING)
+            ->exists();
+
+        $hasProcessingImportRunning && SoollarImportHistory::finishProcess(status: SoollarImportHistory::STATUS_ERROR);
 
         return response()->json(['status' => 'logged']);
     }

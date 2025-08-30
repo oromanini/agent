@@ -75,11 +75,11 @@ class SoollarImportHistory extends Model
         $process->update();
     }
 
-    public static function finishProcess(): void
+    public static function finishProcess(?string $status = null): void
     {
         $process = self::getProcessing()->first();
 
-        $process->status = self::STATUS_SUCCESS;
+        $process->status = is_null($status) ? self::STATUS_SUCCESS : $status;
         $process->elapsed_time = now()->diffInSeconds($process->date);
 
         $process->update();
