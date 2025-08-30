@@ -75,6 +75,29 @@
             let pollingInterval = null;
 
             // --- Funções Auxiliares ---
+
+            /**
+             * NOVA FUNÇÃO: Envia um erro para ser registrado no log do backend.
+             */
+            async function logErrorToServer(message, context = '') {
+                try {
+                    const token = localStorage.getItem('auth_token');
+                    if (!token) return;
+
+                    await fetch('/api/log-frontend-error', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ message, context })
+                    });
+                } catch (e) {
+                    console.error("Falha ao enviar o log para o servidor:", e);
+                }
+            }
+
             function clearTerminal() {
                 terminal.innerHTML = 'Alluz Energia® 2025 - Todos os direitos reservados\n----------------';
                 if (progressContainer) {
@@ -95,11 +118,8 @@
 
             function toggleButtons(disabled) {
                 updateButtons.forEach(button => {
-                    if (disabled) {
-                        button.classList.add('is-loading');
-                    } else {
-                        button.classList.remove('is-loading');
-                    }
+                    if (disabled) { button.classList.add('is-loading'); }
+                    else { button.classList.remove('is-loading'); }
                     button.disabled = disabled;
                 });
             }
@@ -123,12 +143,8 @@
                 let barClass = '';
                 if (data.status === 'PROCESSING') {
                     progress = 25;
-                    if ((data.created_products > 0 || data.updated_products > 0)) {
-                        progress = 50;
-                    }
-                    if (data.created_kits > 0 || data.updated_kits > 0) {
-                        progress = 75;
-                    }
+                    if ((data.created_products > 0 || data.updated_products > 0)) { progress = 50; }
+                    if (data.created_kits > 0 || data.updated_kits > 0) { progress = 75; }
                 } else if (data.status === 'SUCCESS') {
                     progress = 100;
                     barClass = 'is-success';
@@ -140,72 +156,41 @@
                 innerBars.forEach(bar => {
                     bar.style.width = `${progress}%`;
                     bar.classList.remove('is-success', 'is-danger');
-                    if (barClass) {
-                        bar.classList.add(barClass);
-                    }
+                    if (barClass) { bar.classList.add(barClass); }
                 });
             }
 
             function displayProcessStatus(data) {
-                if (!data || data.status === 'IDLE') {
-                    return;
-                }
+                if (!data || data.status === 'IDLE') { return; }
                 const elapsedTime = data.status !== 'PROCESSING' ? `\nTempo decorrido: ${data.elapsed_time} segundos` : '';
-                const message = `
---- Status da Atualização Soollar ---
-Status: ${data.status}
-Data de Início: ${new Date(data.date).toLocaleString('pt-BR')}
--------------------------------------
-Produtos Criados: ${data.created_products || 0}
-Produtos Atualizados: ${data.updated_products || 0}
-Kits Criados: ${data.created_kits || 0}
-Kits Atualizados: ${data.updated_kits || 0}
-${elapsedTime}
--------------------------------------
-                `;
+                const message = `\n--- Status da Atualização Soollar ---\nStatus: ${data.status}\nData de Início: ${new Date(data.date).toLocaleString('pt-BR')}\n-------------------------------------\nProdutos Criados: ${data.created_products || 0}\nProdutos Atualizados: ${data.updated_products || 0}\nKits Criados: ${data.created_kits || 0}\nKits Atualizados: ${data.updated_kits || 0}\n${elapsedTime}\n-------------------------------------\n`;
                 terminal.innerHTML = 'Alluz Energia® 2025 - Todos os direitos reservados\n----------------';
                 updateTerminal(message.trim());
             }
 
             async function checkStatus() {
                 const token = localStorage.getItem('auth_token');
-                if (!token) {
-                    stopPolling(); // Se o token sumir, paramos o polling.
-                    return;
-                }
-
+                if (!token) { stopPolling(); return; }
                 try {
-                    const response = await fetch('/api/soollar/update-status', {
-                        headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
-                    });
-
+                    const response = await fetch('/api/soollar/update-status', { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } });
                     if (!response.ok) {
-                        // Se a resposta não for OK, apenas logamos e esperamos a próxima verificação
                         console.error('Falha ao buscar status (não-OK):', response.statusText);
-                        updateTerminal(`Falha ao obter status (${response.status}). Tentando novamente...`, '#f39c12'); // Amarelo para alerta
-                        return; // Não para o polling
+                        updateTerminal(`Falha ao obter status (${response.status}). Tentando novamente...`, '#f39c12');
+                        return;
                     }
-
                     const data = await response.json();
                     updateProgressBar(data);
                     displayProcessStatus(data);
-
                     if (data.status === 'SUCCESS' || data.status === 'ERROR') {
-                        stopPolling(); // Para o polling apenas em estados FINAIS
+                        stopPolling();
                         toggleButtons(false);
                         updateTerminal(data.status === 'SUCCESS' ? '✅ Processo concluído com sucesso!' : '❌ Processo finalizado com erro.', data.status === 'ERROR' ? '#ff6b6b' : '#FFFFFF');
                     } else if (data.status === 'PROCESSING') {
                         toggleButtons(true);
                     }
                 } catch (error) {
-                    // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< INÍCIO DA CORREÇÃO <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-                    // O polling NÃO SERÁ INTERROMPIDO em caso de erro de rede.
-                    // Apenas exibimos uma mensagem e a próxima verificação ocorrerá normalmente.
                     console.error('Falha de conexão ao verificar status:', error);
-                    updateTerminal(`Falha de conexão ao verificar status. A verificação continuará...`, '#f39c12'); // Amarelo para alerta
-                    // A chamada para stopPolling() foi REMOVIDA daqui.
-                    // A chamada para toggleButtons(false) foi REMOVIDA daqui.
-                    // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< FIM DA CORREÇÃO <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                    updateTerminal(`Falha de conexão ao verificar status. A verificação continuará...`, '#f39c12');
                 }
             }
 
@@ -222,25 +207,43 @@ ${elapsedTime}
                     progressContainer.style.display = 'block';
                     updateProgressBar({ status: 'PROCESSING', created_products: 0, updated_products: 0, created_kits: 0, updated_kits: 0 });
                 }
+
                 const token = localStorage.getItem('auth_token');
                 if (!token) {
-                    updateTerminal('\nErro: Token de autenticação não encontrado. Realize o login novamente.', '#ff6b6b');
+                    updateTerminal('\nErro: Token de autenticação não encontrado.', '#ff6b6b');
                     toggleButtons(false);
                     return;
                 }
+
                 try {
                     const response = await fetch(endpoint, {
                         method: 'POST',
                         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
                     });
-                    const data = await response.json();
-                    if (!response.ok) {
-                        throw new Error(data.message || 'Erro desconhecido ao iniciar a atualização.');
+
+                    // >>>>>>>>>>>>>>>> INÍCIO DA CORREÇÃO <<<<<<<<<<<<<<<<<<<
+                    const contentType = response.headers.get("content-type");
+                    // Verifica se a resposta é bem-sucedida e se é JSON
+                    if (response.ok && contentType && contentType.includes("application/json")) {
+                        const data = await response.json(); // Só tenta o .json() se for seguro
+                        updateTerminal(`✅ ${data.message}`);
+                        updateTerminal('Aguardando o primeiro status...');
+                        startPolling();
+                    } else {
+                        // Se não for JSON, trata como erro, lê como texto e envia para o log
+                        const errorHtml = await response.text();
+                        const errorMessage = `O servidor respondeu com um formato inesperado (Status: ${response.status}).`;
+
+                        // Envia o log para o backend
+                        await logErrorToServer(errorMessage, errorHtml);
+
+                        // Lança um erro para ser pego pelo bloco catch e exibido na tela
+                        throw new Error(errorMessage + " O erro foi registrado para análise.");
                     }
-                    updateTerminal(`✅ ${data.message}`);
-                    updateTerminal('Aguardando o primeiro status...');
-                    startPolling();
+                    // >>>>>>>>>>>>>>>> FIM DA CORREÇÃO <<<<<<<<<<<<<<<<<<<
+
                 } catch (error) {
+                    // Este bloco 'catch' agora pega tanto erros de rede quanto o erro que lançamos acima
                     updateTerminal(`❌ Erro ao iniciar a atualização: ${error.message}`, '#ff6b6b');
                     toggleButtons(false);
                 }
@@ -249,9 +252,7 @@ ${elapsedTime}
             // --- Event Listeners ---
             clearBtn.addEventListener('click', clearTerminal);
             soollarBtn.addEventListener('click', () => handleUpdate('/api/soollar/update-products'));
-            edeltecBtn.addEventListener('click', () => {
-                alert('A funcionalidade para Edeltec ainda não foi implementada.');
-            });
+            edeltecBtn.addEventListener('click', () => { alert('A funcionalidade para Edeltec ainda não foi implementada.'); });
 
             checkStatus().then(() => {
                 if (!pollingInterval) {

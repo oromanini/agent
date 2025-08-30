@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\EdeltecController;
 use App\Http\Controllers\KitsController;
+use App\Http\Controllers\LogController;
 use App\Http\Controllers\SoollarController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,5 +27,6 @@ Route::prefix('brands')->group(function () {
 
 Route::put('/active-kits/{activeKit}/toggle', [ActiveKitController::class, 'toggleActive']);
 Route::get('/soollar/update-status', [SoollarController::class, 'getUpdateStatus']);
+Route::post('/log-frontend-error', [LogController::class, 'log']);
 
 Route::post('/authorize', [AuthController::class, 'login']);
