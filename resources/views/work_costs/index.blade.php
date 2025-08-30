@@ -38,14 +38,16 @@
                                         @if(is_array($value))
                                             <span>{{ json_encode($value) }}</span>
                                         @else
-                                            <strong style="color: #3273dc;">{{ $value }}</strong>
+                                            <strong style="color: #3273dc;">
+                                                {{-- Lógica para formatar o 'profit' como percentual --}}
+                                                {{ $key === 'profit' ? number_format($value * 100, 1, ',', '') . '%' : $value }}
+                                            </strong>
                                         @endif
                                     </div>
                                 @endforeach
                             </div>
                         </td>
                         <td>
-                            {{-- Alterado para exibir a data completa no formato solicitado --}}
                             <span class="tag is-light">
                                     {{ $cost->updated_at->format('d/m/Y H:i') }}
                                 </span>

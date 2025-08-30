@@ -29,12 +29,17 @@
                 </div>
             </div>
 
+            <div id="progress-container" class="mt-5" style="display: none;">
+                {{-- Integração do novo componente de progresso --}}
+                <x-progress-bar id="update-progress-bar" />
+            </div>
+
             <div class="box mt-5">
                 <div class="is-flex is-justify-content-space-between is-align-items-center">
                     <h4 class="title is-4">Log de Atualização</h4>
                     <a id="btn-clear-terminal" class="button is-danger is-small">Limpar Log</a>
                 </div>
-                <div id="terminal-log" style="white-space: pre-wrap; background-color: #333; color: #00ff00; padding: 15px; border-radius: 5px;">
+                <div id="terminal-log" style="white-space: pre-wrap; background-color: #333; color: #FFFFFF; padding: 15px; border-radius: 5px; min-height: 100px;">
                     Alluz Energia® 2025 - Todos os direitos reservados
                     ----------------
                 </div>
@@ -60,49 +65,35 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // --- Seletores de Elementos ---
             const terminal = document.getElementById('terminal-log');
             const soollarBtn = document.getElementById('btn-soollar');
             const edeltecBtn = document.getElementById('btn-edeltec');
             const clearBtn = document.getElementById('btn-clear-terminal');
+            const progressContainer = document.getElementById('progress-container');
 
             const updateButtons = [soollarBtn, edeltecBtn];
+            let pollingInterval = null;
 
-            function updateTerminal(message) {
-                terminal.innerHTML += '\n' + message;
-                terminal.scrollTop = terminal.scrollHeight;
-            }
-
-            function updateTerminalWithData(data) {
-                let message = `Resposta do servidor: (Status: ${data.status})`;
-
-                if (data.status >= 200 && data.status < 300) {
-                    message += `\nSucesso: ${data.message}`;
-                } else {
-                    // Mostra a mensagem principal do erro
-                    message += `\nErro: ${data.message}`;
-
-                    // Verifica se há um array de 'errors' e o exibe de forma detalhada
-                    if (data.errors) {
-                        const errorDetails = JSON.stringify(data.errors, null, 2); // Formata o objeto de erros
-                        message += `\n\nDetalhes:\n${errorDetails}`;
-                    }
-                }
-
-                if (data.total !== undefined) {
-                    message += `\nTotal de kits: ${data.total}`;
-                }
-
-                const pre = document.createElement('pre');
-                pre.style.color = '#00ff00';
-                pre.style.backgroundColor = '#333333FF';
-                pre.textContent = '\n' + message;
-                terminal.appendChild(pre);
-                terminal.scrollTop = terminal.scrollHeight;
-//...
-            }
+            // --- Funções Auxiliares ---
 
             function clearTerminal() {
                 terminal.innerHTML = 'Alluz Energia® 2025 - Todos os direitos reservados\n----------------';
+                if (progressContainer) {
+                    progressContainer.style.display = 'none';
+                }
+                // O reset da barra agora é feito dentro do updateProgressBar
+            }
+
+            function updateTerminal(message, color = '#FFFFFF') {
+                const pre = document.createElement('pre');
+                pre.style.whiteSpace = 'pre-wrap';
+                pre.style.color = color;
+                pre.style.fontFamily = 'monospace';
+                pre.style.backgroundColor = 'transparent';
+                pre.textContent = '\n' + message;
+                terminal.appendChild(pre);
+                terminal.scrollTop = terminal.scrollHeight;
             }
 
             function toggleButtons(disabled) {
@@ -116,101 +107,171 @@
                 });
             }
 
-            async function handleUpdate(endpoint) {
-                toggleButtons(true);
+            function stopPolling() {
+                if (pollingInterval) {
+                    clearInterval(pollingInterval);
+                    pollingInterval = null;
+                }
+            }
 
-                const token = localStorage.getItem('auth_token');
+            // --- Lógica Principal ---
 
-                if (!token) {
-                    updateTerminal('\nErro: Token de autenticação não encontrado. Tentando realizar login...');
-                    await loginAndRunUpdate(endpoint);
+            function updateProgressBar(data) {
+                const progressBarContainer = document.getElementById('update-progress-bar');
+
+                if (!progressContainer || !progressBarContainer || !data || data.status === 'IDLE') {
+                    if (progressContainer) progressContainer.style.display = 'none';
+                    return;
+                }
+                progressContainer.style.display = 'block';
+
+                let progress = 0;
+                let barClass = ''; // Classe de estado (is-success ou is-danger)
+
+                if (data.status === 'PROCESSING') {
+                    progress = 25;
+                    if ((data.created_products > 0 || data.updated_products > 0)) {
+                        progress = 50;
+                    }
+                    if (data.created_kits > 0 || data.updated_kits > 0) {
+                        progress = 75;
+                    }
+                } else if (data.status === 'SUCCESS') {
+                    progress = 100;
+                    barClass = 'is-success';
+                } else if (data.status === 'ERROR') {
+                    progress = 100;
+                    barClass = 'is-danger';
+                }
+
+                const innerBars = progressBarContainer.querySelectorAll('.progress-bar-inner');
+
+                innerBars.forEach(bar => {
+                    bar.style.width = `${progress}%`;
+                    bar.classList.remove('is-success', 'is-danger');
+                    if (barClass) {
+                        bar.classList.add(barClass);
+                    }
+                });
+            }
+
+            function displayProcessStatus(data) {
+                if (!data || data.status === 'IDLE') {
                     return;
                 }
 
-                terminal.innerHTML = 'Iniciando atualização...';
-                updateTerminal('Atualizando produtos. Por favor, aguarde...');
+                const elapsedTime = data.status !== 'PROCESSING' ? `\nTempo decorrido: ${data.elapsed_time} segundos` : '';
+                const message = `
+--- Status da Atualização Soollar ---
+Status: ${data.status}
+Data de Início: ${new Date(data.date).toLocaleString('pt-BR')}
+-------------------------------------
+Produtos Criados: ${data.created_products || 0}
+Produtos Atualizados: ${data.updated_products || 0}
+Kits Criados: ${data.created_kits || 0}
+Kits Atualizados: ${data.updated_kits || 0}
+${elapsedTime}
+-------------------------------------
+                `;
+
+                terminal.innerHTML = 'Alluz Energia® 2025 - Todos os direitos reservados\n----------------';
+
+                updateTerminal(message.trim());
+            }
+
+            async function checkStatus() {
+                const token = localStorage.getItem('auth_token');
+                if (!token) return;
 
                 try {
-                    const response = await fetch(endpoint, {
-                        method: 'POST',
-                        headers: {
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        credentials: 'omit'
+                    const response = await fetch('/api/soollar/update-status', {
+                        headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
                     });
 
                     if (!response.ok) {
-                        // Se a resposta não for OK, tentamos ler como texto para ver o erro HTML
-                        const errorText = await response.text();
-                        throw new Error(errorText);
+                        console.error('Erro ao buscar status:', response.statusText);
+                        return;
                     }
 
                     const data = await response.json();
-                    updateTerminalWithData({ status: response.status, ...data });
 
+                    updateProgressBar(data);
+                    displayProcessStatus(data);
+
+                    if (data.status === 'SUCCESS' || data.status === 'ERROR') {
+                        stopPolling();
+                        toggleButtons(false);
+                        updateTerminal(data.status === 'SUCCESS' ? '✅ Processo concluído com sucesso!' : '❌ Processo finalizado com erro.', data.status === 'ERROR' ? '#ff6b6b' : '#FFFFFF');
+                    } else if (data.status === 'PROCESSING') {
+                        toggleButtons(true);
+                    }
                 } catch (error) {
-                    // Exibe o erro capturado, que pode ser a mensagem do 'throw' ou um erro de rede
-                    const pre = document.createElement('pre');
-                    pre.style.color = '#ff6b6b'; // Vermelho para destacar o erro
-                    pre.textContent = `\nOcorreu um erro:\n${error.message}`;
-                    terminal.appendChild(pre);
-                    terminal.scrollTop = terminal.scrollHeight;
-                } finally {
+                    updateTerminal(`Erro de conexão ao verificar status: ${error.message}`, '#ff6b6b');
+                    stopPolling();
                     toggleButtons(false);
                 }
             }
 
-            async function loginAndRunUpdate(endpoint) {
-                const loginEndpoint = '/api/authorize';
-                const email = 'oscar.romanini@alluzenergia.com.br';
-                const password = 'Neia@vida.2022!';
+            function startPolling() {
+                stopPolling();
+                pollingInterval = setInterval(checkStatus, 3000);
+            }
+
+
+
+            async function handleUpdate(endpoint) {
+                toggleButtons(true);
+                clearTerminal();
+                updateTerminal('Iniciando processo de atualização em segundo plano...');
+
+                // Força a exibição e o reset inicial da barra de progresso
+                if (progressContainer) {
+                    progressContainer.style.display = 'block';
+                    updateProgressBar({ status: 'PROCESSING', created_products: 0, updated_products: 0, created_kits: 0, updated_kits: 0 }); // Zera a barra
+                }
+
+                const token = localStorage.getItem('auth_token');
+
+                if (!token) {
+                    updateTerminal('\nErro: Token de autenticação não encontrado. Realize o login novamente.', '#ff6b6b');
+                    toggleButtons(false);
+                    return;
+                }
 
                 try {
-                    const response = await fetch(loginEndpoint, {
+                    const response = await fetch(endpoint, {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json',
-                        },
-                        body: JSON.stringify({ email, password }),
-                        credentials: 'omit'
+                        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
                     });
-
-                    if (!response.ok) {
-                        // Se a resposta não for OK, lemos como texto para ver o erro
-                        const errorText = await response.text();
-                        // Lançamos um erro com o conteúdo da página de erro
-                        throw new Error(`Erro no login (Status: ${response.status}):\n${errorText}`);
-                    }
 
                     const data = await response.json();
 
-                    if (response.ok) {
-                        localStorage.setItem('auth_token', data.access_token);
-                        updateTerminal('Login bem-sucedido! Token salvo.');
-                        await handleUpdate(endpoint);
+                    if (!response.ok) {
+                        throw new Error(data.message || 'Erro desconhecido ao iniciar a atualização.');
                     }
 
+                    updateTerminal(`✅ ${data.message}`);
+                    updateTerminal('Aguardando o primeiro status...');
+
+                    startPolling();
+
                 } catch (error) {
-                    // O 'catch' agora vai receber o erro que lançamos acima
-                    const pre = document.createElement('pre');
-                    pre.style.color = '#ff6b6b'; // Vermelho para destacar o erro
-                    pre.textContent = `\nOcorreu um erro na requisição de login:\n${error.message}`;
-                    terminal.appendChild(pre);
-                    terminal.scrollTop = terminal.scrollHeight;
+                    updateTerminal(`❌ Erro ao iniciar a atualização: ${error.message}`, '#ff6b6b');
+                    toggleButtons(false);
                 }
             }
 
+            // --- Event Listeners ---
             clearBtn.addEventListener('click', clearTerminal);
-
-            soollarBtn.addEventListener('click', () => {
-                handleUpdate('/api/soollar/update-products');
+            soollarBtn.addEventListener('click', () => handleUpdate('/api/soollar/update-products'));
+            edeltecBtn.addEventListener('click', () => {
+                alert('A funcionalidade para Edeltec ainda não foi implementada.');
             });
 
-            edeltecBtn.addEventListener('click', () => {
-                handleUpdate('/api/edeltec/update-products');
+            checkStatus().then(() => {
+                if (!pollingInterval) {
+                    toggleButtons(false);
+                }
             });
         });
     </script>

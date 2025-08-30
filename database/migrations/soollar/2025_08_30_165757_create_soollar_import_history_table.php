@@ -8,7 +8,7 @@ class CreateSoollarImportHistoryTable extends Migration
 {
     public function up(): void
     {
-        Schema::connection('soollar')->create('soollar_import_history', function (Blueprint $table) {
+        Schema::connection('soollar')->create('soollar_import_histories', function (Blueprint $table) {
             $table->id();
             $table->dateTime('date');
             $table->enum('status', ['SUCCESS', 'PROCESSING', 'ERROR']);
@@ -22,6 +22,6 @@ class CreateSoollarImportHistoryTable extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('soollar_import_history');
+        Schema::dropIfExists('soollar_import_histories');
     }
 }

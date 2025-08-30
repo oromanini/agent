@@ -33,7 +33,7 @@ class KitsManager implements KitsManagerInterface
         $this->updatedKitsCount = 0;
     }
 
-    function handle(): int
+    function handle(): void
     {
         $this->repository->deactivateAllKits();
         $moduleBands = $this->repository->getModuleBrands();

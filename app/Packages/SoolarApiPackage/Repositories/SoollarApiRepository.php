@@ -154,7 +154,7 @@ class SoollarApiRepository
     public function deactivateAllKits(): void
     {
         Kit::query()
-            ->where('distributor', 'SOOLLAR')
+            ->where('distributor_name', 'SOOLLAR')
             ->update(['is_active' => false]);
     }
 
@@ -187,8 +187,7 @@ class SoollarApiRepository
 
             return;
         }
-
-        $model->save($data);
+        $model->create($data);
         $this->createdProductsCount++;
     }
 }

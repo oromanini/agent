@@ -7,6 +7,7 @@ use App\Packages\SoolarApiPackage\Enums\WarehouseEnum;
 use App\Packages\SoolarApiPackage\KitsManager;
 use App\Packages\SoolarApiPackage\Models\InverterBrand;
 use App\Packages\SoolarApiPackage\Models\ModuleBrand;
+use App\Packages\SoolarApiPackage\Models\SoollarImportHistory;
 use App\Packages\SoolarApiPackage\Repositories\SoollarApiRepository;
 use App\Packages\SoolarApiPackage\Services\CableService;
 use App\Packages\SoolarApiPackage\SoollarApiManager;
@@ -51,7 +52,7 @@ class KitsManagerTest extends TestCase
 
     public function testKitsManagerHandle(): void
     {
-        $response = json_decode($this->kitsManager->handle()->content(), true);
-        self::assertTrue($response['total'] > 0);
+        $this->kitsManager->handle();
+        dd(SoollarImportHistory::all());
     }
 }
