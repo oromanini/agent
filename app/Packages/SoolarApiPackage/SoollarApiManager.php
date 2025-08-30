@@ -51,7 +51,7 @@ class SoollarApiManager
             $url .= "?filter=" . $filter;
         }
 
-        $html = $this->fetchProductPageWithAutoLogin($url);
+        $html = $this->fetchPageAndHandleLogin($url);
         file_put_contents(storage_path('app/soolar_product_page.html'), $html);
 
         $rawProducts = $this->parseProductsFromHtml($html);
@@ -63,16 +63,38 @@ class SoollarApiManager
         ];
     }
 
-    private function fetchProductPageWithAutoLogin(string $url): string
+    private function fetchPageAndHandleLogin(string $url): string
     {
-        if (!$this->checkIfLoggedIn()) {
-            $this->login();
-            if (!$this->checkIfLoggedIn()) {
-                throw new \Exception("Login attempt failed. The session remains inactive. Check 'login_response.html' and your credentials.");
-            }
-        }
         $response = $this->client->get($url);
-        return (string) $response->getBody();
+        $html = (string) $response->getBody();
+
+        if (str_contains($html, 'Acesse a sua conta') || str_contains($html, '_username')) {
+            $this->login();
+
+            $response = $this->client->get($url);
+            $html = (string) $response->getBody();
+        }
+
+        return $html;
+    }
+
+    private function login(): void
+    {
+        $this->client->get(self::BASE_URL . self::LOGIN_PAGE_URI);
+        $credentials = $this->getCredentials();
+        $formParams = [
+            '_username' => $credentials['username'],
+            '_password' => $credentials['password'],
+        ];
+
+        $this->client->post(self::BASE_URL . self::LOGIN_URI, [
+            'form_params' => $formParams,
+            'allow_redirects' => true,
+            'headers' => [
+                'Referer' => self::BASE_URL . self::LOGIN_PAGE_URI,
+                'Origin' => 'https://www.soollar.com.br',
+            ],
+        ]);
     }
 
     private function parseProductsFromHtml(string $html): array
@@ -121,23 +143,18 @@ class SoollarApiManager
                 case ProductCategoriesEnum::MODULO:
                     $structuredProduct = $this->parseModuleProduct($product, $warehouse, $category);
                     break;
-
                 case ProductCategoriesEnum::INVERSOR:
                     $structuredProduct = $this->parseInverterProduct($product, $warehouse, $category);
                     break;
-
                 case ProductCategoriesEnum::CONECTOR:
                     $structuredProduct = $this->parseConnectorProduct($product, $warehouse, $category);
                     break;
-
                 case ProductCategoriesEnum::ESTRUTURA:
                     $structuredProduct = $this->parseStructureProduct($product, $warehouse, $category);
                     break;
-
                 case ProductCategoriesEnum::CABO:
                     $structuredProduct = $this->parseCableProduct($product, $warehouse, $category);
                     break;
-
                 default:
                     $structuredProduct = $this->parseDefaultProduct($product, $warehouse, $category);
                     break;
@@ -331,7 +348,7 @@ class SoollarApiManager
             'name' => strtolower($originalName),
             'model' => strtolower(trim($model)),
             'price' => $this->cleanPrice($rawPrice),
-            'stock' => 'unknown', // A coluna stock não existe na tabela de estruturas, mas vamos deixar um valor para evitar problemas futuros
+            'stock' => 'unknown',
             'distribution_center' => $warehouse->value,
             'category' => $category->value,
         ];
@@ -397,32 +414,6 @@ class SoollarApiManager
             return (float) str_replace(',', '.', $numericPrice);
         }
         return null;
-    }
-
-    private function login(): void
-    {
-        $this->client->get(self::BASE_URL . self::LOGIN_PAGE_URI);
-        $credentials = $this->getCredentials();
-        $formParams = [
-            '_username' => $credentials['username'],
-            '_password' => $credentials['password'],
-        ];
-
-        $this->client->post(self::BASE_URL . self::LOGIN_URI, [
-            'form_params' => $formParams,
-            'allow_redirects' => true,
-            'headers' => [
-                'Referer' => self::BASE_URL . self::LOGIN_PAGE_URI,
-                'Origin' => 'https://www.soollar.com.br',
-            ],
-        ]);
-    }
-
-    private function checkIfLoggedIn(): bool
-    {
-        $response = $this->client->get(self::BASE_URL . 'customer/profile');
-        $html = (string) $response->getBody();
-        return str_contains($html, 'Sair') || str_contains($html, 'Meus Pedidos');
     }
 
     private function getCredentials(): array
