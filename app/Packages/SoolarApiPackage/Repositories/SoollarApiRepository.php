@@ -4,6 +4,7 @@ namespace App\Packages\SoolarApiPackage\Repositories;
 
 use App\Models\Kit;
 use App\Packages\SoolarApiPackage\Enums\ProductCategoriesEnum;
+use App\Packages\SoolarApiPackage\Enums\WarehouseEnum;
 use App\Packages\SoolarApiPackage\KitsManager;
 use App\Packages\SoolarApiPackage\Models\Cable;
 use App\Packages\SoolarApiPackage\Models\Connector;
@@ -11,6 +12,7 @@ use App\Packages\SoolarApiPackage\Models\Inverter;
 use App\Packages\SoolarApiPackage\Models\InverterBrand;
 use App\Packages\SoolarApiPackage\Models\Module;
 use App\Packages\SoolarApiPackage\Models\ModuleBrand;
+use App\Packages\SoolarApiPackage\Models\SoollarImportHistory;
 use App\Packages\SoolarApiPackage\Models\Structure;
 use App\Packages\SoolarApiPackage\Services\CableService;
 use Illuminate\Database\Eloquent\Model;
@@ -21,8 +23,10 @@ use Illuminate\Support\Facades\Storage;
 class SoollarApiRepository
 {
     const INVERTER_TYPE = 'inverter';
+    private int $createdProductsCount = 0;
+    private int $updatedProductsCount = 0;
 
-    public function syncProducts(ProductCategoriesEnum $category, array $products): void
+    public function syncProducts(ProductCategoriesEnum $category, WarehouseEnum $warehouse, array $products): void
     {
         $model = $this->getModelForCategory($category);
         if (!$model) {
@@ -30,7 +34,7 @@ class SoollarApiRepository
         }
 
         $logFile = 'soollar_debug_products.txt';
-        $header = "\n--- Log de Batch: " . now()->format('d/m/Y H:i:s') . " | Categoria: {$category->value} ---\n";
+        $header = "\n--- Log de Batch: " . now()->format('d/m/Y H:i:s') . " | Categoria: {$category->value} | Armazém: {$warehouse->value} ---\n";
         Storage::append($logFile, $header);
 
         DB::connection('soollar')->transaction(function () use ($model, $products, $logFile) {
@@ -49,6 +53,13 @@ class SoollarApiRepository
                 $logLine = "[$status] - Nome: {$productData['name']} | Preço: {$price}";
                 Storage::append($logFile, $logLine);
             }
+
+            //atualiza a cada 10 produtos
+            ($this->createdProductsCount + $this->updatedProductsCount) % 10 == 0
+            && SoollarImportHistory::updateProcess(
+                createdProducts: $this->createdProductsCount,
+                updatedProducts: $this->updatedProductsCount
+            );
         });
     }
 
@@ -58,11 +69,13 @@ class SoollarApiRepository
 
         if ($object) {
             $object->update($data);
+            $this->updatedProductsCount++;
             return 'Atualizado';
         }
 
         $model->create($data);
-        return 'CRIADO';
+        $this->createdProductsCount++;
+        return 'Criado';
     }
 
     public function syncKits(): void

@@ -17,9 +17,12 @@ class WorkCost extends Model
         'updated_at',
     ];
 
-    public function costs()
+    public function costs(): array
     {
-        return json_decode($this->costs, true);
+        if (!is_array($this->costs)) {
+            return json_decode($this->costs, true);
+        }
+        return $this->costs;
     }
 
     /** @throws Exception */

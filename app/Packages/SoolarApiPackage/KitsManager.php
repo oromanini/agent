@@ -12,8 +12,6 @@ use App\Packages\SoolarApiPackage\Models\Module;
 use App\Packages\SoolarApiPackage\Models\SoollarImportHistory;
 use App\Packages\SoolarApiPackage\Repositories\SoollarApiRepository;
 use App\Packages\SoolarApiPackage\Services\CableService;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log;
 use Ramsey\Uuid\Uuid;
 
 class KitsManager implements KitsManagerInterface

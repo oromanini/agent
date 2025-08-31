@@ -23,4 +23,9 @@ class PricingServiceTest extends TestCase
 
         $this->assertEquals(17250, $finalValue['finalPrice']);
     }
+
+    public function testPricing(): void
+    {
+
+    }
 }
