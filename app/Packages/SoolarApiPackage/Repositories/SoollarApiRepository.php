@@ -11,12 +11,12 @@ use App\Packages\SoolarApiPackage\Models\Inverter;
 use App\Packages\SoolarApiPackage\Models\InverterBrand;
 use App\Packages\SoolarApiPackage\Models\Module;
 use App\Packages\SoolarApiPackage\Models\ModuleBrand;
-use App\Packages\SoolarApiPackage\Models\SoollarImportHistory;
 use App\Packages\SoolarApiPackage\Models\Structure;
 use App\Packages\SoolarApiPackage\Services\CableService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class SoollarApiRepository
 {
@@ -24,17 +24,16 @@ class SoollarApiRepository
 
     public function syncProducts(ProductCategoriesEnum $category, array $products): void
     {
-        /** @var Model $model */
         $model = $this->getModelForCategory($category);
-
         if (!$model) {
             return;
         }
 
-        $createdInBatch = 0;
-        $updatedInBatch = 0;
+        $logFile = 'soollar_debug_products.txt';
+        $header = "\n--- Log de Batch: " . now()->format('d/m/Y H:i:s') . " | Categoria: {$category->value} ---\n";
+        Storage::append($logFile, $header);
 
-        DB::connection('soollar')->transaction(function () use ($model, $products, &$createdInBatch, &$updatedInBatch) {
+        DB::connection('soollar')->transaction(function () use ($model, $products, $logFile) {
             foreach ($products as $productData) {
                 if (empty($productData['name'])) {
                     continue;
@@ -46,18 +45,11 @@ class SoollarApiRepository
                     data: $productData
                 );
 
-                if ($status === 'created') {
-                    $createdInBatch++;
-                } elseif ($status === 'updated') {
-                    $updatedInBatch++;
-                }
+                $price = $productData['price'] ?? 'N/A';
+                $logLine = "[$status] - Nome: {$productData['name']} | Preço: {$price}";
+                Storage::append($logFile, $logLine);
             }
         });
-
-        SoollarImportHistory::updateProcess(
-            createdProducts: $createdInBatch,
-            updatedProducts: $updatedInBatch
-        );
     }
 
     private function updateOrCreate(Model $model, array $searchAttribute, array $data): string
@@ -66,16 +58,18 @@ class SoollarApiRepository
 
         if ($object) {
             $object->update($data);
-            return 'updated';
+            return 'Atualizado';
         }
 
         $model->create($data);
-        return 'created';
+        return 'CRIADO';
     }
 
     public function syncKits(): void
     {
-        (new KitsManager($this, new CableService($this)))->handle();
+        (new KitsManager(
+            $this, new CableService($this)
+        ))->handle();
     }
 
     private function getModelForCategory(ProductCategoriesEnum $category): ?Model
@@ -119,7 +113,6 @@ class SoollarApiRepository
             ->get();
     }
 
-    /** @noinspection PhpIncompatibleReturnTypeInspection */
     public function getKitByDescription(string $description): ?Kit
     {
         return Kit::query()
@@ -128,7 +121,6 @@ class SoollarApiRepository
             ->first();
     }
 
-    /** @noinspection PhpIncompatibleReturnTypeInspection */
     public function getCable(int $moduleQuantity, string $type, string $color): Collection
     {
         return Cable::query()
@@ -137,9 +129,6 @@ class SoollarApiRepository
             ->get();
     }
 
-    /**
-     * @noinspection PhpIncompatibleReturnTypeInspection
-     */
     public function getCableByLength(string $type, string $color, int $length): ?Cable
     {
         return Cable::query()
@@ -149,13 +138,11 @@ class SoollarApiRepository
             ->first();
     }
 
-    /** @noinspection PhpIncompatibleReturnTypeInspection */
     public function getConnectors(): Connector
     {
         return Connector::query()->first();
     }
 
-    /** @noinspection PhpIncompatibleReturnTypeInspection */
     public function getStructureByModelName(string $modelName): ?Structure
     {
         return Structure::query()

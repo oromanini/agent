@@ -11,7 +11,11 @@ use DOMDocument;
 use DOMXPath;
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\FileCookieJar;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\File;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 
 class SoollarApiManager
 {
@@ -438,7 +442,29 @@ class SoollarApiManager
         }
         $cookieJar = new FileCookieJar($cookiePath, true);
 
+        $stack = HandlerStack::create();
+
+        $stack->push(Middleware::retry(
+            function ($retries, Request $request, Response $response = null, $exception = null) {
+                // Tenta de novo até 3 vezes
+                if ($retries >= 2) {
+                    return false;
+                }
+                if ($response && $response->getStatusCode() >= 500) {
+                    return true;
+                }
+                if ($exception instanceof \GuzzleHttp\Exception\ConnectException) {
+                    return true;
+                }
+                return false;
+            },
+            function ($retries) {
+                return 1000 * pow(2, $retries); // Espera 2s, depois 4s
+            }
+        ));
+
         return new Client([
+            'handler' => $stack, // Usa o handler com o middleware
             'cookies' => $cookieJar,
             'allow_redirects' => true,
             'headers' => [
