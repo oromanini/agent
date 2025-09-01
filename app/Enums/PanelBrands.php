@@ -28,5 +28,5 @@ enum PanelBrands: int
     case Leapton = 22;
     case Risen = 23;
     case RenePV = 24;
-    case EgingPV = 24;
+    case EgingPV = 25;
 }
