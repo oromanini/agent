@@ -29,4 +29,5 @@ enum PanelBrands: int
     case Risen = 23;
     case RenePV = 24;
     case EgingPV = 25;
+    case Nplus = 26;
 }
