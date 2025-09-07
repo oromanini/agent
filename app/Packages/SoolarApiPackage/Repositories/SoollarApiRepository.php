@@ -126,7 +126,7 @@ class SoollarApiRepository
             ->get();
     }
 
-    public function getKitByDescription(string $description): ?Kit
+    public function getKitByDescription(string $description): Kit|Model|null
     {
         return Kit::query()
             ->where('description', $description)
