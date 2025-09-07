@@ -18,9 +18,6 @@ class DeliveryCost extends BaseCost implements Cost
 
     public function cost(?float $getPercent = null): float
     {
-        if (!in_array($this->state, self::DELIVER_FREE_STATES)) {
-            return 300;
-        }
         return 0;
     }
 

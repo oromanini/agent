@@ -257,6 +257,7 @@ class ProposalService
         $proposal->roof_orientation = $this->data["orientation"];
 
         !$isManual && $this->setKitSpecs($this->data['kit_id']);
+        dd($this->data);
         $proposal->value_history_id = $this->valueHistoryService->store($this->data, $isManual);
 
         return $proposal;

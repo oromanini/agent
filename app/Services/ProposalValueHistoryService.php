@@ -15,27 +15,23 @@ class ProposalValueHistoryService
 {
     public const BASE_GROSS_PROFIT = 1.6;
 
-    private readonly PricingService $pricingService;
     private ProposalValueHistory $valueHistory;
 
-    public function __construct()
-    {
-        $this->pricingService = new PricingService();
-        $this->valueHistory = new ProposalValueHistory();
-    }
-
-    public function store($data, bool $isManual): int
+    public function store(array $data, ?bool $isManual = false): int
     {
         $cost = $this->getKitCost(cost: $data['cost'], isManual: $isManual);
+
         $financingInitialPrice = $this->getFinalPrice(data: $data, isManual: $isManual, paymentType: PaymentTypeEnum::FINANCING);
+        $cashInitialPrice = $this->getFinalPrice(data: $data, isManual: $isManual, paymentType: PaymentTypeEnum::CASH_PAYMENT);
         $cardInitialPrice = $this->getFinalPrice(data: $data, isManual: $isManual, paymentType: PaymentTypeEnum::CREDIT_CARD);
+
         $commissionPercent = $this->commissionPercent();
 
-        $userId = auth()->user()->id;
+        $userId = $this->getAuthUserId();
 
         $this->valueHistory = (new ValueHistoryBuilder())
             ->withKitCost($cost)
-            ->withInitialAndFinalPrice($financingInitialPrice, $cardInitialPrice)
+            ->withInitialAndFinalPrice($cashInitialPrice, $financingInitialPrice, $cardInitialPrice)
             ->withIsPromotional(false)
             ->withCommissionPercent($commissionPercent)
             ->withDiscountPercent(0)
@@ -232,10 +228,9 @@ class ProposalValueHistoryService
         if ($isManual) {
             return stringMoneyToFloat($data['final_value']);
         }
-
         $state = Address::find($data['installation_address'])->city->state->name;
 
-        return $this->pricingService->calculateFinalPrice(
+        return (new PricingService())->calculateFinalPrice(
             cost: $data['cost'],
             kwp: (float)$data['kwp'],
             panelCount: $data['panel_count'],
@@ -293,5 +288,10 @@ class ProposalValueHistoryService
     {
         return isset($data[$key])
         && $this->valueHistory->discount_percent !== ($this->toDecimal($data[$key]));
+    }
+
+    public function getAuthUserId(): mixed
+    {
+        return auth()->user()->id;
     }
 }

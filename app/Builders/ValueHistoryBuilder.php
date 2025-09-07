@@ -20,16 +20,17 @@ class ValueHistoryBuilder implements Builder
     }
 
     public function withInitialAndFinalPrice(
+        float $cashPrice,
         float $financingPrice,
         float $cardPrice,
     ): self {
         $this->valueHistory->initial_price = $financingPrice;
-        $this->valueHistory->cash_initial_price = $financingPrice;
+        $this->valueHistory->cash_initial_price = $cashPrice;
         $this->valueHistory->card_initial_price = $cardPrice;
 
         $this->valueHistory->final_price = $financingPrice;
         $this->valueHistory->card_final_price = $cardPrice;
-        $this->valueHistory->cash_final_price = $financingPrice;
+        $this->valueHistory->cash_final_price = $cashPrice;
 
         return $this;
     }
