@@ -33,9 +33,7 @@ Route::controller(FinancingController::class)->group(function () {
 
 Route::middleware('auth')->group(function () {
 
-    Route::get('/', function () {
-        return view('home');
-    })->name('home');
+    Route::get('/', [HomeController::class, 'index'])->name('home');
 
     Route::get('/login', function () {
         return view('home');
