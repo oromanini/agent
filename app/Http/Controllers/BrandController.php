@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Packages\SoolarApiPackage\Models\InverterBrand;
-use App\Packages\SoolarApiPackage\Models\ModuleBrand;
+use App\Models\Brand;
+use App\Services\BrandService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -13,133 +13,104 @@ use Illuminate\Support\Str;
 
 class BrandController extends Controller
 {
+    public function __construct(private readonly BrandService $brandService)
+    {}
+
     public function index(): View
     {
-        $moduleBrands = ModuleBrand::orderBy('brand')->get();
-        $inverterBrands = InverterBrand::orderBy('brand')->get();
+        $panelBrands = Brand::where('type', 'panel')->orderBy('name')->get();
+        $inverterBrands = Brand::where('type', 'inverter')->orderBy('name')->get();
 
-        return view('brands.index', compact('moduleBrands', 'inverterBrands'));
+        return view('brands.index', compact('panelBrands', 'inverterBrands'));
     }
 
     public function store(Request $request, $type): JsonResponse
     {
-        $model = $this->getModelInstance($type);
+        if (!in_array($type, ['panel', 'inverter'])) {
+            abort(404, 'Tipo de marca inválido.');
+        }
 
-        $request->merge(['brand' => Str::upper($request->input('brand'))]);
-
-        $rules = [
-            'brand' => ['required', 'string', 'max:255', Rule::unique($model->getConnectionName() . '.' . $model->getTable())],
-            'warranty' => 'required|integer|min:0',
+        $validated = $request->validate([
+            'brand' => 'required|string|max:255',
+            'warranty' => 'required|integer',
+            'linear_warranty' => 'nullable|integer',
+            'overload' => 'nullable|numeric',
+            'active' => 'boolean',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
             'picture' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
-        ];
+        ]);
 
-        if ($type === 'module') {
-            $rules['linear_warranty'] = 'nullable|integer|min:0';
-        }
-
-        if ($type === 'inverter') {
-            $rules['overload'] = 'required|numeric|min:0';
-        }
-
-        $validated = $request->validate($rules);
+        $brandNameSlug = Str::slug($validated['brand']);
 
         if ($request->hasFile('logo')) {
-            $validated['logo'] = $request->file('logo')->store($type . '_brand_logos', 'public');
+            $extension = $request->file('logo')->getClientOriginalExtension();
+            $fileName = "{$brandNameSlug}.{$extension}";
+            $validated['logo'] = $request->file('logo')->storeAs($type . '_brand_logos', $fileName, 'public');
         }
         if ($request->hasFile('picture')) {
-            $validated['picture'] = $request->file('picture')->store($type . '_brand_pictures', 'public');
+            $extension = $request->file('picture')->getClientOriginalExtension();
+            $fileName = "{$brandNameSlug}.{$extension}";
+            $validated['picture'] = $request->file('picture')->storeAs($type . '_brand_pictures', $fileName, 'public');
         }
 
-        $brand = $model->create($validated);
-
-        $brand->logo_url = $brand->logo ? Storage::url($brand->logo) : null;
-        $brand->picture_url = $brand->picture ? Storage::url($brand->picture) : null;
+        $brand = $this->brandService->createBrand($validated, $type);
 
         return response()->json($brand, 201);
     }
 
-    public function update(Request $request, string $type, int $id): JsonResponse
+    public function update(Request $request, int $id): JsonResponse
     {
-        $model = $this->getModelInstance($type);
-        $brand = $model->findOrFail($id);
+        $brand = Brand::findOrFail($id);
+        $type = $brand->type;
 
-        $request->merge(['brand' => Str::upper($request->input('brand'))]);
+        $request->merge(['name' => Str::upper($request->input('name'))]);
 
-        $rules = [
-            'brand' => ['required', 'string', 'max:255', Rule::unique($brand->getConnectionName() . '.' . $brand->getTable())->ignore($brand->id)],
-            'warranty' => 'required|integer|min:0',
+        $validated = $request->validate([
+            'name' => [
+                'required', 'string', 'max:255',
+                Rule::unique('brands')->where('type', $type)->ignore($brand->id)
+            ],
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
             'picture' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
-        ];
+        ]);
 
-        if ($type === 'module') {
-            $rules['linear_warranty'] = 'nullable|integer|min:0';
-        }
-
-        if ($type === 'inverter') {
-            $rules['overload'] = 'required|numeric|min:0';
-        }
-
-        $validated = $request->validate($rules);
-
-        $brand->fill($validated);
+        $brandNameSlug = Str::slug($validated['name']);
 
         if ($request->hasFile('logo')) {
-            if ($brand->logo) {
-                Storage::disk('public')->delete($brand->logo);
-            }
-            $brand->logo = $request->file('logo')->store($type . '_brand_logos', 'public');
+            if ($brand->logo_path) Storage::disk('public')->delete($brand->logo_path);
+            $extension = $request->file('logo')->getClientOriginalExtension();
+            $fileName = "{$brandNameSlug}.{$extension}";
+            $validated['logo_path'] = $request->file('logo')->storeAs($type . '_brand_logos', $fileName, 'public');
         }
 
         if ($request->hasFile('picture')) {
-            if ($brand->picture) {
-                Storage::disk('public')->delete($brand->picture);
-            }
-            $brand->picture = $request->file('picture')->store($type . '_brand_pictures', 'public');
+            if ($brand->picture_path) Storage::disk('public')->delete($brand->picture_path);
+            $extension = $request->file('picture')->getClientOriginalExtension();
+            $fileName = "{$brandNameSlug}.{$extension}";
+            $validated['picture_path'] = $request->file('picture')->storeAs($type . '_brand_pictures', $fileName, 'public');
         }
 
-        $brand->save();
-
-        $brand->logo_url = $brand->logo ? Storage::url($brand->logo) : null;
-        $brand->picture_url = $brand->picture ? Storage::url($brand->picture) : null;
+        $this->brandService->update($brand, $validated);
 
         return response()->json($brand);
     }
 
-    public function destroy($type, $id): JsonResponse
+    public function destroy(int $id): JsonResponse
     {
-        $model = $this->getModelInstance($type);
-        $brand = $model->findOrFail($id);
+        $brand = Brand::findOrFail($id);
 
-        if ($brand->logo) Storage::disk('public')->delete($brand->logo);
-        if ($brand->picture) Storage::disk('public')->delete($brand->picture);
+        if ($brand->logo_path) Storage::disk('public')->delete($brand->logo_path);
+        if ($brand->picture_path) Storage::disk('public')->delete($brand->picture_path);
 
-        $brand->delete();
+        $this->brandService->delete($brand);
 
         return response()->json(null, 204);
     }
 
-    public function toggleActive($type, $id): JsonResponse
+    public function toggleActive(int $id): JsonResponse
     {
-        try {
-            $model = $this->getModelInstance($type);
-            $brand = $model->findOrFail($id);
-            $brand->active = !$brand->active;
-            $brand->save();
-            return response()->json($brand);
-        } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
-        }
-    }
-
-    private function getModelInstance($type): ModuleBrand|InverterBrand
-    {
-        if ($type === 'module') {
-            return new ModuleBrand();
-        } elseif ($type === 'inverter') {
-            return new InverterBrand();
-        }
-        abort(404, 'Tipo de marca inválido.');
+        $brand = Brand::findOrFail($id);
+        $brand->save();
+        return response()->json($brand);
     }
 }

@@ -18,7 +18,8 @@
         "laravel/tinker": "^2.5",
         "predis/predis": "^2.2",
         "rap2hpoutre/laravel-log-viewer": "^2.3",
-        "ext-libxml": "*"
+        "ext-libxml": "*",
+        "ext-pdo": "*"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
