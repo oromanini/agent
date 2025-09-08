@@ -1,14 +1,12 @@
 <?php
 
-namespace Feature\Pricing;
+namespace Tests\Feature\Pricing;
 
 use App\Builders\AddressBuilder;
 use App\Builders\CityBuilder;
 use App\Builders\ClientBuilder;
 use App\Builders\StateBuilder;
 use App\Builders\UserBuilder;
-use App\Enums\InverterBrands;
-use App\Enums\PanelBrands;
 use App\Enums\PaymentTypeEnum;
 use App\Enums\RoofStructure;
 use App\Enums\TensionPattern;
@@ -28,7 +26,6 @@ use App\Models\Pricing\TaxCost;
 use App\Models\Pricing\WorkMonitoringCost;
 use App\Models\ProposalValueHistory;
 use App\Models\User;
-use App\Models\WorkCost;
 use App\Services\PricingService;
 use App\Services\ProposalValueHistoryService;
 use Illuminate\Database\Eloquent\Model;
@@ -44,11 +41,6 @@ class ValueHistoryTest extends PricingTestCase
     protected User $user;
     protected City $city;
 
-    /**
-     * @param array $data
-     * @param int $paymentType
-     * @return mixed
-     */
     public function getFinalPrice(array $data, int $paymentType): mixed
     {
         return (new PricingService())->calculateFinalPrice(
@@ -277,7 +269,7 @@ class ValueHistoryTest extends PricingTestCase
         $this->assertEquals(expected: $cashFinalValue * 0.01, actual: $internalCommission);
 
         // ASSERT DA COMISSAO FINANCIAMENTO
-        $this->assertEquals(expected: $cashFinalValue * 0.01, actual: $internalCommission);
+        $this->assertEquals(expected: $cashFinalValue * 0.01, actual: $financingCommission);
     }
 
     public function testProposalValueHistoryCash_WithAutoProposal_ShouldAssertHistory(): void
@@ -322,9 +314,9 @@ class ValueHistoryTest extends PricingTestCase
           "cost"                 => 8000.00,
           "kwp"                  => 6,
           "panel_count"          => 10,
-          "panel_brand"          => strtoupper(PanelBrands::Nplus->name),
+          "panel_brand"          => strtoupper('NPLUS'),
           "panelPower"           => 600,
-          "inverterBrand"        => strtoupper(InverterBrands::Saj->name),
+          "inverterBrand"        => strtoupper('SAJ'),
           "roofStructure"        => RoofStructure::COLONIAL,
         ];
     }

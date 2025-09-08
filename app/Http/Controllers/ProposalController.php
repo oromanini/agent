@@ -3,14 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Enums\DistributorsEnum;
-use App\Enums\InverterBrands;
-use App\Enums\PanelBrands;
 use App\Enums\PaymentTypeEnum;
 use App\Enums\RoofStructure;
 use App\Enums\TensionPattern;
 use App\Helpers\ImageHelper;
 use App\Http\Requests\ProposalRequest;
 use App\Models\Address;
+use App\Models\Brand;
 use App\Models\City;
 use App\Models\Client;
 use App\Models\Kit;
@@ -28,7 +27,6 @@ use App\Services\PricingService;
 use App\Services\ProposalService;
 use App\Services\ProposalValueHistoryService;
 use App\Services\SolarIncidenceService;
-use Dflydev\DotAccessData\Data;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
@@ -45,7 +43,8 @@ class ProposalController extends Controller
         private readonly ProposalValueHistoryService $proposalValueHistoryService,
         private readonly PricingService $pricingService,
         private readonly KitSpecService $kitSpecService,
-        private readonly SolarIncidenceService $solarIncidenceService
+        private readonly SolarIncidenceService $solarIncidenceService,
+        private readonly PaybackService $paybackService
     ) {}
 
     public function index(Request $request): View
@@ -81,8 +80,8 @@ class ProposalController extends Controller
         $agents = User::query()->whereNull('deleted_at')->get();
         $tensions = TensionPattern::cases();
         $roofs = RoofStructure::setRoofsToScreen();
-        $panels = PanelBrands::cases();
-        $inverters = InverterBrands::cases();
+        $panels = Brand::panels();
+        $inverters = Brand::inverters();
 
         return view('proposals.manual', compact($this->setManualParams()));
     }
@@ -172,8 +171,8 @@ class ProposalController extends Controller
         $agents = User::query()->whereNull('deleted_at')->get();
         $tensions = TensionPattern::cases();
         $roofs = RoofStructure::setRoofsToScreen();
-        $panels = PanelBrands::cases();
-        $inverters = InverterBrands::cases();
+        $panels = Brand::panels();
+        $inverters = Brand::inverters();
         $kitInfo = $proposal->kit();
 
         $proposal_tension =  match ($proposal->tension_pattern) {
@@ -219,14 +218,18 @@ class ProposalController extends Controller
         $manualData = $proposal->is_manual
             ? jsonToArray($proposal->manual_data)
             : null;
-        $panelImage = $proposal->is_manual
-            ? (new ImageHelper())->setImageByBrand(type: 'panel', brand: $manualData['panel_brand'])
-            : (new ImageHelper())->setImageByBrand(type: 'panel', brand: jsonToArray($kit->panel_specs)['brand'], distributor: $kit->distributor_name);
 
-        $inverterImage = $proposal->is_manual
-        ? (new ImageHelper())->setImageByBrand(type: 'inverter', brand: $manualData['inverter_brand'])
-        : (new ImageHelper())->setImageByBrand(type: 'inverter', brand: $inverterBrand, distributor: $kit->distributor_name)
-        ;
+        $panelImage = $this->pictureByBrand(
+            type: ImageHelper::PANEL,
+            brand: $manualData['panel_brand'] ?? $panelBrand,
+            imageType: ImageHelper::PICTURE
+        );
+
+        $inverterImage = $this->pictureByBrand(
+            type: ImageHelper::INVERTER,
+            brand: $manualData['inverter_brand'] ?? $inverterBrand,
+            imageType: ImageHelper::PICTURE
+        );
 
         $incidence = $this->solarIncidenceService->getSolarIncidence(city: $city)->average;
         $paybackService = new PaybackService(solarIncidenceService:$this->solarIncidenceService, proposal: $proposal);
@@ -261,8 +264,8 @@ class ProposalController extends Controller
 
         $inverterSpecs = jsonToArray($kitData['inverter_specs']);
         $panelSpecs = jsonToArray($kitData['panel_specs']);
-        $inverterImage = (new ImageHelper())->setImageByBrand(type: 'inverter', brand: $inverterSpecs['brand'], distributor: $kitData['distributor_name']);
-        $panelBrandImage = (new ImageHelper())->setImageByBrand(type: 'panel', brand: $panelSpecs['brand'], distributor: $kitData['distributor_name']);
+        $panelImage = $this->pictureByBrand(type: ImageHelper::PANEL, brand: $panelSpecs['brand'], imageType: ImageHelper::PICTURE);
+        $inverterImage = $this->pictureByBrand(type: ImageHelper::INVERTER, brand: $inverterSpecs['brand'], imageType: ImageHelper::PICTURE);
 
         $incidence = (new SolarIncidenceService())->getSolarIncidence(city: $city)->average;
         $panelQuantity = (new LeadService($this))->getLeadPanelQuantity($lead);
@@ -415,18 +418,6 @@ class ProposalController extends Controller
             ->get();
     }
 
-    private function setInverterImageByDistributor(string $inverterBrand, string $distributor)
-    {
-        if ($distributor === DistributorsEnum::EDELTEC->value) {
-            return \App\Packages\EdeltecApiPackage\Enums\InverterImage::getByCase($inverterBrand);
-        }
-        if ($distributor === DistributorsEnum::ODEX->value) {
-            return strtolower($inverterBrand) == 'saj'
-                ? '/img/inverters/saj.png'
-                : '/img/inverters/sajmicroinverter.png';
-        }
-    }
-
     public function getComponentsSpec(Proposal $proposal, ?Kit $kit = null): array
     {
         if ($proposal->is_manual) {
@@ -449,6 +440,12 @@ class ProposalController extends Controller
             $inverterSpecs = jsonToArray($kit->inverter_specs);
         }
         return array($panelSpecs, $inverterSpecs);
+    }
+
+    private function pictureByBrand(string $type, string $brand, string $imageType): string
+    {
+        return (new ImageHelper())
+            ->setImageByBrand($type, $brand, $imageType);
     }
 
 }

@@ -8,7 +8,7 @@
 
     <div id="panelBrand">
         @if($proposal->is_manual)
-        {{ \App\Enums\PanelBrands::from((int)$manualData['panel_brand'])->name }}
+        {{ $manualData['panel_brand'] }}
         @else
             {{ jsonToArray($firstKit['panel_specs'])['brand'] }}
         @endif
@@ -39,7 +39,7 @@
     </div>
     <div id="inverterBrand">
         @if($proposal->is_manual)
-            {{ \App\Enums\InverterBrands::from((int)$manualData['inverter_brand'])->name }}
+            {{ $manualData['inverter_brand'] }}
         @else
             {{ jsonToArray($firstKit['inverter_specs'])['brand'] }}
         @endif

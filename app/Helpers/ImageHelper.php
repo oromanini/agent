@@ -2,85 +2,54 @@
 
 namespace App\Helpers;
 
-use App\Enums\InverterBrands;
-use App\Enums\PanelBrands;
-use App\Packages\SoolarApiPackage\Models\InverterBrand;
-use App\Packages\SoolarApiPackage\Models\ModuleBrand;
-use Illuminate\Support\Facades\Storage;
+use App\Models\Brand;
 
 class ImageHelper
 {
-    const PANEL = "panel";
-    const INVERTER = "inverter";
+    public const PANEL = "panel";
+    public const INVERTER = "inverter";
+    public const LOGO = 'logo';
+    public const PICTURE = 'picture';
+    public const EXTENSION = '.png';
 
-    public function setImageByBrand(string $type, string|int $brand, ?string $distributor = null): string
+    public function setImageByBrand(string $type, string|int $brand, string $imageType): string
     {
-        if ($distributor === 'soollar') {
-            $brandName = $this->setBrandString($type, $brand);
-            $model = $this->getModelInstance($type);
-
-            $brandRecord = $model->where('brand', 'LIKE', $brandName)->first();
-
-            if ($brandRecord && $brandRecord->logo) {
-                return Storage::url($brandRecord->logo);
-            }
-
-            throw new \Exception("Imagem para a marca '{$brandName}' do distribuidor 'soollar' não encontrada no banco de dados.");
-        }
-
+        $directory = $this->getDirectory($type, $imageType);
         $brandName = $this->setBrandString($type, $brand);
-        $validExtensions = ['png'];
-        $imagesList = [];
-        $directory = $this->getDirectory($type);
 
-        if (is_dir($directory)) {
-            $images = scandir($directory);
-
-            foreach ($images as $image) {
-                if ($image !== '.' && $image !== '..') {
-                    $extension = pathinfo($image, PATHINFO_EXTENSION);
-
-                    if (in_array(strtolower($extension), $validExtensions)) {
-                        $withoutExtension = pathinfo($image, PATHINFO_FILENAME);
-                        $imagesList[strtolower($withoutExtension)] = $directory . '/' . $image;
-                    }
-                }
-            }
-        }
-
-        if (!array_key_exists($brandName, $imagesList)) {
-            throw new \Exception("Imagem estática '{$brandName}.png' não encontrada!");
-        }
-
-        return $imagesList[$brandName];
+        return $directory . $brandName . self::EXTENSION;
     }
 
-    private function getModelInstance(string $type): ModuleBrand|InverterBrand
+    private function getDirectory(string $type, string $imageType): string
     {
-        return match ($type) {
-            self::PANEL => new ModuleBrand(),
-            self::INVERTER => new InverterBrand(),
-            default => throw new \Exception('Tipo de modelo inválido: ' . $type)
-        };
-    }
+        $panel_logos = '/storage/module_brand_logos/';
+        $panel_pictures = '/storage/module_brand_pictures/';
+        $inverter_logos = '/storage/inverter_brand_logos/';
+        $inverter_pictures = '/storage/inverter_brand_pictures/';
 
-    private function getDirectory(string $type): string
-    {
-        return match ($type) {
-            self::PANEL => public_path('img/panels'),
-            self::INVERTER => public_path('img/inverters'),
-            default => throw new \Exception('Tipo de diretório não encontrado: ' . $type)
-        };
+        $directory = null;
+
+        ($type == self::PANEL && $imageType == self::LOGO) && $directory = $panel_logos;
+        ($type == self::PANEL && $imageType == self::PICTURE) && $directory = $panel_pictures;
+        ($type == self::INVERTER && $imageType == self::LOGO) && $directory = $inverter_logos;
+        ($type == self::INVERTER && $imageType == self::PICTURE) && $directory = $inverter_pictures;
+
+        return $directory;
     }
 
     private function setBrandString(string $type, int|string $brand): string
     {
-        if (!is_numeric($brand)) {
-            return strtolower($brand);
-        }
+        $brand = Brand::query()
+            ->where(function ($query) use ($brand) {
+                is_integer($brand)
+                    ? $query->where('brand_enum', $brand)
+                    : $query->where('brand', 'LIKE', "%{$brand}%");
+            })
+            ->where('type', $type)
+            ->first();
 
-        return $type == self::PANEL
-            ? strtolower(PanelBrands::tryFrom($brand)->name)
-            : strtolower(InverterBrands::tryFrom($brand)->name);
+        is_null($brand) && throw new \Exception('Marca inexistente!');
+
+        return $brand->name;
     }
 }
