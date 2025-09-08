@@ -1,7 +1,7 @@
 services:
     mysql:
         image: mysql
-        platform: linux/arm64 # Adicione esta linha
+        platform: linux/arm64
         container_name: mysql_db
         ports:
             - "3306:3306"
@@ -14,18 +14,25 @@ services:
             - alluz-network
 
     agent:
-        platform: linux/arm64 # Adicione esta linha
-        volumes:
-            - .:/var/www/html
+        platform: linux/arm64
         build: .
         ports:
             - "8001:80"
+        volumes:
+            # Volume para sincronizar o seu código
+            - .:/var/www/html
+            # MUDANÇA 1: Adiciona o volume para a configuração do Apache
+            # Isto corrige os erros "Forbidden" ao apontar para a pasta /public
+            - ./.docker/apache/000-default.conf:/etc/apache2/sites-available/000-default.conf
+        # MUDANÇA 2: Adiciona a linha de utilizador
+        # Isto corrige os problemas de permissão de ficheiros entre o seu Mac e o Docker
+        user: "${UID}:${GID}"
         networks:
             - alluz-network
 
     redis:
         image: redis:latest
-        platform: linux/arm64 # Adicione esta linha também
+        platform: linux/arm64
         container_name: redis
         ports:
             - "6379:6379"
