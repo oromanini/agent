@@ -20,28 +20,32 @@ class SoollarProductsUpdateJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     public int $timeout = 1800;
 
+    public function __construct(
+        private readonly ProductCategoriesEnum $category,
+        private readonly WarehouseEnum $warehouse
+    ){}
+
     public function handle(SoollarApiManager $soollarApiManager): void
     {
-        foreach (ProductCategoriesEnum::cases() as $category) {
-            foreach (WarehouseEnum::cases() as $warehouse) {
 
-                try {
-                    $soollarApiManager->handle($category, $warehouse);
+        try {
+            $count = $soollarApiManager->handle($this->category, $this->warehouse);
 
-                } catch (RequestException $e) {
+            SoollarImportHistory::updateProcess(
+                createdProducts: $count['created'],
+                updatedProducts: $count['updated']
+            );
 
-                    $errorMessage = sprintf(
-                        "Falha ao buscar produtos da categoria '%s' no armazém '%s'. Pulando esta combinação. Erro: %s",
-                        $category->value,
-                        $warehouse->value,
-                        $e->getMessage()
-                    );
+        } catch (RequestException $e) {
 
-                    Log::warning($errorMessage);
+            $errorMessage = sprintf(
+                "Falha ao buscar produtos da categoria '%s' no armazém '%s'. Pulando esta combinação. Erro: %s",
+                $this->category->value,
+                $this->warehouse->value,
+                $e->getMessage()
+            );
 
-                    continue;
-                }
-            }
+            Log::warning($errorMessage);
         }
     }
 

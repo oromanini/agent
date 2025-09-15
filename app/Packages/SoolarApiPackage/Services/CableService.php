@@ -3,6 +3,7 @@
 namespace App\Packages\SoolarApiPackage\Services;
 
 use App\Packages\SoolarApiPackage\Models\Cable;
+use App\Packages\SoolarApiPackage\Models\SoollarImportHistory;
 use App\Packages\SoolarApiPackage\Repositories\SoollarApiRepository;
 use Exception;
 
@@ -10,37 +11,47 @@ class CableService
 {
 
     public function __construct(private readonly SoollarApiRepository $soollarApiRepository)
-    {
-    }
+    {}
 
     public function getBestCableOption(int $moduleQuantity, string $color): array
     {
         $requiredLength = $moduleQuantity * 2.5;
-
         $model = $moduleQuantity > 30 ? '6MM' : '4MM';
 
-        // 1. Busque o pacote de cabo de 25 metros
-        $cablePackage = $this->soollarApiRepository->getCableByLength(
-            type: $model,
-            color: $color,
-            length: 25 // Procurando especificamente o pacote de 25 metros
-        );
+        // Obtém todas as opções de cabo de uma vez
+        $allCablePackages = $this->soollarApiRepository->getCablesByTypeAndColor($model, $color);
 
-        // Se o pacote de 25 metros não for encontrado, lance a exceção
-        if (!$cablePackage) {
-            throw new Exception("Pacote de cabo {$model} {$color} de 25m não encontrado.");
+        if ($allCablePackages->isEmpty()) {
+            SoollarImportHistory::finishProcess(SoollarImportHistory::STATUS_ERROR);
+            throw new Exception("Nenhuma opção de cabo {$model} {$color} encontrada.");
         }
 
-        // 2. Calcule a quantidade de pacotes necessária
-        $requiredPackages = ceil($requiredLength / 25);
+        $bestOption = null;
 
-        // 3. Calcule o custo total
-        $totalCost = $requiredPackages * $cablePackage->price;
+        foreach ($allCablePackages as $cablePackage) {
+            $packageLength = (int) $cablePackage->size;
+            if ($packageLength <= 0) {
+                continue;
+            }
 
-        return [
-            'description' => "{$requiredPackages}x Pacote de cabo de {$cablePackage->size} {$cablePackage->type} {$cablePackage->color}",
-            'cost' => $totalCost,
-            'quantity' => $requiredPackages,
-        ];
+            $requiredPackages = ceil($requiredLength / $packageLength);
+            $totalCost = $requiredPackages * $cablePackage->price;
+
+            // Se for a primeira opção ou a mais barata até agora
+            if ($bestOption === null || $totalCost < $bestOption['cost']) {
+                $bestOption = [
+                    'description' => "{$requiredPackages}x Pacote de cabo de {$cablePackage->size} {$cablePackage->type} {$cablePackage->color}",
+                    'cost' => $totalCost,
+                    'quantity' => $requiredPackages,
+                ];
+            }
+        }
+
+        if ($bestOption === null) {
+            SoollarImportHistory::finishProcess(SoollarImportHistory::STATUS_ERROR);
+            throw new Exception("Não foi possível calcular o custo ideal para o cabo {$model} {$color}.");
+        }
+
+        return $bestOption;
     }
 }

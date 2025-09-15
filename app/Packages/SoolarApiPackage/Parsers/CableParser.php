@@ -12,7 +12,10 @@ class CableParser
     {
         $originalName = $product['name'];
         $rawPrice = $product['price'];
-        $cleanName = strtolower($originalName);
+
+        // Remove o valor do metro do início do nome
+        $cleanedName = preg_replace('/^R\$[\d,.]+MT\s*-\s*/', '', $originalName);
+        $cleanName = strtolower($cleanedName);
         $model = null;
         $size = null;
         $type = null;
@@ -34,7 +37,7 @@ class CableParser
         $stock = SoollarApiManager::getDeliveryStock($originalName);
 
         return [
-            'name' => strtolower($originalName),
+            'name' => strtolower($cleanedName),
             'model' => $model,
             'size' => $size,
             'type' => $type,

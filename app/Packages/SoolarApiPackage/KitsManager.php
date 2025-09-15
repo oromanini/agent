@@ -39,265 +39,106 @@ class KitsManager implements KitsManagerInterface
 
         foreach ($moduleBands as $moduleBand) {
             foreach ($inverterBands as $inverterBand) {
-
                 $modules = $this->repository->findModulesByBrand($moduleBand);
                 $inverters = $this->repository->findInvertersByBrand($inverterBand);
 
                 foreach ($modules as $module) {
                     foreach ($inverters as $inverter) {
-
-                        $overload = $this->getInverterOverload($inverterBand);
-                        $minimumPanels = $this->getInverterMinimumPanels($inverter, $module);
-                        $maximumPanels = $this->getInverterMaximumPanels($inverter, $module, $overload);
-
-                        for ($invertersQuantity = 1; $invertersQuantity <= 4; $invertersQuantity++) {
-                            $minPanelsForKit = $minimumPanels * $invertersQuantity;
-                            $maxPanelsForKit = $maximumPanels * $invertersQuantity;
-
-                            for (
-                                $modulesQuantity = $minPanelsForKit;
-                                $modulesQuantity <= $maxPanelsForKit;
-                                $modulesQuantity++
-                            ) {
-                                $this->mountAndSaveKit(
-                                    modulesQuantity: $modulesQuantity,
-                                    module: $module,
-                                    inverter: $inverter,
-                                    invertersQuantity: $invertersQuantity,
-                                );
-                            }
-                        }
+                        $this->createKits($module, $inverter);
                     }
                 }
             }
+        }
+    }
+
+    private function createKits(Module $module, Inverter $inverter): void
+    {
+        $kWp = ($inverter->output_power / self::MINIMUM_OVERLOAD) / 1000;
+        $modulesQuantity = (int)ceil(($kWp * 1000) / $module->power);
+        $invertersQuantity = (int)ceil(($module->power * $modulesQuantity * 1.25) / $inverter->input_power);
+
+        if ($invertersQuantity > 1) {
+            return;
+        }
+
+        $kitDescription = $modulesQuantity . ' Módulos de ' . $module->power . 'W ' . $module->brand . ' + ' . $invertersQuantity . ' Inversor ' . $inverter->output_power . 'W ' . $inverter->brand;
+        $kitKwp = round(($module->power * $modulesQuantity) / 1000, 2);
+
+        $structure = $this->calculateStructure($modulesQuantity);
+        $cables = $this->calculateCable($modulesQuantity);
+        $connectors = $this->calculateConnectors($modulesQuantity);
+
+        $kitCost = $this->calculateCost($module, $modulesQuantity, $inverter, $invertersQuantity, $structure, $cables, $connectors);
+        $kitHash = Uuid::uuid4()->toString();
+
+        $kit = [
+            'kit_hash' => $kitHash,
+            'description' => $kitDescription,
+            'kwp' => $kitKwp,
+            'cost' => $kitCost,
+            'roof_structure' => $structure['structure']->roof_structure,
+            'tension_pattern' => $inverter->tension_pattern,
+            'is_active' => true,
+            'distributor_name' => 'SOOLLAR',
+            'components' => [
+                'module' => [
+                    'quantity' => $modulesQuantity,
+                    'specs' => $module->only('id', 'name', 'model', 'power', 'price', 'brand')
+                ],
+                'inverter' => [
+                    'quantity' => $invertersQuantity,
+                    'specs' => $inverter->only('id', 'name', 'model', 'power', 'price', 'brand')
+                ],
+                'structure' => [
+                    'quantity' => $structure['quantity'],
+                    'specs' => $structure['structure']->only('id', 'name', 'model', 'price')
+                ],
+                'cables' => [
+                    'quantity' => $cables['quantity'],
+                    'description' => $cables['description'],
+                    'cost' => $cables['cost'],
+                ],
+                'connectors' => [
+                    'quantity' => $connectors['quantity'],
+                    'specs' => $connectors['connectors']->only('id', 'name', 'price', 'type'),
+                ]
+            ],
+            'module_specs' => $module->toArray(),
+            'inverter_specs' => $inverter->toArray(),
+        ];
+
+        $this->createOrUpdateKit($kit);
+    }
+
+    private function createOrUpdateKit(array $kitData): void
+    {
+        $existingKit = $this->repository->getKitByDescription($kitData['description']);
+
+        if ($existingKit) {
+            $existingKit->update($kitData);
+            $this->updatedKitsCount++;
+        } else {
+            Kit::query()->create($kitData);
+            $this->createdKitsCount++;
+        }
+
+        // Verifica se a soma dos contadores é um múltiplo de 1000 e atualiza o processo.
+        $total = $this->createdKitsCount + $this->updatedKitsCount;
+        if ($total > 0 && $total % 1000 === 0) {
             SoollarImportHistory::updateProcess(
                 createdKits: $this->createdKitsCount,
                 updatedKits: $this->updatedKitsCount,
             );
         }
-
-        SoollarImportHistory::updateProcess(
-            createdKits: $this->createdKitsCount,
-            updatedKits: $this->updatedKitsCount,
-        );
     }
 
-    private function mountAndSaveKit(
-        int $modulesQuantity,
-        Module $module,
-        Inverter $inverter,
-        int $invertersQuantity,
-    ): void {
-        foreach (RoofStructure::cases() as $roofStructure) {
-            $panelSpecs = $this->setPanelSpecs($module);
-            $inverterSpecs = $this->setInverterSpecs($inverter);
-            $structureSpecs = $this->setStructureSpecs($roofStructure, $modulesQuantity);
-            $cables = $this->calculateCable($modulesQuantity);
-            $connectors = $this->calculateConnectors($modulesQuantity);
-            $kwp = $this->calculateKwp($modulesQuantity, (float)$module->power);
-
-            $components = $this->setComponents(
-                module: $module,
-                inverter: $inverter,
-                structureSpecs: $structureSpecs,
-                modulesQuantity: $modulesQuantity,
-                invertersQuantity: $invertersQuantity,
-                cables: $cables,
-                connectors: $connectors
-            );
-
-            $cost = $this->calculateCost(
-                module: $module,
-                modulesQuantity: $modulesQuantity,
-                inverter: $inverter,
-                invertersQuantity: $invertersQuantity,
-                structureSpecs: $structureSpecs,
-                cables: $cables,
-                connectors: $connectors
-            );
-
-            $tensionPattern = match ((string)$inverter->voltage) {
-                '220V' => TensionPattern::MONOFASICO_220V->value,
-                '380V' => TensionPattern::TRIFASICO_380V->value,
-                default => TensionPattern::MONOFASICO_220V->value,
-            };
-
-            $kit = new Kit();
-            $kit->fillFromAttributes(
-                description: $this->setKitDescription($kwp, $roofStructure, $inverter, $panelSpecs, $invertersQuantity),
-                kwp: $kwp,
-                cost: $cost,
-                roof_structure: $roofStructure->value,
-                tension_pattern: $tensionPattern,
-                components: $components,
-                panel_specs: $panelSpecs,
-                inverter_specs: $inverterSpecs,
-                distributor_name: "SOOLLAR",
-                distributor_code: Uuid::uuid4()->toString(),
-                availability: now()->toDateString(),
-                is_active: true,
-            );
-
-            $this->saveOrUpdateKit($kit);
-        }
-    }
-
-    public function saveOrUpdateKit(Kit $kit): void
+    private function calculateStructure(int $modulesQuantity): array
     {
-        $existingKit = $this->repository->getKitByDescription($kit->description);
-
-        if ($existingKit) {
-            $existingKit->update($kit->toArray());
-            $existingKit->update(['is_active' => true]);
-            $this->updatedKitsCount++;
-            return;
-        }
-
-        $kit->save();
-        $this->createdKitsCount++;
-    }
-
-    private function setKitDescription(float $kwp, RoofStructure $roofStructure, Inverter $inverter, array $panelSpecs, int $invertersQuantity): string
-    {
-        $formattedKwp = number_format($kwp, 2, ',', '.');
-        $inverterWord = $invertersQuantity > 1 ? 'inversores' : 'inversor';
-        return "Kit {$formattedKwp} kWP {$roofStructure->name} {$invertersQuantity} {$inverterWord} {$inverter->brand} {$inverter->power}KW e {$panelSpecs['brand']} {$panelSpecs['power']}W";
-    }
-
-    private function calculateKwp(int $modulesQuantity, float $panelPower): float
-    {
-        return $modulesQuantity * ($panelPower / 1000);
-    }
-
-    protected function setComponents(
-        Module $module,
-        Inverter $inverter,
-        array $structureSpecs,
-        int $modulesQuantity,
-        int $invertersQuantity,
-        array $cables,
-        array $connectors
-    ): array {
-        $inverterWord = $invertersQuantity > 1 ? 'inversores' : 'inversor';
-        return [
-            "{$modulesQuantity} módulos {$module->brand} {$module->power}W",
-            "{$invertersQuantity} {$inverterWord} {$inverter->brand} {$inverter->voltage}",
-            $this->getStructureDescription($structureSpecs),
-            $this->getStructureProfileDescription($structureSpecs),
-            ...$cables['description'],
-            "{$connectors['quantity']} par - {$connectors['connectors']->name}",
-        ];
-    }
-
-    public function getStructureDescription(array $structureSpecs): string
-    {
-        return "{$structureSpecs['description']} - {$structureSpecs['components']['structures']['quantity']} UND - {$structureSpecs['components']['structures']['name']}";
-    }
-
-    public function getStructureProfileDescription(array $structureSpecs): string
-    {
-        if (!isset($structureSpecs['components']['profiles'])) {
-            return '';
-        }
-        return "{$structureSpecs['components']['profiles']['quantity']} UND - {$structureSpecs['components']['profiles']['name']} ";
-    }
-
-    private function getInverterOverload(InverterBrand $inverterBand): float
-    {
-        $overload = $inverterBand->overload ?? 0.50;
-
-        return max(self::MINIMUM_OVERLOAD, $overload);
-    }
-
-    private function getInverterMinimumPanels(Inverter $inverter, Module $module): int
-    {
-        $inverterPower = (float) $inverter->power;
-        $moduleKw = (float) $module->power / 1000;
-        return (int) ceil(($inverterPower * self::MINIMUM_OVERLOAD) / $moduleKw);
-    }
-
-    private function getInverterMaximumPanels(Inverter $inverter, Module $module, float $overload): int
-    {
-        $inverterPower = (float) $inverter->power;
-        $overload = 1 + ($overload / 100);
-        $moduleKw = (float) $module->power / 1000;
-
-        return (int) floor(
-            ($inverterPower * $overload)
-            / $moduleKw
-        );
-    }
-
-    private function setPanelSpecs(Module $module): array
-    {
-        return [
-            'id' => $module->id,
-            'name' => $module->name,
-            'brand' => $module->brand,
-            'power' => (float)$module->power,
-            'category' => $module->category,
-            'stock' => $module->stock,
-            'price' => $module->price
-        ];
-    }
-
-    private function setInverterSpecs(Inverter $inverter): array
-    {
-        return [
-            'id' => $inverter->id,
-            'name' => $inverter->name,
-            'brand' => $inverter->brand,
-            'power' => (float)$inverter->power,
-            'voltage' => $inverter->voltage,
-            'category' => $inverter->category,
-            'stock' => $inverter->stock,
-            'price' => $inverter->price
-        ];
-    }
-
-    private function setStructureSpecs(RoofStructure $roofStructure, int $modulesQuantity): array
-    {
-        $structuresQuantity = ceil($modulesQuantity / 4);
-
-        $structure = match ($roofStructure) {
-            RoofStructure::METALICO => $this->repository->getStructureByModelName('mini-trilho'),
-            RoofStructure::COLONIAL => $this->repository->getStructureByModelName('cerâmica'),
-            default => $this->repository->getStructureByModelName('cerâmica')
-        };
-
-        $profile = [
-            'name' => 'PERFIL SOOLLAR ALUMINIO 2,4MT FIBROCIMENTO/CERAMICA',
-            'model' => 'PERFIL ALUMINIO 2,4MT FIBROCIMENTO/CERAMICA',
-            'price' => 32.9,
-            'stock' => 'ready delivery',
-            'category' => 'Estruturas-Inox',
-        ];
-
-        $totalCost = ($structure->price * $structuresQuantity);
-
-        $components = [
-            'structures' => [
-                'name' => $structure->name,
-                'quantity' => $structuresQuantity,
-                'price' => $structure->price,
-            ],
-            'profiles' => null
-        ];
-
-        if ($roofStructure !== RoofStructure::METALICO) {
-            $profilesQuantity = $modulesQuantity;
-            $totalCost += ($profile['price'] * $profilesQuantity);
-            $components['profiles'] = [
-                'name' => $profile['name'],
-                'quantity' => $profilesQuantity,
-                'price' => $profile['price']
-            ];
-        }
+        $roofStructure = RoofStructure::SOLO->value;
 
         return [
-            'description' => 'Estrutura para ' . $roofStructure->name,
-            'cost' => $totalCost,
-            'components' => $components
+            'structure' => $this->repository->getStructureByModelName($roofStructure),
+            'quantity' => (int)ceil($modulesQuantity / 2),
         ];
     }
 
@@ -330,7 +171,7 @@ class KitsManager implements KitsManagerInterface
     {
         $moduleCost = $module->price * $modulesQuantity;
         $inverterCost = $inverter->price * $invertersQuantity;
-        $structureCost = $structureSpecs['cost'];
+        $structureCost = $structureSpecs['structure']->price * $structureSpecs['quantity'];
         $cablesCost = $cables['cost'];
         $connectorsCost = $connectors['connectors']->price * $connectors['quantity'];
 

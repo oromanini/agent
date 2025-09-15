@@ -14,13 +14,25 @@ class KitsController extends Controller
     {
         $query = Kit::query();
 
-        // ... (sua lógica de filtro aqui) ...
+        if ($request->filled('min_kwp') && is_numeric($request->input('min_kwp'))) {
+            $query->where('kwp', '>=', $request->input('min_kwp'));
+        }
 
-        // Ordenação dinâmica
-        $sortBy = $request->input('sort_by', 'kwp'); // Padrão: 'kwp'
-        $sortDirection = $request->input('sort_direction', 'asc'); // Padrão: 'asc'
+        if ($request->filled('max_kwp') && is_numeric($request->input('max_kwp'))) {
+            $query->where('kwp', '<=', $request->input('max_kwp'));
+        }
 
-        // Evita ordenação em colunas inválidas
+        if ($request->filled('roof_structure')) {
+            $query->where('roof_structure', $request->input('roof_structure'));
+        }
+
+        if ($request->filled('tension_pattern')) {
+            $query->where('tension_pattern', $request->input('tension_pattern'));
+        }
+
+        $sortBy = $request->input('sort_by', 'kwp');
+        $sortDirection = $request->input('sort_direction', 'asc');
+
         $allowedColumns = ['id', 'description', 'kwp', 'cost'];
         if (!in_array($sortBy, $allowedColumns)) {
             $sortBy = 'kwp';
@@ -28,7 +40,7 @@ class KitsController extends Controller
 
         $query->orderBy($sortBy, $sortDirection);
 
-        $kits = $query->paginate(20);
+        $kits = $query->paginate(20)->withQueryString();
 
         return view('kits.index', compact('kits', 'sortBy', 'sortDirection'));
     }

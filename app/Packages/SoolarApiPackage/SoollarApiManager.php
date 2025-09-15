@@ -16,8 +16,8 @@ use App\Packages\SoolarApiPackage\Repositories\SoollarApiRepository;
 class SoollarApiManager
 {
     private const BASE_URL = 'https://www.soollar.com.br/';
-    private const LOGIN_URI = 'login_check';
-    private const LOGIN_PAGE_URI = 'customer/login';
+    private int $createdCount = 0;
+    private int $updatedCount = 0;
 
     public function __construct(
         private readonly SoollarApiRepository $soollarApiRepository,
@@ -30,10 +30,12 @@ class SoollarApiManager
         private readonly StructureParser $structureParser,
     ) {}
 
-    public function handle(ProductCategoriesEnum $category, WarehouseEnum $warehouse): void
-    {
+    public function handle(
+        ProductCategoriesEnum $category,
+        WarehouseEnum $warehouse,
+    ): array {
         $products = $this->getProduct($category, $warehouse);
-        $this->soollarApiRepository->syncProducts($category, $warehouse, $products['products']);
+        return $this->soollarApiRepository->syncProducts($category, $warehouse, $products['products']);
     }
 
     private function getProduct(ProductCategoriesEnum $category, WarehouseEnum $warehouse): array
