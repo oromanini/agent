@@ -229,7 +229,7 @@ class ProposalController extends Controller
             brand: $manualData['inverter_brand'] ?? $inverterBrand,
             imageType: ImageHelper::PICTURE
         );
-//        dd($panelImage, $inverterImage);
+
         $incidence = $this->solarIncidenceService->getSolarIncidence(city: $city)->average;
         $paybackService = new PaybackService(solarIncidenceService:$this->solarIncidenceService, proposal: $proposal);
 
