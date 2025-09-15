@@ -18,10 +18,10 @@ class BrandController extends Controller
 
     public function index(): View
     {
-        $panelBrands = Brand::where('type', 'panel')->orderBy('name')->get();
-        $inverterBrands = Brand::where('type', 'inverter')->orderBy('name')->get();
+        $moduleBrands = Brand::panels();
+        $inverterBrands = Brand::inverters();
 
-        return view('brands.index', compact('panelBrands', 'inverterBrands'));
+        return view('brands.index', compact('moduleBrands', 'inverterBrands'));
     }
 
     public function store(Request $request, $type): JsonResponse
