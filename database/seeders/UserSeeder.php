@@ -24,7 +24,8 @@ class UserSeeder extends Seeder
             'email' => 'oscar.romanini@alluzenergia.com.br',
             'password' => Hash::make('Neia@vida.2022!'),
             'city' => 1,
-            'ascendant' => 1
+            'ascendant' => 1,
+            'permission' => 'admin'
         ]);
     }
 }

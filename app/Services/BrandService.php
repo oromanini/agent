@@ -10,20 +10,18 @@ use Illuminate\Support\Facades\DB;
 
 class BrandService
 {
-    public function createBrand(array $validatedData, string $type): Model
+    public function createBrand(array $validatedData): Model
     {
-        $model = $this->getModel($type);
-        $brand = new Brand();
+        $type = $validatedData['type'];
+        unset($validatedData['type']);
 
-            DB::transaction(function () use ($model, $validatedData, $type, &$brand) {
+        $lastEnum = $this->getLastEnum($type);
 
-            $newBrand = $model->create($validatedData);
+        $brand = DB::transaction(function () use ($validatedData, $type, $lastEnum) {
+            $validatedData['brand_enum'] = $lastEnum + 1;
+            $validatedData['type'] = $type;
 
-            $brand = Brand::create([
-                'name' => $newBrand->brand,
-                'type' => $type,
-                'brand_enum' => $this->getLastEnum($type) + 1,
-            ]);
+            return Brand::create($validatedData);
         });
 
         return $brand;
@@ -45,6 +43,7 @@ class BrandService
 
     public function update(Brand $brand, array $validated): void
     {
+        unset($validated['brand_enum']);
         $brand->update($validated);
     }
 

@@ -14,6 +14,11 @@ class CreateBrandsTable extends Migration
             $table->string('name');
             $table->enum('type', ['panel', 'inverter']);
             $table->integer('brand_enum');
+            $table->integer('warranty')->nullable();
+            $table->integer('linear_warranty')->nullable();
+            $table->integer('overload')->nullable();
+            $table->string('logo')->nullable();
+            $table->string('picture')->nullable();
             $table->timestamps();
         });
     }

@@ -5,15 +5,7 @@
     <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
 
     <style>
-        .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; }
-        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; transition: .4s; }
-        input:checked + .slider { background-color: #23d160; }
-        input:focus + .slider { box-shadow: 0 0 1px #23d160; }
-        input:checked + .slider:before { transform: translateX(22px); }
-        .slider.round { border-radius: 34px; }
-        .slider.round:before { border-radius: 50%; }
+        .switch { display: none; }
         .brand-image { max-width: 100px; max-height: 40px; object-fit: contain; }
     </style>
 
@@ -21,7 +13,7 @@
         <nav class="tabs is-boxed is-fullwidth is-large" style="margin-bottom: 0">
             <div class="container">
                 <ul>
-                    <li id="modules-li" class="mytab is-active" data-tab="modules">
+                    <li id="panels-li" class="mytab is-active" data-tab="panels">
                         <a><ion-icon name="flash-outline"></ion-icon> Marcas de Módulos</a>
                     </li>
                     <li id="inverters-li" class="mytab" data-tab="inverters">
@@ -32,12 +24,12 @@
         </nav>
 
         <div class="box overflow-auto">
-            <div id="modules" class="content-tab">
+            <div id="panels" class="content-tab">
                 <div class="level">
                     <div class="level-left"><h4 class="title is-5">Marcas de Módulo Cadastradas</h4></div>
-                    <div class="level-right"><button class="button is-success open-modal-btn" data-type="module" data-mode="add">Adicionar Nova Marca</button></div>
+                    <div class="level-right"><button class="button is-success open-modal-btn" data-type="panel" data-mode="add">Adicionar Nova Marca</button></div>
                 </div>
-                <table class="table is-striped is-fullwidth" id="module-brands-table">
+                <table class="table is-striped is-fullwidth" id="panel-brands-table">
                     <thead>
                     <tr>
                         <th>Logo</th>
@@ -45,24 +37,19 @@
                         <th>Marca</th>
                         <th>Garantia</th>
                         <th>Garantia Linear</th>
-                        <th>Ativo</th>
+                        <th>Enum</th>
                         <th class="has-text-right">Ações</th>
                     </tr>
                     </thead>
                     <tbody>
-                    @forelse($moduleBrands as $brand)
-                        <tr data-id="{{ $brand->id }}" data-type="module" data-brand="{{ $brand->brand }}" data-warranty="{{ $brand->warranty }}" data-linear-warranty="{{ $brand->linear_warranty }}">
+                    @forelse($panelBrands as $brand)
+                        <tr data-id="{{ $brand->id }}" data-type="panel" data-brand="{{ $brand->name }}" data-warranty="{{ $brand->warranty }}" data-linear-warranty="{{ $brand->linear_warranty }}" data-brand-enum="{{ $brand->brand_enum }}">
                             <td><img src="{{ $brand->logo ? asset('storage/' . $brand->logo) : 'https://via.placeholder.com/100x40?text=S/Logo' }}" alt="Logo" class="brand-image"></td>
                             <td><img src="{{ $brand->picture ? asset('storage/' . $brand->picture) : 'https://via.placeholder.com/100x40?text=S/Foto' }}" alt="Foto" class="brand-image"></td>
-                            <td class="brand-name">{{ $brand->brand }}</td>
+                            <td class="brand-name">{{ $brand->name }}</td>
                             <td class="brand-warranty">{{ $brand->warranty }}</td>
                             <td class="brand-linear-warranty">{{ $brand->linear_warranty }}</td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox" class="toggle-active-btn" {{ $brand->active ? 'checked' : '' }}>
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
+                            <td class="brand-enum">{{ $brand->brand_enum }}</td>
                             <td>
                                 <div class="buttons is-justify-content-flex-end">
                                     <button class="button is-info is-small open-modal-btn" data-mode="edit">Editar</button>
@@ -90,24 +77,19 @@
                         <th>Marca</th>
                         <th>Garantia (anos)</th>
                         <th>Overload</th>
-                        <th>Ativo</th>
+                        <th>Enum</th>
                         <th class="has-text-right">Ações</th>
                     </tr>
                     </thead>
                     <tbody>
                     @forelse($inverterBrands as $brand)
-                        <tr data-id="{{ $brand->id }}" data-type="inverter" data-brand="{{ $brand->brand }}" data-warranty="{{ $brand->warranty }}" data-overload="{{ $brand->overload }}">
+                        <tr data-id="{{ $brand->id }}" data-type="inverter" data-brand="{{ $brand->name }}" data-warranty="{{ $brand->warranty }}" data-overload="{{ $brand->overload }}" data-brand-enum="{{ $brand->brand_enum }}">
                             <td><img src="{{ $brand->logo ? asset('storage/' . $brand->logo) : 'https://via.placeholder.com/100x40?text=S/Logo' }}" alt="Logo" class="brand-image"></td>
                             <td><img src="{{ $brand->picture ? asset('storage/' . $brand->picture) : 'https://via.placeholder.com/100x40?text=S/Foto' }}" alt="Foto" class="brand-image"></td>
-                            <td class="brand-name">{{ $brand->brand }}</td>
+                            <td class="brand-name">{{ $brand->name }}</td>
                             <td class="brand-warranty">{{ $brand->warranty }}</td>
                             <td class="brand-overload">{{ $brand->overload }}</td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox" class="toggle-active-btn" {{ $brand->active ? 'checked' : '' }}>
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
+                            <td class="brand-enum">{{ $brand->brand_enum }}</td>
                             <td>
                                 <div class="buttons is-justify-content-flex-end">
                                     <button class="button is-info is-small open-modal-btn" data-mode="edit">Editar</button>
@@ -138,7 +120,7 @@
                     <div class="field">
                         <label class="label">Nome da Marca</label>
                         <div class="control">
-                            <input class="input" type="text" name="brand" required oninput="this.value = this.value.toUpperCase()">
+                            <input class="input" type="text" name="brand" placeholder="Nome da Marca" required oninput="this.value = this.value.toUpperCase()">
                         </div>
                     </div>
                     <div class="field">
@@ -268,20 +250,20 @@
                     document.querySelectorAll('.file-name').forEach(el => el.textContent = 'Nenhum arquivo');
 
                     overloadField.style.display = currentBrand.type === 'inverter' ? 'block' : 'none';
-                    linearWarrantyField.style.display = currentBrand.type === 'module' ? 'block' : 'none';
+                    linearWarrantyField.style.display = currentBrand.type === 'panel' ? 'block' : 'none';
                     form.querySelector('input[name="overload"]').required = currentBrand.type === 'inverter';
 
                     if (mode === 'add') {
-                        modalTitle.textContent = `Adicionar Nova Marca de ${currentBrand.type === 'module' ? 'Módulo' : 'Inversor'}`;
+                        modalTitle.textContent = `Adicionar Nova Marca de ${currentBrand.type === 'panel' ? 'Módulo' : 'Inversor'}`;
                         currentBrand.id = null;
                     } else {
-                        modalTitle.textContent = `Editar Marca de ${currentBrand.type === 'module' ? 'Módulo' : 'Inversor'}`;
+                        modalTitle.textContent = `Editar Marca de ${currentBrand.type === 'panel' ? 'Módulo' : 'Inversor'}`;
                         currentBrand.id = row.dataset.id;
 
                         form.querySelector('input[name="brand"]').value = row.dataset.brand;
                         form.querySelector('input[name="warranty"]').value = row.dataset.warranty;
 
-                        if(currentBrand.type === 'module') {
+                        if(currentBrand.type === 'panel') {
                             form.querySelector('input[name="linear_warranty"]').value = row.dataset.linearWarranty;
                         }
                         if(currentBrand.type === 'inverter') {
@@ -327,7 +309,7 @@
                 let url = `/api/brands/${currentBrand.type}`;
 
                 if (currentBrand.mode === 'edit') {
-                    url = `/api/brands/${currentBrand.type}/${currentBrand.id}`;
+                    url = `/api/brands/${currentBrand.id}`;
                     formData.append('_method', 'PUT');
                 }
 
@@ -362,7 +344,7 @@
 
                 const { id, type, rowElement } = brandToDelete;
 
-                const response = await fetch(`/api/brands/${type}/${id}`, {
+                const response = await fetch(`/api/brands/${id}`, {
                     method: 'DELETE',
                     headers: getAuthHeaders()
                 });
@@ -376,54 +358,26 @@
                 closeDeleteModal();
             });
 
-            document.body.addEventListener('change', async function(e) {
-                if (e.target.classList.contains('toggle-active-btn')) {
-                    if (!await ensureAuthenticated()) {
-                        e.target.checked = !e.target.checked;
-                        return;
-                    }
-                    const row = e.target.closest('tr');
-                    const { id, type } = row.dataset;
-                    const response = await fetch(`/api/brands/${type}/${id}/toggle`, {
-                        method: 'PATCH',
-                        headers: getAuthHeaders()
-                    });
-                    if (response.ok) {
-                        notyf.success('Status alterado com sucesso!');
-                    } else {
-                        e.target.checked = !e.target.checked;
-                        await handleFetchError(response);
-                    }
-                }
-            });
-
             function createTableRowHTML(brand, type) {
-                const logoUrl = brand.logo_url || `https://via.placeholder.com/100x40?text=S/Logo`;
-                const pictureUrl = brand.picture_url || `https://via.placeholder.com/100x40?text=S/Foto`;
-                const checked = brand.active ? 'checked' : '';
+                const logoUrl = brand.logo ? `{{ asset('storage') }}/${brand.logo}` : `https://via.placeholder.com/100x40?text=S/Logo`;
+                const pictureUrl = brand.picture ? `{{ asset('storage') }}/${brand.picture}` : `https://via.placeholder.com/100x40?text=S/Foto`;
 
                 let overloadCell = '';
                 let linearWarrantyCell = '';
                 if (type === 'inverter') {
                     overloadCell = `<td class="brand-overload">${brand.overload}</td>`;
                 }
-                if (type === 'module') {
+                if (type === 'panel') {
                     linearWarrantyCell = `<td class="brand-linear-warranty">${brand.linear_warranty || ''}</td>`;
                 }
 
                 return `
                     <td><img src="${logoUrl}" alt="Logo" class="brand-image"></td>
                     <td><img src="${pictureUrl}" alt="Foto" class="brand-image"></td>
-                    <td class="brand-name">${brand.brand}</td>
+                    <td class="brand-name">${brand.name}</td>
                     <td class="brand-warranty">${brand.warranty}</td>
-                    ${type === 'module' ? linearWarrantyCell : ''}
+                    ${type === 'panel' ? linearWarrantyCell : ''}
                     ${type === 'inverter' ? overloadCell : ''}
-                    <td>
-                        <label class="switch">
-                            <input type="checkbox" class="toggle-active-btn" ${checked}>
-                            <span class="slider round"></span>
-                        </label>
-                    </td>
                     <td>
                         <div class="buttons is-justify-content-flex-end">
                             <button class="button is-info is-small open-modal-btn" data-mode="edit">Editar</button>
@@ -441,9 +395,9 @@
                 const newRow = tableBody.insertRow();
                 newRow.dataset.id = brand.id;
                 newRow.dataset.type = type;
-                newRow.dataset.brand = brand.brand;
+                newRow.dataset.brand = brand.name;
                 newRow.dataset.warranty = brand.warranty;
-                if (type === 'module') {
+                if (type === 'panel') {
                     newRow.dataset.linearWarranty = brand.linear_warranty;
                 }
                 if (type === 'inverter') {
@@ -455,9 +409,9 @@
             function updateTableRow(brand, type) {
                 const row = document.querySelector(`tr[data-id='${brand.id}'][data-type='${type}']`);
                 if (row) {
-                    row.dataset.brand = brand.brand;
+                    row.dataset.brand = brand.name;
                     row.dataset.warranty = brand.warranty;
-                    if (type === 'module') {
+                    if (type === 'panel') {
                         row.dataset.linearWarranty = brand.linear_warranty;
                     }
                     if (type === 'inverter') {
