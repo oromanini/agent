@@ -214,7 +214,6 @@ class ProposalController extends Controller
             $inverterBrand = jsonToArray($kit->inverter_specs)['brand'] ?? null;
             $panelBrand = jsonToArray($kit->panel_specs)['logo'] ?? null;
         }
-
         $manualData = $proposal->is_manual
             ? jsonToArray($proposal->manual_data)
             : null;
@@ -230,7 +229,7 @@ class ProposalController extends Controller
             brand: $manualData['inverter_brand'] ?? $inverterBrand,
             imageType: ImageHelper::PICTURE
         );
-
+//        dd($panelImage, $inverterImage);
         $incidence = $this->solarIncidenceService->getSolarIncidence(city: $city)->average;
         $paybackService = new PaybackService(solarIncidenceService:$this->solarIncidenceService, proposal: $proposal);
 

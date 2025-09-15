@@ -188,7 +188,7 @@
                                 <select id="panel_brand" name="panel_brand">
                                     @forelse($panels as $panel)
 
-                                        <option value="{{ $panel->value }}">{{$panel->name}}</option>
+                                        <option value="{{ $panel->brand_enum }}">{{$panel->name}}</option>
                                     @empty
                                         <option value="">Não há painéis cadastrados</option>
                                     @endforelse
@@ -241,7 +241,7 @@
                                 class="select is-multiline is-fullwidth  @error('inverter_brand') is-danger @enderror">
                                 <select id="inverter_brand" name="inverter_brand">
                                     @forelse($inverters as $inverter)
-                                        <option value="{{ $inverter->value }}">{{$inverter->name}}</option>
+                                        <option value="{{ $inverter->brand_enum }}">{{$inverter->name}}</option>
                                     @empty
                                         <option value="">Não há inversores cadastrados</option>
                                     @endforelse

@@ -16,16 +16,15 @@ class ImageHelper
     {
         $directory = $this->getDirectory($type, $imageType);
         $brandName = $this->setBrandString($type, $brand);
-
         return $directory . $brandName . self::EXTENSION;
     }
 
     private function getDirectory(string $type, string $imageType): string
     {
-        $panel_logos = '/storage/module_brand_logos/';
-        $panel_pictures = '/storage/module_brand_pictures/';
-        $inverter_logos = '/storage/inverter_brand_logos/';
-        $inverter_pictures = '/storage/inverter_brand_pictures/';
+        $panel_logos = 'storage/module_brand_logos/';
+        $panel_pictures = 'storage/module_brand_pictures/';
+        $inverter_logos = 'storage/inverter_brand_logos/';
+        $inverter_pictures = 'storage/inverter_brand_pictures/';
 
         $directory = null;
 
@@ -39,17 +38,17 @@ class ImageHelper
 
     private function setBrandString(string $type, int|string $brand): string
     {
-        $brand = Brand::query()
+        $search = Brand::query()
             ->where(function ($query) use ($brand) {
-                is_integer($brand)
+                is_numeric($brand)
                     ? $query->where('brand_enum', $brand)
-                    : $query->where('brand', 'LIKE', "%{$brand}%");
+                    : $query->where('name', 'LIKE', "%{$brand}%");
             })
             ->where('type', $type)
             ->first();
 
-        is_null($brand) && throw new \Exception('Marca inexistente!');
+        is_null($search) && throw new \Exception('Marca inexistente!');
 
-        return $brand->name;
+        return strtolower($search->name);
     }
 }
