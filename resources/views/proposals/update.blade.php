@@ -174,7 +174,7 @@
                                                 ? ' selected '
                                                 : ''
                                             }}
-                                        value="{{ $panel->value }}">{{$panel->name}}
+                                        value="{{ $panel->brand_enum }}">{{$panel->name}}
                                         </option>
                                     @empty
                                         <option value="">Não há painéis cadastrados</option>
@@ -234,7 +234,7 @@
                                                 || (int) $kitInfo['inverter_specs']['brand'] == $inverter->value
                                                 ? ' selected '
                                                 : ''
-                                            }} value="{{ $inverter->value }}">{{$inverter->name}}
+                                            }} value="{{ $inverter->brand_enum }}">{{$inverter->name}}
                                         </option>
                                     @empty
                                         <option value="">Não há inversores cadastrados</option>
