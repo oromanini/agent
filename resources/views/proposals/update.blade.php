@@ -231,7 +231,7 @@
                                         <option
                                             {{
                                                 strtolower($kitInfo['inverter_specs']['brand']) == strtolower($inverter->name)
-                                                || (int) $kitInfo['inverter_specs']['brand'] == $inverter->brand_enumw
+                                                || (int) $kitInfo['inverter_specs']['brand'] == $inverter->brand_enum
                                                 ? ' selected '
                                                 : ''
                                             }} value="{{ $inverter->brand_enum }}">{{$inverter->name}}
