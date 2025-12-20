@@ -187,8 +187,7 @@
                                 class="select is-multiline is-fullwidth  @error('panel_brand') is-danger @enderror">
                                 <select id="panel_brand" name="panel_brand">
                                     @forelse($panels as $panel)
-
-                                        <option {{}} value="{{ $panel->brand_enum }}">{{$panel->name}}</option>
+                                        <option value="{{ $panel->brand_enum }}">{{$panel->name}}</option>
                                     @empty
                                         <option value="">Não há painéis cadastrados</option>
                                     @endforelse
