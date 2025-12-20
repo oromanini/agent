@@ -280,8 +280,8 @@ class ProposalService
     private function setRoofPlusLost(string $roof_orientation): float
     {
         return match ($roof_orientation) {
-            '["sul"]' => 0.30,
-            '["leste/oeste"]' => 0.1,
+            '["sul"]', "sul" => 0.30,
+            '["leste/oeste"]', "leste/oeste" => 0.1,
             default => 0
         };
     }
