@@ -188,7 +188,7 @@
                                 <select id="panel_brand" name="panel_brand">
                                     @forelse($panels as $panel)
 
-                                        <option value="{{ $panel->brand_enum }}">{{$panel->name}}</option>
+                                        <option {{}} value="{{ $panel->brand_enum }}">{{$panel->name}}</option>
                                     @empty
                                         <option value="">Não há painéis cadastrados</option>
                                     @endforelse
