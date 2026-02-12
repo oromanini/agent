@@ -14,7 +14,6 @@
         <link rel="stylesheet" href="{{ asset('css/login.css') }}">
 
         <!-- Scripts -->
-        <script src="{{ asset('js/login.js') }}" defer></script>
     </head>
     <body>
         <div class="font-sans text-gray-900 antialiased">
