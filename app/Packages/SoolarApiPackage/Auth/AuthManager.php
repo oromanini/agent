@@ -12,6 +12,10 @@ use Illuminate\Support\Facades\File;
 
 class AuthManager
 {
+    private const BASE_URL = 'https://www.soollar.com.br';
+    private const LOGIN_PAGE_URI = '/customer/login';
+    private const LOGIN_URI = '/login_check';
+
     private Client $client;
     public function __construct()
     {
@@ -35,11 +39,18 @@ class AuthManager
 
     private function login(): void
     {
-        $this->client->get(self::BASE_URL . self::LOGIN_PAGE_URI);
+        $response = $this->client->get(self::BASE_URL . self::LOGIN_PAGE_URI);
+        $html = (string) $response->getBody();
+
+        preg_match('/name="_csrf_token"\s+value="([^"]+)"/', $html, $matches);
+        $soollarCsrf = $matches[1] ?? null;
+
         $credentials = $this->getCredentials();
+
         $formParams = [
             '_username' => $credentials['username'],
             '_password' => $credentials['password'],
+            '_csrf_token' => $soollarCsrf,
         ];
 
         $this->client->post(self::BASE_URL . self::LOGIN_URI, [
@@ -47,7 +58,7 @@ class AuthManager
             'allow_redirects' => true,
             'headers' => [
                 'Referer' => self::BASE_URL . self::LOGIN_PAGE_URI,
-                'Origin' => 'https://www.soollar.com.br',
+                'Origin' => self::BASE_URL,
             ],
         ]);
     }
