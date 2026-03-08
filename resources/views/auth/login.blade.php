@@ -13,6 +13,11 @@
                     </div>
                 </x-slot>
 
+                <div style="text-align:center; margin-bottom: 1rem;">
+                    <h2 style="font-size: 2rem; font-weight: 700; color: #f2f4f8;">Alluz Energia</h2>
+                    <p style="color: #9ca5ba; margin-top: .3rem;">CRM Solar - Faça login para continuar</p>
+                </div>
+
                 <!-- Session Status -->
                 <x-auth-session-status class="mb-4" :status="session('status')"/>
 

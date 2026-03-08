@@ -2,26 +2,62 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+body,
 .min-h-screen {
-    background-color: #FFBC0E;
+    background: radial-gradient(circle at top, #0e111a 0%, #070b13 45%, #04060b 100%);
 }
 
 .login-flex {
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: row;
+    min-height: 100vh;
 }
 
-.w50 {
-    width: 50%;
+.w50 { width: 100%; }
+
+.login-side { display: none; }
+
+.auth-shell {
+    width: 100%;
+    max-width: 460px;
+    padding: 1.75rem;
+    background: #151821;
+    border: 1px solid #262d3f;
+    border-radius: 14px;
+    box-shadow: 0 20px 40px -28px rgba(0, 0, 0, 0.95);
 }
 
-.login-side {
-    background-color: #2d3748;
-    background-size: cover;
-    background-image: url("/img/left-login.png") !important;
-    background-repeat:no-repeat;
-    min-width: 50%;
-    height: 100vh
+.auth-shell h2,
+.auth-shell p,
+.auth-shell label,
+.auth-shell span,
+.auth-shell a {
+    color: #d8deea;
+}
+
+.auth-shell input {
+    background: #090c14 !important;
+    border: 1px solid #2f3650 !important;
+    color: #edf1f7 !important;
+    border-radius: 8px !important;
+}
+
+.auth-shell button {
+    background: linear-gradient(90deg, #f4a409 0%, #ffbc0e 100%) !important;
+    border: 0 !important;
+    color: #171717 !important;
+    font-weight: 700 !important;
+    width: 100%;
+    justify-content: center;
+    border-radius: 8px !important;
+    padding: 0.85rem 0.9rem !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+}
+
+.logo { margin-bottom: 1rem; text-align: center; }
+
+@media (max-width: 866px) {
+    .w-full { width: 100%; }
 }

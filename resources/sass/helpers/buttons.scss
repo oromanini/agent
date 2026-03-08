@@ -1,40 +1,37 @@
 .p-yellow-button {
-    border-radius: 12px;
-    color: #1f2a44;
-    border: 1px solid #f4c43f;
-    background: linear-gradient(140deg, #ffd770 0%, #f6b315 100%);
-    padding: 0.6rem 1.1rem;
+    border-radius: 9px;
+    color: #161616;
+    border: 1px solid #ffbc0e;
+    background: linear-gradient(90deg, #f4a409 0%, #ffbc0e 100%);
+    padding: 0.5rem 1rem;
     font-size: 0.95rem;
+    font-weight: 700;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 170px;
+}
+
+.p-red-button {
+    background: #212738;
+    text-decoration: none;
+    width: 240px;
+    border-radius: 8px;
+    color: #fff;
+    padding: 0.5rem;
+    font-size: 1rem;
     font-weight: 600;
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    min-width: 180px;
-    box-shadow: 0 8px 24px -18px rgba(246, 179, 21, 0.95);
+    border: 1px solid #333c52;
 }
 
-.p-red-button {
-    background: linear-gradient(140deg, #324f8a 0%, #243861 100%);
-    text-decoration: none;
-    width: 240px;
-    border-radius: 10px;
-    color: #fff;
-    padding: 0.55rem 0.6rem;
-    font-size: 1rem;
-    font-weight: 500;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-a ion-icon {
-    padding-right: 10px;
-}
+a ion-icon { padding-right: 10px; }
 
 .p-yellow-button:hover,
 .p-red-button:hover {
     color: #fff;
-    transform: translateY(-1px);
-    transition: all 0.25s ease;
+    filter: brightness(1.06);
+    transition: all 0.2s ease;
 }
