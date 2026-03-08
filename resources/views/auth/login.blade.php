@@ -8,14 +8,14 @@
                 <x-slot name="logo">
                     <div class="logo">
                         <a href="/">
-                            <x-application-logo class="w-20 h-20 fill-current text-gray-500"/>
+                            <img src="/img/logo/alluz-horizontal.png" alt="Alluz Energia" style="width: 200px; height: auto;">
                         </a>
                     </div>
                 </x-slot>
 
                 <div style="text-align:center; margin-bottom: 1rem;">
                     <h2 style="font-size: 2rem; font-weight: 700; color: #f2f4f8;">Alluz Energia</h2>
-                    <p style="color: #9ca5ba; margin-top: .3rem;">CRM Solar - Faça login para continuar</p>
+                    <p style="color: #9ca5ba; margin-top: .3rem;">SGP - Sistema gerador de proposta</p>
                 </div>
 
                 <!-- Session Status -->
