@@ -1,6 +1,6 @@
 <div id="loader">
-    <img src="/img/loader.gif" width="70" style="z-index: 10;background-color: #fff; border-radius: 100%">
-    <span style="color: #fff; font-size: 24pt; margin-top: 20px">Carregando, aguarde ...</span>
+    <img src="/img/loader.gif" width="70" style="z-index: 10; background-color: #111723; border-radius: 100%; padding: 8px; border: 1px solid #2d3750;">
+    <span style="color: #e8edf7; font-size: 24pt; margin-top: 20px">Carregando, aguarde ...</span>
 </div>
 
 
@@ -8,9 +8,7 @@
     #loader {
         width: 100%;
         height: 100%;
-        background: rgb(255,213,0);
-        background: linear-gradient(30deg, rgba(255,213,0,1) 0%, rgb(255, 177, 0) 35%, rgba(255,222,0,1) 100%);
-        border-right: 5px solid $alluz-white;
+        background: radial-gradient(circle at top, #0b1020 0%, #06080f 35%, #03050a 100%);
         z-index: 10;
         position: fixed;
         top: 0;
