@@ -12435,9 +12435,82 @@ input:checked ~ .tab-content {
   padding: 1em;
 }
 
-select, .selectize-input, .control {
+select,
+.selectize-input,
+.control {
   height: 35px !important;
   line-height: normal !important;
+}
+
+/* Select2 dark theme override */
+.select2-container {
+  width: 100% !important;
+}
+
+.select2-container--default .select2-selection--single,
+.select2-container--default .select2-selection--multiple {
+  background: #090c14 !important;
+  border: 1px solid #31384d !important;
+  color: #f2f4f8 !important;
+  border-radius: 10px !important;
+  min-height: 58px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered,
+.select2-container--default .select2-selection--multiple .select2-selection__rendered {
+  color: #f2f4f8 !important;
+  line-height: 56px !important;
+  padding-left: 16px !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__placeholder,
+.select2-container--default .select2-selection--multiple .select2-selection__placeholder {
+  color: #8e99b2 !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+  height: 56px !important;
+  right: 10px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow b {
+  border-color: #4c6bd8 transparent transparent transparent !important;
+}
+
+.select2-dropdown {
+  background: #111725 !important;
+  border: 1px solid #31384d !important;
+  border-radius: 10px !important;
+  color: #f2f4f8 !important;
+}
+
+.select2-container--default .select2-results__option {
+  color: #d9dfeb !important;
+}
+
+.select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
+  background: rgba(244, 164, 9, 0.2) !important;
+  color: #fff !important;
+}
+
+.select2-container--default .select2-results__option--selected {
+  background: rgba(244, 164, 9, 0.3) !important;
+  color: #fff !important;
+}
+
+.select2-search--dropdown .select2-search__field {
+  background: #090c14 !important;
+  border: 1px solid #31384d !important;
+  color: #f2f4f8 !important;
+  border-radius: 8px;
+}
+
+.select2-container--default.select2-container--focus .select2-selection--single,
+.select2-container--default.select2-container--focus .select2-selection--multiple,
+.select2-container--default.select2-container--open .select2-selection--single,
+.select2-container--default.select2-container--open .select2-selection--multiple {
+  border-color: #f4a409 !important;
+  box-shadow: 0 0 0 0.12rem rgba(244, 164, 9, 0.2) !important;
 }
 
 /* HIDE RADIO */

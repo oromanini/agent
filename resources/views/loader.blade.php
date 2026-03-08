@@ -1,8 +1,7 @@
 <div id="loader">
-    <img src="/img/loader.gif" width="70" style="z-index: 10; background-color: #111723; border-radius: 100%; padding: 8px; border: 1px solid #2d3750;">
-    <span style="color: #e8edf7; font-size: 24pt; margin-top: 20px">Carregando, aguarde ...</span>
+    <div class="loader-spinner" aria-label="Carregando"></div>
+    <span class="loader-text">Carregando, aguarde ...</span>
 </div>
-
 
 <style>
     #loader {
@@ -17,6 +16,27 @@
         justify-content: center;
         align-items: center;
         flex-direction: column;
-        transition: width 1s ease-out;
+        transition: opacity 0.3s ease;
+    }
+
+    .loader-spinner {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        border: 5px solid rgba(255, 188, 14, 0.25);
+        border-top-color: #ffbc0e;
+        animation: spin 0.8s linear infinite;
+    }
+
+    .loader-text {
+        color: #e8edf7;
+        font-size: 18pt;
+        margin-top: 20px;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
     }
 </style>
