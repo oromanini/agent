@@ -14,7 +14,7 @@
                 </x-slot>
 
                 <div style="text-align:center; margin-bottom: 1rem;">
-                    <h2 style="font-size: 2rem; font-weight: 700; color: #f2f4f8;">Alluz Energia</h2>
+                    <h2 class="typing-title"><span id="login-typing-text"></span><span class="typing-caret">|</span></h2>
                     <p style="color: #9ca5ba; margin-top: .3rem;">SGP - Sistema gerador de proposta</p>
                 </div>
 
@@ -94,4 +94,44 @@
         }
     </style>
 
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const words = ['Persista', 'Insista', 'Conquiste', 'Melhore', 'Evolua', 'Cresça', 'Vença', 'Destaque-se'];
+        const target = document.getElementById('login-typing-text');
+
+        if (!target) return;
+
+        let wordIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+
+        const type = () => {
+            const currentWord = words[wordIndex];
+
+            if (isDeleting) {
+                charIndex = Math.max(charIndex - 1, 0);
+            } else {
+                charIndex = Math.min(charIndex + 1, currentWord.length);
+            }
+
+            target.textContent = currentWord.slice(0, charIndex);
+
+            let timeout = isDeleting ? 45 : 85;
+
+            if (!isDeleting && charIndex === currentWord.length) {
+                timeout = 1100;
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                wordIndex = (wordIndex + 1) % words.length;
+                timeout = 240;
+            }
+
+            setTimeout(type, timeout);
+        };
+
+        type();
+    });
+</script>
 </x-guest-layout>
