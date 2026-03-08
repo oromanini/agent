@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;1,100;1,200;1,300;1,400;1,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap');
 @import "bulma/bulma";
 @import "bulma-carousel/dist/css/bulma-carousel.min.css";
 @import "@creativebulma/bulma-tooltip/src/sass/index";
@@ -12,13 +12,52 @@
 @import "select2";
 @import "proposal";
 
-* {
-    font-family: 'Poppins', sans-serif;
+:root {
+    --app-bg: radial-gradient(circle at top right, #f6f8ff 0%, #eef3ff 35%, #f5f7fb 100%);
+    --surface: #ffffff;
+    --surface-muted: #f7f9ff;
+    --text-primary: #1f2a44;
+    --text-secondary: #65708a;
+    --border-soft: #dfe5f2;
+    --shadow-soft: 0 16px 44px -28px rgba(33, 56, 115, 0.35);
+    --shadow-card: 0 10px 32px -22px rgba(31, 42, 68, 0.55);
+    --accent: #ffb800;
+    --accent-strong: #f59e0b;
 }
 
-body {
+* {
+    font-family: 'Inter', 'Poppins', sans-serif;
+}
+
+body.app-body {
     min-height: 100vh;
-    background: #f4f4f4;
+    background: var(--app-bg);
+    color: var(--text-primary);
+}
+
+.app-shell.section {
+    padding: 1.15rem;
+}
+
+.app-layout {
+    margin: 0 !important;
+}
+
+.app-sidebar-column {
+    padding: 0.6rem !important;
+}
+
+.app-content-column {
+    padding: 0.6rem !important;
+}
+
+.app-content-wrap {
+    min-height: calc(100vh - 2.3rem);
+    background: var(--surface);
+    border-radius: 24px;
+    border: 1px solid var(--border-soft);
+    box-shadow: var(--shadow-soft);
+    padding: 1.25rem;
 }
 
 h2, title {
@@ -37,3 +76,19 @@ h2, title {
     width: 50% !important;
 }
 
+@media (max-width: 1024px) {
+    .app-shell.section {
+        padding: 0.55rem;
+    }
+
+    .app-sidebar-column,
+    .app-content-column {
+        padding: 0.35rem !important;
+    }
+
+    .app-content-wrap {
+        border-radius: 18px;
+        min-height: calc(100vh - 1.6rem);
+        padding: 0.95rem;
+    }
+}

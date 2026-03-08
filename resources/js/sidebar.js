@@ -2,32 +2,36 @@ $(function(){
 
     const sideNav = $('.side-navigation');
 
-    sideNav.mouseover(function (){
+    sideNav.on('mouseenter', function (){
 
         const sidebarColumn = $('.sidebar-column');
         const contentColumn = $('.content-column');
 
-        $('.side-logo-img').attr('src', '/img/logo/alluz-horizontal.png').css('transition', 'width 0.3s').attr('width', 280)
+        sideNav.addClass('side-expanded');
+
+        $('.side-logo-img').attr('src', '/img/logo/alluz-horizontal.png').css('transition', 'width 0.25s').attr('width', 180)
 
         sidebarColumn.removeClass('is-1')
         contentColumn.removeClass('is-11')
 
-        sidebarColumn.addClass('is-2').css('transition', 'width 0.5s')
-        contentColumn.addClass('is-10').css('transition', 'width 0.5s')
+        sidebarColumn.addClass('is-2').css('transition', 'width 0.35s')
+        contentColumn.addClass('is-10').css('transition', 'width 0.35s')
     });
 
-    sideNav.mouseout(function (){
+    sideNav.on('mouseleave', function (){
 
         const sidebarColumn = $('.sidebar-column');
         const contentColumn = $('.content-column');
 
-        $('.side-logo-img').attr('src', '/img/logo/alluz-icon.png').attr('width', 60)
+        sideNav.removeClass('side-expanded');
+
+        $('.side-logo-img').attr('src', '/img/logo/alluz-icon.png').attr('width', 46)
 
         sidebarColumn.removeClass('is-2')
         contentColumn.removeClass('is-10')
 
-        sidebarColumn.addClass('is-1').css('transition', 'width 0.5s')
-        contentColumn.addClass('is-11').css('transition', 'width 0.5s')
+        sidebarColumn.addClass('is-1').css('transition', 'width 0.35s')
+        contentColumn.addClass('is-11').css('transition', 'width 0.35s')
 
     });
 
