@@ -11943,12 +11943,12 @@ span[data-tooltip].has-tooltip-danger {
   position: sticky;
   top: 8px;
   left: 0;
-  width: 88px;
+  width: 72px;
   height: calc(100vh - 16px);
   background: linear-gradient(180deg, #111520 0%, #0a0e18 100%);
   border: 1px solid #272d3f;
   border-radius: 16px;
-  padding: 0.65rem 0.45rem;
+  padding: 0.65rem 0.25rem;
   overflow-x: hidden;
   overflow-y: auto;
   transition: width 0.28s ease;
@@ -11956,7 +11956,7 @@ span[data-tooltip].has-tooltip-danger {
 
 .side-navigation:hover,
 .side-navigation.side-expanded {
-  width: 280px;
+  width: 248px;
 }
 
 .side-logo {
@@ -12003,14 +12003,14 @@ span[data-tooltip].has-tooltip-danger {
 }
 
 .side-navigation ul li a .side-icon {
-  min-width: 56px;
-  height: 48px;
-  line-height: 56px;
+  min-width: 46px;
+  height: 46px;
+  line-height: 50px;
   text-align: center;
 }
 
 .side-navigation ul li a .side-icon ion-icon {
-  font-size: 1.25rem;
+  font-size: 1.15rem;
 }
 
 .side-navigation ul li a .side-title {
@@ -12642,6 +12642,75 @@ a:hover {
   font-weight: 600;
 }
 
+.button,
+.button:hover,
+.button.is-hovered,
+.button:focus {
+  box-shadow: none !important;
+}
+
+.button.is-primary,
+.button.is-link,
+.button.is-info,
+.button.is-success {
+  background: linear-gradient(90deg, #f4a409 0%, #ffbc0e 100%) !important;
+  border-color: #ffbc0e !important;
+  color: #171717 !important;
+}
+
+.button.is-primary:hover,
+.button.is-link:hover,
+.button.is-info:hover,
+.button.is-success:hover,
+.button.is-primary.is-hovered,
+.button.is-link.is-hovered,
+.button.is-info.is-hovered,
+.button.is-success.is-hovered {
+  background: linear-gradient(90deg, #e89700 0%, #fcb000 100%) !important;
+  color: #131313 !important;
+}
+
+.button.is-danger {
+  background: linear-gradient(90deg, #ff6a3d 0%, #ff4f3a 100%) !important;
+  border-color: #ff5a3a !important;
+  color: #fff !important;
+}
+
+.button.is-danger:hover,
+.button.is-danger.is-hovered {
+  background: linear-gradient(90deg, #f95d2f 0%, #f34631 100%) !important;
+}
+
+.table.is-hoverable tbody tr:not(.is-selected):hover,
+.table tbody tr:hover {
+  background-color: rgba(244, 164, 9, 0.08) !important;
+}
+
+.pagination,
+.pagination a,
+.pagination span,
+.pagination-link,
+.pagination-next,
+.pagination-previous,
+.pagination-ellipsis {
+  color: #fff !important;
+}
+
+.pagination-link,
+.pagination-next,
+.pagination-previous {
+  border-color: #8f97ad !important;
+  background: transparent !important;
+}
+
+.pagination-link:hover,
+.pagination-next:hover,
+.pagination-previous:hover {
+  border-color: #ffbc0e !important;
+  color: #ffbc0e !important;
+  background-color: rgba(244, 164, 9, 0.12) !important;
+}
+
 @media (max-width: 1024px) {
   .app-shell.section {
     padding: 0.45rem;
@@ -12651,4 +12720,15 @@ a:hover {
     min-height: calc(100vh - 1rem);
     padding: 0.85rem;
   }
+}
+.pagination-link.is-current {
+  background: linear-gradient(90deg, #f4a409 0%, #ffbc0e 100%) !important;
+  border-color: #ffbc0e !important;
+  color: #111 !important;
+}
+
+.table tr.is-selected,
+.table tr.is-selected:hover {
+  background-color: rgba(244, 164, 9, 0.18) !important;
+  color: #fff !important;
 }
