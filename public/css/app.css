@@ -11952,6 +11952,8 @@ span[data-tooltip].has-tooltip-danger {
   overflow-x: hidden;
   overflow-y: auto;
   transition: width 0.28s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .side-navigation:hover,
@@ -11964,6 +11966,12 @@ span[data-tooltip].has-tooltip-danger {
   justify-content: center;
   align-items: center;
   min-height: 64px;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding-bottom: 0.35rem;
+  background: linear-gradient(180deg, #171a20 0%, #101318 100%);
 }
 
 .side-navigation ul {
@@ -11981,6 +11989,7 @@ span[data-tooltip].has-tooltip-danger {
   display: flex;
   align-items: center;
   justify-content: center;
+  min-height: 46px;
   border-radius: 12px;
   text-decoration: none;
   color: #aeb7cb;
@@ -12006,8 +12015,9 @@ span[data-tooltip].has-tooltip-danger {
 .side-navigation ul li a .side-icon {
   min-width: 46px;
   height: 46px;
-  line-height: 50px;
-  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .side-navigation ul li a .side-icon ion-icon {
