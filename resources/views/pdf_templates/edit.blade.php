@@ -14,7 +14,15 @@
 
             @php
                 $defaultHtml = <<<'HTML'
-<section style="padding:48px;font-family:Arial"><h1>Proposta #{{proposal_id}}</h1><p>Cliente: {{client_name}}</p><p>Cidade: {{client_city}}</p><p>Consultor: {{seller_name}}</p><p>Gerado em: {{generated_at}}</p></section>
+<section class="pdf-page">
+    <div class="hero-title">PROPOSTA #{{proposal_id}}</div>
+    <div class="hero-content">
+        <p><strong>Cliente:</strong> {{client_name}}</p>
+        <p><strong>Cidade:</strong> {{client_city}}</p>
+        <p><strong>Consultor:</strong> {{seller_name}}</p>
+        <p><strong>Gerado em:</strong> {{generated_at}}</p>
+    </div>
+</section>
 HTML;
             @endphp
 
@@ -31,15 +39,15 @@ HTML;
                 <div class="columns">
                     <div class="column is-9">
                         <div class="field">
-                            <label class="label">Layout (HTML)</label>
-                            <div id="gjs" style="border: 1px solid #ddd; min-height: 680px;"></div>
+                            <label class="label">Layout (Editor visual)</label>
+                            <div id="gjs" style="border: 1px solid #ddd; min-height: 720px;"></div>
                             <textarea id="html" name="html" class="is-hidden">{{ old('html', $template->html ?? $defaultHtml) }}</textarea>
                         </div>
                     </div>
                     <div class="column is-3">
                         <div class="field">
                             <label class="label">CSS</label>
-                            <textarea id="css" name="css" class="textarea" rows="26">{{ old('css', $template->css ?? '') }}</textarea>
+                            <textarea id="css" name="css" class="textarea" rows="29">{{ old('css', $template->css ?? '') }}</textarea>
                         </div>
                         <button type="submit" class="button is-primary is-fullwidth">Salvar template</button>
                     </div>
@@ -59,9 +67,103 @@ HTML;
         const editor = grapesjs.init({
             container: '#gjs',
             fromElement: false,
-            height: '680px',
+            height: '720px',
             storageManager: false,
             panels: { defaults: [] },
+            canvas: {
+                styles: [
+                    'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap',
+                ],
+            },
+            assetManager: {
+                upload: '{{ route('pdf-templates.upload-asset') }}',
+                uploadName: 'file',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                },
+                autoAdd: true,
+                assets: [],
+            },
+            blockManager: {
+                appendTo: null,
+                blocks: [
+                    {
+                        id: 'text',
+                        label: 'Texto',
+                        category: 'Básico',
+                        content: '<p style="font-size:32px;color:#fff;font-family:Montserrat,sans-serif">Novo texto</p>',
+                    },
+                    {
+                        id: 'image',
+                        label: 'Imagem',
+                        category: 'Mídia',
+                        content: { type: 'image' },
+                    },
+                    {
+                        id: 'background-cover',
+                        label: 'Background',
+                        category: 'Layout',
+                        content: `
+                            <section style="min-height:1120px;background-size:cover;background-position:center;padding:40px;">
+                                <h2 style="color:white;font-size:48px;margin:0">Título</h2>
+                            </section>
+                        `,
+                    },
+                    {
+                        id: 'qr-area',
+                        label: 'Área QR',
+                        category: 'Layout',
+                        content: `
+                            <div style="width:220px;height:220px;background:#fff;border-radius:24px;padding:16px;display:flex;align-items:center;justify-content:center;">
+                                <span style="color:#555;font-size:18px;">QR Code</span>
+                            </div>
+                        `,
+                    },
+                ],
+            },
+            styleManager: {
+                sectors: [
+                    {
+                        name: 'Geral',
+                        open: true,
+                        properties: ['display', 'position', 'top', 'right', 'left', 'bottom', 'width', 'height', 'padding', 'margin'],
+                    },
+                    {
+                        name: 'Tipografia',
+                        open: true,
+                        properties: ['font-family', 'font-size', 'font-weight', 'color', 'line-height', 'text-align'],
+                    },
+                    {
+                        name: 'Decoração',
+                        open: false,
+                        properties: ['background-color', 'background', 'border-radius', 'border', 'box-shadow', 'opacity'],
+                    },
+                ],
+            },
+        });
+
+        editor.Panels.addPanel({
+            id: 'basic-actions',
+            buttons: [
+                {
+                    id: 'toggle-borders',
+                    className: 'fa fa-clone',
+                    command: 'sw-visibility',
+                    attributes: { title: 'Mostrar estrutura' },
+                },
+                {
+                    id: 'open-sm',
+                    className: 'fa fa-paint-brush',
+                    command: 'open-sm',
+                    attributes: { title: 'Estilos' },
+                },
+                {
+                    id: 'open-blocks',
+                    className: 'fa fa-th-large',
+                    command: 'open-blocks',
+                    attributes: { title: 'Blocos' },
+                },
+            ],
         });
 
         editor.setComponents(htmlField.value || '');
