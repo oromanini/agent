@@ -118,6 +118,7 @@ Route::middleware('auth')->group(function () {
         Route::name('pdf-templates.')->group(function () {
             Route::get('admin/pdf-templates/proposta', 'edit')->name('edit');
             Route::post('admin/pdf-templates/proposta', 'update')->name('update');
+            Route::post('admin/pdf-templates/proposta/upload-asset', 'uploadAsset')->name('upload-asset');
         });
     });
 

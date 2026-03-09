@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\PdfTemplate;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PdfTemplateController extends Controller
 {
@@ -42,5 +44,26 @@ class PdfTemplateController extends Controller
         return redirect()
             ->route('pdf-templates.edit')
             ->with('message', 'Template de proposta atualizado com sucesso.');
+    }
+
+    public function uploadAsset(Request $request): JsonResponse
+    {
+        abort_unless(auth()->user()->isAdmin, 403);
+
+        $request->validate([
+            'file' => ['required', 'image', 'max:5120'],
+        ]);
+
+        $path = $request->file('file')->store('pdf-template-assets', 'public');
+
+        return response()->json([
+            'data' => [
+                [
+                    'src' => Storage::disk('public')->url($path),
+                    'name' => basename($path),
+                    'type' => $request->file('file')->getMimeType(),
+                ],
+            ],
+        ]);
     }
 }
