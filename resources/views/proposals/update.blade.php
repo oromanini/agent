@@ -1,8 +1,7 @@
 @extends('base')
 @section('content')
 
-    <div class="container is-fluid overflow-auto">
-        <div class="box overflow-auto">
+    <div class="container is-fluid overflow-auto proposal-single-shell">
             <form action="{{ route('proposal.updateExistentProposal', [$proposal->id]) }}" method="post">
                 @csrf
 
@@ -377,7 +376,6 @@
                     </button>
                 </div>
             </form>
-        </div>
     </div>
 
     <script>

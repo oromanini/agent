@@ -1,8 +1,7 @@
 @extends('base')
 
 @section('content')
-    <div class="container is-fluid overflow-auto">
-        <div class="box overflow-auto">
+    <div class="container is-fluid overflow-auto proposal-single-shell">
 
             <div class="columns mt-2 ml-1">
                 <h3 class="title"><img src="/img/logo/alluz-icon.png" width="30" alt=".."> Nova Proposta</h3>
@@ -179,7 +178,6 @@
                 <div id="generateProposalButton" class="columns is-flex is-justify-content-center"
                      style="padding: 25px 0"></div>
             </form>
-        </div>
     </div>
 
     @include('proposals.form_script')
