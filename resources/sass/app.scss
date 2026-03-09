@@ -28,8 +28,10 @@
 html,
 body {
     background: #07080b;
-    overscroll-behavior-y: none;
+    overscroll-behavior-y: auto;
     font-size: 16px;
+    min-height: 100%;
+    height: auto;
 }
 
 body.app-body {
@@ -37,10 +39,11 @@ body.app-body {
     background: radial-gradient(circle at top, #101115 0%, #0a0b0f 38%, #06070a 100%);
     color: var(--text-primary);
     overflow-x: hidden;
+    overflow-y: auto;
     -webkit-text-size-adjust: 100%;
 }
 
-.app-shell.section { padding: 1rem; }
+.app-shell.section { padding: 1rem; padding-bottom: 2.1rem; }
 .app-layout { margin: 0 !important; }
 .app-sidebar-column,
 .app-content-column { padding: 0.5rem !important; }
