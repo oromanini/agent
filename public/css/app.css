@@ -12877,6 +12877,11 @@ p, span, label, .subtitle {
   color: #c8cfdd;
 }
 
+.button span,
+.button ion-icon {
+  color: inherit !important;
+}
+
 .label,
 .field label,
 label.label,
@@ -12953,6 +12958,11 @@ a:hover {
 .button {
   border-radius: 10px;
   font-weight: 500;
+}
+
+.field.has-addons .control .button {
+  min-height: 46px;
+  height: 46px;
 }
 
 .button,
