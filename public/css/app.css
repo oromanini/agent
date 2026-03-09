@@ -11952,6 +11952,8 @@ span[data-tooltip].has-tooltip-danger {
   overflow-x: hidden;
   overflow-y: auto;
   transition: width 0.28s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .side-navigation:hover,
@@ -11964,6 +11966,12 @@ span[data-tooltip].has-tooltip-danger {
   justify-content: center;
   align-items: center;
   min-height: 64px;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding-bottom: 0.35rem;
+  background: linear-gradient(180deg, #171a20 0%, #101318 100%);
 }
 
 .side-navigation ul {
@@ -11973,14 +11981,18 @@ span[data-tooltip].has-tooltip-danger {
 }
 
 .side-navigation ul li {
+  width: 100%;
   list-style: none;
   margin-bottom: 0.2rem;
 }
 
 .side-navigation ul li a {
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  min-height: 46px;
+  padding: 0;
   border-radius: 12px;
   text-decoration: none;
   color: #aeb7cb;
@@ -12004,14 +12016,23 @@ span[data-tooltip].has-tooltip-danger {
 }
 
 .side-navigation ul li a .side-icon {
+  width: 46px;
   min-width: 46px;
   height: 46px;
-  line-height: 50px;
-  text-align: center;
+  flex: 0 0 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .side-navigation ul li a .side-icon ion-icon {
   font-size: 1.15rem;
+  display: block;
+  width: 1.15rem;
+  height: 1.15rem;
+  margin: auto;
+  line-height: 1;
+  padding: 0 !important;
 }
 
 .side-navigation ul li a .side-title {
@@ -12022,6 +12043,10 @@ span[data-tooltip].has-tooltip-danger {
   transition: all 0.22s ease;
   white-space: nowrap;
   color: #d7deed;
+}
+
+.side-navigation:not(:hover):not(.side-expanded) ul li a .side-icon {
+  margin: 0 auto;
 }
 
 .side-navigation:hover ul li a,
@@ -12227,9 +12252,9 @@ h6 {
 }
 
 .info-icon {
-  color: #7fb1ff !important;
-  font-size: 20pt !important;
-  margin-bottom: -8px !important;
+  color: #f4c15d !important;
+  font-size: 18pt !important;
+  margin-bottom: -6px !important;
 }
 
 .mb50 {
@@ -12726,9 +12751,11 @@ hr {
 .orientation-segmented {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  padding: 8px;
-  border: 2px solid #f2a714;
+  gap: 8px;
+  width: min(100%, 920px);
+  margin: 0 auto;
+  padding: 6px;
+  border: 1px solid #f2a714;
   border-radius: 999px;
   background: rgba(9, 12, 20, 0.55);
 }
@@ -12749,10 +12776,10 @@ hr {
   justify-content: center;
   align-items: center;
   width: 100%;
-  min-height: 48px;
+  min-height: 42px;
   border-radius: 999px;
   color: #bac3d8;
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   font-weight: 600;
   transition: all 0.22s ease;
   cursor: pointer;
@@ -12765,12 +12792,12 @@ hr {
 .orientation-option input[type=radio]:checked + span {
   background: linear-gradient(120deg, #f4a409 0%, #ffbc0e 100%);
   color: #121212;
-  box-shadow: 0 8px 20px -14px rgba(255, 188, 14, 0.95);
+  box-shadow: 0 6px 14px -12px rgba(255, 188, 14, 0.95);
 }
 
 .orientation-option span:hover {
   color: #f4d28a;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 @media (max-width: 866px) {
