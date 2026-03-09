@@ -39,15 +39,18 @@
 }
 
 .side-navigation ul li {
+    width: 100%;
     list-style: none;
     margin-bottom: 0.2rem;
 }
 
 .side-navigation ul li a {
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     min-height: 46px;
+    padding: 0;
     border-radius: 12px;
     text-decoration: none;
     color: #aeb7cb;
@@ -71,8 +74,10 @@
 }
 
 .side-navigation ul li a .side-icon {
+    width: 46px;
     min-width: 46px;
     height: 46px;
+    flex: 0 0 46px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -95,6 +100,11 @@
     transition: all 0.22s ease;
     white-space: nowrap;
     color: #d7deed;
+}
+
+
+.side-navigation:not(:hover):not(.side-expanded) ul li a .side-icon {
+    margin: 0 auto;
 }
 
 .side-navigation:hover ul li a,
