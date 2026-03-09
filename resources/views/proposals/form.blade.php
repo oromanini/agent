@@ -12,23 +12,23 @@
             <form action="{{ route('proposal.store') }}" method="post">
                 @csrf
                 <div class="columns">
-                    <div class="column is-3">
-
+                    <div class="column is-4">
                         <label for="client" class="label">Cliente</label>
-                        <select id="client" name="client">
-                            @foreach($clients as $client)
-                                <option value="{{$client->id}}">{{ $client->name }}</option>
-                            @endforeach
-                        </select>
-
-
-                    </div>
-                    <div class="column is-1">
-                        <br>
-                        <a class="button is-info" href="{{ route('client.create') }}"
-                           style="padding: 2px 2px 2px 10px; margin-top: 5px">
-                            <ion-icon name="person-add-outline"></ion-icon>
-                        </a>
+                        <div class="field has-addons">
+                            <div class="control is-expanded">
+                                <select id="client" name="client">
+                                    @foreach($clients as $client)
+                                        <option value="{{$client->id}}">{{ $client->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="control">
+                                <a class="button is-info" href="{{ route('client.create') }}" title="Cadastrar novo cliente">
+                                    <ion-icon name="person-add-outline"></ion-icon>
+                                    <span class="ml-1">Novo</span>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                     <div class="column is-3">
                         <div class="field">
@@ -182,6 +182,5 @@
 
     @include('proposals.form_script')
 @endsection
-
 
 
