@@ -12032,6 +12032,7 @@ span[data-tooltip].has-tooltip-danger {
   height: 1.15rem;
   margin: auto;
   line-height: 1;
+  padding: 0 !important;
 }
 
 .side-navigation ul li a .side-title {
