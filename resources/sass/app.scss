@@ -25,10 +25,19 @@
 
 * { font-family: 'Inter', sans-serif; }
 
+html,
+body {
+    background: #06080f;
+    overscroll-behavior-y: none;
+    font-size: 16px;
+}
+
 body.app-body {
     min-height: 100vh;
     background: radial-gradient(circle at top, #0b1020 0%, #06080f 35%, #03050a 100%);
     color: var(--text-primary);
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
 }
 
 .app-shell.section { padding: 1rem; }
@@ -47,6 +56,24 @@ body.app-body {
 
 h1, h2, h3, h4, h5, h6, .title { color: #f2f4f8 !important; }
 p, span, label, .subtitle { color: #c8cfdd; }
+
+.label,
+.field label,
+label.label,
+.field > label {
+    color: #b8c4df !important;
+    font-weight: 600 !important;
+}
+
+input::placeholder,
+textarea::placeholder,
+.select select:invalid,
+.select2-container--default .select2-selection--single .select2-selection__placeholder,
+.selectize-input input::placeholder {
+    color: #9ca8c7 !important;
+    opacity: 1;
+}
+
 
 a { color: #ffd36a; }
 a:hover { color: #ffbc0e; }
