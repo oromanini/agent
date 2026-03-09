@@ -12022,6 +12022,11 @@ span[data-tooltip].has-tooltip-danger {
 
 .side-navigation ul li a .side-icon ion-icon {
   font-size: 1.15rem;
+  display: block;
+  width: 1.15rem;
+  height: 1.15rem;
+  margin: auto;
+  line-height: 1;
 }
 
 .side-navigation ul li a .side-title {
