@@ -71,24 +71,6 @@ $permissionToHomologation = $permission == 'admin'
         </li>
         @endif
 
-        <li class="side-list">
-            <a href="{{ route('simulator.index') }}">
-                <span class="side-icon">
-                    <ion-icon name="wallet-outline"></ion-icon>
-                </span>
-                <span class="side-title">Simular financiamento</span>
-            </a>
-        </li>
-
-        <li class="side-list">
-            <a href="#">
-                <span class="side-icon">
-                    <ion-icon name="link-outline"></ion-icon>
-                </span>
-                <span class="side-title">Links</span>
-            </a>
-        </li>
-
         @if($permissionToApproval)
             <hr class="side-divider">
             <li class="side-list">
