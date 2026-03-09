@@ -12513,6 +12513,58 @@ select,
   box-shadow: 0 0 0 0.12rem rgba(244, 164, 9, 0.2) !important;
 }
 
+/* Extra specificity: themes/plugins that force white fields */
+.select2-container[class*=select2-container--] .select2-selection--single,
+.select2-container[class*=select2-container--] .select2-selection--multiple,
+.select2-container--default.select2-container--below .select2-selection--single,
+.select2-container--default.select2-container--below .select2-selection--multiple,
+.select2-container--default.select2-container--above .select2-selection--single,
+.select2-container--default.select2-container--above .select2-selection--multiple {
+  background-color: #090c14 !important;
+  color: #f2f4f8 !important;
+  border-color: #31384d !important;
+}
+
+.select2-container[class*=select2-container--] .select2-selection__rendered {
+  color: #f2f4f8 !important;
+}
+
+/* Selectize dark theme override (some screens are using selectize and appear white) */
+.selectize-control.single .selectize-input,
+.selectize-control.single .selectize-input.input-active,
+.selectize-control.multi .selectize-input,
+.selectize-input,
+.selectize-dropdown,
+.selectize-dropdown-content {
+  background: #090c14 !important;
+  color: #f2f4f8 !important;
+  border-color: #31384d !important;
+}
+
+.selectize-control.single .selectize-input,
+.selectize-control.multi .selectize-input {
+  border-radius: 10px !important;
+  min-height: 58px;
+  padding: 12px 38px 12px 16px !important;
+}
+
+.selectize-control.single .selectize-input:after {
+  border-color: #4c6bd8 transparent transparent transparent !important;
+}
+
+.selectize-dropdown .option,
+.selectize-dropdown .optgroup-header {
+  color: #d9dfeb !important;
+  background: #111725 !important;
+}
+
+.selectize-dropdown .active,
+.selectize-dropdown .create,
+.selectize-dropdown .selected {
+  background: rgba(244, 164, 9, 0.2) !important;
+  color: #fff !important;
+}
+
 /* HIDE RADIO */
 .radio-image {
   position: absolute;
