@@ -12,6 +12,15 @@
                 <code>@{{generated_at}}</code>
             </div>
 
+            <div class="notification is-primary is-light editor-tips">
+                <p><strong>Comece por aqui (rápido):</strong></p>
+                <ol>
+                    <li>Clique em <strong>Upload de imagem</strong> para enviar sua arte.</li>
+                    <li>Selecione um bloco no canvas e clique em <strong>Aplicar imagem como fundo</strong>.</li>
+                    <li>Use os botões <strong>Adicionar texto</strong> e <strong>Adicionar imagem</strong> para montar o layout.</li>
+                </ol>
+            </div>
+
             @php
                 $defaultHtml = <<<'HTML'
 <section class="pdf-page">
@@ -38,6 +47,13 @@ HTML;
 
                 <div class="columns">
                     <div class="column is-9">
+                        <div class="editor-quick-actions">
+                            <button type="button" class="button is-small is-primary" data-action="add-text">Adicionar texto</button>
+                            <button type="button" class="button is-small is-link" data-action="add-image">Adicionar imagem</button>
+                            <button type="button" class="button is-small is-info" data-action="add-background">Seção com fundo</button>
+                            <button type="button" class="button is-small is-warning" data-action="open-assets">Upload de imagem</button>
+                            <button type="button" class="button is-small is-success" data-action="apply-bg">Aplicar imagem como fundo</button>
+                        </div>
                         <div class="field">
                             <label class="label">Layout (Editor visual)</label>
                             <div id="gjs" style="border: 1px solid #ddd; min-height: 720px;"></div>
@@ -60,6 +76,23 @@ HTML;
 @push('scripts')
     <link rel="stylesheet" href="https://unpkg.com/grapesjs/dist/css/grapes.min.css">
     <script src="https://unpkg.com/grapesjs"></script>
+    <style>
+        .editor-tips ol {
+            margin: 8px 0 0 20px;
+        }
+
+        .editor-quick-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        #gjs {
+            border-radius: 8px;
+            overflow: hidden;
+        }
+    </style>
     <script>
         const htmlField = document.getElementById('html');
         const cssField = document.getElementById('css');
@@ -147,23 +180,72 @@ HTML;
             buttons: [
                 {
                     id: 'toggle-borders',
-                    className: 'fa fa-clone',
+                    label: 'Estrutura',
                     command: 'sw-visibility',
                     attributes: { title: 'Mostrar estrutura' },
                 },
                 {
                     id: 'open-sm',
-                    className: 'fa fa-paint-brush',
+                    label: 'Estilos',
                     command: 'open-sm',
                     attributes: { title: 'Estilos' },
                 },
                 {
                     id: 'open-blocks',
-                    className: 'fa fa-th-large',
+                    label: 'Blocos',
                     command: 'open-blocks',
                     attributes: { title: 'Blocos' },
                 },
+                {
+                    id: 'open-assets',
+                    label: 'Imagens',
+                    command: 'open-assets',
+                    attributes: { title: 'Biblioteca de imagens' },
+                },
             ],
+        });
+
+        function addBlock(blockId) {
+            const block = editor.BlockManager.get(blockId);
+            if (!block) return;
+
+            editor.addComponents(block.get('content'));
+        }
+
+        function applyImageAsBackground() {
+            const selected = editor.getSelected();
+            if (!selected) {
+                alert('Selecione um bloco no layout para aplicar o fundo.');
+                return;
+            }
+
+            editor.AssetManager.open({
+                select(asset) {
+                    const source = typeof asset === 'string' ? asset : (asset.get ? asset.get('src') : asset.src);
+                    if (!source) return;
+
+                    selected.addStyle({
+                        'background-image': `url(${source})`,
+                        'background-size': 'cover',
+                        'background-position': 'center center',
+                        'background-repeat': 'no-repeat',
+                    });
+
+                    editor.AssetManager.close();
+                },
+            });
+        }
+
+        document.querySelectorAll('[data-action]').forEach((button) => {
+            button.addEventListener('click', () => {
+                const action = button.dataset.action;
+
+                if (action === 'add-text') addBlock('text');
+                if (action === 'add-image') addBlock('image');
+                if (action === 'add-background') addBlock('background-cover');
+                if (action === 'open-assets') editor.runCommand('open-assets');
+                if (action === 'apply-bg') applyImageAsBackground();
+            });
         });
 
         editor.setComponents(htmlField.value || '');
