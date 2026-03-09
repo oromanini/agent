@@ -12,15 +12,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
 </head>
-<body>
-<section class="section">
+<body class="app-body">
+<section class="section app-shell">
     @include('loader')
-    <div class="columns">
-        <div class="sidebar-column column is-1">
+    <div class="columns app-layout">
+        <div class="sidebar-column column is-1 app-sidebar-column">
             @include('sidebar')
         </div>
-        <div class="content-column column is-11">
-            @yield('content')
+        <div class="content-column column is-11 app-content-column">
+            <div class="app-content-wrap">
+                @yield('content')
+            </div>
             @include('message')
         </div>
     </div>

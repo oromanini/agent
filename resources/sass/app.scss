@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;1,100;1,200;1,300;1,400;1,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @import "bulma/bulma";
 @import "bulma-carousel/dist/css/bulma-carousel.min.css";
 @import "@creativebulma/bulma-tooltip/src/sass/index";
@@ -12,28 +12,205 @@
 @import "select2";
 @import "proposal";
 
-* {
-    font-family: 'Poppins', sans-serif;
+:root {
+    --app-bg: #090a0d;
+    --surface: #181a1f;
+    --surface-soft: #1e2128;
+    --text-primary: #eceef3;
+    --text-secondary: #a0a6b5;
+    --border-soft: #2e3138;
+    --accent: #f4a409;
+    --accent-strong: #ffbc0e;
 }
 
+* { font-family: 'Inter', sans-serif; }
+
+html,
 body {
+    background: #07080b;
+    overscroll-behavior-y: auto;
+    font-size: 16px;
+    min-height: 100%;
+    height: auto;
+}
+
+body.app-body {
     min-height: 100vh;
-    background: #f4f4f4;
+    background: radial-gradient(circle at top, #101115 0%, #0a0b0f 38%, #06070a 100%);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-text-size-adjust: 100%;
 }
 
-h2, title {
-    margin-bottom: 5px !important;
+.app-shell.section { padding: 1rem; padding-bottom: 2.1rem; }
+.app-layout { margin: 0 !important; }
+.app-sidebar-column,
+.app-content-column { padding: 0.5rem !important; }
+
+.app-content-wrap {
+    min-height: calc(100vh - 2rem);
+    background: linear-gradient(180deg, #1a1c22 0%, #14161b 100%);
+    border-radius: 18px;
+    border: 1px solid var(--border-soft);
+    box-shadow: 0 14px 45px -30px rgba(0, 0, 0, 0.9);
+    padding: 1.1rem;
 }
 
-.disable {
-    display: none !important;
+h1, h2, h3, h4, h5, h6, .title { color: #f2f4f8 !important; }
+p, span, label, .subtitle { color: #c8cfdd; }
+
+.label,
+.field label,
+label.label,
+.field > label {
+    color: #b8c4df !important;
+    font-weight: 600 !important;
 }
 
-.enable {
-    display: flex;
+input::placeholder,
+textarea::placeholder,
+.select select:invalid,
+.select2-container--default .select2-selection--single .select2-selection__placeholder,
+.selectize-input input::placeholder {
+    color: #9ca8c7 !important;
+    opacity: 1;
 }
 
-.w-50 {
-    width: 50% !important;
+
+a { color: #ffd36a; }
+a:hover { color: #ffbc0e; }
+
+.box,
+.card,
+.table-container,
+.modal-card,
+.notification {
+    background: #1b1d23 !important;
+    border: 1px solid #31343b !important;
+    color: #dce2ef;
 }
 
+.table {
+    background: transparent;
+    color: #dce2ef;
+}
+
+.table th,
+.table td {
+    border-color: #2f3750;
+    color: #dce2ef;
+}
+
+.input,
+.textarea,
+.select select {
+    background: #090c14 !important;
+    border: 1px solid #31384d !important;
+    color: #f2f4f8 !important;
+    border-radius: 10px !important;
+    box-shadow: none !important;
+}
+
+.input:focus,
+.textarea:focus,
+.select select:focus {
+    border-color: #f4a409 !important;
+    box-shadow: 0 0 0 0.12rem rgba(244, 164, 9, 0.2) !important;
+}
+
+.button {
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+
+.button,
+.button:hover,
+.button.is-hovered,
+.button:focus {
+    box-shadow: none !important;
+}
+
+.button.is-primary,
+.button.is-link,
+.button.is-info,
+.button.is-success {
+    background: linear-gradient(90deg, #f4a409 0%, #ffbc0e 100%) !important;
+    border-color: #ffbc0e !important;
+    color: #171717 !important;
+}
+
+.button.is-primary:hover,
+.button.is-link:hover,
+.button.is-info:hover,
+.button.is-success:hover,
+.button.is-primary.is-hovered,
+.button.is-link.is-hovered,
+.button.is-info.is-hovered,
+.button.is-success.is-hovered {
+    background: linear-gradient(90deg, #e89700 0%, #fcb000 100%) !important;
+    color: #131313 !important;
+}
+
+.button.is-danger {
+    background: linear-gradient(90deg, #ff6a3d 0%, #ff4f3a 100%) !important;
+    border-color: #ff5a3a !important;
+    color: #fff !important;
+}
+
+.button.is-danger:hover,
+.button.is-danger.is-hovered {
+    background: linear-gradient(90deg, #f95d2f 0%, #f34631 100%) !important;
+}
+
+.table.is-hoverable tbody tr:not(.is-selected):hover,
+.table tbody tr:hover {
+    background-color: rgba(244, 164, 9, 0.08) !important;
+}
+
+.pagination,
+.pagination a,
+.pagination span,
+.pagination-link,
+.pagination-next,
+.pagination-previous,
+.pagination-ellipsis {
+    color: #fff !important;
+}
+
+.pagination-link,
+.pagination-next,
+.pagination-previous {
+    border-color: #8f97ad !important;
+    background: transparent !important;
+}
+
+.pagination-link:hover,
+.pagination-next:hover,
+.pagination-previous:hover {
+    border-color: #ffbc0e !important;
+    color: #ffbc0e !important;
+    background-color: rgba(244, 164, 9, 0.12) !important;
+}
+
+@media (max-width: 1024px) {
+    .app-shell.section { padding: 0.45rem; }
+    .app-content-wrap {
+        min-height: calc(100vh - 1rem);
+        padding: 0.85rem;
+    }
+}
+
+
+.pagination-link.is-current {
+    background: linear-gradient(90deg, #f4a409 0%, #ffbc0e 100%) !important;
+    border-color: #ffbc0e !important;
+    color: #111 !important;
+}
+
+.table tr.is-selected,
+.table tr.is-selected:hover {
+    background-color: rgba(244, 164, 9, 0.18) !important;
+    color: #fff !important;
+}

@@ -90,7 +90,7 @@ $permissionToHomologation = $permission == 'admin'
         </li>
 
         @if($permissionToApproval)
-            <hr style="margin-bottom: 2px !important;">
+            <hr class="side-divider">
             <li class="side-list">
                 <a href="{{ route('approval.index') }}">
                 <span class="side-icon">
@@ -119,7 +119,7 @@ $permissionToHomologation = $permission == 'admin'
                     <span class="side-title">Instalação</span>
                 </a>
             </li>
-            <hr style="margin-bottom: 2px !important;">
+            <hr class="side-divider">
         @endif
 
         @if($user->isAdmin)
@@ -181,7 +181,7 @@ $permissionToHomologation = $permission == 'admin'
             </li>
 
         @endif
-        <hr style="margin-top: 2px !important;">
+        <hr class="side-divider">
         <li class="side-list">
             <a href="{{ route('logout') }}">
                 <span class="side-icon">

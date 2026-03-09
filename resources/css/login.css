@@ -2,26 +2,171 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+body,
 .min-h-screen {
-    background-color: #FFBC0E;
+    background: #06080f;
+    overflow: hidden;
+    position: relative;
+}
+
+body::before,
+.min-h-screen::before {
+    content: "";
+    position: fixed;
+    inset: -30%;
+    background: radial-gradient(circle at 20% 20%, rgba(32, 45, 77, 0.48) 0%, rgba(32, 45, 77, 0) 45%),
+                radial-gradient(circle at 80% 40%, rgba(18, 24, 45, 0.72) 0%, rgba(18, 24, 45, 0) 48%),
+                linear-gradient(130deg, #06080f 0%, #0b1120 45%, #090d18 70%, #05070e 100%);
+    background-size: 180% 180%;
+    animation: movingDarkGradient 14s ease-in-out infinite alternate;
+    z-index: -1;
 }
 
 .login-flex {
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: row;
+    min-height: 100vh;
 }
 
-.w50 {
-    width: 50%;
+.w50 { width: 100%; }
+
+.login-side { display: none; }
+
+.auth-shell {
+    width: 100%;
+    max-width: 360px;
+    padding: 1.25rem;
+    background: #151821;
+    border: 1px solid #262d3f;
+    border-radius: 14px;
+    box-shadow: 0 20px 40px -28px rgba(0, 0, 0, 0.95);
 }
 
-.login-side {
-    background-color: #2d3748;
-    background-size: cover;
-    background-image: url("/img/left-login.png") !important;
-    background-repeat:no-repeat;
-    min-width: 50%;
-    height: 100vh
+.auth-shell h2,
+.auth-shell p,
+.auth-shell label,
+.auth-shell span,
+.auth-shell a {
+    color: #d8deea;
+}
+
+.auth-shell input {
+    background: #090c14 !important;
+    border: 1px solid #2f3650 !important;
+    color: #edf1f7 !important;
+    border-radius: 8px !important;
+}
+
+.auth-shell button {
+    background: linear-gradient(90deg, #f4a409 0%, #ffbc0e 100%) !important;
+    border: 0 !important;
+    color: #171717 !important;
+    font-weight: 700 !important;
+    width: 100%;
+    justify-content: center;
+    border-radius: 8px !important;
+    padding: 0.85rem 0.9rem !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+}
+
+.logo { margin-bottom: 1rem; text-align: center; }
+
+@keyframes movingDarkGradient {
+    0% {
+        transform: translate3d(-2%, -1%, 0) scale(1);
+        filter: hue-rotate(0deg);
+    }
+    50% {
+        transform: translate3d(2%, 1%, 0) scale(1.05);
+        filter: hue-rotate(6deg);
+    }
+    100% {
+        transform: translate3d(-1%, 2%, 0) scale(1.02);
+        filter: hue-rotate(0deg);
+    }
+}
+
+@media (max-width: 866px) {
+    .w-full { width: 100%; }
+    .auth-shell {
+        max-width: 420px;
+        padding: 1.1rem;
+    }
+    .typing-title {
+        font-size: 1.65rem;
+        min-height: 2.1rem;
+    }
+}
+
+
+.typing-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #f2f4f8;
+    min-height: 2.5rem;
+}
+
+.typing-caret {
+    color: #ffbc0e;
+    margin-left: 2px;
+    animation: blinkCaret 0.8s steps(1, end) infinite;
+}
+
+@keyframes blinkCaret {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+}
+
+
+.auth-shell .login-submit-button {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(120deg, #f4a409, #ff7a00, #ffbc0e, #f08a00) !important;
+    background-size: 260% 260% !important;
+    animation: movingWarmGradient 3.6s ease infinite;
+}
+
+.auth-shell .login-submit-button:hover {
+    filter: brightness(1.06);
+}
+
+.auth-shell .login-submit-button .sun-loader {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #ffd056;
+    box-shadow:
+        0 -10px 0 -6px #ffd056,
+        0 10px 0 -6px #ffd056,
+        10px 0 0 -6px #ffd056,
+        -10px 0 0 -6px #ffd056,
+        7px 7px 0 -6px #ffd056,
+        -7px 7px 0 -6px #ffd056,
+        7px -7px 0 -6px #ffd056,
+        -7px -7px 0 -6px #ffd056;
+    display: none;
+    margin-left: 10px;
+    transform-origin: 50% 50%;
+}
+
+.auth-shell .login-submit-button.is-loading-sun {
+    pointer-events: none;
+    opacity: 0.95;
+}
+
+.auth-shell .login-submit-button.is-loading-sun .sun-loader {
+    display: inline-block;
+    animation: rotateSun 0.9s linear infinite;
+}
+
+@keyframes movingWarmGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes rotateSun {
+    to { transform: rotate(360deg); }
 }

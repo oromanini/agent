@@ -8,10 +8,15 @@
                 <x-slot name="logo">
                     <div class="logo">
                         <a href="/">
-                            <x-application-logo class="w-20 h-20 fill-current text-gray-500"/>
+                            <img src="/img/logo/alluz-horizontal.png" alt="Alluz Energia" style="width: 200px; height: auto;">
                         </a>
                     </div>
                 </x-slot>
+
+                <div style="text-align:center; margin-bottom: 1rem;">
+                    <h2 class="typing-title"><span id="login-typing-text"></span><span class="typing-caret">|</span></h2>
+                    <p style="color: #9ca5ba; margin-top: .3rem;">SGP - Sistema gerador de proposta</p>
+                </div>
 
                 <!-- Session Status -->
                 <x-auth-session-status class="mb-4" :status="session('status')"/>
@@ -19,7 +24,7 @@
                 <!-- Validation Errors -->
                 <x-auth-validation-errors class="mb-4" :errors="$errors"/>
 
-                <form method="POST" action="{{ route('login') }}">
+                <form id="login-form" method="POST" action="{{ route('login') }}">
                     @csrf
 
                     <!-- Email Address -->
@@ -58,8 +63,9 @@
                             </a>
                         @endif
 
-                        <x-button class="ml-3">
-                            {{ __('Entrar') }}
+                        <x-button id="login-submit" class="ml-3 login-submit-button">
+                            <span class="login-submit-label">{{ __('Entrar') }}</span>
+                            <span class="sun-loader" aria-hidden="true"></span>
                         </x-button>
                     </div>
                 </form>
@@ -89,4 +95,58 @@
         }
     </style>
 
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const words = ['Persista', 'Insista', 'Conquiste', 'Melhore', 'Evolua', 'Cresça', 'Vença', 'Destaque-se'];
+        const target = document.getElementById('login-typing-text');
+
+        if (!target) return;
+
+        let wordIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+
+        const type = () => {
+            const currentWord = words[wordIndex];
+
+            if (isDeleting) {
+                charIndex = Math.max(charIndex - 1, 0);
+            } else {
+                charIndex = Math.min(charIndex + 1, currentWord.length);
+            }
+
+            target.textContent = currentWord.slice(0, charIndex);
+
+            let timeout = isDeleting ? 45 : 85;
+
+            if (!isDeleting && charIndex === currentWord.length) {
+                timeout = 1100;
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                wordIndex = (wordIndex + 1) % words.length;
+                timeout = 240;
+            }
+
+            setTimeout(type, timeout);
+        };
+
+        type();
+
+        const form = document.getElementById('login-form');
+        const submitButton = document.getElementById('login-submit');
+
+        if (form && submitButton) {
+            form.addEventListener('submit', function () {
+                submitButton.classList.add('is-loading-sun');
+                submitButton.setAttribute('disabled', 'disabled');
+                const label = submitButton.querySelector('.login-submit-label');
+                if (label) {
+                    label.textContent = 'Entrando...';
+                }
+            });
+        }
+    });
+</script>
 </x-guest-layout>
