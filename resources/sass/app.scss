@@ -61,6 +61,11 @@ body.app-body {
 h1, h2, h3, h4, h5, h6, .title { color: #f2f4f8 !important; font-weight: 500 !important; }
 p, span, label, .subtitle { color: #c8cfdd; }
 
+.button span,
+.button ion-icon {
+    color: inherit !important;
+}
+
 .label,
 .field label,
 label.label,
@@ -123,6 +128,11 @@ a:hover { color: #ffbc0e; }
 .button {
     border-radius: 10px;
     font-weight: 500;
+}
+
+.field.has-addons .control .button {
+    min-height: 46px;
+    height: 46px;
 }
 
 
