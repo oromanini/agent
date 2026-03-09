@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap);
+@import url(https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap);
 @-webkit-keyframes spinAround{from{transform:rotate(0)}to{transform:rotate(359deg)}}@keyframes spinAround{from{transform:rotate(0)}to{transform:rotate(359deg)}}.slider{position:relative;width:100%}.slider-container{display:flex;flex-wrap:nowrap;flex-direction:row;overflow:hidden;transform:translate3d(0,0,0);min-height:100%}.slider-container.is-vertical{flex-direction:column}.slider-container .slider-item{flex:none}.slider-container .slider-item .image.is-covered img{-o-object-fit:cover;object-fit:cover;-o-object-position:center center;object-position:center center;height:100%;width:100%}.slider-container .slider-item .video-container{height:0;padding-bottom:0;padding-top:56.25%;margin:0;position:relative}.slider-container .slider-item .video-container.is-1by1,.slider-container .slider-item .video-container.is-square{padding-top:100%}.slider-container .slider-item .video-container.is-4by3{padding-top:75%}.slider-container .slider-item .video-container.is-21by9{padding-top:42.857143%}.slider-container .slider-item .video-container embed,.slider-container .slider-item .video-container iframe,.slider-container .slider-item .video-container object{position:absolute;top:0;left:0;width:100%!important;height:100%!important}.slider-navigation-next,.slider-navigation-previous{display:flex;justify-content:center;align-items:center;position:absolute;width:42px;height:42px;background:#fff center center no-repeat;background-size:20px 20px;border:1px solid #fff;border-radius:25091983px;box-shadow:0 2px 5px #3232321a;top:50%;margin-top:-20px;left:0;cursor:pointer;transition:transform .3s,opacity .3s}.slider-navigation-next:hover,.slider-navigation-previous:hover{transform:scale(1.2)}.slider-navigation-next.is-hidden,.slider-navigation-previous.is-hidden{display:none;opacity:0}.slider-navigation-next svg,.slider-navigation-previous svg{width:25%}.slider-navigation-next{left:auto;right:0;background:#fff center center no-repeat;background-size:20px 20px}.slider-pagination{display:none;justify-content:center;align-items:center;position:absolute;bottom:0;left:0;right:0;padding:.5rem 1rem;text-align:center}.slider-pagination .slider-page{background:#fff;width:10px;height:10px;border-radius:25091983px;display:inline-block;margin:0 3px;box-shadow:0 2px 5px #3232321a;transition:transform .3s;cursor:pointer}.slider-pagination .slider-page.is-active,.slider-pagination .slider-page:hover{transform:scale(1.4)}@media screen and (min-width:800px){.slider-pagination{display:flex}}.hero.has-carousel{position:relative}.hero.has-carousel+.hero-body,.hero.has-carousel+.hero-footer,.hero.has-carousel+.hero-head{z-index:10;overflow:hidden}.hero.has-carousel .hero-carousel{position:absolute;top:0;left:0;bottom:0;right:0;height:auto;border:none;margin:auto;padding:0;z-index:0}.hero.has-carousel .hero-carousel .slider{width:100%;max-width:100%;overflow:hidden;height:100%!important;max-height:100%;z-index:0}.hero.has-carousel .hero-carousel .slider .has-background{max-height:100%}.hero.has-carousel .hero-carousel .slider .has-background .is-background{-o-object-fit:cover;object-fit:cover;-o-object-position:center center;object-position:center center;height:100%;width:100%}.hero.has-carousel .hero-body{margin:0 3rem;z-index:10}
 @charset "UTF-8";
 /*! bulma.io v0.9.4 | MIT License | github.com/jgthms/bulma */
@@ -12012,7 +12012,7 @@ span[data-tooltip].has-tooltip-danger {
 .side-navigation ul li.side-active .side-title,
 .side-navigation ul li.side-active .side-icon ion-icon {
   color: #161616 !important;
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .side-navigation ul li a .side-icon {
@@ -12200,7 +12200,7 @@ span[data-tooltip].has-tooltip-danger {
 
 .title {
   color: #f2f4f8;
-  font-weight: 600 !important;
+  font-weight: 500 !important;
 }
 
 iframe {
@@ -12823,7 +12823,7 @@ hr {
 }
 
 * {
-  font-family: "Inter", sans-serif;
+  font-family: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 html,
@@ -12836,6 +12836,7 @@ body {
 }
 
 body.app-body {
+  font-weight: 300;
   min-height: 100vh;
   background: radial-gradient(circle at top, #101115 0%, #0a0b0f 38%, #06070a 100%);
   color: var(--text-primary);
@@ -12869,6 +12870,7 @@ body.app-body {
 
 h1, h2, h3, h4, h5, h6, .title {
   color: #f2f4f8 !important;
+  font-weight: 500 !important;
 }
 
 p, span, label, .subtitle {
@@ -12880,7 +12882,7 @@ p, span, label, .subtitle {
 label.label,
 .field > label {
   color: #b8c4df !important;
-  font-weight: 600 !important;
+  font-weight: 500 !important;
 }
 
 input::-moz-placeholder, textarea::-moz-placeholder, .selectize-input input::-moz-placeholder {
@@ -12950,7 +12952,7 @@ a:hover {
 
 .button {
   border-radius: 10px;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .button,
@@ -13042,4 +13044,26 @@ a:hover {
 .table tr.is-selected:hover {
   background-color: rgba(244, 164, 9, 0.18) !important;
   color: #fff !important;
+}
+
+@media (max-width: 1400px) {
+  #client-filters {
+    flex-wrap: wrap;
+  }
+
+  #client-filters .column {
+    min-width: 240px;
+  }
+
+  .client-filter-actions {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    padding-top: 1.95rem;
+  }
+
+  .client-filter-button {
+    white-space: nowrap;
+  }
 }
