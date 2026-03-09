@@ -7,9 +7,9 @@
             <p class="subtitle">Acesso exclusivo para administradores.</p>
 
             <div class="notification is-info is-light">
-                Variáveis disponíveis: <code>{{ '{{proposal_id}}' }}</code>, <code>{{ '{{client_name}}' }}</code>,
-                <code>{{ '{{client_city}}' }}</code>, <code>{{ '{{seller_name}}' }}</code>,
-                <code>{{ '{{generated_at}}' }}</code>
+                Variáveis disponíveis: <code>@{{proposal_id}}</code>, <code>@{{client_name}}</code>,
+                <code>@{{client_city}}</code>, <code>@{{seller_name}}</code>,
+                <code>@{{generated_at}}</code>
             </div>
 
             @php
