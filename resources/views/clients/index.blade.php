@@ -55,11 +55,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="column is-3 mt-1"><br>
-                        <button type="submit" class="button is-warning">Filtrar&nbsp;&nbsp;<ion-icon
+                    <div class="column is-3 mt-1 client-filter-actions">
+                        <button type="submit" class="button is-warning client-filter-button">Filtrar&nbsp;&nbsp;<ion-icon
                                 name="search-outline"></ion-icon>
                         </button>
-                        <a href="{{ route('client.index') }}" class="button is-danger">Limpar</a>
+                        <a href="{{ route('client.index') }}" class="button is-danger client-filter-button">Limpar</a>
                     </div>
                 </div>
             </form>
