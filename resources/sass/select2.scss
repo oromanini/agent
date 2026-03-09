@@ -139,14 +139,6 @@ select,
 }
 
 
-.selectize-control.single .selectize-input > input,
-.selectize-control.single .selectize-input .item {
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    padding-right: 34px !important;
-}
-
 
 .select2-container--default .select2-selection--single {
     height: 46px !important;
@@ -159,9 +151,31 @@ select,
 }
 
 
-.selectize-control.single .selectize-input,
-.selectize-control.multi .selectize-input {
-    display: flex !important;
-    align-items: center !important;
-    line-height: 30px !important;
+
+/* Keep Selectize search input usable */
+.selectize-control.single .selectize-input {
+    line-height: 32px !important;
+}
+
+.selectize-control.single .selectize-input.has-items > input {
+    display: inline-block !important;
+    width: auto !important;
+    max-width: 100% !important;
+    min-width: 8px !important;
+}
+
+.selectize-control.single .selectize-input input {
+    color: #f2f4f8 !important;
+    opacity: 1 !important;
+    position: relative !important;
+    left: 0 !important;
+}
+
+.selectize-control.single .selectize-input .item {
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
+    max-width: calc(100% - 34px);
+    display: inline-block;
+    vertical-align: middle;
 }
