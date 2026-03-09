@@ -172,6 +172,15 @@ $permissionToHomologation = $permission == 'admin'
                 </a>
             </li>
             <li class="side-list">
+                <a href="{{ route('pdf-templates.edit') }}">
+                <span class="side-icon">
+                    <ion-icon name="color-wand-outline"></ion-icon>
+                </span>
+                    <span class="side-title">Editor PDF</span>
+                </a>
+            </li>
+
+            <li class="side-list">
                 <a href="{{ route('kits.index') }}">
                 <span class="side-icon">
                     <ion-icon name="sunny-outline"></ion-icon>

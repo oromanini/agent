@@ -15,6 +15,7 @@ use App\Http\Controllers\KitsController;
 use App\Http\Controllers\KitSearchController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\PreInspectionController;
+use App\Http\Controllers\PdfTemplateController;
 use App\Http\Controllers\ProductsUpdateController;
 use App\Http\Controllers\ProposalController;
 use App\Http\Controllers\SoollarController;
@@ -109,6 +110,14 @@ Route::middleware('auth')->group(function () {
 
         Route::name('address.')->group(function () {
             Route::post('/address/store/{clientId}', 'store')->name('store');
+        });
+    });
+
+
+    Route::controller(PdfTemplateController::class)->group(function () {
+        Route::name('pdf-templates.')->group(function () {
+            Route::get('admin/pdf-templates/proposta', 'edit')->name('edit');
+            Route::post('admin/pdf-templates/proposta', 'update')->name('update');
         });
     });
 

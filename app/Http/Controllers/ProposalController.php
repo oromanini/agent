@@ -17,6 +17,7 @@ use App\Models\Lead;
 use App\Models\Pricing\Enums\CardTaxEnum;
 use App\Models\PromotionalKit;
 use App\Models\Proposal;
+use App\Models\PdfTemplate;
 use App\Models\User;
 use App\Models\ValueHistoryInfo;
 use App\Repositories\ProposalRepository;
@@ -246,9 +247,16 @@ class ProposalController extends Controller
 
         $firstKit = $kit ?? null;
 
-        $pdf = $isSample
-            ? PDF::loadView('proposals.small_pdf', compact($pdfParams))
-            : PDF::loadView('proposals.pdf', compact($pdfParams));
+        $activeTemplate = PdfTemplate::activeProposalTemplate();
+
+        if ($activeTemplate && !$isSample) {
+            $renderedTemplate = $this->renderProposalTemplate($activeTemplate, $proposal);
+            $pdf = PDF::loadHTML($renderedTemplate);
+        } else {
+            $pdf = $isSample
+                ? PDF::loadView('proposals.small_pdf', compact($pdfParams))
+                : PDF::loadView('proposals.pdf', compact($pdfParams));
+        }
 
         return $pdf
             ->stream('#' . $proposal->id . ' ' . $proposal->client->name . '.pdf');
@@ -295,6 +303,26 @@ class ProposalController extends Controller
 
         $pdf = PDF::loadView('leads.base', compact($pdfParams));
         return $pdf->stream("#L{$lead->id} {$lead->name}.pdf");
+    }
+
+    private function renderProposalTemplate(PdfTemplate $template, Proposal $proposal): string
+    {
+        $tokens = [
+            '{{proposal_id}}' => (string) $proposal->id,
+            '{{client_name}}' => (string) $proposal->client->name,
+            '{{client_city}}' => (string) optional($proposal->client->addresses->first()?->city)->name_and_federal_unit,
+            '{{seller_name}}' => (string) optional($proposal->agent)->name,
+            '{{generated_at}}' => now()->format('d/m/Y H:i'),
+        ];
+
+        $html = strtr($template->html, $tokens);
+        $css = strtr((string) $template->css, $tokens);
+
+        return '<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><style>'
+            . $css
+            . '</style></head><body>'
+            . $html
+            . '</body></html>';
     }
 
     public function setFinalValue(Request $request): JsonResponse
