@@ -4,8 +4,8 @@
     left: 0;
     width: 72px;
     height: calc(100vh - 16px);
-    background: linear-gradient(180deg, #111520 0%, #0a0e18 100%);
-    border: 1px solid #272d3f;
+    background: linear-gradient(180deg, #171a20 0%, #101318 100%);
+    border: 1px solid #2d3139;
     border-radius: 16px;
     padding: 0.65rem 0.25rem;
     overflow-x: hidden;
@@ -46,7 +46,7 @@
 }
 
 .side-navigation ul li a:hover {
-    background: #1a2132;
+    background: #23262d;
     color: #fff;
 }
 
@@ -94,7 +94,7 @@
 }
 
 .side-divider {
-    border-color: #30384d !important;
+    border-color: #3a3e48 !important;
     margin: 0.3rem 0 !important;
 }
 
@@ -113,8 +113,8 @@
         z-index: 3;
         align-items: center;
         justify-content: space-between;
-        background: #0f1320;
-        border-bottom: 1px solid #2a3248;
+        background: #171b22;
+        border-bottom: 1px solid #353a45;
         height: 68px;
         padding: 0.85rem;
     }

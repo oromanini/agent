@@ -11945,8 +11945,8 @@ span[data-tooltip].has-tooltip-danger {
   left: 0;
   width: 72px;
   height: calc(100vh - 16px);
-  background: linear-gradient(180deg, #111520 0%, #0a0e18 100%);
-  border: 1px solid #272d3f;
+  background: linear-gradient(180deg, #171a20 0%, #101318 100%);
+  border: 1px solid #2d3139;
   border-radius: 16px;
   padding: 0.65rem 0.25rem;
   overflow-x: hidden;
@@ -11987,7 +11987,7 @@ span[data-tooltip].has-tooltip-danger {
 }
 
 .side-navigation ul li a:hover {
-  background: #1a2132;
+  background: #23262d;
   color: #fff;
 }
 
@@ -12037,7 +12037,7 @@ span[data-tooltip].has-tooltip-danger {
 }
 
 .side-divider {
-  border-color: #30384d !important;
+  border-color: #3a3e48 !important;
   margin: 0.3rem 0 !important;
 }
 
@@ -12063,8 +12063,8 @@ span[data-tooltip].has-tooltip-danger {
     z-index: 3;
     align-items: center;
     justify-content: space-between;
-    background: #0f1320;
-    border-bottom: 1px solid #2a3248;
+    background: #171b22;
+    border-bottom: 1px solid #353a45;
     height: 68px;
     padding: 0.85rem;
   }
@@ -12696,12 +12696,12 @@ hr {
   }
 }
 :root {
-  --app-bg: #05070d;
-  --surface: #151821;
-  --surface-soft: #1b1f2b;
+  --app-bg: #090a0d;
+  --surface: #181a1f;
+  --surface-soft: #1e2128;
   --text-primary: #eceef3;
   --text-secondary: #a0a6b5;
-  --border-soft: #2b3142;
+  --border-soft: #2e3138;
   --accent: #f4a409;
   --accent-strong: #ffbc0e;
 }
@@ -12712,14 +12712,14 @@ hr {
 
 html,
 body {
-  background: #06080f;
+  background: #07080b;
   overscroll-behavior-y: none;
   font-size: 16px;
 }
 
 body.app-body {
   min-height: 100vh;
-  background: radial-gradient(circle at top, #0b1020 0%, #06080f 35%, #03050a 100%);
+  background: radial-gradient(circle at top, #101115 0%, #0a0b0f 38%, #06070a 100%);
   color: var(--text-primary);
   overflow-x: hidden;
   -webkit-text-size-adjust: 100%;
@@ -12740,7 +12740,7 @@ body.app-body {
 
 .app-content-wrap {
   min-height: calc(100vh - 2rem);
-  background: linear-gradient(180deg, #131722 0%, #0f141f 100%);
+  background: linear-gradient(180deg, #1a1c22 0%, #14161b 100%);
   border-radius: 18px;
   border: 1px solid var(--border-soft);
   box-shadow: 0 14px 45px -30px rgba(0, 0, 0, 0.9);
@@ -12795,8 +12795,8 @@ a:hover {
 .table-container,
 .modal-card,
 .notification {
-  background: #1a1f2c !important;
-  border: 1px solid #2f3750 !important;
+  background: #1b1d23 !important;
+  border: 1px solid #31343b !important;
   color: #dce2ef;
 }
 
