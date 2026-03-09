@@ -12,6 +12,12 @@
                 <code>{{ '{{generated_at}}' }}</code>
             </div>
 
+            @php
+                $defaultHtml = <<<'HTML'
+<section style="padding:48px;font-family:Arial"><h1>Proposta #{{proposal_id}}</h1><p>Cliente: {{client_name}}</p><p>Cidade: {{client_city}}</p><p>Consultor: {{seller_name}}</p><p>Gerado em: {{generated_at}}</p></section>
+HTML;
+            @endphp
+
             <form method="POST" action="{{ route('pdf-templates.update') }}">
                 @csrf
 
@@ -27,7 +33,7 @@
                         <div class="field">
                             <label class="label">Layout (HTML)</label>
                             <div id="gjs" style="border: 1px solid #ddd; min-height: 680px;"></div>
-                            <textarea id="html" name="html" class="is-hidden">{{ old('html', $template->html ?? '<section style="padding:48px;font-family:Arial"><h1>Proposta #{{proposal_id}}</h1><p>Cliente: {{client_name}}</p><p>Cidade: {{client_city}}</p><p>Consultor: {{seller_name}}</p><p>Gerado em: {{generated_at}}</p></section>') }}</textarea>
+                            <textarea id="html" name="html" class="is-hidden">{{ old('html', $template->html ?? $defaultHtml) }}</textarea>
                         </div>
                     </div>
                     <div class="column is-3">
