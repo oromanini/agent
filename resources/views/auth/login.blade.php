@@ -24,7 +24,7 @@
                 <!-- Validation Errors -->
                 <x-auth-validation-errors class="mb-4" :errors="$errors"/>
 
-                <form method="POST" action="{{ route('login') }}">
+                <form id="login-form" method="POST" action="{{ route('login') }}">
                     @csrf
 
                     <!-- Email Address -->
@@ -63,8 +63,9 @@
                             </a>
                         @endif
 
-                        <x-button class="ml-3">
-                            {{ __('Entrar') }}
+                        <x-button id="login-submit" class="ml-3 login-submit-button">
+                            <span class="login-submit-label">{{ __('Entrar') }}</span>
+                            <span class="sun-loader" aria-hidden="true"></span>
                         </x-button>
                     </div>
                 </form>
@@ -132,6 +133,20 @@
         };
 
         type();
+
+        const form = document.getElementById('login-form');
+        const submitButton = document.getElementById('login-submit');
+
+        if (form && submitButton) {
+            form.addEventListener('submit', function () {
+                submitButton.classList.add('is-loading-sun');
+                submitButton.setAttribute('disabled', 'disabled');
+                const label = submitButton.querySelector('.login-submit-label');
+                if (label) {
+                    label.textContent = 'Entrando...';
+                }
+            });
+        }
     });
 </script>
 </x-guest-layout>
