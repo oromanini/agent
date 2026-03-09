@@ -12722,6 +12722,68 @@ hr {
     display: block !important;
   }
 }
+/* Modern segmented radio for orientation */
+.orientation-segmented {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 8px;
+  border: 2px solid #f2a714;
+  border-radius: 999px;
+  background: rgba(9, 12, 20, 0.55);
+}
+
+.orientation-option {
+  position: relative;
+  margin: 0;
+}
+
+.orientation-option input[type=radio] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.orientation-option span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 48px;
+  border-radius: 999px;
+  color: #bac3d8;
+  font-size: 1.05rem;
+  font-weight: 600;
+  transition: all 0.22s ease;
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+
+.orientation-option input[type=radio]:checked + span {
+  background: linear-gradient(120deg, #f4a409 0%, #ffbc0e 100%);
+  color: #121212;
+  box-shadow: 0 8px 20px -14px rgba(255, 188, 14, 0.95);
+}
+
+.orientation-option span:hover {
+  color: #f4d28a;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+@media (max-width: 866px) {
+  .orientation-segmented {
+    grid-template-columns: 1fr;
+    border-radius: 16px;
+  }
+
+  .orientation-option span {
+    min-height: 42px;
+    font-size: 0.98rem;
+  }
+}
 :root {
   --app-bg: #090a0d;
   --surface: #181a1f;

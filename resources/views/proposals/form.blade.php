@@ -147,22 +147,22 @@
                         </div>
                     @endforeach
                 </div>
-                <div class="columns is-flex is-justify-content-center"
-                     style="margin-top: 15px; margin-bottom: 30px">
-                    <div class="column is-6 is-flex is-justify-content-space-around is-align-items-center is-warning"
-                         style="border: 2px solid #f2a714; border-radius: 100px;">
-                        <label class="checkbox">
-                            <input name="orientation" type="radio" value="norte" checked>
-                            Norte
-                        </label>
-                        <label class="checkbox">
-                            <input name="orientation" value="leste/oeste" type="radio">
-                            Leste/Oeste
-                        </label>
-                        <label class="checkbox">
-                            <input name="orientation" value="sul" type="radio">
-                            Sul
-                        </label>
+                <div class="columns is-flex is-justify-content-center" style="margin-top: 15px; margin-bottom: 30px">
+                    <div class="column is-8">
+                        <div id="orientation" class="orientation-segmented" role="radiogroup" aria-label="Orientação">
+                            <label class="orientation-option">
+                                <input name="orientation" type="radio" value="norte" checked>
+                                <span>Norte</span>
+                            </label>
+                            <label class="orientation-option">
+                                <input name="orientation" value="leste/oeste" type="radio" >
+                                <span>Leste/Oeste</span>
+                            </label>
+                            <label class="orientation-option">
+                                <input name="orientation" value="sul" type="radio" >
+                                <span>Sul</span>
+                            </label>
+                        </div>
                     </div>
                 </div>
                 <div class="column is-flex is-justify-content-center">
