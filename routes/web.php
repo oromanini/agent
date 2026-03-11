@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ActiveKitController;
+use App\Http\Controllers\AgentLandingPageController;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
@@ -32,6 +33,9 @@ Route::controller(FinancingController::class)->group(function () {
         Route::get('financing-simulator/mfs', 'getMfs')->name('mfs');
     });
 });
+
+Route::get('landingpage', [AgentLandingPageController::class, 'show'])->name('landingpage.show');
+Route::post('landingpage', [AgentLandingPageController::class, 'store'])->name('landingpage.store');
 
 Route::middleware('auth')->group(function () {
 
