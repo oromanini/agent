@@ -121,6 +121,13 @@ select,
     padding: 6px 34px 6px 12px !important;
 }
 
+.selectize-control.single .selectize-input {
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    overflow: hidden !important;
+}
+
 .selectize-control.single .selectize-input:after {
     border-color: #4c6bd8 transparent transparent transparent !important;
 }
@@ -169,6 +176,9 @@ select,
     opacity: 1 !important;
     position: relative !important;
     left: 0 !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+    flex: 1 1 auto !important;
 }
 
 .selectize-control.single .selectize-input .item {
@@ -176,6 +186,6 @@ select,
     text-overflow: ellipsis !important;
     overflow: hidden !important;
     max-width: calc(100% - 34px);
-    display: inline-block;
-    vertical-align: middle;
+    display: block !important;
+    flex: 0 1 auto !important;
 }

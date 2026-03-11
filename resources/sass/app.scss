@@ -108,6 +108,10 @@ a:hover { color: #ffbc0e; }
     color: #dce2ef;
 }
 
+.table.is-striped tbody tr:not(.is-selected):nth-child(even) {
+    background-color: rgba(23, 27, 39, 0.9) !important;
+}
+
 .input,
 .textarea,
 .select select {
