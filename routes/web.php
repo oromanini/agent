@@ -36,6 +36,7 @@ Route::controller(FinancingController::class)->group(function () {
 
 Route::get('landingpage', [AgentLandingPageController::class, 'show'])->name('landingpage.show');
 Route::post('landingpage', [AgentLandingPageController::class, 'store'])->name('landingpage.store');
+Route::get('landingpage/obrigado', [AgentLandingPageController::class, 'thankYou'])->name('landingpage.thank-you');
 
 Route::middleware('auth')->group(function () {
 
