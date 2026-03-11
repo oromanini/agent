@@ -8,7 +8,7 @@
         body {
             margin: 0;
             font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #0f172a, #1e293b);
+            background: linear-gradient(135deg, #7c2d12, #b45309);
             color: #f8fafc;
         }
 
@@ -32,7 +32,7 @@
         }
 
         .hero {
-            background: linear-gradient(160deg, #2563eb, #06b6d4);
+            background: linear-gradient(160deg, #f59e0b, #f97316);
             color: #fff;
             padding: 40px;
         }
@@ -80,17 +80,8 @@
             padding: 13px;
             font-weight: bold;
             cursor: pointer;
-            background: #2563eb;
+            background: linear-gradient(160deg, #f59e0b, #ea580c);
             color: #fff;
-        }
-
-        .success {
-            margin-bottom: 12px;
-            background: #dcfce7;
-            color: #166534;
-            border: 1px solid #86efac;
-            border-radius: 10px;
-            padding: 10px;
         }
 
         .error {
@@ -110,7 +101,7 @@
 <div class="container">
     <div class="card">
         <section class="hero">
-            <h1>Transforme contatos do Facebook em oportunidades reais</h1>
+            <h1>Transforme sua carreira de energia solar</h1>
             <p>
                 Preencha seus dados para entrar no time de agentes da Alluz Energia.
                 Seu cadastro vai direto para o CRM de Agentes para atendimento rápido.
@@ -120,9 +111,6 @@
         <section class="form-area">
             <h2>Cadastre-se</h2>
 
-            @if (session('success'))
-                <div class="success">{{ session('success') }}</div>
-            @endif
 
             <form method="POST" action="{{ route('landingpage.store') }}">
                 @csrf
