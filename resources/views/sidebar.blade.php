@@ -122,6 +122,14 @@ $permissionToHomologation = $permission == 'admin'
                 </a>
             </li>
             <li class="side-list">
+                <a href="{{ route('crm-agentes.index') }}">
+                <span class="side-icon">
+                    <ion-icon name="people-circle-outline"></ion-icon>
+                </span>
+                    <span class="side-title">CRM Agentes</span>
+                </a>
+            </li>
+            <li class="side-list">
                 <a href="{{ route('update_products.index') }}">
                 <span class="side-icon">
                     <ion-icon name="server-outline"></ion-icon>

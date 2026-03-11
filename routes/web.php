@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\CrmAgentController;
 use App\Http\Controllers\FinancingController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HomologationController;
@@ -119,6 +120,17 @@ Route::middleware('auth')->group(function () {
             Route::get('admin/pdf-templates/proposta', 'edit')->name('edit');
             Route::post('admin/pdf-templates/proposta', 'update')->name('update');
             Route::post('admin/pdf-templates/proposta/upload-asset', 'uploadAsset')->name('upload-asset');
+        });
+    });
+
+
+    Route::controller(CrmAgentController::class)->group(function () {
+        Route::name('crm-agentes.')->group(function () {
+            Route::get('crm-agentes', 'index')->name('index');
+            Route::post('crm-agentes', 'store')->name('store');
+            Route::put('crm-agentes/{lead}/status', 'updateStatus')->name('status');
+            Route::post('crm-agentes/{lead}/interactions', 'addInteraction')->name('interactions.store');
+            Route::post('crm-agentes/{lead}/register-agent', 'registerAgent')->name('register-agent');
         });
     });
 
