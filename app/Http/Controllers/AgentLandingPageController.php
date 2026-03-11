@@ -14,6 +14,11 @@ class AgentLandingPageController extends Controller
         return view('landingpage');
     }
 
+    public function thankYou(): View
+    {
+        return view('landingpage-thank-you');
+    }
+
     public function store(Request $request): RedirectResponse
     {
         $data = $request->validate([
@@ -28,8 +33,6 @@ class AgentLandingPageController extends Controller
             'created_by' => null,
         ]);
 
-        return redirect()
-            ->route('landingpage.show')
-            ->with('success', 'Recebemos seu cadastro! Nosso time entrará em contato em breve.');
+        return redirect()->route('landingpage.thank-you');
     }
 }
