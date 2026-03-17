@@ -125,6 +125,11 @@
         @media (max-width: 900px) {
             .card { grid-template-columns: 1fr; }
             .left-panel, .right-panel { padding: 30px 22px; }
+            .right-panel {
+                margin-top: -16px;
+                border-radius: 24px 24px 0 0;
+                background: var(--card);
+            }
             .headline { font-size: 1.8rem; }
             .steps { display: none; }
         }
