@@ -112,6 +112,7 @@
             .card { grid-template-columns: 1fr; }
             .left-panel, .right-panel { padding: 30px 22px; }
             .headline { font-size: 1.8rem; }
+            .steps { display: none; }
         }
     </style>
 </head>
