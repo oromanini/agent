@@ -25,10 +25,19 @@
         }
 
         .crm-card {
-            border: 1px solid #e5e7eb;
+            background: #1a2233;
+            border: 1px solid #2f3b52;
             border-radius: 10px;
             box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
             transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+        .crm-card strong {
+            color: #f8fafc;
+        }
+
+        .crm-card p {
+            color: #cbd5e1;
         }
 
         .crm-card:hover {
