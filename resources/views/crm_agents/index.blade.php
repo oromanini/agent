@@ -1,6 +1,74 @@
 @extends('base')
 
 @section('content')
+    <style>
+        .crm-lead-modal .modal-card {
+            background: #111827;
+            border: 1px solid #2b3548;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+        }
+
+        .crm-lead-modal .modal-card-head,
+        .crm-lead-modal .modal-card-foot,
+        .crm-lead-modal .modal-card-body {
+            background: #111827;
+            border-color: #2b3548;
+            color: #e5e7eb;
+        }
+
+        .crm-lead-modal .modal-card-title,
+        .crm-lead-modal .title,
+        .crm-lead-modal strong {
+            color: #f9fafb;
+        }
+
+        .crm-lead-modal p,
+        .crm-lead-modal small,
+        .crm-lead-modal label,
+        .crm-lead-modal span {
+            color: #cbd5e1;
+        }
+
+        .crm-lead-modal .tabs li a {
+            color: #e5e7eb;
+            background: #0f172a;
+            border-color: #374151;
+        }
+
+        .crm-lead-modal .tabs li.is-active a {
+            background: #1f2937;
+            border-bottom-color: #1f2937;
+            color: #fbbf24;
+        }
+
+        .crm-lead-modal .textarea {
+            background: #0b1220;
+            border-color: #334155;
+            color: #f8fafc;
+        }
+
+        .crm-lead-modal .textarea:focus {
+            border-color: #fbbf24;
+            box-shadow: 0 0 0 0.125em rgba(251, 191, 36, 0.25);
+        }
+
+        .crm-lead-modal .message.is-light .message-body {
+            background: #0f172a;
+            border-color: #334155;
+            color: #e2e8f0;
+        }
+
+        .crm-lead-modal .delete {
+            background-color: rgba(148, 163, 184, 0.25);
+        }
+
+        .crm-lead-modal .delete:hover {
+            background-color: rgba(148, 163, 184, 0.4);
+        }
+    </style>
+
     <div class="box">
         <h1 class="title is-4">CRM Agentes</h1>
 
@@ -80,7 +148,7 @@
                         </div>
                     </div>
 
-                    <div class="modal" id="lead-modal-{{ $lead->id }}">
+                    <div class="modal crm-lead-modal" id="lead-modal-{{ $lead->id }}">
                         <div class="modal-background close-modal"></div>
                         <div class="modal-card" style="width:700px;max-width:95%;">
                             <header class="modal-card-head">
