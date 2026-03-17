@@ -23,14 +23,16 @@ class AgentLandingPageTest extends TestCase
             'name' => 'Maria Silva',
             'email' => 'maria@example.com',
             'phone_number' => '11999990000',
+            'solar_experience' => 'ate_2_anos',
         ]);
 
-        $response->assertRedirect(route('landingpage.show'));
+        $response->assertRedirect(route('landingpage.thank-you'));
 
         $this->assertDatabaseHas('crm_agent_leads', [
             'name' => 'Maria Silva',
             'email' => 'maria@example.com',
             'phone_number' => '11999990000',
+            'solar_experience' => 'ate_2_anos',
             'status' => 'novo',
             'created_by' => null,
         ]);
