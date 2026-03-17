@@ -2,6 +2,53 @@
 
 @section('content')
     <style>
+        .crm-filters,
+        .crm-new-lead-form {
+            margin-bottom: 0;
+        }
+
+        .crm-kanban {
+            display: grid;
+            grid-auto-flow: column;
+            grid-auto-columns: minmax(250px, 250px);
+            gap: 14px;
+            overflow-x: auto;
+            padding: 6px 4px 12px;
+        }
+
+        .crm-column {
+            min-height: 320px;
+            background: #f8f9fb;
+            border: 1px solid #dbe2f0;
+            border-radius: 12px;
+            margin-bottom: 0 !important;
+        }
+
+        .crm-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+        .crm-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 28px rgba(15, 23, 42, 0.11);
+        }
+
+        .crm-card .card-content {
+            min-width: 0;
+            word-break: break-word;
+        }
+
+        .crm-card p {
+            overflow-wrap: anywhere;
+        }
+
+        .crm-card .button {
+            border-radius: 8px;
+        }
+
         .crm-lead-modal .modal-card {
             background: #111827;
             border: 1px solid #2b3548;
@@ -72,14 +119,14 @@
     <div class="box">
         <h1 class="title is-4">CRM Agentes</h1>
 
-        <form method="get" action="{{ route('crm-agentes.index') }}" class="columns is-multiline">
+        <form method="get" action="{{ route('crm-agentes.index') }}" class="columns is-multiline crm-filters">
             <div class="column is-3">
                 <label class="label">Nome</label>
                 <input class="input" name="name" value="{{ request('name') }}" placeholder="Nome do candidato">
             </div>
             <div class="column is-3">
                 <label class="label">Telefone</label>
-                <input class="input" name="phone_number" value="{{ request('phone_number') }}" placeholder="Telefone">
+                <input class="input js-phone-mask" name="phone_number" value="{{ request('phone_number') }}" placeholder="Telefone" maxlength="15" inputmode="numeric">
             </div>
             <div class="column is-2">
                 <label class="label">Cadastro de</label>
@@ -97,7 +144,7 @@
 
         <hr>
 
-        <form method="post" action="{{ route('crm-agentes.store') }}" class="columns is-multiline">
+        <form method="post" action="{{ route('crm-agentes.store') }}" class="columns is-multiline crm-new-lead-form">
             @csrf
             <div class="column is-4">
                 <input class="input" name="name" placeholder="Nome" required>
@@ -106,7 +153,7 @@
                 <input class="input" name="email" placeholder="Email">
             </div>
             <div class="column is-3">
-                <input class="input" name="phone_number" placeholder="Telefone">
+                <input class="input js-phone-mask" name="phone_number" placeholder="Telefone" maxlength="15" inputmode="numeric">
             </div>
             <div class="column is-2">
                 <button class="button is-primary is-fullwidth" type="submit">Novo candidato</button>
@@ -125,9 +172,9 @@
         ];
     @endphp
 
-    <div class="crm-kanban" style="display:grid;grid-template-columns:repeat(6,minmax(220px,1fr));gap:12px;overflow:auto;padding-bottom:10px;">
+    <div class="crm-kanban">
         @foreach($statuses as $status)
-            <div class="box crm-column" data-status="{{ $status }}" style="min-height:280px;background:#f8f9fb;">
+            <div class="box crm-column" data-status="{{ $status }}">
                 <h2 class="title is-6">{{ $statusLabels[$status] }}</h2>
 
                 @foreach($leads->where('status', $status) as $lead)
@@ -143,7 +190,7 @@
                         <div class="card-content">
                             <p><strong>{{ $lead->name }}</strong></p>
                             <p>{{ $lead->email ?: '-' }}</p>
-                            <p>{{ $lead->phone_number ?: '-' }}</p>
+                            <p>{{ $lead->phone_number ? preg_replace('/^(\d{2})(\d{4,5})(\d{4})$/', '($1) $2-$3', preg_replace('/\D/', '', $lead->phone_number)) : '-' }}</p>
                             <button class="button is-small is-link mt-2 open-lead-modal" type="button" data-target="lead-modal-{{ $lead->id }}">Detalhes</button>
                         </div>
                     </div>
@@ -162,7 +209,7 @@
                                     </ul>
                                 </div>
                                 <p><strong>Email:</strong> {{ $lead->email ?: '-' }}</p>
-                                <p><strong>Telefone:</strong> {{ $lead->phone_number ?: '-' }}</p>
+                                <p><strong>Telefone:</strong> {{ $lead->phone_number ? preg_replace('/^(\d{2})(\d{4,5})(\d{4})$/', '($1) $2-$3', preg_replace('/\D/', '', $lead->phone_number)) : '-' }}</p>
                                 <p><strong>Data cadastro:</strong> {{ $lead->created_at->format('d/m/Y H:i') }}</p>
                                 <p><strong>Usuário criado:</strong> {{ optional($lead->user)->name ?: 'Ainda não cadastrado' }}</p>
                                 @if($lead->generated_password)
@@ -276,5 +323,23 @@
             visible.style.display = showing ? 'none' : 'inline';
             hidden.style.display = showing ? 'inline' : 'none';
         }
+
+        const applyPhoneMask = (value) => {
+            const digits = value.replace(/\D/g, '').slice(0, 11);
+            if (digits.length <= 2) return digits;
+            if (digits.length <= 6) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+            if (digits.length <= 10) return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
+            return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+        };
+
+        document.querySelectorAll('.js-phone-mask').forEach((input) => {
+            input.addEventListener('input', () => {
+                input.value = applyPhoneMask(input.value);
+            });
+
+            if (input.value) {
+                input.value = applyPhoneMask(input.value);
+            }
+        });
     </script>
 @endpush

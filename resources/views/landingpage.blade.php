@@ -152,7 +152,7 @@
 
                 <div class="form-step" data-step="2" data-label="Telefone">
                     <label for="phone_number">Etapa 2 - Telefone</label>
-                    <input id="phone_number" name="phone_number" type="text" value="{{ old('phone_number') }}" required>
+                    <input id="phone_number" name="phone_number" type="text" value="{{ old('phone_number') }}" required maxlength="15" inputmode="numeric">
                     @error('phone_number') <div class="error">{{ $message }}</div> @enderror
                 </div>
 
@@ -197,6 +197,25 @@
         const prevButton = document.getElementById('prev-button');
         const submitButton = document.getElementById('submit-button');
         let currentStep = 0;
+
+        const applyPhoneMask = (value) => {
+            const digits = value.replace(/\D/g, '').slice(0, 11);
+            if (digits.length <= 2) return digits;
+            if (digits.length <= 6) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+            if (digits.length <= 10) return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
+            return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+        };
+
+        const phoneInput = document.getElementById('phone_number');
+        if (phoneInput) {
+            phoneInput.addEventListener('input', function () {
+                this.value = applyPhoneMask(this.value);
+            });
+
+            if (phoneInput.value) {
+                phoneInput.value = applyPhoneMask(phoneInput.value);
+            }
+        }
 
         const updateStep = () => {
             steps.forEach((step, index) => {
