@@ -16,9 +16,7 @@
             --success: #16a34a;
         }
 
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             margin: 0;
@@ -53,45 +51,13 @@
             background: linear-gradient(170deg, #f59e0b 0%, #f97316 100%);
             color: #fff;
             padding: 36px 30px;
-            position: relative;
         }
 
-        .logo {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 28px;
-            font-weight: 700;
-            letter-spacing: 0.2px;
-        }
-
-        .logo-mark {
-            width: 34px;
-            height: 34px;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.2);
-            display: grid;
-            place-items: center;
-            font-weight: 800;
-        }
-
-        .headline {
-            font-size: 2rem;
-            line-height: 1.15;
-            margin: 0 0 14px;
-        }
-
-        .subheadline {
-            margin: 0;
-            line-height: 1.55;
-            opacity: 0.96;
-        }
-
-        .steps {
-            margin-top: 32px;
-            display: grid;
-            gap: 12px;
-        }
+        .logo { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 28px; font-weight: 700; }
+        .logo-mark { width: 34px; height: 34px; border-radius: 8px; background: rgba(255, 255, 255, 0.2); display: grid; place-items: center; font-weight: 800; }
+        .headline { font-size: 2rem; line-height: 1.15; margin: 0 0 14px; }
+        .subheadline { margin: 0; line-height: 1.55; opacity: 0.96; }
+        .steps { margin-top: 32px; display: grid; gap: 12px; }
 
         .step {
             background: rgba(255, 255, 255, 0.16);
@@ -101,108 +67,31 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            backdrop-filter: blur(2px);
         }
 
-        .step strong {
-            display: block;
-            font-size: 0.95rem;
-        }
+        .step strong { display: block; font-size: 0.95rem; }
+        .step-index { width: 24px; height: 24px; border-radius: 999px; background: #fff; color: #ea580c; font-weight: 700; display: grid; place-items: center; font-size: 0.82rem; flex-shrink: 0; }
 
-        .step span {
-            font-size: 0.8rem;
-            opacity: 0.9;
-        }
+        .right-panel { padding: 36px; }
+        .flow-title { margin: 0; font-size: 1.5rem; color: var(--secondary); }
+        .flow-subtitle { margin: 8px 0 0; color: var(--muted); line-height: 1.45; }
 
-        .step-index {
-            width: 24px;
-            height: 24px;
-            border-radius: 999px;
-            background: #fff;
-            color: #ea580c;
-            font-weight: 700;
-            display: grid;
-            place-items: center;
-            font-size: 0.82rem;
-            flex-shrink: 0;
-        }
+        .progress-track { margin: 24px 0 16px; height: 8px; border-radius: 999px; background: #f1f5f9; overflow: hidden; }
+        .progress-value { width: 25%; height: 100%; background: linear-gradient(90deg, var(--primary), var(--primary-dark)); transition: width .2s ease; }
+        .step-chip { display: inline-flex; align-items: center; padding: 6px 10px; border-radius: 999px; background: #fff7ed; color: #9a3412; font-size: 0.84rem; font-weight: 600; margin-bottom: 14px; }
 
-        .right-panel {
-            padding: 36px;
-        }
+        form { display: grid; gap: 14px; }
+        .form-step { display: none; }
+        .form-step.is-active { display: block; }
 
-        .flow-title {
-            margin: 0;
-            font-size: 1.5rem;
-            color: var(--secondary);
-        }
+        label { display: block; font-weight: 600; font-size: 0.94rem; margin-bottom: 6px; }
+        input, select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); font-size: 0.95rem; }
+        input:focus, select:focus { outline: 0; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2); }
 
-        .flow-subtitle {
-            margin: 8px 0 0;
-            color: var(--muted);
-            line-height: 1.45;
-        }
-
-        .progress-track {
-            margin: 24px 0 16px;
-            height: 8px;
-            border-radius: 999px;
-            background: #f1f5f9;
-            overflow: hidden;
-        }
-
-        .progress-value {
-            width: 33.33%;
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
-        }
-
-        .step-chip {
-            display: inline-flex;
-            align-items: center;
-            padding: 6px 10px;
-            border-radius: 999px;
-            background: #fff7ed;
-            color: #9a3412;
-            font-size: 0.84rem;
-            font-weight: 600;
-            margin-bottom: 14px;
-        }
-
-        form {
-            display: grid;
-            gap: 14px;
-        }
-
-        label {
-            display: block;
-            font-weight: 600;
-            font-size: 0.94rem;
-            margin-bottom: 6px;
-        }
-
-        input {
-            width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            font-size: 0.95rem;
-        }
-
-        input:focus {
-            outline: 0;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
-        }
-
-        .error {
-            color: #b91c1c;
-            font-size: 0.85rem;
-            margin-top: -6px;
-        }
+        .error { color: #b91c1c; font-size: 0.85rem; margin-top: -6px; }
+        .actions { display: flex; gap: 10px; margin-top: 10px; }
 
         .btn {
-            margin-top: 10px;
             border: 0;
             border-radius: 12px;
             padding: 13px;
@@ -211,42 +100,18 @@
             color: #fff;
             background: linear-gradient(160deg, var(--primary), #ea580c);
             cursor: pointer;
-            transition: transform 0.15s ease;
+            width: 100%;
         }
 
-        .btn:hover {
-            transform: translateY(-1px);
-        }
+        .btn-secondary { background: #e2e8f0; color: #334155; }
 
-        .trust {
-            margin-top: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--muted);
-            font-size: 0.84rem;
-        }
-
-        .trust-dot {
-            width: 9px;
-            height: 9px;
-            border-radius: 999px;
-            background: var(--success);
-        }
+        .trust { margin-top: 14px; display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 0.84rem; }
+        .trust-dot { width: 9px; height: 9px; border-radius: 999px; background: var(--success); }
 
         @media (max-width: 900px) {
-            .card {
-                grid-template-columns: 1fr;
-            }
-
-            .left-panel,
-            .right-panel {
-                padding: 30px 22px;
-            }
-
-            .headline {
-                font-size: 1.8rem;
-            }
+            .card { grid-template-columns: 1fr; }
+            .left-panel, .right-panel { padding: 30px 22px; }
+            .headline { font-size: 1.8rem; }
         }
     </style>
 </head>
@@ -254,74 +119,65 @@
 <div class="container">
     <div class="card">
         <aside class="left-panel">
-            <div class="logo">
-                <div class="logo-mark">A</div>
-                Alluz Energia
-            </div>
-
-            <h1 class="headline">Seu cadastro em 3 passos simples</h1>
-            <p class="subheadline">
-                Inspirado na experiência do nosso CRM, criamos um fluxo rápido para você entrar no programa de agentes
-                e começar a vender com suporte completo.
-            </p>
+            <div class="logo"><div class="logo-mark">A</div>Alluz Energia</div>
+            <h1 class="headline">Seu cadastro em 4 etapas simples</h1>
+            <p class="subheadline">Preencha etapa por etapa e envie seu cadastro para o time de agentes.</p>
 
             <div class="steps">
-                <div class="step">
-                    <div class="step-index">1</div>
-                    <div>
-                        <strong>Preencha seus dados</strong>
-                        <span>Leva menos de 1 minuto.</span>
-                    </div>
-                </div>
-                <div class="step">
-                    <div class="step-index">2</div>
-                    <div>
-                        <strong>Análise do perfil</strong>
-                        <span>Nossa equipe valida e direciona seu atendimento.</span>
-                    </div>
-                </div>
-                <div class="step">
-                    <div class="step-index">3</div>
-                    <div>
-                        <strong>Ativação no CRM</strong>
-                        <span>Você recebe contato com os próximos passos.</span>
-                    </div>
-                </div>
+                <div class="step"><div class="step-index">1</div><div><strong>Nome</strong></div></div>
+                <div class="step"><div class="step-index">2</div><div><strong>Telefone</strong></div></div>
+                <div class="step"><div class="step-index">3</div><div><strong>E-mail</strong></div></div>
+                <div class="step"><div class="step-index">4</div><div><strong>Tempo de experiência com solar</strong></div></div>
             </div>
         </aside>
 
         <main class="right-panel">
             <h2 class="flow-title">Quero me tornar agente Alluz</h2>
-            <p class="flow-subtitle">Comece pelo passo 1 e envie seu cadastro para nossa equipe.</p>
+            <p class="flow-subtitle">Siga as etapas abaixo para concluir o cadastro.</p>
 
             <div class="progress-track">
-                <div class="progress-value"></div>
+                <div class="progress-value" id="progress-value"></div>
             </div>
 
-            <div class="step-chip">Passo 1 de 3 · Dados de contato</div>
+            <div class="step-chip" id="step-chip">Etapa 1 de 4 · Nome</div>
 
-            <form method="POST" action="{{ route('landingpage.store') }}">
+            <form method="POST" action="{{ route('landingpage.store') }}" id="landing-form">
                 @csrf
 
-                <div>
-                    <label for="name">Nome completo</label>
+                <div class="form-step is-active" data-step="1" data-label="Nome">
+                    <label for="name">Etapa 1 - Nome</label>
                     <input id="name" name="name" type="text" value="{{ old('name') }}" required>
+                    @error('name') <div class="error">{{ $message }}</div> @enderror
                 </div>
-                @error('name') <div class="error">{{ $message }}</div> @enderror
 
-                <div>
-                    <label for="email">E-mail profissional</label>
-                    <input id="email" name="email" type="email" value="{{ old('email') }}" required>
-                </div>
-                @error('email') <div class="error">{{ $message }}</div> @enderror
-
-                <div>
-                    <label for="phone_number">WhatsApp</label>
+                <div class="form-step" data-step="2" data-label="Telefone">
+                    <label for="phone_number">Etapa 2 - Telefone</label>
                     <input id="phone_number" name="phone_number" type="text" value="{{ old('phone_number') }}" required>
+                    @error('phone_number') <div class="error">{{ $message }}</div> @enderror
                 </div>
-                @error('phone_number') <div class="error">{{ $message }}</div> @enderror
 
-                <button type="submit" class="btn">Avançar para análise</button>
+                <div class="form-step" data-step="3" data-label="E-mail">
+                    <label for="email">Etapa 3 - E-mail</label>
+                    <input id="email" name="email" type="email" value="{{ old('email') }}" required>
+                    @error('email') <div class="error">{{ $message }}</div> @enderror
+                </div>
+
+                <div class="form-step" data-step="4" data-label="Tempo de experiência com solar">
+                    <label for="solar_experience">Etapa 4 - Tempo de experiência com solar</label>
+                    <select id="solar_experience" name="solar_experience" required>
+                        <option value="">Selecione</option>
+                        <option value="sem_experiencia" @selected(old('solar_experience') === 'sem_experiencia')>Sem experiência</option>
+                        <option value="ate_2_anos" @selected(old('solar_experience') === 'ate_2_anos')>Até 2 anos</option>
+                        <option value="mais_2_anos" @selected(old('solar_experience') === 'mais_2_anos')>Mais de 2 anos</option>
+                    </select>
+                    @error('solar_experience') <div class="error">{{ $message }}</div> @enderror
+                </div>
+
+                <div class="actions">
+                    <button type="button" class="btn btn-secondary" id="prev-button" style="display:none;">Voltar</button>
+                    <button type="button" class="btn" id="next-button">Próxima etapa</button>
+                    <button type="submit" class="btn" id="submit-button" style="display:none;">Enviar cadastro</button>
+                </div>
             </form>
 
             <div class="trust">
@@ -331,5 +187,73 @@
         </main>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const steps = Array.from(document.querySelectorAll('.form-step'));
+        const stepChip = document.getElementById('step-chip');
+        const progressValue = document.getElementById('progress-value');
+        const nextButton = document.getElementById('next-button');
+        const prevButton = document.getElementById('prev-button');
+        const submitButton = document.getElementById('submit-button');
+        let currentStep = 0;
+
+        const updateStep = () => {
+            steps.forEach((step, index) => {
+                step.classList.toggle('is-active', index === currentStep);
+            });
+
+            const stepNumber = currentStep + 1;
+            const label = steps[currentStep].dataset.label;
+            stepChip.textContent = `Etapa ${stepNumber} de ${steps.length} · ${label}`;
+            progressValue.style.width = `${(stepNumber / steps.length) * 100}%`;
+
+            prevButton.style.display = currentStep === 0 ? 'none' : 'inline-block';
+            nextButton.style.display = currentStep === steps.length - 1 ? 'none' : 'inline-block';
+            submitButton.style.display = currentStep === steps.length - 1 ? 'inline-block' : 'none';
+        };
+
+        const validateCurrentStep = () => {
+            const activeFields = steps[currentStep].querySelectorAll('input, select');
+            for (const field of activeFields) {
+                if (!field.checkValidity()) {
+                    field.reportValidity();
+                    return false;
+                }
+            }
+            return true;
+        };
+
+        nextButton.addEventListener('click', function () {
+            if (!validateCurrentStep()) {
+                return;
+            }
+
+            if (currentStep < steps.length - 1) {
+                currentStep += 1;
+                updateStep();
+            }
+        });
+
+        prevButton.addEventListener('click', function () {
+            if (currentStep > 0) {
+                currentStep -= 1;
+                updateStep();
+            }
+        });
+
+        @if ($errors->has('name'))
+            currentStep = 0;
+        @elseif ($errors->has('phone_number'))
+            currentStep = 1;
+        @elseif ($errors->has('email'))
+            currentStep = 2;
+        @elseif ($errors->has('solar_experience'))
+            currentStep = 3;
+        @endif
+
+        updateStep();
+    });
+</script>
 </body>
 </html>

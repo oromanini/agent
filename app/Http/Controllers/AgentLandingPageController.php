@@ -25,6 +25,7 @@ class AgentLandingPageController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'phone_number' => 'required|string|max:30',
+            'solar_experience' => 'required|in:sem_experiencia,ate_2_anos,mais_2_anos',
         ]);
 
         CrmAgentLead::create([
