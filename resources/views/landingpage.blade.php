@@ -122,6 +122,38 @@
         .trust { margin-top: 14px; display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 0.84rem; }
         .trust-dot { width: 9px; height: 9px; border-radius: 999px; background: var(--success); }
 
+        .agreement-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.8);
+            display: grid;
+            place-items: center;
+            padding: 18px;
+            z-index: 9999;
+        }
+
+        .agreement-modal.is-hidden { display: none; }
+
+        .agreement-box {
+            width: min(100%, 480px);
+            background: #fff;
+            color: #0f172a;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 24px 55px rgba(2, 6, 23, 0.45);
+            text-align: center;
+        }
+
+        .agreement-text { margin: 0 0 18px; font-size: 1.08rem; line-height: 1.45; }
+        .agreement-actions { display: grid; gap: 10px; }
+
+        .agreement-thank-you {
+            margin: 0;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
         @media (max-width: 900px) {
             .card { grid-template-columns: 1fr; }
             .left-panel, .right-panel { padding: 30px 22px; }
@@ -139,6 +171,17 @@
 <noscript>
     <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=2181553886009307&ev=PageView&noscript=1" />
 </noscript>
+
+<div class="agreement-modal" id="agreement-modal" role="dialog" aria-modal="true" aria-labelledby="agreement-text">
+    <div class="agreement-box">
+        <p class="agreement-text" id="agreement-text">Essa é uma posição 100% comissionada, e não uma vaga CLT.</p>
+        <div class="agreement-actions" id="agreement-actions">
+            <button type="button" class="btn" id="agree-button">Estou de acordo, continuar</button>
+            <button type="button" class="btn btn-secondary" id="disagree-button">Não estou de acordo, sair</button>
+        </div>
+    </div>
+</div>
+
 <div class="container">
     <div class="card">
         <aside class="left-panel">
@@ -213,6 +256,23 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        const agreementModal = document.getElementById('agreement-modal');
+        const agreementActions = document.getElementById('agreement-actions');
+        const agreeButton = document.getElementById('agree-button');
+        const disagreeButton = document.getElementById('disagree-button');
+
+        if (agreeButton && agreementModal) {
+            agreeButton.addEventListener('click', function () {
+                agreementModal.classList.add('is-hidden');
+            });
+        }
+
+        if (disagreeButton && agreementActions) {
+            disagreeButton.addEventListener('click', function () {
+                agreementActions.innerHTML = '<p class="agreement-thank-you">OBRIGADO, BOA SORTE!</p>';
+            });
+        }
+
         const steps = Array.from(document.querySelectorAll('.form-step'));
         const stepChip = document.getElementById('step-chip');
         const progressValue = document.getElementById('progress-value');

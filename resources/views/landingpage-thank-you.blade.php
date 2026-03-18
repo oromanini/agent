@@ -75,7 +75,7 @@
 </noscript>
 <div class="container">
     <h1>Obrigado pelo seu cadastro!</h1>
-    <p>Seu envio foi recebido com sucesso. Assista ao vídeo abaixo para os próximos passos:</p>
+    <p>Nossa diretoria comercial entrará em contato o mais breve possível. Assista ao vídeo para entender o objetivo comercial da Alluz Energia.</p>
 
     <div class="video-wrapper">
         <iframe
