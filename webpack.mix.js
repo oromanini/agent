@@ -12,6 +12,7 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js')
+    .js('resources/js/inertia.js', 'public/js').react()
     .sass('resources/sass/app.scss', 'public/css')
     .copyDirectory('resources/images/', 'public/img')
     .copyDirectory('app/Packages/EdeltecApiPackage/img', 'public/EdeltecApiPackage/img')
