@@ -25,6 +25,9 @@
     },
     "dependencies": {
         "@creativebulma/bulma-tooltip": "^1.2.0",
+        "@inertiajs/inertia": "^0.11.1",
+        "@inertiajs/inertia-react": "^0.8.1",
+        "@inertiajs/progress": "^0.1.2",
         "@selectize/selectize": "^0.15.2",
         "bower": "^1.8.14",
         "bulma": "^0.9.4",
@@ -32,11 +35,8 @@
         "bulma-extensions": "^6.2.7",
         "jquery": "^3.6.0",
         "jquery-mask-plugin": "^1.14.16",
-        "select2": "^4.1.0-rc.0",
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
-        "@inertiajs/inertia": "^0.11.1",
-        "@inertiajs/inertia-react": "^0.8.1",
-        "@inertiajs/progress": "^0.2.7"
+        "select2": "^4.1.0-rc.0"
     }
 }
