@@ -42,13 +42,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/', [HomeController::class, 'index'])->name('home');
 
-    Route::get('/login', function () {
-        return view('home');
-    });
+    Route::redirect('/login', '/');
 
-    Route::get('/dashboard', function () {
-        return view('home');
-    });
+    Route::redirect('/dashboard', '/');
 
     Route::get('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
