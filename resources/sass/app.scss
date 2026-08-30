@@ -1,7 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 @import "bulma/bulma";
 @import "bulma-carousel/dist/css/bulma-carousel.min.css";
 @import "@creativebulma/bulma-tooltip/src/sass/index";
+@import "tokens";
 @import "helpers/colors";
 @import "home";
 @import "sidebar";
@@ -12,22 +13,14 @@
 @import "select2";
 @import "proposal";
 
-:root {
-    --app-bg: #090a0d;
-    --surface: #181a1f;
-    --surface-soft: #1e2128;
-    --text-primary: #eceef3;
-    --text-secondary: #a0a6b5;
-    --border-soft: #2e3138;
-    --accent: #f4a409;
-    --accent-strong: #ffbc0e;
-}
-
-* { font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+// =============================================================
+// Base
+// =============================================================
+* { font-family: $font-sans; }
 
 html,
 body {
-    background: #07080b;
+    background: $c-bg;
     overscroll-behavior-y: auto;
     font-size: 16px;
     min-height: 100%;
@@ -35,43 +28,63 @@ body {
 }
 
 body.app-body {
-    font-weight: 300;
+    font-weight: 400;
     min-height: 100vh;
-    background: radial-gradient(circle at top, #101115 0%, #0a0b0f 38%, #06070a 100%);
-    color: var(--text-primary);
+    background: $c-bg;
+    color: $c-text;
     overflow-x: hidden;
     overflow-y: auto;
     -webkit-text-size-adjust: 100%;
 }
 
-.app-shell.section { padding: 1rem; padding-bottom: 2.1rem; }
-.app-layout { margin: 0 !important; }
-.app-sidebar-column,
-.app-content-column { padding: 0.5rem !important; }
+// =============================================================
+// App shell
+// =============================================================
+.app-shell.section { padding: 1.1rem; padding-bottom: 2.1rem; }
+.app-layout { margin: 0 !important; display: flex !important; flex-wrap: nowrap; }
+
+.app-sidebar-column {
+    flex: 0 0 244px;
+    max-width: 244px;
+    width: 244px;
+    padding: 0 !important;
+}
+.app-content-column {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 0 0 0 0.9rem !important;
+}
 
 .app-content-wrap {
-    min-height: calc(100vh - 2rem);
-    background: linear-gradient(180deg, #1a1c22 0%, #14161b 100%);
-    border-radius: 18px;
-    border: 1px solid var(--border-soft);
-    box-shadow: 0 14px 45px -30px rgba(0, 0, 0, 0.9);
-    padding: 1.1rem;
+    min-height: calc(100vh - 2.2rem);
+    background: $c-surface;
+    border-radius: $r-lg;
+    border: 1px solid $c-border;
+    box-shadow: $shadow-md;
+    padding: 1.6rem 1.8rem 3rem;
 }
 
-h1, h2, h3, h4, h5, h6, .title { color: #f2f4f8 !important; font-weight: 500 !important; }
-p, span, label, .subtitle { color: #c8cfdd; }
-
-.button span,
-.button ion-icon {
-    color: inherit !important;
+// =============================================================
+// Typography
+// =============================================================
+h1, h2, h3, h4, h5, h6, .title {
+    color: $c-text !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.01em;
 }
+.subtitle { color: $c-text-muted !important; font-weight: 500 !important; }
+p, span, label { color: $c-text-2; }
+
+a { color: $c-link; }
+a:hover { color: $c-link-hover; }
 
 .label,
 .field label,
 label.label,
 .field > label {
-    color: #b8c4df !important;
-    font-weight: 500 !important;
+    color: $c-text-muted !important;
+    font-weight: 600 !important;
+    font-size: 0.8rem;
 }
 
 input::placeholder,
@@ -79,165 +92,488 @@ textarea::placeholder,
 .select select:invalid,
 .select2-container--default .select2-selection--single .select2-selection__placeholder,
 .selectize-input input::placeholder {
-    color: #9ca8c7 !important;
+    color: $c-text-faint !important;
     opacity: 1;
 }
 
-
-a { color: #ffd36a; }
-a:hover { color: #ffbc0e; }
-
+// =============================================================
+// Surfaces
+// =============================================================
 .box,
 .card,
-.table-container,
 .modal-card,
-.notification {
-    background: #1b1d23 !important;
-    border: 1px solid #31343b !important;
-    color: #dce2ef;
+.modal-card-body,
+.modal-card-head,
+.modal-card-foot {
+    background: $c-surface !important;
+    border: 1px solid $c-border !important;
+    color: $c-text-2;
+    border-radius: $r-lg !important;
+    box-shadow: $shadow-md;
 }
 
+.notification {
+    background: $c-track !important;
+    border: 1px solid $c-border !important;
+    color: $c-text-2;
+    border-radius: $r-sm !important;
+}
+
+.table-container { background: transparent !important; border: 0 !important; }
+
+// =============================================================
+// Tables
+// =============================================================
 .table {
     background: transparent;
-    color: #dce2ef;
+    color: $c-text-2;
 }
-
-.table th,
-.table td {
-    border-color: #2f3750;
-    color: #dce2ef;
+.table thead th {
+    border-color: $c-border;
+    color: $c-text-faint;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 0.9rem 1rem;
 }
+.table td,
+.table th {
+    border-color: $c-row-line;
+    color: $c-text-2;
+    vertical-align: middle;
+}
+.table tbody th { color: $c-text-faint; font-weight: 600; }
+.table tbody td { padding: 0.8rem 1rem; }
 
 .table.is-striped tbody tr:not(.is-selected):nth-child(even) {
-    background-color: rgba(23, 27, 39, 0.9) !important;
+    background-color: rgba(247, 243, 236, 0.7) !important;
+}
+.table.is-hoverable tbody tr:not(.is-selected):hover,
+.table tbody tr:hover {
+    background-color: rgba(245, 185, 66, 0.10) !important;
+}
+.table tr.is-selected,
+.table tr.is-selected:hover {
+    background-color: rgba(245, 185, 66, 0.22) !important;
+    color: $c-text !important;
 }
 
+// Wrap tables in a white card
+.a-table-wrap {
+    background: $c-surface;
+    border: 1px solid $c-border;
+    border-radius: $r-md;
+    box-shadow: $shadow-md;
+    overflow: hidden;
+    overflow-x: auto;
+
+    .table { margin-bottom: 0; }
+    .table thead th { background: transparent; }
+    .table tbody tr:first-child td,
+    .table tbody tr:first-child th { border-top: 0; }
+}
+
+// =============================================================
+// Form controls
+// =============================================================
 .input,
 .textarea,
 .select select {
-    background: #090c14 !important;
-    border: 1px solid #31384d !important;
-    color: #f2f4f8 !important;
-    border-radius: 10px !important;
+    background: $c-surface !important;
+    border: 1.5px solid $c-border !important;
+    color: $c-text !important;
+    border-radius: $r-sm !important;
     box-shadow: none !important;
+    min-height: 44px;
 }
-
 .input:focus,
 .textarea:focus,
 .select select:focus {
-    border-color: #f4a409 !important;
-    box-shadow: 0 0 0 0.12rem rgba(244, 164, 9, 0.2) !important;
+    border-color: $c-primary !important;
+    box-shadow: 0 0 0 0.14rem rgba(245, 185, 66, 0.22) !important;
 }
+.select:not(.is-multiple):not(.is-loading)::after { border-color: $c-link; }
 
+// =============================================================
+// Buttons
+// =============================================================
 .button {
-    border-radius: 10px;
-    font-weight: 500;
-}
-
-.field.has-addons .control .button {
-    min-height: 46px;
-    height: 46px;
-}
-
-
-.button,
-.button:hover,
-.button.is-hovered,
-.button:focus {
+    border-radius: $r-sm;
+    font-weight: 700;
+    border: 1.5px solid transparent;
     box-shadow: none !important;
 }
+.button:hover,
+.button.is-hovered,
+.button:focus { box-shadow: none !important; }
+
+.field.has-addons .control .button { min-height: 46px; height: 46px; }
 
 .button.is-primary,
 .button.is-link,
 .button.is-info,
-.button.is-success {
-    background: linear-gradient(90deg, #f4a409 0%, #ffbc0e 100%) !important;
-    border-color: #ffbc0e !important;
-    color: #171717 !important;
+.button.is-success,
+.button.is-warning {
+    background: $c-primary !important;
+    border-color: $c-primary !important;
+    color: $c-on-primary !important;
 }
-
 .button.is-primary:hover,
 .button.is-link:hover,
 .button.is-info:hover,
 .button.is-success:hover,
+.button.is-warning:hover,
 .button.is-primary.is-hovered,
 .button.is-link.is-hovered,
 .button.is-info.is-hovered,
 .button.is-success.is-hovered {
-    background: linear-gradient(90deg, #e89700 0%, #fcb000 100%) !important;
-    color: #131313 !important;
+    background: $c-primary-strong !important;
+    color: $c-on-primary !important;
 }
 
 .button.is-danger {
-    background: linear-gradient(90deg, #ff6a3d 0%, #ff4f3a 100%) !important;
-    border-color: #ff5a3a !important;
-    color: #fff !important;
+    background: $c-danger-soft !important;
+    border-color: $c-danger-soft !important;
+    color: $c-danger !important;
 }
-
 .button.is-danger:hover,
 .button.is-danger.is-hovered {
-    background: linear-gradient(90deg, #f95d2f 0%, #f34631 100%) !important;
+    background: darken($c-danger-soft, 4%) !important;
 }
 
-.table.is-hoverable tbody tr:not(.is-selected):hover,
-.table tbody tr:hover {
-    background-color: rgba(244, 164, 9, 0.08) !important;
+.button.is-light,
+.button.is-white,
+.button.is-outlined,
+.button.is-text {
+    background: $c-surface !important;
+    border-color: $c-border !important;
+    color: $c-text-2 !important;
 }
+.button.is-light:hover,
+.button.is-white:hover,
+.button.is-outlined:hover { background: $c-track !important; }
 
-.pagination,
-.pagination a,
-.pagination span,
-.pagination-link,
-.pagination-next,
-.pagination-previous,
-.pagination-ellipsis {
-    color: #fff !important;
+.button span,
+.button ion-icon { color: inherit !important; }
+
+// =============================================================
+// Tags / pills
+// =============================================================
+.tag:not(body) {
+    border-radius: $r-pill;
+    font-weight: 700;
+    font-size: 0.72rem;
+    padding: 0.35rem 0.75rem;
+    height: auto;
 }
+.tag.is-success, .tag.is-green { background: $pill-green-bg !important; color: $pill-green-fg !important; }
+.tag.is-info, .tag.is-link { background: $pill-blue-bg !important; color: $pill-blue-fg !important; }
+.tag.is-danger { background: $pill-pink-bg !important; color: $pill-pink-fg !important; }
+.tag.is-warning { background: $pill-amber-bg !important; color: $pill-amber-fg !important; }
+.tag.is-dark, .tag.is-light, .tag:not([class*="is-"]) { background: $pill-neutral-bg !important; color: $pill-neutral-fg !important; }
 
+// =============================================================
+// Pagination
+// =============================================================
 .pagination-link,
 .pagination-next,
 .pagination-previous {
-    border-color: #8f97ad !important;
-    background: transparent !important;
+    border-color: $c-border !important;
+    background: $c-surface !important;
+    color: $c-text-2 !important;
+    border-radius: $r-xs !important;
 }
-
 .pagination-link:hover,
 .pagination-next:hover,
 .pagination-previous:hover {
-    border-color: #ffbc0e !important;
-    color: #ffbc0e !important;
-    background-color: rgba(244, 164, 9, 0.12) !important;
+    border-color: $c-primary !important;
+    color: $c-link !important;
+    background-color: rgba(245, 185, 66, 0.12) !important;
+}
+.pagination-link.is-current {
+    background: $c-primary !important;
+    border-color: $c-primary !important;
+    color: $c-on-primary !important;
+}
+.pagination-ellipsis { color: $c-text-faint !important; }
+
+// =============================================================
+// Bulma message (flash)
+// =============================================================
+.message.is-success .message-header { background: $pill-green-fg; }
+.message.is-warning .message-header,
+.message.is-danger .message-header { background: $c-primary; color: $c-on-primary; }
+.message-body {
+    background: $c-surface;
+    border-color: $c-border;
+    color: $c-text-2;
+    border-radius: 0 0 $r-sm $r-sm;
+}
+.message .message-header { border-radius: $r-sm $r-sm 0 0; }
+
+// =============================================================
+// Reusable design-system components (.a-*)
+// =============================================================
+.a-page-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1rem;
+    margin-bottom: 1.4rem;
+    flex-wrap: wrap;
+
+    h1, h2, h3, .title {
+        margin: 0 !important;
+        font-size: 1.55rem;
+        font-weight: 800 !important;
+    }
+    p { margin: 0.15rem 0 0; color: $c-text-muted; font-size: 0.92rem; }
 }
 
-@media (max-width: 1024px) {
-    .app-shell.section { padding: 0.45rem; }
-    .app-content-wrap {
-        min-height: calc(100vh - 1rem);
-        padding: 0.85rem;
+.a-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: $c-primary;
+    color: $c-on-primary;
+    border: none;
+    border-radius: $r-sm;
+    padding: 0.7rem 1.15rem;
+    font-size: 0.86rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+
+    &:hover { background: $c-primary-strong; color: $c-on-primary; }
+    ion-icon { font-size: 1rem; }
+}
+.a-btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: $c-surface;
+    color: $c-text-2;
+    border: 1.5px solid $c-border;
+    border-radius: $r-sm;
+    padding: 0.65rem 1rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+
+    &:hover { background: $c-track; color: $c-text; }
+}
+
+.a-filterbar {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    margin-bottom: 1.15rem;
+
+    .field { margin-bottom: 0; }
+    label, .label { font-size: 0.75rem; font-weight: 600; color: $c-text-muted; margin-bottom: 0.3rem; }
+}
+
+.a-card {
+    background: $c-surface;
+    border: 1px solid $c-border;
+    border-radius: $r-lg;
+    box-shadow: $shadow-md;
+    padding: 1.4rem 1.5rem;
+}
+.a-card--tight { padding: 1rem 1.15rem; }
+
+// Metric / KPI tiles
+.a-kpi {
+    background: $c-surface;
+    border-radius: $r-lg;
+    box-shadow: $shadow-md;
+    padding: 1.35rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+
+    &__value { font-size: clamp(1.15rem, 2vw, 1.85rem); font-weight: 800; color: $c-text; }
+    &__label { font-size: 0.82rem; font-weight: 600; color: $c-text-2; }
+    &__meta { font-size: 0.7rem; color: $c-text-faint; }
+}
+.a-kpi--accent {
+    background: $c-primary;
+    .a-kpi__value { color: $c-on-primary; }
+    .a-kpi__label, .a-kpi__meta { color: #5C4409; }
+}
+
+// Segmented control
+.a-seg {
+    display: inline-flex;
+    background: $c-track;
+    border-radius: $r-sm;
+    padding: 3px;
+    gap: 2px;
+    width: fit-content;
+
+    &__btn {
+        padding: 0.5rem 1.2rem;
+        border: none;
+        border-radius: $r-xs;
+        font-size: 0.8rem;
+        font-weight: 700;
+        cursor: pointer;
+        background: transparent;
+        color: $c-text-muted;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+
+        &.is-active,
+        &[aria-current="page"] {
+            background: $c-surface;
+            color: $c-text;
+            box-shadow: 0 1px 3px rgba(33, 29, 20, 0.15);
+        }
     }
 }
 
+// Status pill
+.a-pill {
+    display: inline-block;
+    padding: 0.3rem 0.75rem;
+    border-radius: $r-pill;
+    font-size: 0.72rem;
+    font-weight: 700;
+    background: $pill-neutral-bg;
+    color: $pill-neutral-fg;
+    white-space: nowrap;
+}
+.a-pill--green  { background: $pill-green-bg;  color: $pill-green-fg; }
+.a-pill--blue   { background: $pill-blue-bg;   color: $pill-blue-fg; }
+.a-pill--pink   { background: $pill-pink-bg;   color: $pill-pink-fg; }
+.a-pill--amber  { background: $pill-amber-bg;  color: $pill-amber-fg; }
+.a-pill--neutral{ background: $pill-neutral-bg;color: $pill-neutral-fg; }
 
-.pagination-link.is-current {
-    background: linear-gradient(90deg, #f4a409 0%, #ffbc0e 100%) !important;
-    border-color: #ffbc0e !important;
-    color: #111 !important;
+// Avatar (initials)
+.a-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: $r-pill;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+    flex: none;
+    background: $c-accent-soft;
+    color: $c-accent-soft-fg;
+}
+.a-name-cell { display: flex; align-items: center; gap: 0.6rem; }
+
+// Ghost icon action button (table rows)
+.a-iconbtn {
+    width: 32px;
+    height: 32px;
+    border-radius: $r-xs;
+    border: none;
+    background: transparent;
+    color: $c-text-muted;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+
+    &:hover { background: $c-track; color: $c-text; }
+    ion-icon { font-size: 1rem; }
+}
+.a-row-actions { display: flex; gap: 0.25rem; justify-content: flex-end; }
+
+// Horizontal progress bar (ranking)
+.a-bar {
+    height: 7px;
+    background: $c-track;
+    border-radius: $r-pill;
+    overflow: hidden;
+
+    span { display: block; height: 100%; background: $c-primary; border-radius: $r-pill; }
 }
 
-.table tr.is-selected,
-.table tr.is-selected:hover {
-    background-color: rgba(244, 164, 9, 0.18) !important;
-    color: #fff !important;
+// Quick-start tiles
+.a-quicktile {
+    background: $c-surface;
+    border-radius: $r-md;
+    box-shadow: $shadow-md;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.6rem;
+    padding: 1.6rem 0.6rem;
+    color: $c-text;
+    text-decoration: none;
+
+    &:hover { color: $c-text; transform: translateY(-2px); transition: transform 0.15s ease; }
+    &__icon {
+        width: 44px; height: 44px;
+        border-radius: 14px;
+        background: $c-accent-soft;
+        display: flex; align-items: center; justify-content: center;
+        color: $c-link;
+        ion-icon { font-size: 1.25rem; }
+    }
+    span { font-size: 0.85rem; font-weight: 600; color: $c-text; }
+}
+
+// Selectable card (roof types, kit options)
+.a-choice {
+    cursor: pointer;
+    padding: 0.85rem 1.1rem;
+    background: $c-surface;
+    border: 1.5px solid $c-border;
+    border-radius: 14px;
+    color: $c-text;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-align: center;
+
+    &.is-active {
+        background: $c-accent-soft;
+        border-color: $c-primary;
+        color: $c-accent-soft-fg;
+    }
+}
+
+// Dark terminal / log block (update products)
+.a-logblock {
+    background: $c-text;
+    border-radius: $r-md;
+    padding: 1.2rem 1.35rem;
+    color: #DDD8C9;
+
+    pre { margin: 0; color: #DDD8C9; font-size: 0.78rem; font-family: monospace; line-height: 1.6; white-space: pre-wrap; }
+    .a-logblock__title { color: #FFF; font-size: 0.8rem; font-weight: 700; }
+}
+
+// =============================================================
+// Responsive
+// =============================================================
+@media (max-width: 1024px) {
+    .app-shell.section { padding: 0.55rem; }
+    .app-content-wrap { min-height: calc(100vh - 1.1rem); padding: 1rem; }
+}
+
+@media (max-width: 866px) {
+    .app-layout { flex-wrap: wrap; }
+    .app-sidebar-column { flex-basis: 100%; max-width: 100%; width: 100%; }
+    .app-content-column { padding-left: 0 !important; }
 }
 
 @media (max-width: 1400px) {
-    #client-filters {
-        flex-wrap: wrap;
-    }
-
-    #client-filters .column {
-        min-width: 240px;
-    }
+    #client-filters,
+    #proposal-filters { flex-wrap: wrap; }
+    #client-filters .column,
+    #proposal-filters .column { min-width: 240px; }
 
     .client-filter-actions {
         display: flex;
@@ -246,8 +582,5 @@ a:hover { color: #ffbc0e; }
         flex-wrap: wrap;
         padding-top: 1.95rem;
     }
-
-    .client-filter-button {
-        white-space: nowrap;
-    }
+    .client-filter-button { white-space: nowrap; }
 }

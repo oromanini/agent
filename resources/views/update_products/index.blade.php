@@ -2,64 +2,58 @@
 
 @section('content')
     <div class="container is-fluid overflow-auto">
-        <div class="box overflow-auto">
-            <div class="columns mt-2 mb-5 ml-1">
-                <h3 class="title"><img src="/img/logo/alluz-icon.png" width="30" alt="..">
-                    Atualização de kits
-                </h3>
-            </div>
-            <div class="columns">
-                <div class="column is-6">
-                    <div class="box is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
-                        <h3 class="is-size-4 has-text-centered mb-4">Distribuidora Soollar</h3>
-                        <div class="image-wrapper">
-                            <img src="{{ asset('img/update_products/soollar.png') }}" alt="no-image">
-                        </div>
-                        <a id="btn-soollar" class="button is-primary mt-4">Atualizar kits</a>
-                    </div>
-                </div>
-                <div class="column is-6">
-                    <div class="box is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
-                        <h3 class="is-size-4 has-text-centered mb-4">Distribuidora Edeltec</h3>
-                        <div class="image-wrapper">
-                            <img src="{{ asset('img/update_products/edeltec.png') }}" alt="no-image">
-                        </div>
-                        <a id="btn-edeltec" class="button is-primary mt-4">Atualizar kits</a>
-                    </div>
-                </div>
-            </div>
 
-            <div id="progress-container" class="mt-5" style="display: none;">
-                <x-progress-bar id="update-progress-bar" />
-            </div>
-
-            <div class="box mt-5">
-                <div class="is-flex is-justify-content-space-between is-align-items-center">
-                    <h4 class="title is-4">Log de Atualização</h4>
-                    <a id="btn-clear-terminal" class="button is-danger is-small">Limpar Log</a>
-                </div>
-                <div id="terminal-log" style="white-space: pre-wrap; background-color: #333; color: #FFFFFF; padding: 15px; border-radius: 5px; min-height: 100px;">
-                    Alluz Energia® 2025 - Todos os direitos reservados
-                    ----------------
-                </div>
-            </div>
-
+        <div class="a-page-head">
+            <h1>Atualizar produtos</h1>
         </div>
+
+        <div class="dist-grid">
+            <div class="a-card dist-card">
+                <div class="dist-card__icon"><ion-icon name="server-outline"></ion-icon></div>
+                <h3>Distribuidora Soollar</h3>
+                <div class="image-wrapper">
+                    <img src="{{ asset('img/update_products/soollar.png') }}" alt="Soollar">
+                </div>
+                <a id="btn-soollar" class="a-btn-primary">Atualizar kits</a>
+            </div>
+            <div class="a-card dist-card">
+                <div class="dist-card__icon"><ion-icon name="server-outline"></ion-icon></div>
+                <h3>Distribuidora Edeltec</h3>
+                <div class="image-wrapper">
+                    <img src="{{ asset('img/update_products/edeltec.png') }}" alt="Edeltec">
+                </div>
+                <a id="btn-edeltec" class="a-btn-primary">Atualizar kits</a>
+            </div>
+        </div>
+
+        <div id="progress-container" class="mt-5" style="display: none;">
+            <x-progress-bar id="update-progress-bar" />
+        </div>
+
+        <div class="a-logblock mt-5">
+            <div class="is-flex is-justify-content-space-between is-align-items-center" style="margin-bottom:10px;">
+                <div class="a-logblock__title">Log de atualização</div>
+                <a id="btn-clear-terminal" class="a-btn-ghost" style="padding:.4rem .85rem; font-size:.75rem;">Limpar</a>
+            </div>
+            <div id="terminal-log" style="white-space: pre-wrap; color: #DDD8C9; min-height: 100px; font-family: monospace; font-size: 12.5px; line-height: 1.6;">
+                Alluz Energia® 2026 - Todos os direitos reservados
+                ----------------
+            </div>
+        </div>
+
     </div>
     <style>
-        .image-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100px;
-            width: 100%;
+        .dist-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+        .dist-card { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; }
+        .dist-card h3 { font-size: 16px; font-weight: 700 !important; }
+        .dist-card__icon {
+            width: 56px; height: 56px; border-radius: 16px; background: #FDECC5;
+            display: flex; align-items: center; justify-content: center; color: #B9740A;
         }
-
-        .image-wrapper img {
-            max-height: 100%;
-            max-width: 100%;
-            object-fit: contain;
-        }
+        .dist-card__icon ion-icon { font-size: 26px; }
+        .image-wrapper { display: flex; justify-content: center; align-items: center; height: 80px; width: 100%; }
+        .image-wrapper img { max-height: 100%; max-width: 100%; object-fit: contain; }
+        @media (max-width: 900px) { .dist-grid { grid-template-columns: 1fr; } }
     </style>
 
     <script>

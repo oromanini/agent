@@ -18,40 +18,45 @@ input[name="kit_id"] {
     cursor: pointer;
 }
 
-input[name="kit_id"]:checked + #all{
-    outline: 5px solid #f2a714;
+input[name="kit_id"]:checked + #all {
+    outline: 4px solid #F5B942;
 }
 
 /* CHECKED STYLES */
 .radio-image:checked + img {
-    outline: 5px solid #f2a714;
+    outline: 4px solid #F5B942;
 }
 
 .roof-img {
-    border: 1px solid #dfdfdf;
-    border-radius: 10px;
+    border: 1.5px solid #EFE9DA;
+    border-radius: 12px;
     padding: 5px;
+    background: #FFFFFF;
 }
 
 .roof-img:hover {
-    transition: width 0.2s;
-    border: 4px solid #f2a714;
+    transition: all 0.2s;
+    border: 3px solid #F5B942;
 }
+
 .proposalData {
-    color: #9ca3af;
+    color: #8A8578;
     font-size: 13pt;
 }
 
 .discount {
-    background-color: #eaeaea !important;
+    background-color: #F3EEE4 !important;
+    border-radius: 12px;
 }
 
 .my-box-shadow {
-    box-shadow: 0 0.5em 1em -0.125em rgb(10 10 10 / 10%), 0 0px 0 1px rgb(10 10 10 / 10%);
+    box-shadow: 0 1px 2px rgba(33, 29, 20, 0.04), 0 8px 24px -10px rgba(33, 29, 20, 0.10);
     margin: 0 10px;
     cursor: pointer;
-    border-radius: 10px;
+    border: 1.5px solid #EFE9DA;
+    border-radius: 14px;
     padding: 20px;
+    background: #FFFFFF;
 }
 
 #roof_div {
@@ -62,12 +67,13 @@ input[name="kit_id"]:checked + #all{
 }
 
 .my-box-shadow:hover {
-    transition: width 0.2s;
-    border: 4px solid #f2a714;
+    transition: all 0.2s;
+    border: 3px solid #F5B942;
 }
 
 hr {
     margin: 1rem 0 !important;
+    background-color: #EFE9DA;
 }
 
 @media (max-width: 866px) {
@@ -101,15 +107,14 @@ hr {
 
 /* Modern segmented radio for orientation */
 .orientation-segmented {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    width: min(100%, 920px);
-    margin: 0 auto;
-    padding: 6px;
-    border: 1px solid #f2a714;
-    border-radius: 999px;
-    background: rgba(9, 12, 20, 0.55);
+    display: inline-flex;
+    gap: 2px;
+    width: fit-content;
+    margin: 0;
+    padding: 3px;
+    border: 0;
+    border-radius: 12px;
+    background: #F3EEE4;
 }
 
 .orientation-option {
@@ -127,36 +132,37 @@ hr {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
-    min-height: 42px;
-    border-radius: 999px;
-    color: #bac3d8;
-    font-size: 0.95rem;
-    font-weight: 600;
-    transition: all 0.22s ease;
+    padding: 0 1.25rem;
+    min-height: 38px;
+    border-radius: 9px;
+    color: #8A8578;
+    font-size: 0.85rem;
+    font-weight: 700;
+    transition: all 0.18s ease;
     cursor: pointer;
     user-select: none;
 }
 
 .orientation-option input[type="radio"]:checked + span {
-    background: linear-gradient(120deg, #f4a409 0%, #ffbc0e 100%);
-    color: #121212;
-    box-shadow: 0 6px 14px -12px rgba(255, 188, 14, 0.95);
+    background: #FFFFFF;
+    color: #211F1A;
+    box-shadow: 0 1px 3px rgba(33, 29, 20, 0.15);
 }
 
 .orientation-option span:hover {
-    color: #f4d28a;
-    background: rgba(255, 255, 255, 0.05);
+    color: #211F1A;
 }
 
 @media (max-width: 866px) {
     .orientation-segmented {
+        display: grid;
         grid-template-columns: 1fr;
-        border-radius: 16px;
+        width: 100%;
+        border-radius: 14px;
     }
 
     .orientation-option span {
         min-height: 42px;
-        font-size: 0.98rem;
+        font-size: 0.95rem;
     }
 }

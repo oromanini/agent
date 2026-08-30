@@ -3,14 +3,12 @@
 @section('content')
     <div class="container is-fluid overflow-auto proposal-single-shell">
 
-            <div class="columns mt-2 ml-1">
-                <h3 class="title"><img src="/img/logo/alluz-icon.png" width="30" alt=".."> Nova Proposta</h3>
-            </div>
-            <div class="columns">
-                <div class="title-bottom-line" style="margin-left: 50px"></div>
+            <div class="a-page-head">
+                <h1>Nova proposta</h1>
             </div>
             <form action="{{ route('proposal.store') }}" method="post">
                 @csrf
+                <div class="a-card" style="margin-bottom:20px;">
                 <div class="columns">
                     <div class="column is-4">
                         <label for="client" class="label">Cliente</label>
@@ -132,8 +130,10 @@
                     @endif
                 </div>
 
-                <div class="columns" style="margin-top: 50px;">
-                    <label for="roof_structure" class="label">Selecione o telhado</label>
+                </div>
+
+                <div class="columns" style="margin-top: 30px;">
+                    <label for="roof_structure" class="label" style="font-size:1rem; font-weight:700;">Tipo de telhado</label>
                 </div>
                 <div class="columns" id="roof_div">
                     @foreach($roofs as $roof)
@@ -146,7 +146,10 @@
                         </div>
                     @endforeach
                 </div>
-                <div class="columns is-flex is-justify-content-center" style="margin-top: 15px; margin-bottom: 30px">
+                <div class="columns" style="margin-top: 20px;">
+                    <label class="label" style="font-size:1rem; font-weight:700;">Orientação</label>
+                </div>
+                <div class="columns is-flex is-justify-content-flex-start" style="margin-top: 0; margin-bottom: 30px">
                     <div class="column is-8">
                         <div id="orientation" class="orientation-segmented" role="radiogroup" aria-label="Orientação">
                             <label class="orientation-option">
@@ -165,8 +168,8 @@
                     </div>
                 </div>
                 <div class="column is-flex is-justify-content-center">
-                    <span class="button is-medium is-info " id="kitSearchSubmit">
-                        <ion-icon name="sunny-outline"></ion-icon>&nbsp;Buscar Kits
+                    <span class="a-btn-primary" id="kitSearchSubmit" style="padding:.8rem 1.6rem; font-size:.95rem;">
+                        <ion-icon name="search-outline"></ion-icon>&nbsp;Buscar kits compatíveis
                     </span>
                 </div>
                 <hr style="margin: 10px">

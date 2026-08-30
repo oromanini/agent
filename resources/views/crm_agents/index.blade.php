@@ -3,130 +3,49 @@
 @section('content')
     <style>
         .crm-filters,
-        .crm-new-lead-form {
-            margin-bottom: 0;
-        }
+        .crm-new-lead-form { margin-bottom: 0; }
 
         .crm-kanban {
             display: grid;
             grid-auto-flow: column;
-            grid-auto-columns: minmax(250px, 250px);
+            grid-auto-columns: minmax(240px, 240px);
             gap: 14px;
             overflow-x: auto;
-            padding: 6px 4px 12px;
+            padding: 6px 2px 12px;
         }
 
         .crm-column {
             min-height: 320px;
-            background: #f8f9fb;
-            border: 1px solid #dbe2f0;
-            border-radius: 12px;
+            background: #F3EEE4;
+            border: 1px solid #EFE9DA;
+            border-radius: 16px;
+            padding: 14px !important;
+            box-shadow: none !important;
             margin-bottom: 0 !important;
         }
+        .crm-column .title.is-6 { font-size: .8rem; font-weight: 700 !important; color: #4A473E; margin-bottom: 12px; }
 
         .crm-card {
-            background: #1a2233;
-            border: 1px solid #2f3b52;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
-            transition: transform .2s ease, box-shadow .2s ease;
+            background: #FFFFFF !important;
+            border: 1px solid #EFE9DA !important;
+            border-radius: 12px !important;
+            box-shadow: 0 1px 2px rgba(33, 29, 20, 0.06) !important;
+            transition: transform .15s ease, box-shadow .15s ease;
         }
+        .crm-card .card-content { min-width: 0; word-break: break-word; padding: 12px; }
+        .crm-card strong { color: #211F1A; font-size: .85rem; }
+        .crm-card p { color: #8A8578; font-size: .78rem; overflow-wrap: anywhere; }
+        .crm-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -8px rgba(33, 29, 20, 0.15) !important; }
 
-        .crm-card strong {
-            color: #f8fafc;
-        }
-
-        .crm-card p {
-            color: #cbd5e1;
-        }
-
-        .crm-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 14px 28px rgba(15, 23, 42, 0.11);
-        }
-
-        .crm-card .card-content {
-            min-width: 0;
-            word-break: break-word;
-        }
-
-        .crm-card p {
-            overflow-wrap: anywhere;
-        }
-
-        .crm-card .button {
-            border-radius: 8px;
-        }
-
-        .crm-lead-modal .modal-card {
-            background: #111827;
-            border: 1px solid #2b3548;
-            border-radius: 14px;
-            overflow: hidden;
-            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
-        }
-
-        .crm-lead-modal .modal-card-head,
-        .crm-lead-modal .modal-card-foot,
-        .crm-lead-modal .modal-card-body {
-            background: #111827;
-            border-color: #2b3548;
-            color: #e5e7eb;
-        }
-
-        .crm-lead-modal .modal-card-title,
-        .crm-lead-modal .title,
-        .crm-lead-modal strong {
-            color: #f9fafb;
-        }
-
-        .crm-lead-modal p,
-        .crm-lead-modal small,
-        .crm-lead-modal label,
-        .crm-lead-modal span {
-            color: #cbd5e1;
-        }
-
-        .crm-lead-modal .tabs li a {
-            color: #e5e7eb;
-            background: #0f172a;
-            border-color: #374151;
-        }
-
-        .crm-lead-modal .tabs li.is-active a {
-            background: #1f2937;
-            border-bottom-color: #1f2937;
-            color: #fbbf24;
-        }
-
-        .crm-lead-modal .textarea {
-            background: #0b1220;
-            border-color: #334155;
-            color: #f8fafc;
-        }
-
-        .crm-lead-modal .textarea:focus {
-            border-color: #fbbf24;
-            box-shadow: 0 0 0 0.125em rgba(251, 191, 36, 0.25);
-        }
-
-        .crm-lead-modal .message.is-light .message-body {
-            background: #0f172a;
-            border-color: #334155;
-            color: #e2e8f0;
-        }
-
-        .crm-lead-modal .delete {
-            background-color: rgba(148, 163, 184, 0.25);
-        }
-
-        .crm-lead-modal .delete:hover {
-            background-color: rgba(148, 163, 184, 0.4);
-        }
+        .crm-lead-modal .tabs li.is-active a { color: #B9740A; border-bottom-color: #B9740A; }
+        .crm-new-lead-card { margin-top: 16px; }
     </style>
 
-    <div class="box">
-        <h1 class="title is-4">CRM Agentes</h1>
+    <div class="a-page-head">
+        <h1>CRM Agentes</h1>
+    </div>
+
+    <div class="a-card" style="margin-bottom:20px;">
 
         <form method="get" action="{{ route('crm-agentes.index') }}" class="columns is-multiline crm-filters">
             <div class="column is-3">

@@ -7,29 +7,48 @@
     <style>
         .switch { display: none; }
         .brand-image { max-width: 100px; max-height: 40px; object-fit: contain; }
+        /* segmented tabs */
+        nav.tabs.brand-tabs { margin-bottom: 20px; }
+        nav.tabs.brand-tabs ul {
+            display: inline-flex; background: #F3EEE4; border-radius: 12px; padding: 3px; gap: 2px; border: 0;
+        }
+        nav.tabs.brand-tabs li { margin: 0; }
+        nav.tabs.brand-tabs li a {
+            border: 0 !important; background: transparent; color: #8A8578;
+            padding: .5rem 1.2rem; border-radius: 9px; font-size: .8rem; font-weight: 700;
+        }
+        nav.tabs.brand-tabs li.is-active a {
+            background: #FFFFFF; color: #211F1A; box-shadow: 0 1px 3px rgba(33,29,20,.15);
+        }
+        .brands-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
     </style>
 
     <div class="container is-fluid overflow-auto">
-        <nav class="tabs is-boxed is-fullwidth is-large" style="margin-bottom: 0">
-            <div class="container">
-                <ul>
-                    <li id="panels-li" class="mytab is-active" data-tab="panels">
-                        <a><ion-icon name="flash-outline"></ion-icon> Marcas de Módulos</a>
-                    </li>
-                    <li id="inverters-li" class="mytab" data-tab="inverters">
-                        <a><ion-icon name="camera-outline"></ion-icon> Marcas de Inversores</a>
-                    </li>
-                </ul>
-            </div>
+
+        <div class="a-page-head">
+            <h1>Gestão de Marcas</h1>
+        </div>
+
+        <nav class="tabs brand-tabs">
+            <ul>
+                <li id="panels-li" class="mytab is-active" data-tab="panels">
+                    <a><ion-icon name="flash-outline"></ion-icon> Módulos</a>
+                </li>
+                <li id="inverters-li" class="mytab" data-tab="inverters">
+                    <a><ion-icon name="hardware-chip-outline"></ion-icon> Inversores</a>
+                </li>
+            </ul>
         </nav>
 
-        <div class="box overflow-auto">
+        <div class="a-table-wrap" style="padding: 1.2rem 1.4rem;">
             <div id="panels" class="content-tab">
-                <div class="level">
-                    <div class="level-left"><h4 class="title is-5">Marcas de Módulo Cadastradas</h4></div>
-                    <div class="level-right"><button class="button is-success open-modal-btn" data-type="panel" data-mode="add">Adicionar Nova Marca</button></div>
+                <div class="brands-toolbar">
+                    <h4 class="title is-5" style="font-size:1rem;">Marcas de módulo</h4>
+                    <button class="a-btn-primary open-modal-btn" data-type="panel" data-mode="add">
+                        <ion-icon name="add-outline"></ion-icon> Adicionar marca
+                    </button>
                 </div>
-                <table class="table is-striped is-fullwidth" id="panel-brands-table">
+                <table class="table is-fullwidth" id="panel-brands-table">
                     <thead>
                     <tr>
                         <th>Logo</th>
@@ -65,11 +84,13 @@
             </div>
 
             <div id="inverters" class="content-tab" style="display:none">
-                <div class="level">
-                    <div class="level-left"><h4 class="title is-5">Marcas de Inversor Cadastradas</h4></div>
-                    <div class="level-right"><button class="button is-success open-modal-btn" data-type="inverter" data-mode="add">Adicionar Nova Marca</button></div>
+                <div class="brands-toolbar">
+                    <h4 class="title is-5" style="font-size:1rem;">Marcas de inversor</h4>
+                    <button class="a-btn-primary open-modal-btn" data-type="inverter" data-mode="add">
+                        <ion-icon name="add-outline"></ion-icon> Adicionar marca
+                    </button>
                 </div>
-                <table class="table is-striped is-fullwidth" id="inverter-brands-table">
+                <table class="table is-fullwidth" id="inverter-brands-table">
                     <thead>
                     <tr>
                         <th>Logo</th>

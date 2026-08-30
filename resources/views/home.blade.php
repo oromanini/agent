@@ -4,485 +4,215 @@
     @php
         $authUserPermission = \Illuminate\Support\Facades\Auth::user()->permission;
         $permission = match ($authUserPermission) {
-          'admin' => ['Administrador', 'is-dark'],
-          'agent' => ['Agente de vendas', 'is-warning'],
-          'technical' => ['Responsável Técnico(a)', 'is-link'],
-          'financial' => ['Analista de financiamento', 'is-info'],
-          'installer' => ['Coordenador de instalação', 'is-success'],
-          'contract' => ['Gestor de contratos', 'is-danger'],
+          'admin' => ['Administrador'],
+          'agent' => ['Agente de vendas'],
+          'technical' => ['Responsável técnico(a)'],
+          'financial' => ['Analista de financiamento'],
+          'installer' => ['Coordenador de instalação'],
+          'contract' => ['Gestor de contratos'],
+          default => ['Usuário'],
         };
     @endphp
 
     <style>
-        .toggle-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            border-radius: .5em;
-            padding: .125em;
-            background-image: linear-gradient(to bottom, #d0c4b8, #f5ece5);
-            box-shadow: 0 1px 1px rgb(255 255 255 / .6);
-        }
-        .toggle-checkbox {
-            -webkit-appearance: none;
-            appearance: none;
-            position: absolute;
-            z-index: 1;
-            border-radius: inherit;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
-        }
-        .toggle-container {
-            display: flex;
-            align-items: center;
-            position: relative;
-            border-radius: .375em;
-            width: 3em;
-            height: 1.5em;
-            background-color: #e1dacd;
-            box-shadow: inset 0 0 .0625em .125em rgb(255 255 255 / .2), inset 0 .0625em .125em rgb(0 0 0 / .4);
-            transition: background-color .4s linear;
-        }
-        .toggle-checkbox:checked + .toggle-container {
-            background-color: #f3b519;
-        }
-        .toggle-button {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: absolute;
-            left: .0625em;
-            border-radius: .3125em;
-            width: 1.375em;
-            height: 1.375em;
-            background-color: #e4ddcf;
-            box-shadow: inset 0 -.0625em .0625em .125em rgb(0 0 0 / .1), inset 0 -.125em .0625em rgb(0 0 0 / .2), inset 0 .1875em .0625em rgb(255 255 255 / .3), 0 .125em .125em rgb(0 0 0 / .5);
-            transition: left .4s;
-        }
-        .toggle-checkbox:checked + .toggle-container > .toggle-button {
-            left: 1.5625em;
-        }
-        .toggle-button-circles-container {
-            display: grid;
-            grid-template-columns: repeat(3, min-content);
-            gap: .125em;
-            position: absolute;
-            margin: 0 auto;
-        }
-        .toggle-button-circle {
-            border-radius: 50%;
-            width: .125em;
-            height: .125em;
-            background-image: radial-gradient(circle at 50% 0, #f6f0e9, #bebcb0);
+        .dash-kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-bottom: 20px; }
+        .dash-2col { display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; margin-bottom: 20px; }
+        .dash-ranking-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+        .dash-ranking-row .top { display: flex; justify-content: space-between; font-size: 13px; }
+        .dash-list { display: flex; flex-direction: column; gap: 10px; max-height: 240px; overflow-y: auto; }
+        .dash-list .row { display: flex; align-items: center; gap: 10px; font-size: 13.5px; font-weight: 500; }
+        .quick-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 18px 0 26px; }
+        .home-toggle-row { display: flex; align-items: center; gap: 10px; }
+        @media (max-width: 900px) {
+            .dash-kpis, .dash-2col, .quick-grid { grid-template-columns: 1fr; }
         }
     </style>
 
     <div class="container is-fluid">
-        <div class="box">
-            <div class="header">
-                <div class="level">
-                    <div class="level-left">
-                        <h2 class="title is-1 pb-4">
-                            Bem-vindo, {{auth()->user()->name}}! <br>
-                            <span class="tag is-large {{ $permission[1] }}">
-                                @if(auth()->user()->isAdmin) <ion-icon name="person-add-outline"></ion-icon> @endif &nbsp; {{ $permission[0] }}
-                            </span>
-                        </h2>
-                    </div>
-                    <br>
-                    @if(auth()->user()->isAdmin)
-                        <div class="level-right">
-                            <div class="toggle-wrapper">
-                                <input id="dashboard-toggle-checkbox" class="toggle-checkbox" type="checkbox">
-                                <div class="toggle-container">
-                                    <div class="toggle-button">
-                                        <div class="toggle-button-circles-container">
-                                            <div class="toggle-button-circle"></div>
-                                            <div class="toggle-button-circle"></div>
-                                            <div class="toggle-button-circle"></div>
-                                            <div class="toggle-button-circle"></div>
-                                            <div class="toggle-button-circle"></div>
-                                            <div class="toggle-button-circle"></div>
-                                            <div class="toggle-button-circle"></div>
-                                            <div class="toggle-button-circle"></div>
-                                            <div class="toggle-button-circle"></div>
-                                            <div class="toggle-button-circle"></div>
-                                            <div class="toggle-button-circle"></div>
-                                            <div class="toggle-button-circle"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
-                </div>
+
+        <div class="a-page-head">
+            <div>
+                <h1>Bem-vindo, {{ auth()->user()->name }}</h1>
+                <p>{{ $permission[0] }}</p>
             </div>
-
             @if(auth()->user()->isAdmin)
-                {{-- Conteúdo da Dashboard --}}
-                <div id="admin-dashboard-body">
-                    @isset($dashboard)
-                        <div class="body">
-                            {{-- Seção de Contadores --}}
-                            <div class="columns is-multiline is-centered">
-                                <div class="column is-4">
-                                    <div class="box has-text-centered p-card">
-                                        <p class="title is-3">{{ $dashboard['proposals'] }}</p>
-                                        <p class="subtitle is-6">Orçamentos únicos gerados (60 dias)</p>
-                                    </div>
-                                </div>
-                                <div class="column is-4">
-                                    <div class="box has-text-centered p-card">
-                                        <p class="title is-3">R$ {{ number_format($dashboard['average_ticket'], 2, ',', '.') }}</p>
-                                        <p class="subtitle is-6">Ticket Médio orçamentos gerados (60 dias)</p>
-                                    </div>
-                                </div>
-                                <div class="column is-4">
-                                    <div class="box has-text-centered p-card">
-                                        <p class="title is-3">R$ {{ number_format($dashboard['total_sales'], 2, ',', '.') }}</p>
-                                        <p class="subtitle is-6">Total orçado (60 dias)</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {{-- Seção de Gráficos --}}
-                            <div class="columns is-multiline is-centered">
-                                <div class="column is-6">
-                                    <div class="box p-card">
-                                        <h4 class="title is-5">Propostas: Comparativo</h4>
-                                        <canvas id="proposalsComparisonChart"></canvas>
-                                    </div>
-                                </div>
-                                <div class="column is-6">
-                                    <div class="box p-card">
-                                        <h4 class="title is-5">Valor de Propostas por Dia</h4>
-                                        <canvas id="proposalsValueChart"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {{-- Seção de Tabelas/Listagens --}}
-                            <div class="columns is-centered">
-                                <div class="column is-12">
-                                    <div class="box p-card">
-                                        <h4 class="title is-5">Propostas para Aprovação ({{ $dashboard['proposals_sent_count'] }})</h4>
-                                        <div class="list-clients-wrapper" style="max-height: 200px; overflow-y: auto;">
-                                            @if($dashboard['proposals_sent_clients']->isNotEmpty())
-                                                <table class="table is-fullwidth is-striped">
-                                                    <thead>
-                                                    <tr>
-                                                        <th>Cliente</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    @foreach($dashboard['proposals_sent_clients'] as $clientName)
-                                                        <tr>
-                                                            <td>{{ $clientName }}</td>
-                                                        </tr>
-                                                    @endforeach
-                                                    </tbody>
-                                                </table>
-                                            @else
-                                                <p>Nenhuma proposta para aprovação.</p>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="columns is-centered">
-                                <div class="column is-12">
-                                    <div class="box p-card">
-                                        <h4 class="title is-5">Propostas Fechadas ({{ $dashboard['closed_proposals_count'] }})</h4>
-                                        <div class="list-clients-wrapper" style="max-height: 200px; overflow-y: auto;">
-                                            @if($dashboard['closed_proposals_clients']->isNotEmpty())
-                                                <table class="table is-fullwidth is-striped">
-                                                    <thead>
-                                                    <tr>
-                                                        <th>Cliente</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    @foreach($dashboard['closed_proposals_clients'] as $clientName)
-                                                        <tr>
-                                                            <td>{{ $clientName }}</td>
-                                                        </tr>
-                                                    @endforeach
-                                                    </tbody>
-                                                </table>
-                                            @else
-                                                <p>Nenhuma proposta fechada.</p>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="columns is-centered">
-                                <div class="column is-12">
-                                    <div class="box p-card">
-                                        <h4 class="title is-5">Ranking de Agentes</h4>
-                                        <div class="list-clients-wrapper" style="max-height: 200px; overflow-y: auto;">
-                                            @if($dashboard['ranking_users']->isNotEmpty())
-                                                <table class="table is-fullwidth is-striped">
-                                                    <thead>
-                                                    <tr>
-                                                        <th>Agente</th>
-                                                        <th>Propostas</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    @foreach($dashboard['ranking_users'] as $user)
-                                                        <tr>
-                                                            <td>{{ $user->name }}</td>
-                                                            <td>{{ $user->proposals_count }}</td>
-                                                        </tr>
-                                                    @endforeach
-                                                    </tbody>
-                                                </table>
-                                            @else
-                                                <p>Nenhum dado de ranking.</p>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endisset
-                </div>
-
-                {{-- Conteúdo do Body Padrão --}}
-                <div id="default-body" style="display: none;">
-                    <div class="body">
-                        <div class="columns mt50">
-                            <h3 class="title">Por onde você quer começar?</h3>
-                        </div>
-                        <div class="columns mt50 mb50 is-flex is-flex-wrap-wrap is-wra" id="home-buttons">
-                            <div class="column is-flex is-justify-content-center">
-                                <a href="https://www.youtube.com/playlist?list=PL-v9iwlHmGNKo6aKbDvzoQaycqSQlYV57" class="p-red-button">
-                                    <ion-icon name="logo-youtube"></ion-icon>  Treinamento
-                                </a>
-                            </div>
-                            <div class="column is-flex is-justify-content-center">
-                                <a class="p-yellow-button" href="{{ route('proposal.create') }}">
-                                    <ion-icon name="document-outline"></ion-icon>  Nova proposta
-                                </a>
-                            </div>
-                            <div class="column is-flex is-justify-content-center">
-                                <a href="{{ route('simulator.index') }}" class="p-yellow-button">
-                                    <ion-icon name="cash-outline"></ion-icon>  Simulador
-                                </a>
-                            </div>
-                            <div class="column is-flex is-justify-content-center">
-                                <a href="{{ route('client.index') }}" class="p-yellow-button">
-                                    <ion-icon name="people-outline"></ion-icon> clientes
-                                </a>
-                            </div>
-                            <div class="column is-flex is-justify-content-center">
-                                <a class="p-yellow-button" href="{{ route('proposal.index') }}">
-                                    <ion-icon name="documents-outline"></ion-icon> Propostas
-                                </a>
-                            </div>
-                        </div>
-                        <div class="columns mt50">
-                            <div class="column is-4">
-                                <iframe  src="https://www.youtube.com/embed/d1rXQf4FNR8?si=fiQ6YuJOnHlcsVdf"
-                                         title="YouTube video player" frameborder="0"
-                                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                         allowfullscreen></iframe>
-                            </div>
-                            <div class="column is-4">
-                                <iframe src="https://www.youtube.com/embed/lAisaTltY3E?si=O6KXrQQ2nWu7Ucrg"
-                                        title="YouTube video player" frameborder="0"
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                        allowfullscreen></iframe>
-                            </div>
-                            <div class="column is-4">
-                                <iframe src="https://www.youtube.com/embed/4XDZLUKwZsc?si=DQ6R-F8dlvBcTIM_"
-                                        title="YouTube video player" frameborder="0"
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                        allowfullscreen></iframe>
-                            </div>
-                            <div class="column is-4"></div>
-                        </div>
-                    </div>
-                </div>
-            @else
-                <div class="body">
-                    <div class="columns mt50">
-                        <h3 class="title">Por onde você quer começar?</h3>
-                    </div>
-                    <div class="columns mt50 mb50 is-flex is-flex-wrap-wrap is-wra" id="home-buttons">
-                        <div class="column is-flex is-justify-content-center">
-                            <a href="https://www.youtube.com/playlist?list=PL-v9iwlHmGNKo6aKbDvzoQaycqSQlYV57" class="p-red-button">
-                                <ion-icon name="logo-youtube"></ion-icon>  Treinamento
-                            </a>
-                        </div>
-                        <div class="column is-flex is-justify-content-center">
-                            <a class="p-yellow-button" href="{{ route('proposal.create') }}">
-                                <ion-icon name="document-outline"></ion-icon>  Nova proposta
-                            </a>
-                        </div>
-                        <div class="column is-flex is-justify-content-center">
-                            <a href="{{ route('simulator.index') }}" class="p-yellow-button">
-                                <ion-icon name="cash-outline"></ion-icon>  Simulador
-                            </a>
-                        </div>
-                        <div class="column is-flex is-justify-content-center">
-                            <a href="{{ route('client.index') }}" class="p-yellow-button">
-                                <ion-icon name="people-outline"></ion-icon> clientes
-                            </a>
-                        </div>
-                        <div class="column is-flex is-justify-content-center">
-                            <a class="p-yellow-button" href="{{ route('proposal.index') }}">
-                                <ion-icon name="documents-outline"></ion-icon> Propostas
-                            </a>
-                        </div>
-                    </div>
-                    <div class="columns mt50">
-                        <div class="column is-4">
-                            <iframe  src="https://www.youtube.com/embed/d1rXQf4FNR8?si=fiQ6YuJOnHlcsVdf"
-                                     title="YouTube video player" frameborder="0"
-                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                     allowfullscreen></iframe>
-                        </div>
-                        <div class="column is-4">
-                            <iframe src="https://www.youtube.com/embed/lAisaTltY3E?si=O6KXrQQ2nWu7Ucrg"
-                                    title="YouTube video player" frameborder="0"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowfullscreen></iframe>
-                        </div>
-                        <div class="column is-4">
-                            <iframe src="https://www.youtube.com/embed/4XDZLUKwZsc?si=DQ6R-F8dlvBcTIM_"
-                                    title="YouTube video player" frameborder="0"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowfullscreen></iframe>
-                        </div>
-                        <div class="column is-4"></div>
-                    </div>
-                </div>
+                <label class="home-toggle-row" style="cursor:pointer; font-size:13px; font-weight:600; color:#8A8578;">
+                    <input id="dashboard-toggle-checkbox" type="checkbox" style="width:16px; height:16px;">
+                    Ver métricas
+                </label>
             @endif
         </div>
+
+        @if(auth()->user()->isAdmin)
+            {{-- Dashboard --}}
+            <div id="admin-dashboard-body">
+                @isset($dashboard)
+                    <div class="dash-kpis">
+                        <div class="a-kpi a-kpi--accent">
+                            <div class="a-kpi__value">{{ $dashboard['proposals'] }}</div>
+                            <div class="a-kpi__label">Orçamentos únicos gerados</div>
+                            <div class="a-kpi__meta">últimos 60 dias</div>
+                        </div>
+                        <div class="a-kpi">
+                            <div class="a-kpi__value">R$ {{ number_format($dashboard['average_ticket'], 2, ',', '.') }}</div>
+                            <div class="a-kpi__label">Ticket médio dos orçamentos</div>
+                            <div class="a-kpi__meta">últimos 60 dias</div>
+                        </div>
+                        <div class="a-kpi">
+                            <div class="a-kpi__value">R$ {{ number_format($dashboard['total_sales'], 2, ',', '.') }}</div>
+                            <div class="a-kpi__label">Total orçado</div>
+                            <div class="a-kpi__meta">últimos 60 dias</div>
+                        </div>
+                    </div>
+
+                    <div class="dash-2col">
+                        <div class="a-card">
+                            <div style="font-size:15px; font-weight:700; margin-bottom:16px;">Propostas: comparativo mensal</div>
+                            <canvas id="proposalsComparisonChart" height="140"></canvas>
+                        </div>
+                        <div class="a-card">
+                            <div style="font-size:15px; font-weight:700; margin-bottom:16px;">Ranking de agentes</div>
+                            @forelse($dashboard['ranking_users'] as $user)
+                                @php
+                                    $max = max(1, $dashboard['ranking_users']->max('proposals_count'));
+                                    $pct = round(($user->proposals_count / $max) * 100);
+                                @endphp
+                                <div class="dash-ranking-row">
+                                    <div class="top">
+                                        <span style="font-weight:600;">{{ $user->name }}</span>
+                                        <span style="color:#B4AC98;">{{ $user->proposals_count }} propostas</span>
+                                    </div>
+                                    <div class="a-bar"><span style="width: {{ $pct }}%;"></span></div>
+                                </div>
+                            @empty
+                                <p style="color:#8A8578;">Nenhum dado de ranking.</p>
+                            @endforelse
+                        </div>
+                    </div>
+
+                    <div class="a-card" style="margin-bottom:16px;">
+                        <div style="font-size:15px; font-weight:700; margin-bottom:14px;">
+                            Valor de propostas por dia
+                        </div>
+                        <canvas id="proposalsValueChart" height="120"></canvas>
+                    </div>
+
+                    <div class="dash-2col" style="grid-template-columns:1fr 1fr;">
+                        <div class="a-card">
+                            <div style="font-size:15px; font-weight:700; margin-bottom:14px;">
+                                Propostas para aprovação ({{ $dashboard['proposals_sent_count'] }})
+                            </div>
+                            <div class="dash-list">
+                                @forelse($dashboard['proposals_sent_clients'] as $clientName)
+                                    <div class="row"><x-avatar :name="$clientName" /> {{ $clientName }}</div>
+                                @empty
+                                    <p style="color:#8A8578;">Nenhuma proposta para aprovação.</p>
+                                @endforelse
+                            </div>
+                        </div>
+                        <div class="a-card">
+                            <div style="font-size:15px; font-weight:700; margin-bottom:14px;">
+                                Propostas fechadas ({{ $dashboard['closed_proposals_count'] }})
+                            </div>
+                            <div class="dash-list">
+                                @forelse($dashboard['closed_proposals_clients'] as $clientName)
+                                    <div class="row"><x-avatar :name="$clientName" /> {{ $clientName }}</div>
+                                @empty
+                                    <p style="color:#8A8578;">Nenhuma proposta fechada.</p>
+                                @endforelse
+                            </div>
+                        </div>
+                    </div>
+                @endisset
+            </div>
+
+            {{-- Default body --}}
+            <div id="default-body" style="display: none;">
+                @include('partials.home-quickstart')
+            </div>
+        @else
+            @include('partials.home-quickstart')
+        @endif
     </div>
 
     @push('scripts')
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function () {
                 const dashboard = @json($dashboard ?? []);
                 const dashboardBody = document.getElementById('admin-dashboard-body');
                 const defaultBody = document.getElementById('default-body');
                 const toggleCheckbox = document.getElementById('dashboard-toggle-checkbox');
                 const adminPermission = '{{ auth()->user()->isAdmin }}';
 
-                if (adminPermission) {
+                if (adminPermission && dashboardBody && defaultBody && toggleCheckbox) {
                     const view = localStorage.getItem('admin-view') || 'dashboard';
-
                     const updateView = (currentView) => {
-                        if (currentView === 'dashboard') {
-                            dashboardBody.style.display = 'block';
-                            defaultBody.style.display = 'none';
-                            toggleCheckbox.checked = true;
-                        } else {
-                            dashboardBody.style.display = 'none';
-                            defaultBody.style.display = 'block';
-                            toggleCheckbox.checked = false;
-                        }
+                        const isDash = currentView === 'dashboard';
+                        dashboardBody.style.display = isDash ? 'block' : 'none';
+                        defaultBody.style.display = isDash ? 'none' : 'block';
+                        toggleCheckbox.checked = isDash;
                     };
-
                     updateView(view);
-
-                    toggleCheckbox.addEventListener('change', function() {
+                    toggleCheckbox.addEventListener('change', function () {
                         const newView = this.checked ? 'dashboard' : 'default';
                         localStorage.setItem('admin-view', newView);
                         updateView(newView);
                     });
                 }
 
+                const AMBER = '#F5B942';
+                const AMBER_SOFT = 'rgba(245, 185, 66, 0.18)';
+                const GRID = 'rgba(33, 29, 20, 0.06)';
+                const TICK = '#8A8578';
 
-                if (dashboard.comparison_chart_data) {
-                    const ctxComparison = document.getElementById('proposalsComparisonChart').getContext('2d');
-                    new Chart(ctxComparison, {
+                if (dashboard.comparison_chart_data && document.getElementById('proposalsComparisonChart')) {
+                    new Chart(document.getElementById('proposalsComparisonChart').getContext('2d'), {
                         type: 'bar',
                         data: {
                             labels: dashboard.comparison_chart_data.labels,
                             datasets: [{
                                 label: 'Propostas',
                                 data: dashboard.comparison_chart_data.data,
-                                backgroundColor: [
-                                    'rgba(54, 162, 235, 0.6)',
-                                    'rgba(255, 206, 86, 0.6)',
-                                    'rgba(75, 192, 192, 0.6)'
-                                ],
-                                borderColor: [
-                                    'rgba(54, 162, 235, 1)',
-                                    'rgba(255, 206, 86, 1)',
-                                    'rgba(75, 192, 192, 1)'
-                                ],
-                                borderWidth: 1
+                                backgroundColor: AMBER,
+                                borderRadius: 8,
+                                maxBarThickness: 52
                             }]
                         },
                         options: {
                             responsive: true,
+                            plugins: { legend: { display: false } },
                             scales: {
-                                y: { beginAtZero: true }
+                                y: { beginAtZero: true, grid: { color: GRID }, ticks: { color: TICK } },
+                                x: { grid: { display: false }, ticks: { color: TICK } }
                             }
                         }
                     });
                 }
 
-                if (dashboard.value_by_day_chart_data) {
-                    const ctxValue = document.getElementById('proposalsValueChart').getContext('2d');
+                if (dashboard.value_by_day_chart_data && document.getElementById('proposalsValueChart')) {
                     const valueData = dashboard.value_by_day_chart_data.map(item => item.total_value);
                     const valueLabels = dashboard.value_by_day_chart_data.map(item => new Date(item.date).toLocaleDateString('pt-BR'));
-
-                    new Chart(ctxValue, {
+                    new Chart(document.getElementById('proposalsValueChart').getContext('2d'), {
                         type: 'line',
                         data: {
                             labels: valueLabels,
                             datasets: [{
-                                label: 'Valor de Vendas por Dia',
+                                label: 'Valor por dia',
                                 data: valueData,
-                                borderColor: 'rgba(75, 192, 192, 1)',
-                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                borderColor: AMBER,
+                                backgroundColor: AMBER_SOFT,
                                 fill: true,
-                                tension: 0.1
+                                tension: 0.25,
+                                pointRadius: 2
                             }]
                         },
                         options: {
                             responsive: true,
+                            plugins: { legend: { display: false } },
                             scales: {
-                                y: { beginAtZero: true }
-                            }
-                        }
-                    });
-                }
-
-                if (dashboard.ranking_chart_data) {
-                    const ctxRanking = document.getElementById('rankingChart').getContext('2d');
-                    const rankingLabels = Object.keys(dashboard.ranking_chart_data);
-                    const rankingData = Object.values(dashboard.ranking_chart_data);
-
-                    new Chart(ctxRanking, {
-                        type: 'bar',
-                        data: {
-                            labels: rankingLabels,
-                            datasets: [{
-                                label: 'Propostas Emitidas',
-                                data: rankingData,
-                                backgroundColor: 'rgba(153, 102, 255, 0.6)',
-                                borderColor: 'rgba(153, 102, 255, 1)',
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            indexAxis: 'y',
-                            responsive: true,
-                            scales: {
-                                x: { beginAtZero: true }
+                                y: { beginAtZero: true, grid: { color: GRID }, ticks: { color: TICK } },
+                                x: { grid: { display: false }, ticks: { color: TICK } }
                             }
                         }
                     });

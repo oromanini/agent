@@ -1,45 +1,35 @@
 @extends('base')
 
 @section('content')
+    <style>
+        nav.tabs.a-tabs { margin-bottom: 20px; }
+        nav.tabs.a-tabs ul { display: inline-flex; background: #F3EEE4; border-radius: 12px; padding: 3px; gap: 2px; border: 0; }
+        nav.tabs.a-tabs li { margin: 0; }
+        nav.tabs.a-tabs li a { border: 0 !important; background: transparent; color: #8A8578 !important; padding: .5rem 1.2rem; border-radius: 9px; font-size: .82rem !important; font-weight: 700; }
+        nav.tabs.a-tabs li.is-active a { background: #FFFFFF; color: #211F1A !important; box-shadow: 0 1px 3px rgba(33,29,20,.15); }
+    </style>
+
     <div class="container is-fluid overflow-auto">
-        <nav class="tabs is-boxed is-fullwidth is-large" style="margin-bottom: 0">
-            <div class="container">
-                <ul>
-                    <li class=" mytab is-active" onclick="openTab(event,'instalacao')"><a
-                            style="color: #6b7280; font-size: 12pt">
-                            <ion-icon name="build-outline"></ion-icon>
-                            Instalação</a></li>
-                    <li class=" mytab" onclick="openTab(event,'fotos')"><a
-                            style="color: #6b7280; font-size: 12pt">
-                            <ion-icon name="camera-outline"></ion-icon>
-                            Fotos</a></li>
-                    <li class=" mytab" onclick="openTab(event,'custos')"><a
-                            style="color: #6b7280; font-size: 12pt">
-                            <ion-icon name="cash-outline"></ion-icon>
-                            Custos Adicionais</a></li>
-                </ul>
-            </div>
+
+        <div class="a-page-head">
+            <h1>Instalação — Proposta #{{ $installation->proposal->id }}</h1>
+            <a class="a-btn-ghost" href="{{ route('installation.index') }}">Voltar</a>
+        </div>
+        <p style="margin:-0.8rem 0 1rem; color:#8A8578; font-size:0.9rem;">{{ $installation->proposal->client->name }}</p>
+
+        <div style="display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;">
+            <span class="a-pill a-pill--blue">Status: {{ $installation->status->name }}</span>
+            <span class="a-pill a-pill--amber">Aguardando entrega</span>
+        </div>
+
+        <nav class="tabs a-tabs">
+            <ul>
+                <li class="mytab is-active" onclick="openTab(event,'instalacao')"><a><ion-icon name="build-outline"></ion-icon> Instalação</a></li>
+                <li class="mytab" onclick="openTab(event,'fotos')"><a><ion-icon name="camera-outline"></ion-icon> Fotos</a></li>
+                <li class="mytab" onclick="openTab(event,'custos')"><a><ion-icon name="cash-outline"></ion-icon> Custos adicionais</a></li>
+            </ul>
         </nav>
-        <div class="box overflow-auto">
-            <div class="columns mt-2 ml-1">
-                <h3 class="title"><img src="/img/logo/alluz-icon.png" width="30" alt=".."> Instalação</h3>
-            </div>
-            <br>
-            <div class="columns">
-                <div class="column">
-                    <span class="tag is-info is-light" style="font-size: 16pt">
-                        <span class="icon"></span>{{ 'Proposta #' . $installation->proposal->id . ' - ' .$installation->proposal->client->name }}
-                    </span>
-                    <span class="tag is-info" style="font-size: 16pt">
-                        <span class="icon"><ion-icon name="pie-chart-outline"></ion-icon></span> &nbsp;&nbsp;{{ 'Status: ' . $installation->status->name }}
-                    </span>
-                    <span class="tag is-warning" style="font-size: 16pt">
-{{--                        TODO: Vinculate with delivery--}}
-                        <span class="icon"><ion-icon name="warning-outline"></ion-icon></span> &nbsp;&nbsp;{{ 'Aguardando entrega' }}
-                    </span>
-                </div>
-            </div>
-            <br>
+        <div class="overflow-auto">
 
             <div id="instalacao" class="content-tab">
                 @include('installation.tabs.general')
