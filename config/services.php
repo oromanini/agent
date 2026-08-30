@@ -30,4 +30,11 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'ghostscript' => [
+        'enabled' => env('GHOSTSCRIPT_ENABLED', true),
+        'bin' => env('GHOSTSCRIPT_BIN', 'gs'),
+        'image_resolution' => env('GHOSTSCRIPT_IMAGE_RESOLUTION', 150),
+        'timeout' => env('GHOSTSCRIPT_TIMEOUT', 120),
+    ],
+
 ];

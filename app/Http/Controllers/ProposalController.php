@@ -21,6 +21,7 @@ use App\Repositories\ProposalRepository;
 use App\Services\KitSpecService;
 use App\Services\LeadService;
 use App\Services\PaybackService;
+use App\Services\PdfCompressionService;
 use App\Services\PricingService;
 use App\Services\ProposalService;
 use App\Services\ProposalValueHistoryService;
@@ -42,8 +43,19 @@ class ProposalController extends Controller
         private readonly PaybackService              $paybackService,
         private readonly PricingService              $pricingService,
         private readonly KitSpecService              $kitSpecService,
+        private readonly PdfCompressionService       $pdfCompressionService,
     )
     {}
+
+    private function streamCompressedPdf(\Barryvdh\DomPDF\PDF $pdf, string $filename): Response
+    {
+        $compressed = $this->pdfCompressionService->compress($pdf->output());
+
+        return response($compressed, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . $filename . '"',
+        ]);
+    }
 
     public function index(Request $request): View
     {
@@ -207,8 +219,10 @@ class ProposalController extends Controller
             ? PDF::loadView('proposals.small_pdf', compact($pdfParams))
             : PDF::loadView('proposals.pdf', compact($pdfParams));
 
-        return $pdf
-            ->stream('#' . $proposal->id . ' ' . $proposal->client->name . '.pdf');
+        return $this->streamCompressedPdf(
+            $pdf,
+            '#' . $proposal->id . ' ' . $proposal->client->name . '.pdf'
+        );
     }
 
     public function generateLeadPdf(int $id): Response
@@ -244,7 +258,8 @@ class ProposalController extends Controller
         ];
 
         $pdf = PDF::loadView('leads.base', compact($pdfParams));
-        return $pdf->stream("#L{$lead->id} {$lead->name}.pdf");
+
+        return $this->streamCompressedPdf($pdf, "#L{$lead->id} {$lead->name}.pdf");
     }
 
     public function setFinalValue(Request $request): JsonResponse
