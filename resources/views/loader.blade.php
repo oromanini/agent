@@ -7,8 +7,8 @@
     #loader {
         width: 100%;
         height: 100%;
-        background: radial-gradient(circle at top, #0b1020 0%, #06080f 35%, #03050a 100%);
-        z-index: 10;
+        background: #F7F3EC;
+        z-index: 50;
         position: fixed;
         top: 0;
         left: 0;
@@ -23,14 +23,14 @@
         width: 52px;
         height: 52px;
         border-radius: 50%;
-        border: 5px solid rgba(255, 188, 14, 0.25);
-        border-top-color: #ffbc0e;
+        border: 5px solid rgba(245, 185, 66, 0.25);
+        border-top-color: #F5B942;
         animation: spin 0.8s linear infinite;
     }
 
     .loader-text {
-        color: #e8edf7;
-        font-size: 18pt;
+        color: #8A8578;
+        font-size: 16pt;
         margin-top: 20px;
     }
 

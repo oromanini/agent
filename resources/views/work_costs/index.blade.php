@@ -2,44 +2,38 @@
 
 @section('content')
     <div class="container is-fluid overflow-auto">
-        <div class="box overflow-auto">
-            <div class="columns mt-2 mb-5 ml-1">
-                <h3 class="title"><img src="/img/logo/alluz-icon.png" width="30" alt="..">
-                    Atualização de custos
-                </h3>
-            </div>
 
-            @if (session('success'))
-                <div class="notification is-success">
-                    {{ session('success') }}
-                </div>
-            @endif
+        <div class="a-page-head">
+            <h1>Atualizar custos</h1>
+        </div>
 
-            <table class="table is-striped is-fullwidth">
+        @if (session('success'))
+            <div class="notification is-success">{{ session('success') }}</div>
+        @endif
+
+        <div class="a-table-wrap">
+            <table class="table is-fullwidth">
                 <thead>
                 <tr>
                     <th>Classificação</th>
-                    <th>Custos Atuais</th>
-                    <th>Última Atualização</th>
-                    <th>Ações</th>
+                    <th>Custos atuais</th>
+                    <th>Última atualização</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
                 @foreach ($workCosts as $cost)
                     <tr>
+                        <td style="font-weight:700;">{{ $cost->classification_name }}</td>
                         <td>
-                            <strong>{{ $cost->classification_name }}</strong>
-                        </td>
-                        <td>
-                            <div style="font-family: monospace; font-size: 0.9em;">
+                            <div style="font-size: 0.82rem;">
                                 @foreach ($cost->costs as $key => $value)
                                     <div>
                                         <span>{{ $key }}:</span>
                                         @if(is_array($value))
                                             <span>{{ json_encode($value) }}</span>
                                         @else
-                                            <strong style="color: #3273dc;">
-                                                {{-- Lógica para formatar o 'profit' como percentual --}}
+                                            <strong style="color: #B9740A;">
                                                 {{ $key === 'profit' ? number_format($value * 100, 1, ',', '') . '%' : $value }}
                                             </strong>
                                         @endif
@@ -47,13 +41,9 @@
                                 @endforeach
                             </div>
                         </td>
+                        <td><span class="a-pill a-pill--neutral">{{ $cost->updated_at->format('d/m/Y H:i') }}</span></td>
                         <td>
-                            <span class="tag is-light">
-                                    {{ $cost->updated_at->format('d/m/Y H:i') }}
-                                </span>
-                        </td>
-                        <td>
-                            <a href="{{ route('work_costs.edit', $cost->id) }}" class="button is-info is-small">Editar</a>
+                            <a href="{{ route('work_costs.edit', $cost->id) }}" class="a-btn-ghost" style="padding:.4rem .9rem;">Editar</a>
                         </td>
                     </tr>
                 @endforeach

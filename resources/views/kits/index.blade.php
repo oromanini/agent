@@ -2,73 +2,54 @@
 
 @section('content')
     <div class="container is-fluid">
-        <div class="box mt-5">
-            <h3 class="title">Lista de Kits Solares</h3>
 
-            <div class="box mb-5">
-                <form action="{{ route('kits.index') }}" method="GET">
-                    <div class="columns is-multiline">
-                        <div class="column is-one-quarter">
-                            <div class="field">
-                                <label class="label">KWP Mínimo</label>
-                                <div class="control">
-                                    <input class="input" type="number" step="0.01" name="min_kwp" placeholder="KWP Mínimo" value="{{ request('min_kwp') }}">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="column is-one-quarter">
-                            <div class="field">
-                                <label class="label">KWP Máximo</label>
-                                <div class="control">
-                                    <input class="input" type="number" step="0.01" name="max_kwp" placeholder="KWP Máximo" value="{{ request('max_kwp') }}">
-                                </div>
-                            </div>
-                        </div>
+        <div class="a-page-head">
+            <h1>Gestão de Kits</h1>
+        </div>
 
-                        <div class="column is-one-quarter">
-                            <div class="field">
-                                <label class="label">Telhado</label>
-                                <div class="control">
-                                    <div class="select is-fullwidth">
-                                        <select name="roof_structure" id="filter-roof">
-                                            <option value="">Todos os Telhados</option>
-                                            @foreach(\App\Enums\RoofStructure::cases() as $roof)
-                                                <option value="{{ $roof->value }}" {{ request('roof_structure') == $roof->value ? 'selected' : '' }}>{{ $roof->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="column is-one-quarter">
-                            <div class="field">
-                                <label class="label">Tensão</label>
-                                <div class="control">
-                                    <div class="select is-fullwidth">
-                                        <select name="tension_pattern" id="filter-tension">
-                                            <option value="">Todas as Tensões</option>
-                                            @foreach(\App\Enums\TensionPattern::cases() as $tension)
-                                                <option value="{{ $tension->value }}" {{ request('tension_pattern') == $tension->value ? 'selected' : '' }}>{{ $tension->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="field is-grouped">
-                        <div class="control">
-                            <button type="submit" class="button is-primary">Filtrar</button>
-                        </div>
-                        <div class="control">
-                            <a href="{{ route('kits.index') }}" class="button is-danger">Limpar Filtros</a>
-                        </div>
-                    </div>
-                </form>
+        <form action="{{ route('kits.index') }}" method="GET" class="a-filterbar">
+            <div class="field" style="width:150px;">
+                <label class="label">kWp mínimo</label>
+                <div class="control">
+                    <input class="input" type="number" step="0.01" name="min_kwp" placeholder="Mín." value="{{ request('min_kwp') }}">
+                </div>
             </div>
+            <div class="field" style="width:150px;">
+                <label class="label">kWp máximo</label>
+                <div class="control">
+                    <input class="input" type="number" step="0.01" name="max_kwp" placeholder="Máx." value="{{ request('max_kwp') }}">
+                </div>
+            </div>
+            <div class="field" style="width:200px;">
+                <label class="label">Telhado</label>
+                <div class="select is-fullwidth">
+                    <select name="roof_structure" id="filter-roof">
+                        <option value="">Todos</option>
+                        @foreach(\App\Enums\RoofStructure::cases() as $roof)
+                            <option value="{{ $roof->value }}" {{ request('roof_structure') == $roof->value ? 'selected' : '' }}>{{ $roof->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="field" style="width:200px;">
+                <label class="label">Tensão</label>
+                <div class="select is-fullwidth">
+                    <select name="tension_pattern" id="filter-tension">
+                        <option value="">Todas</option>
+                        @foreach(\App\Enums\TensionPattern::cases() as $tension)
+                            <option value="{{ $tension->value }}" {{ request('tension_pattern') == $tension->value ? 'selected' : '' }}>{{ $tension->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div style="display:flex; gap:.5rem;">
+                <button type="submit" class="a-btn-primary">Filtrar</button>
+                <a href="{{ route('kits.index') }}" class="a-btn-ghost">Limpar</a>
+            </div>
+        </form>
 
-            <table class="table is-fullwidth is-striped">
+        <div class="a-table-wrap">
+            <table class="table is-fullwidth">
                 <thead>
                 <tr>
                     <th>
@@ -136,12 +117,10 @@
                 @endforelse
                 </tbody>
             </table>
+        </div>
 
-            <div class="columns is-centered">
-                <div class="column is-one-third">
-                    {{ $kits->appends(request()->input())->links('vendor.pagination.tailwind') }}
-                </div>
-            </div>
+        <div class="mt-4">
+            {{ $kits->appends(request()->input())->links('vendor.pagination.tailwind') }}
         </div>
     </div>
 

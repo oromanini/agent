@@ -1,20 +1,14 @@
 @extends('base')
 @section('content')
     <div class="container is-fluid">
-        <div class="box">
 
-            <div class="columns mt-2 ml-1">
-                <h3 class="title"><img src="/img/logo/alluz-icon.png" width="30" alt="..">Simulador de parcelas</h3>
-            </div>
-            <hr>
-            <div class="columns row">
-                <div class="column is-3 is-flex is-flex-direction-column">
-                    <img src="/img/simulators/mfs.png" alt="" width="300">
-                    <a class="button is-info m-4" href="{{ route('simulator.mfs') }}">
-                        Simular
-                    </a>
-                </div>
-            </div>
+        <div class="a-page-head">
+            <h1>Simulador de parcelas</h1>
+        </div>
+
+        <div class="a-card" style="max-width:360px; display:flex; flex-direction:column; align-items:flex-start; gap:16px;">
+            <img src="/img/simulators/mfs.png" alt="MFS" width="260" style="max-width:100%;">
+            <a class="a-btn-primary" href="{{ route('simulator.mfs') }}">Simular</a>
         </div>
     </div>
 @endsection

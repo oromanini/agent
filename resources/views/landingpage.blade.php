@@ -18,28 +18,27 @@
         fbq('track', 'PageView');
     </script>
     <!-- End Meta Pixel Code -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0f172a;
+            --bg: #F7F3EC;
             --card: #ffffff;
-            --primary: #f59e0b;
-            --primary-dark: #d97706;
-            --secondary: #1e293b;
-            --muted: #64748b;
-            --border: #e2e8f0;
-            --success: #16a34a;
+            --primary: #F5B942;
+            --primary-dark: #E8A81F;
+            --secondary: #211F1A;
+            --muted: #8A8578;
+            --border: #EFE9DA;
+            --success: #1F7A44;
         }
 
         * { box-sizing: border-box; }
 
         body {
             margin: 0;
-            font-family: Inter, Arial, sans-serif;
-            background:
-                radial-gradient(circle at top right, rgba(245, 158, 11, 0.32), transparent 45%),
-                radial-gradient(circle at bottom left, rgba(59, 130, 246, 0.16), transparent 40%),
-                var(--bg);
-            color: #f8fafc;
+            font-family: 'Plus Jakarta Sans', Inter, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--secondary);
         }
 
         .container {
@@ -58,24 +57,24 @@
             color: #0f172a;
             display: grid;
             grid-template-columns: minmax(280px, 430px) 1fr;
-            box-shadow: 0 24px 55px rgba(2, 6, 23, 0.45);
+            box-shadow: 0 1px 2px rgba(33, 29, 20, 0.04), 0 24px 55px -20px rgba(33, 29, 20, 0.22);
         }
 
         .left-panel {
-            background: linear-gradient(170deg, #f59e0b 0%, #f97316 100%);
-            color: #fff;
+            background: linear-gradient(170deg, #F5B942 0%, #E8A81F 100%);
+            color: #211F1A;
             padding: 36px 30px;
         }
 
         .logo { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 28px; font-weight: 700; }
-        .logo-mark { width: 34px; height: 34px; border-radius: 8px; background: rgba(255, 255, 255, 0.2); display: grid; place-items: center; font-weight: 800; }
+        .logo-mark { width: 34px; height: 34px; border-radius: 9px; background: rgba(33, 29, 20, 0.14); display: grid; place-items: center; font-weight: 800; }
         .headline { font-size: 2rem; line-height: 1.15; margin: 0 0 14px; }
         .subheadline { margin: 0; line-height: 1.55; opacity: 0.96; }
         .steps { margin-top: 32px; display: grid; gap: 12px; }
 
         .step {
-            background: rgba(255, 255, 255, 0.16);
-            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.7);
             border-radius: 12px;
             padding: 10px 12px;
             display: flex;
@@ -84,25 +83,25 @@
         }
 
         .step strong { display: block; font-size: 0.95rem; }
-        .step-index { width: 24px; height: 24px; border-radius: 999px; background: #fff; color: #ea580c; font-weight: 700; display: grid; place-items: center; font-size: 0.82rem; flex-shrink: 0; }
+        .step-index { width: 24px; height: 24px; border-radius: 999px; background: #211F1A; color: #F5B942; font-weight: 700; display: grid; place-items: center; font-size: 0.82rem; flex-shrink: 0; }
 
         .right-panel { padding: 36px; }
         .flow-title { margin: 0; font-size: 1.5rem; color: var(--secondary); }
         .flow-subtitle { margin: 8px 0 0; color: var(--muted); line-height: 1.45; }
 
         .progress-track { margin: 24px 0 16px; height: 8px; border-radius: 999px; background: #f1f5f9; overflow: hidden; }
-        .progress-value { width: 25%; height: 100%; background: linear-gradient(90deg, var(--primary), var(--primary-dark)); transition: width .2s ease; }
-        .step-chip { display: inline-flex; align-items: center; padding: 6px 10px; border-radius: 999px; background: #fff7ed; color: #9a3412; font-size: 0.84rem; font-weight: 600; margin-bottom: 14px; }
+        .progress-value { width: 25%; height: 100%; background: var(--primary); transition: width .2s ease; }
+        .step-chip { display: inline-flex; align-items: center; padding: 6px 10px; border-radius: 999px; background: #FDECC5; color: #8A5B06; font-size: 0.84rem; font-weight: 700; margin-bottom: 14px; }
 
         form { display: grid; gap: 14px; }
         .form-step { display: none; }
         .form-step.is-active { display: block; }
 
         label { display: block; font-weight: 600; font-size: 0.94rem; margin-bottom: 6px; }
-        input, select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); font-size: 0.95rem; }
-        input:focus, select:focus { outline: 0; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2); }
+        input, select { width: 100%; padding: 12px; border-radius: 12px; border: 1.5px solid var(--border); font-size: 0.95rem; background: #fff; color: #211F1A; }
+        input:focus, select:focus { outline: 0; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(245, 185, 66, 0.22); }
 
-        .error { color: #b91c1c; font-size: 0.85rem; margin-top: -6px; }
+        .error { color: #A83368; font-size: 0.85rem; margin-top: -6px; }
         .actions { display: flex; gap: 10px; margin-top: 10px; }
 
         .btn {
@@ -111,13 +110,15 @@
             padding: 13px;
             font-weight: 700;
             font-size: 0.96rem;
-            color: #fff;
-            background: linear-gradient(160deg, var(--primary), #ea580c);
+            color: #211F1A;
+            background: var(--primary);
             cursor: pointer;
             width: 100%;
         }
 
-        .btn-secondary { background: #e2e8f0; color: #334155; }
+        .btn:hover { background: var(--primary-dark); }
+        .btn-secondary { background: #fff; color: #4A473E; border: 1.5px solid var(--border); }
+        .btn-secondary:hover { background: #F3EEE4; }
 
         .trust { margin-top: 14px; display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 0.84rem; }
         .trust-dot { width: 9px; height: 9px; border-radius: 999px; background: var(--success); }
@@ -125,7 +126,7 @@
         .agreement-modal {
             position: fixed;
             inset: 0;
-            background: rgba(15, 23, 42, 0.8);
+            background: rgba(33, 29, 20, 0.6);
             display: grid;
             place-items: center;
             padding: 18px;
@@ -138,9 +139,9 @@
             width: min(100%, 480px);
             background: #fff;
             color: #0f172a;
-            border-radius: 16px;
+            border-radius: 20px;
             padding: 24px;
-            box-shadow: 0 24px 55px rgba(2, 6, 23, 0.45);
+            box-shadow: 0 24px 55px -18px rgba(33, 29, 20, 0.3);
             text-align: center;
         }
 
@@ -150,8 +151,8 @@
         .agreement-thank-you {
             margin: 0;
             font-size: 1.3rem;
-            font-weight: 700;
-            color: #0f172a;
+            font-weight: 800;
+            color: #211F1A;
         }
 
         @media (max-width: 900px) {

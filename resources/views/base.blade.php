@@ -16,10 +16,10 @@
 <section class="section app-shell">
     @include('loader')
     <div class="columns app-layout">
-        <div class="sidebar-column column is-1 app-sidebar-column">
+        <div class="sidebar-column app-sidebar-column">
             @include('sidebar')
         </div>
-        <div class="content-column column is-11 app-content-column">
+        <div class="content-column app-content-column">
             <div class="app-content-wrap">
                 @yield('content')
             </div>

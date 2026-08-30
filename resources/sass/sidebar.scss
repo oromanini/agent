@@ -1,138 +1,123 @@
+// =============================================================
+// Sidebar — always-open 244px white rail (Claude Design)
+// =============================================================
 .side-navigation {
     position: sticky;
-    top: 8px;
+    top: 1.1rem;
     left: 0;
-    width: 72px;
-    height: calc(100vh - 16px);
-    background: linear-gradient(180deg, #171a20 0%, #101318 100%);
-    border: 1px solid #2d3139;
-    border-radius: 16px;
-    padding: 0.65rem 0.25rem;
+    width: 244px;
+    height: calc(100vh - 2.2rem);
+    background: $c-surface;
+    border: 1px solid $c-border;
+    border-radius: $r-lg;
+    padding: 0.4rem 0.75rem 1rem;
     overflow-x: hidden;
     overflow-y: auto;
-    transition: width 0.28s ease;
     display: flex;
     flex-direction: column;
 }
 
-.side-navigation:hover,
-.side-navigation.side-expanded {
-    width: 248px;
-}
-
 .side-logo {
     display: flex;
-    justify-content: center;
     align-items: center;
-    min-height: 64px;
+    gap: 0.6rem;
+    min-height: 60px;
+    padding: 0.9rem 0.7rem 0.6rem;
     position: sticky;
     top: 0;
     z-index: 2;
-    padding-bottom: 0.35rem;
-    background: linear-gradient(180deg, #171a20 0%, #101318 100%);
+    background: $c-surface;
+
+    .side-logo-img { width: 30px; height: 30px; object-fit: contain; border-radius: 9px; }
+    .side-wordmark {
+        font-weight: 800;
+        font-size: 1.25rem;
+        letter-spacing: -0.02em;
+        color: $c-text;
+    }
 }
 
 .side-navigation ul {
     width: 100%;
-    padding: 0;
-    margin-top: 0.65rem;
+    padding: 0.4rem 0 0;
+    margin: 0;
+    flex: 1;
 }
 
 .side-navigation ul li {
     width: 100%;
     list-style: none;
-    margin-bottom: 0.2rem;
+    margin-bottom: 2px;
 }
 
 .side-navigation ul li a {
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: center;
-    min-height: 46px;
-    padding: 0;
-    border-radius: 12px;
+    gap: 0.7rem;
+    min-height: 42px;
+    padding: 0.55rem 0.85rem;
+    border-radius: $r-sm;
     text-decoration: none;
-    color: #aeb7cb;
+    color: $c-text-2;
+    font-size: 0.875rem;
+    font-weight: 600;
 }
 
 .side-navigation ul li a:hover {
-    background: #23262d;
-    color: #fff;
+    background: $c-track;
+    color: $c-text;
 }
 
 .side-navigation ul li.side-active {
-    background: #2a2e37;
-    border: 1px solid #3a404c;
-    border-radius: 12px;
+    background: transparent;
+    border: 0;
 }
 
 .side-navigation ul li.side-active a,
 .side-navigation ul li.side-active .side-title,
 .side-navigation ul li.side-active .side-icon ion-icon {
-    color: #f2f4f8 !important;
-    font-weight: 500;
+    background: $c-accent-soft;
+    color: $c-accent-soft-fg !important;
+    font-weight: 700;
 }
-
-.side-navigation ul li.side-active a:hover {
-    background: #323743;
-    color: #fff;
-}
+.side-navigation ul li.side-active a:hover { background: darken($c-accent-soft, 3%); }
 
 .side-navigation ul li a .side-icon {
-    width: 46px;
-    min-width: 46px;
-    height: 46px;
-    flex: 0 0 46px;
+    width: 20px;
+    min-width: 20px;
+    height: 20px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
 }
 
 .side-navigation ul li a .side-icon ion-icon {
-    font-size: 1.15rem;
+    font-size: 1.05rem;
     display: block;
-    width: 1.15rem;
-    height: 1.15rem;
-    margin: auto;
+    width: 1.05rem;
+    height: 1.05rem;
     line-height: 1;
     padding: 0 !important;
+    color: inherit;
 }
 
 .side-navigation ul li a .side-title {
-    opacity: 0;
-    max-width: 0;
-    overflow: hidden;
-    transform: translateX(10px);
-    transition: all 0.22s ease;
     white-space: nowrap;
-    color: #d7deed;
-}
-
-
-.side-navigation:not(:hover):not(.side-expanded) ul li a .side-icon {
-    margin: 0 auto;
-}
-
-.side-navigation:hover ul li a,
-.side-navigation.side-expanded ul li a {
-    justify-content: flex-start;
-}
-
-.side-navigation:hover ul li a .side-title,
-.side-navigation.side-expanded ul li a .side-title {
-    opacity: 1;
-    max-width: 170px;
-    transform: translateX(0);
+    color: inherit;
 }
 
 .side-divider {
-    border-color: #3a3e48 !important;
-    margin: 0.3rem 0 !important;
+    border: 0;
+    border-top: 1px solid $c-border !important;
+    margin: 0.75rem 0.6rem !important;
 }
 
 .mob-navigation { display: none; }
 
+// =============================================================
+// Mobile
+// =============================================================
 @media (max-width: 866px) {
     .side-navigation { display: none !important; }
     .mob-navigation { display: flex; }
@@ -143,12 +128,12 @@
         top: 0;
         left: 0;
         right: 0;
-        z-index: 3;
+        z-index: 30;
         align-items: center;
         justify-content: space-between;
-        background: #171b22;
-        border-bottom: 1px solid #353a45;
-        height: 68px;
+        background: $c-surface;
+        border-bottom: 1px solid $c-border;
+        height: 64px;
         padding: 0.85rem;
     }
 
@@ -169,7 +154,7 @@
     .menu-button::before,
     .menu-button::after {
         display: block;
-        background-color: #fff;
+        background-color: $c-text;
         position: absolute;
         height: 3px;
         width: 26px;
@@ -189,24 +174,25 @@
         .menu {
             position: absolute;
             top: 0;
-            margin-top: 68px;
+            margin-top: 64px;
             left: 0;
             flex-direction: column;
             width: 100%;
             align-items: center;
         }
-        #menu-toggle ~ .menu li { height: 0; margin: 0; padding: 0; border: 0; transition: height 300ms ease; }
+        #menu-toggle ~ .menu li { height: 0; margin: 0; padding: 0; border: 0; transition: height 300ms ease; overflow: hidden; }
         #menu-toggle:checked ~ .menu li {
-            border: 1px solid #2e3445;
-            height: 2.45em;
+            border-top: 1px solid $c-border;
+            height: 2.75em;
             padding: 0.5em;
         }
         .menu > li {
             display: flex;
             justify-content: center;
             width: 100%;
-            color: #fff;
-            background-color: #151b2a;
+            background-color: $c-surface;
+
+            a { color: $c-text-2 !important; }
         }
     }
 }

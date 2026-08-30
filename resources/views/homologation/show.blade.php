@@ -2,35 +2,23 @@
 
 @section('content')
     <div class="container is-fluid overflow-auto">
-        <div class="box overflow-auto">
-            <div class="is-flex is-flex-direction-row is-justify-content-space-between mt-2 ml-1">
-                <h3 class="title"><img src="/img/logo/alluz-icon.png" width="30" alt=".."> Homologação</h3>
-                <a class="button is-primary" style="font-size: 16pt"
+        <div class="overflow-auto">
+            <div class="a-page-head">
+                <h1>Homologação — Proposta #{{ $homologation->proposal->id }}</h1>
+                <a class="a-btn-ghost"
                    href="{{ route('approval.show', [$homologation->proposal->id]) . '#technical' }}">
-                    <ion-icon name="eye-outline"></ion-icon>
-                    Ver vistoria
+                    <ion-icon name="eye-outline"></ion-icon> Ver vistoria
                 </a>
             </div>
-            <br>
-            <div class="columns">
-                <div class="column is-4">
-                    <span class="tag is-info is-light" style="font-size: 16pt">
-                        {{ 'Proposta #' . $homologation->proposal->id . ' - ' .$homologation->proposal->client->name }}
-                    </span>
-                </div>
-            </div>
-            <div class="columns ml-1">
-                <span class="tag is-info" style="font-size: 16pt">
-                    <strong style="color: #fff">Status: </strong> &nbsp; {{ $homologation->status->name }}
-                </span>
+            <div style="display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap;">
+                <span class="a-pill a-pill--amber">{{ $homologation->proposal->client->name }}</span>
+                <span class="a-pill a-pill--blue">Status: {{ $homologation->status->name }}</span>
                 @if($homologation->status->is_final)
-                    <span class="tag {{ getSubstatusColor($homologation->is_approved_on_dealership) }} ml-1"
-                          style="font-size: 16pt">
-                        <strong style="color: #fff">{{ 'Concessionária: '}}</strong> &nbsp;{{ $homologation->is_approved_on_dealership }}
+                    <span class="a-pill {{ getSubstatusColor($homologation->is_approved_on_dealership) === 'is-success' ? 'a-pill--green' : 'a-pill--pink' }}">
+                        Concessionária: {{ $homologation->is_approved_on_dealership }}
                     </span>
                 @endif
             </div>
-            <br>
             <form action="{{ route('homologation.update', [$homologation->id]) }}" method="post"
                   enctype="multipart/form-data">
                 @csrf
@@ -283,11 +271,11 @@
                     </div>
                 </div>
                 <div class="columns">
-                    <div class="column is-flex is-justify-content-center">
-                        <button type="submit" class="button is-primary is-large">
+                    <div class="column is-flex is-justify-content-center" style="gap:.6rem;">
+                        <button type="submit" class="a-btn-primary" style="padding:.8rem 1.6rem;">
                             <ion-icon name="save-outline"></ion-icon> &nbsp;Salvar
-                        </button>&nbsp;
-                        <a class="button is-warning is-large" href="{{ route('homologation.index') }}">Voltar</a>
+                        </button>
+                        <a class="a-btn-ghost" href="{{ route('homologation.index') }}">Voltar</a>
                     </div>
                 </div>
             </form>

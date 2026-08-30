@@ -15,4 +15,5 @@ yarn-error.log
 /.idea
 /.vscode
 .docker
+/.design-import
 /composer.lock

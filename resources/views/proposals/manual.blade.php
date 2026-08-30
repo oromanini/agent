@@ -6,11 +6,8 @@
             <form action="{{ route('proposal.manual.store') }}" method="post">
                 @csrf
 
-                <div class="columns mt-2 ml-1">
-                    <h3 class="title"><img src="/img/logo/alluz-icon.png" width="30" alt=".."> Nova Proposta</h3>
-                </div>
-                <div class="columns">
-                    <div class="title-bottom-line" style="margin-left: 50px"></div>
+                <div class="a-page-head">
+                    <h1>Proposta manual</h1>
                 </div>
                 <div class="columns">
                     <div class="column is-3">
@@ -80,8 +77,8 @@
                     </div>
                 </div>
 
-                <div class="columns" style="margin-top: 50px">
-                    <label for="roof_structure" class="label">Selecione o telhado</label>
+                <div class="columns" style="margin-top: 30px">
+                    <label for="roof_structure" class="label" style="font-size:1rem; font-weight:700;">Tipo de telhado</label>
                 </div>
                 <div class="columns" style="margin-bottom: 10px">
                     @foreach($roofs as $roof)
@@ -94,21 +91,22 @@
                     @endforeach
                 </div>
 
-                <div class="columns is-flex is-justify-content-center"
-                     style="margin-top: 15px; margin-bottom: 30px">
-                    <div class="column is-6 is-flex is-justify-content-space-around is-align-items-center is-warning"
-                         style="border: 2px solid #f2a714; border-radius: 100px;">
-                        <label class="checkbox">
-                            <input name="orientation" type="radio" value="norte"
-                            > Norte
+                <div class="columns" style="margin-top: 15px; margin-bottom: 10px">
+                    <label class="label" style="font-size:1rem; font-weight:700;">Orientação</label>
+                </div>
+                <div class="columns" style="margin-bottom: 30px">
+                    <div class="orientation-segmented" role="radiogroup" aria-label="Orientação">
+                        <label class="orientation-option">
+                            <input name="orientation" type="radio" value="norte" checked>
+                            <span>Norte</span>
                         </label>
-                        <label class="checkbox">
-                            <input name="orientation" value="leste/oeste" type="radio"
-                            > Leste/Oeste
+                        <label class="orientation-option">
+                            <input name="orientation" value="leste/oeste" type="radio">
+                            <span>Leste/Oeste</span>
                         </label>
-                        <label class="checkbox">
-                            <input name="orientation" value="sul" type="radio"
-                            > Sul
+                        <label class="orientation-option">
+                            <input name="orientation" value="sul" type="radio">
+                            <span>Sul</span>
                         </label>
                     </div>
                 </div>
@@ -323,8 +321,8 @@
 
 
                 <div class="column is-flex is-justify-content-center">
-                    <button class="button is-large is-primary" type="submit">
-                        <ion-icon name="save-outline"></ion-icon>&nbsp;Salvar
+                    <button class="a-btn-primary" type="submit" style="padding:.85rem 1.9rem; font-size:.95rem;">
+                        <ion-icon name="save-outline"></ion-icon>&nbsp;Salvar proposta
                     </button>
                 </div>
             </form>

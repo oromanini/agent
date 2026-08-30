@@ -19,12 +19,14 @@
         fbq('track', 'CompleteRegistration');
     </script>
     <!-- End Meta Pixel Code -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #7c2d12, #b45309);
-            color: #fff;
+            font-family: 'Plus Jakarta Sans', Arial, sans-serif;
+            background: #F7F3EC;
+            color: #211F1A;
             min-height: 100vh;
             display: grid;
             place-items: center;
@@ -36,16 +38,18 @@
             width: 100%;
             max-width: 900px;
             background: #fff;
-            color: #0f172a;
-            border-radius: 16px;
-            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+            color: #211F1A;
+            border-radius: 20px;
+            border: 1px solid #EFE9DA;
+            box-shadow: 0 1px 2px rgba(33, 29, 20, 0.04), 0 20px 45px -20px rgba(33, 29, 20, 0.2);
             padding: 32px;
             box-sizing: border-box;
         }
 
         h1 {
             margin-top: 0;
-            color: #c2410c;
+            font-weight: 800;
+            color: #211F1A;
         }
 
         p {

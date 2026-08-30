@@ -1,6 +1,9 @@
+// =============================================================
+// select2 / selectize — light theme (Claude Design)
+// =============================================================
 select,
 .selectize-input {
-    min-height: 46px !important;
+    min-height: 44px !important;
     line-height: normal !important;
 }
 
@@ -9,7 +12,7 @@ select,
     min-height: 0 !important;
 }
 
-/* Select2 dark theme override */
+// ---- select2 ----
 .select2-container {
     width: 100% !important;
     margin: 0 !important;
@@ -17,18 +20,21 @@ select,
 }
 
 .select2-container--default .select2-selection--single,
-.select2-container--default .select2-selection--multiple {
-    background: #090c14 !important;
-    border: 1px solid #31384d !important;
-    color: #f2f4f8 !important;
-    border-radius: 10px !important;
-    min-height: 46px;
+.select2-container--default .select2-selection--multiple,
+.select2-container[class*="select2-container--"] .select2-selection--single,
+.select2-container[class*="select2-container--"] .select2-selection--multiple {
+    background-color: #FFFFFF !important;
+    border: 1.5px solid #EFE9DA !important;
+    color: #211F1A !important;
+    border-radius: 12px !important;
+    min-height: 44px;
 }
 
 .select2-container--default .select2-selection--single .select2-selection__rendered,
-.select2-container--default .select2-selection--multiple .select2-selection__rendered {
-    color: #f2f4f8 !important;
-    line-height: 44px !important;
+.select2-container--default .select2-selection--multiple .select2-selection__rendered,
+.select2-container[class*="select2-container--"] .select2-selection__rendered {
+    color: #211F1A !important;
+    line-height: 42px !important;
     padding-left: 12px !important;
     white-space: nowrap !important;
     overflow: hidden !important;
@@ -38,43 +44,43 @@ select,
 
 .select2-container--default .select2-selection--single .select2-selection__placeholder,
 .select2-container--default .select2-selection--multiple .select2-selection__placeholder {
-    color: #8e99b2 !important;
+    color: #B4AC98 !important;
 }
 
 .select2-container--default .select2-selection--single .select2-selection__arrow {
-    height: 44px !important;
+    height: 42px !important;
     right: 10px;
 }
 
 .select2-container--default .select2-selection--single .select2-selection__arrow b {
-    border-color: #4c6bd8 transparent transparent transparent !important;
+    border-color: #B9740A transparent transparent transparent !important;
 }
 
 .select2-dropdown {
-    background: #111725 !important;
-    border: 1px solid #31384d !important;
-    border-radius: 10px !important;
-    color: #f2f4f8 !important;
+    background: #FFFFFF !important;
+    border: 1.5px solid #EFE9DA !important;
+    border-radius: 12px !important;
+    color: #211F1A !important;
 }
 
 .select2-container--default .select2-results__option {
-    color: #d9dfeb !important;
+    color: #4A473E !important;
 }
 
 .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
-    background: rgba(244, 164, 9, 0.2) !important;
-    color: #fff !important;
+    background: rgba(245, 185, 66, 0.2) !important;
+    color: #211F1A !important;
 }
 
 .select2-container--default .select2-results__option--selected {
-    background: rgba(244, 164, 9, 0.3) !important;
-    color: #fff !important;
+    background: rgba(245, 185, 66, 0.32) !important;
+    color: #211F1A !important;
 }
 
 .select2-search--dropdown .select2-search__field {
-    background: #090c14 !important;
-    border: 1px solid #31384d !important;
-    color: #f2f4f8 !important;
+    background: #FFFFFF !important;
+    border: 1.5px solid #EFE9DA !important;
+    color: #211F1A !important;
     border-radius: 8px;
 }
 
@@ -82,42 +88,35 @@ select,
 .select2-container--default.select2-container--focus .select2-selection--multiple,
 .select2-container--default.select2-container--open .select2-selection--single,
 .select2-container--default.select2-container--open .select2-selection--multiple {
-    border-color: #f4a409 !important;
-    box-shadow: 0 0 0 0.12rem rgba(244, 164, 9, 0.2) !important;
+    border-color: #F5B942 !important;
+    box-shadow: 0 0 0 0.14rem rgba(245, 185, 66, 0.22) !important;
 }
 
-/* Extra specificity: themes/plugins that force white fields */
-.select2-container[class*="select2-container--"] .select2-selection--single,
-.select2-container[class*="select2-container--"] .select2-selection--multiple,
-.select2-container--default.select2-container--below .select2-selection--single,
-.select2-container--default.select2-container--below .select2-selection--multiple,
-.select2-container--default.select2-container--above .select2-selection--single,
-.select2-container--default.select2-container--above .select2-selection--multiple {
-    background-color: #090c14 !important;
-    color: #f2f4f8 !important;
-    border-color: #31384d !important;
+.select2-container--default .select2-selection--single { height: 44px !important; }
+.select2-container--default .select2-selection--multiple {
+    min-height: 44px !important;
+    height: 44px !important;
+    overflow: hidden !important;
 }
 
-.select2-container[class*="select2-container--"] .select2-selection__rendered {
-    color: #f2f4f8 !important;
-}
-
-/* Selectize dark theme override (some screens are using selectize and appear white) */
+// ---- selectize ----
 .selectize-control.single .selectize-input,
 .selectize-control.single .selectize-input.input-active,
 .selectize-control.multi .selectize-input,
 .selectize-input,
 .selectize-dropdown,
 .selectize-dropdown-content {
-    background: #090c14 !important;
-    color: #f2f4f8 !important;
-    border-color: #31384d !important;
+    background: #FFFFFF !important;
+    color: #211F1A !important;
+    border-color: #EFE9DA !important;
+    box-shadow: none !important;
 }
 
 .selectize-control.single .selectize-input,
 .selectize-control.multi .selectize-input {
-    border-radius: 10px !important;
-    min-height: 46px;
+    border: 1.5px solid #EFE9DA !important;
+    border-radius: 12px !important;
+    min-height: 44px;
     padding: 6px 34px 6px 12px !important;
 }
 
@@ -126,42 +125,29 @@ select,
     align-items: center !important;
     flex-wrap: nowrap !important;
     overflow: hidden !important;
+    line-height: 30px !important;
+}
+
+.selectize-input.focus {
+    border-color: #F5B942 !important;
+    box-shadow: 0 0 0 0.14rem rgba(245, 185, 66, 0.22) !important;
 }
 
 .selectize-control.single .selectize-input:after {
-    border-color: #4c6bd8 transparent transparent transparent !important;
+    border-color: #B9740A transparent transparent transparent !important;
 }
 
 .selectize-dropdown .option,
 .selectize-dropdown .optgroup-header {
-    color: #d9dfeb !important;
-    background: #111725 !important;
+    color: #4A473E !important;
+    background: #FFFFFF !important;
 }
 
 .selectize-dropdown .active,
 .selectize-dropdown .create,
 .selectize-dropdown .selected {
-    background: rgba(244, 164, 9, 0.2) !important;
-    color: #fff !important;
-}
-
-
-
-.select2-container--default .select2-selection--single {
-    height: 46px !important;
-}
-
-.select2-container--default .select2-selection--multiple {
-    min-height: 46px !important;
-    height: 46px !important;
-    overflow: hidden !important;
-}
-
-
-
-/* Keep Selectize search input usable */
-.selectize-control.single .selectize-input {
-    line-height: 32px !important;
+    background: rgba(245, 185, 66, 0.2) !important;
+    color: #211F1A !important;
 }
 
 .selectize-control.single .selectize-input.has-items > input {
@@ -172,7 +158,7 @@ select,
 }
 
 .selectize-control.single .selectize-input input {
-    color: #f2f4f8 !important;
+    color: #211F1A !important;
     opacity: 1 !important;
     position: relative !important;
     left: 0 !important;

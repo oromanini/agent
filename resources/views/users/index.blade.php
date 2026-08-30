@@ -2,106 +2,97 @@
 
 @section('content')
     <div class="container is-fluid overflow-auto">
-        <div class="box overflow-auto">
-            <div class="columns mt-2 ml-1">
-                <h3 class="title"><img src="/img/logo/alluz-icon.png" width="30" alt=".."> Usuários</h3>
-            </div>
-            <div class="columns">
-                <div class="title-bottom-line" style="margin-left: 50px"></div>
-                <div class="column is-flex is-justify-content-end">
-                    <a href="{{ route('user.create') }}" class="button is-info">
-                        <ion-icon name="add-circle-outline"></ion-icon>
-                        Novo Usuário
-                    </a>
-                </div>
-            </div>
-            <br>
-            <form action="{{ route('user.index') }}" method="get">
-                @csrf
-                <div class="columns is-flex is-flex-direction-row mt-4 mb-4">
-                    <div class="column is-3">
-                        <div class="field">
-                            <label for="name-filter" class="label">Nome</label>
-                            <div class="control">
-                                <input name="name_filter" id="name-filter" class="input is-rounded" type="text"
-                                       placeholder="Digite o nome">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="column is-2">
-                        <div class="field">
-                            <label for="cnpj-filter" class="label">CNPJ</label>
-                            <div class="control">
-                                <input name="cnpj_filter" id="cnpj-filter" class="input is-rounded"
-                                       type="text"
-                                       placeholder="Digite o CNPJ">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="column is-2">
-                        <div class="field">
-                            <label for="phone-filter" class="label">Telefone</label>
-                            <div class="control">
-                                <input name="phone_number_filter" id="phone-filter" class="input is-rounded"
-                                       type="text"
-                                       placeholder="Digite o Telefone">
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="column is-3 mt-1"><br>
-                        <button type="submit" class="button is-warning">Filtrar&nbsp;&nbsp;<ion-icon
-                                name="search-outline"></ion-icon>
-                        </button>
-                        <a href="{{ route('user.index') }}" class="button is-danger">Limpar</a>
+        <div class="a-page-head">
+            <h1>Agentes</h1>
+            <a href="{{ route('user.create') }}" class="a-btn-primary">
+                <ion-icon name="add-outline"></ion-icon>
+                Novo usuário
+            </a>
+        </div>
+
+        <form action="{{ route('user.index') }}" method="get">
+            @csrf
+            <div class="a-filterbar">
+                <div class="field" style="flex:1; min-width:220px;">
+                    <label for="name-filter" class="label">Nome</label>
+                    <div class="control">
+                        <input name="name_filter" id="name-filter" class="input" type="text"
+                               value="{{ request('name_filter') }}" placeholder="Buscar por nome">
                     </div>
                 </div>
-            </form>
+                <div class="field" style="width:200px;">
+                    <label for="cnpj-filter" class="label">CNPJ</label>
+                    <div class="control">
+                        <input name="cnpj_filter" id="cnpj-filter" class="input" type="text"
+                               value="{{ request('cnpj_filter') }}" placeholder="Digite o CNPJ">
+                    </div>
+                </div>
+                <div class="field" style="width:200px;">
+                    <label for="phone-filter" class="label">Telefone</label>
+                    <div class="control">
+                        <input name="phone_number_filter" id="phone-filter" class="input" type="text"
+                               value="{{ request('phone_number_filter') }}" placeholder="Buscar por telefone">
+                    </div>
+                </div>
+                <div style="display:flex; gap:.5rem;">
+                    <button type="submit" class="a-btn-primary"><ion-icon name="search-outline"></ion-icon> Filtrar</button>
+                    <a href="{{ route('user.index') }}" class="a-btn-ghost">Limpar</a>
+                </div>
+            </div>
+        </form>
 
-
+        <div class="a-table-wrap">
             <table class="table is-hoverable is-fullwidth">
                 <thead>
                 <tr>
-                    <th><abbr title="Position">ID</abbr></th>
                     <th>Nome</th>
                     <th>Email</th>
                     <th>Telefone</th>
-                    <th>Cidade/Estado</th>
+                    <th>Cidade/UF</th>
                     <th>Ascendente</th>
                     <th>Status</th>
-                    <th>Ações</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
                 @forelse($agents as $agent)
-                    <tr class="lh-40">
-                        <th>{{$agent->id}}</th>
-                        <td>{{ $agent->name }}</td>
+                    <tr>
+                        <td>
+                            <div class="a-name-cell">
+                                <x-avatar :name="$agent->name" />
+                                <span style="font-weight:600;">{{ $agent->name }}</span>
+                            </div>
+                        </td>
                         <td>{{ $agent->email }}</td>
-                        <td>{{ $agent->phone_number}}</td>
-                        <td>{{ getNameAndFederalUnit($agent->city)}}</td>
+                        <td>{{ $agent->phone_number }}</td>
+                        <td>{{ getNameAndFederalUnit($agent->city) }}</td>
                         <td>{{ getAscendantName($agent->ascendant) }}</td>
                         <td>
-                            <span class="tag @if($agent->trashed()) is-danger @else is-success @endif"> @if($agent->trashed()) Inativo @else Ativo @endif</span>
+                            <span class="a-pill {{ $agent->trashed() ? 'a-pill--neutral' : 'a-pill--green' }}">
+                                {{ $agent->trashed() ? 'Inativo' : 'Ativo' }}
+                            </span>
                         </td>
                         <td>
-                            <a class="button is-primary" href="{{ route('user.edit', [$agent->id]) }}">
-                                <ion-icon name="create-outline" class="table-icon"></ion-icon>
-                            </a>
-                            <a class="button is-danger" href="{{ route('user.inactive', [$agent->id]) }}">
-                                <ion-icon name="trash-outline" class="table-icon"></ion-icon>
-                            </a>
+                            <div class="a-row-actions">
+                                <a class="a-iconbtn" title="Editar" href="{{ route('user.edit', [$agent->id]) }}">
+                                    <ion-icon name="create-outline"></ion-icon>
+                                </a>
+                                <a class="a-iconbtn" title="Inativar" href="{{ route('user.inactive', [$agent->id]) }}">
+                                    <ion-icon name="trash-outline"></ion-icon>
+                                </a>
+                            </div>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td>Não há agentes cadastrados</td>
+                        <td colspan="7">Não há agentes cadastrados</td>
                     </tr>
                 @endforelse
                 </tbody>
             </table>
-            {{ $agents->appends(request()->all())->links() }}
         </div>
-    </div>
 
+        <div class="mt-4">{{ $agents->appends(request()->all())->links() }}</div>
+    </div>
 @endsection

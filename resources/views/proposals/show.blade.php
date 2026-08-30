@@ -1,22 +1,33 @@
 @extends('base')
 
 @section('content')
+    <style>
+        nav.tabs.proposal-tabs { margin-bottom: 20px; }
+        nav.tabs.proposal-tabs ul {
+            display: inline-flex; background: #F3EEE4; border-radius: 12px; padding: 3px; gap: 2px; border: 0;
+        }
+        nav.tabs.proposal-tabs li { margin: 0; }
+        nav.tabs.proposal-tabs li a {
+            border: 0 !important; background: transparent; color: #8A8578 !important;
+            padding: .5rem 1.25rem; border-radius: 9px; font-size: .82rem !important; font-weight: 700;
+        }
+        nav.tabs.proposal-tabs li.is-active a {
+            background: #FFFFFF; color: #211F1A !important; box-shadow: 0 1px 3px rgba(33,29,20,.15);
+        }
+    </style>
+
     <div class="container is-fluid overflow-auto">
-        <nav class="tabs is-boxed is-fullwidth is-large" style="margin-bottom: 0">
-            <div class="container">
-                <ul>
-                    <li class=" mytab is-active" onclick="openTab(event,'projeto')"><a
-                            style="color: #6b7280; font-size: 12pt">
-                            <ion-icon name="flash-outline"></ion-icon>
-                            Projeto</a></li>
-                    <li class=" mytab" onclick="openTab(event,'previstoria')"><a
-                            style="color: #6b7280; font-size: 12pt">
-                            <ion-icon name="camera-outline"></ion-icon>
-                            Pré-vistoria</a></li>
-                </ul>
-            </div>
+        <nav class="tabs proposal-tabs">
+            <ul>
+                <li class="mytab is-active" onclick="openTab(event,'projeto')">
+                    <a><ion-icon name="flash-outline"></ion-icon> Projeto</a>
+                </li>
+                <li class="mytab" onclick="openTab(event,'previstoria')">
+                    <a><ion-icon name="camera-outline"></ion-icon> Pré-vistoria</a>
+                </li>
+            </ul>
         </nav>
-        <div class="box overflow-auto">
+        <div class="overflow-auto">
             <div id="projeto" class="content-tab">
                 @include('proposals.show.head')
                 @include('proposals.show.cards')

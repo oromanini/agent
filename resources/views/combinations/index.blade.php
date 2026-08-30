@@ -5,44 +5,41 @@
     <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
 
     <style>
-        .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
+        .switch { position: relative; display: inline-block; width: 46px; height: 26px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; }
-        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; transition: .4s; }
-        input:checked + .slider { background-color: #23d160; }
-        input:focus + .slider { box-shadow: 0 0 1px #23d160; }
-        input:checked + .slider:before { transform: translateX(22px); }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #E4DDCB; transition: .4s; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; box-shadow: 0 1px 2px rgba(33,29,20,.2); }
+        input:checked + .slider { background-color: #F5B942; }
+        input:focus + .slider { box-shadow: 0 0 1px #F5B942; }
+        input:checked + .slider:before { transform: translateX(20px); }
         .slider.round { border-radius: 34px; }
         .slider.round:before { border-radius: 50%; }
     </style>
 
     <div class="container is-fluid overflow-auto">
-        <div class="box overflow-auto">
-            <div class="columns mt-2 mb-5 ml-1">
-                <h3 class="title">
-                    <img src="/img/logo/alluz-icon.png" width="30" alt="..">
-                    Gerenciar combinações Ativos
-                </h3>
-            </div>
 
-            <button class="button is-primary mb-4" id="create-button">Nova Combinação</button>
+        <div class="a-page-head">
+            <h1>Atualizar combinações</h1>
+            <button class="a-btn-primary" id="create-button">
+                <ion-icon name="add-outline"></ion-icon> Nova combinação
+            </button>
+        </div>
 
-            <table class="table is-fullwidth is-striped">
+        <div class="a-table-wrap">
+            <table class="table is-fullwidth">
                 <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Marca do Painel</th>
-                    <th>Marca do Inversor</th>
+                    <th>Marca do painel</th>
+                    <th>Marca do inversor</th>
                     <th>Distribuidor</th>
                     <th>Ativo?</th>
-                    <th>Última Atualização</th>
-                    <th>Ações</th>
+                    <th>Atualização</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody id="kits-table-body">
                 @foreach($kits as $kit)
                     <tr data-id="{{ $kit->id }}">
-                        <td>{{ $kit->id }}</td>
                         <td class="view-mode panel-brand">{{ $kit->panel_brand }}</td>
                         <td class="view-mode inverter-brand">{{ $kit->inverter_brand }}</td>
                         <td class="view-mode distributor">{{ $kit->distributor }}</td>
@@ -208,7 +205,6 @@
                         const newRow = document.createElement('tr');
                         newRow.dataset.id = newKit.id;
                         newRow.innerHTML = `
-                        <td>${newKit.id}</td>
                         <td class="view-mode panel-brand">${newKit.panel_brand}</td>
                         <td class="view-mode inverter-brand">${newKit.inverter_brand}</td>
                         <td class="view-mode distributor">${newKit.distributor}</td>

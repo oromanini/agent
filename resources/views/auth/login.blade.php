@@ -15,7 +15,7 @@
 
                 <div style="text-align:center; margin-bottom: 1rem;">
                     <h2 class="typing-title"><span id="login-typing-text"></span><span class="typing-caret">|</span></h2>
-                    <p style="color: #9ca5ba; margin-top: .3rem;">SGP - Sistema gerador de proposta</p>
+                    <p style="color: #8A8578; margin-top: .3rem;">SGP - Sistema gerador de proposta</p>
                 </div>
 
                 <!-- Session Status -->
