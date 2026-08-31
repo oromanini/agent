@@ -8,7 +8,8 @@ Também dá pra rodar manualmente em **Actions → Deploy (Hostinger) → Run wo
 
 1. `git reset --hard origin/master` no diretório do app no servidor
 2. `composer install --no-dev --optimize-autoloader --ignore-platform-req=php`
-3. `artisan config:cache` → `route:cache` → `view:cache` → `storage:link` → `queue:restart`
+3. `artisan optimize:clear` → `view:cache` → `storage:link` → `queue:restart`
+   (sem `config:cache`/`route:cache`: o app tem nome de rota duplicado `[logout]` que impede o route caching)
 
 Assets (`public/css`, `public/js`) são versionados no repo, então **não há build de front no deploy**.
 

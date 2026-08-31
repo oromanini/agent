@@ -40,12 +40,13 @@ jobs:
             $COMPOSER_BIN install --no-dev --prefer-dist --optimize-autoloader \
               --no-interaction --no-progress --ignore-platform-req=php
 
-            echo "==> Laravel cache rebuild"
+            echo "==> Laravel: limpa caches e reinicia workers"
             # migrations NÃO são aplicadas aqui: a tabela `migrations` do servidor
             # está fora de sincronia com o schema. Rodar na mão. Ver docs/deploy.md.
-            $PHP_BIN artisan config:cache
-            $PHP_BIN artisan route:cache
-            $PHP_BIN artisan view:cache
+            # route:cache/config:cache não são usados: o app tem nome de rota
+            # duplicado ([logout]) que impede o route caching.
+            $PHP_BIN artisan optimize:clear
+            $PHP_BIN artisan view:cache || true
             $PHP_BIN artisan storage:link || true
             $PHP_BIN artisan queue:restart || true
 
