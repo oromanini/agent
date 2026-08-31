@@ -40,14 +40,13 @@ jobs:
             $COMPOSER_BIN install --no-dev --prefer-dist --optimize-autoloader \
               --no-interaction --no-progress --ignore-platform-req=php
 
-            echo "==> Laravel maintenance steps"
-            $PHP_BIN artisan down --render="errors::503" || true
-            $PHP_BIN artisan migrate --force
+            echo "==> Laravel cache rebuild"
+            # migrations NÃO são aplicadas aqui: a tabela `migrations` do servidor
+            # está fora de sincronia com o schema. Rodar na mão. Ver docs/deploy.md.
             $PHP_BIN artisan config:cache
             $PHP_BIN artisan route:cache
             $PHP_BIN artisan view:cache
             $PHP_BIN artisan storage:link || true
             $PHP_BIN artisan queue:restart || true
-            $PHP_BIN artisan up
 
             echo "==> Done"

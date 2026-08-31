@@ -7,10 +7,14 @@ Também dá pra rodar manualmente em **Actions → Deploy (Hostinger) → Run wo
 ## O que o pipeline faz (deploy-only, sem testes)
 
 1. `git reset --hard origin/master` no diretório do app no servidor
-2. `composer install --no-dev --optimize-autoloader`
-3. `artisan down` → `migrate --force` → `config/route/view:cache` → `storage:link` → `queue:restart` → `artisan up`
+2. `composer install --no-dev --optimize-autoloader --ignore-platform-req=php`
+3. `artisan config:cache` → `route:cache` → `view:cache` → `storage:link` → `queue:restart`
 
 Assets (`public/css`, `public/js`) são versionados no repo, então **não há build de front no deploy**.
+
+> **Migrations não rodam no deploy.** A tabela `migrations` do servidor está fora de
+> sincronia com o schema (herança da divergência `main`/`master`), então `artisan migrate`
+> quebra em colunas que já existem. Aplicar migrations manualmente, reconciliando antes.
 
 ## Setup único
 
